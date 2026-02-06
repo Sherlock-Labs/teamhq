@@ -1,0 +1,522 @@
+{
+  "projects": [
+    {
+      "id": "teamhq-landing-page",
+      "name": "TeamHQ Landing Page",
+      "description": "Built the original TeamHQ landing page -- a single-page static site introducing the AI product team.",
+      "status": "completed",
+      "completedDate": "2025-01",
+      "tasks": [
+        {
+          "title": "Scoped requirements and acceptance criteria",
+          "agent": "Thomas",
+          "role": "Product Manager",
+          "status": "completed",
+          "subtasks": [
+            "Defined page purpose: clean informational site, not a SaaS signup flow",
+            "Wrote acceptance criteria for all 6 agent cards with name, role, and description",
+            "Specified hero section with headline and subhead",
+            "Required 'How It Works' section with 4-step workflow",
+            "Set responsive design requirement across mobile, tablet, and desktop"
+          ],
+          "filesChanged": [
+            "docs/landing-page-requirements.md"
+          ],
+          "decisions": [
+            "Kept scope minimal — no external APIs, no sign-up forms, just a clean informational page",
+            "Deferred dark theme to a future iteration"
+          ]
+        },
+        {
+          "title": "Defined tech approach (plain HTML/CSS, no build step)",
+          "agent": "Andrei",
+          "role": "Technical Architect",
+          "status": "completed",
+          "subtasks": [
+            "Evaluated React, Astro, and Tailwind — rejected all as overkill for a single static page",
+            "Chose plain HTML + CSS with no build step or bundler",
+            "Defined file structure: index.html, css/styles.css",
+            "Specified CSS custom properties for theming and design tokens",
+            "Set mobile-first responsive approach with 3 breakpoints"
+          ],
+          "filesChanged": [
+            "docs/tech-approach.md"
+          ],
+          "decisions": [
+            "Plain HTML/CSS over any framework — one page, no routing, no dynamic data, no component reuse",
+            "System font stack initially (no web fonts) to keep zero external dependencies",
+            "CSS custom properties for all colors, spacing, and typography for future themability"
+          ]
+        },
+        {
+          "title": "Created design spec (layout, typography, colors)",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "completed",
+          "subtasks": [
+            "Defined color palette: indigo brand colors with neutral grays",
+            "Specified typography scale with system fonts and 8px spacing base unit",
+            "Designed agent card layout: 1-col mobile, 2-col tablet, 3-col desktop grid",
+            "Created 48px avatar circles with monogram initials",
+            "Designed 'How It Works' section with numbered step circles and connecting line on desktop",
+            "Specified hover states: shadow lift with subtle translateY(-2px) on cards",
+            "Set responsive breakpoints: mobile (<640px), tablet (640-1023px), desktop (1024+)"
+          ],
+          "filesChanged": [
+            "docs/design-spec.md"
+          ],
+          "decisions": [
+            "Section backgrounds alternate white/gray-50/white for visual separation",
+            "Max-width 1120px centered — wide enough for 3-col grid without feeling sprawling",
+            "Monogram avatars over icons or illustrations — simpler and more personal"
+          ]
+        },
+        {
+          "title": "Implemented the landing page",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "completed",
+          "subtasks": [
+            "Built semantic HTML structure: header, main with 3 sections, footer",
+            "Implemented all CSS design tokens as custom properties in :root",
+            "Created responsive grid layout for 6 agent cards",
+            "Built 'How It Works' 4-step section with numbered circles and connecting line",
+            "Implemented hover states with box-shadow and translateY transitions",
+            "Added hero section with headline, subhead, and badge",
+            "Ensured full responsive behavior across all 3 breakpoints"
+          ],
+          "filesChanged": [
+            "index.html",
+            "css/styles.css"
+          ],
+          "decisions": [
+            "Used semantic HTML elements (article, section, header) for accessibility",
+            "Kept all styles in a single CSS file — no need for splitting at this scale"
+          ]
+        },
+        {
+          "title": "Validated against acceptance criteria",
+          "agent": "Enzo",
+          "role": "QA Engineer",
+          "status": "completed",
+          "subtasks": [
+            "Verified all 6 agents display with correct names, roles, and descriptions",
+            "Tested responsive layout across mobile, tablet, and desktop breakpoints",
+            "Confirmed no external API calls — page is fully static",
+            "Validated page loads as a single HTML file with one CSS dependency",
+            "Checked content accuracy against agent definitions in .claude/agents/"
+          ],
+          "decisions": [
+            "Accepted system font rendering differences across OS — consistent enough for launch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ost-tool",
+      "name": "OST Tool",
+      "description": "Full-stack Opportunity Solution Tree tool -- generates trees with AI, supports debate between solutions, and provides recommendations.",
+      "status": "completed",
+      "completedDate": "2025-02",
+      "tasks": [
+        {
+          "title": "Designed system architecture (Vite+React frontend, Express backend, Claude CLI integration)",
+          "agent": "Andrei",
+          "role": "Technical Architect",
+          "status": "completed",
+          "subtasks": [
+            "Chose Vite + React for the frontend — interactive tree visualization needs a real framework",
+            "Selected Express.js for the backend API server",
+            "Designed Claude CLI integration using claude -p with --output-format json and --json-schema for structured AI output",
+            "Set up npm workspaces monorepo with /server and /client packages",
+            "Configured Vite proxy for /api routes to Express during development",
+            "Defined session-based architecture for persisting user tree state"
+          ],
+          "filesChanged": [
+            "ost-tool/package.json",
+            "ost-tool/server/package.json",
+            "ost-tool/client/package.json"
+          ],
+          "decisions": [
+            "React over plain HTML — tree visualization with React Flow requires component state and interactivity",
+            "Claude CLI over API — simpler integration, no API key management, leverages local Claude installation",
+            "npm workspaces over separate repos — keeps frontend and backend co-located with shared scripts",
+            "In-memory session store over database — sufficient for single-user tool, avoids infrastructure complexity"
+          ]
+        },
+        {
+          "title": "Built React Flow tree visualization, debate UI, and recommendation view",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "completed",
+          "subtasks": [
+            "Integrated React Flow for interactive OST tree visualization",
+            "Built DebateView component for multi-agent solution discussions",
+            "Created RecommendationView component for AI-generated recommendations",
+            "Defined TypeScript types for tree nodes, debates, and recommendations",
+            "Implemented tree node expansion/collapse interactions",
+            "Connected all views to Express API endpoints"
+          ],
+          "filesChanged": [
+            "ost-tool/client/src/components/DebateView.tsx",
+            "ost-tool/client/src/components/RecommendationView.tsx",
+            "ost-tool/client/src/types.ts",
+            "ost-tool/client/src/App.tsx"
+          ],
+          "decisions": [
+            "React Flow over D3 — better React integration and built-in node/edge management",
+            "Kept debate and recommendation as separate views rather than inline panels"
+          ]
+        },
+        {
+          "title": "Built Express API, Claude CLI integration, and session store",
+          "agent": "Jonah",
+          "role": "Back-End Developer",
+          "status": "completed",
+          "subtasks": [
+            "Created Express API routes for tree generation, debate, and recommendations",
+            "Implemented Claude CLI integration with structured JSON output via --json-schema",
+            "Built in-memory session store for persisting user tree state across requests",
+            "Defined agent personalities for debate feature (optimist, skeptic, pragmatist)",
+            "Created Zod schemas for request/response validation",
+            "Added error handling for Claude CLI failures and malformed responses"
+          ],
+          "filesChanged": [
+            "ost-tool/server/src/routes/ost.ts",
+            "ost-tool/server/src/agents/debaters.ts",
+            "ost-tool/server/src/schemas/ost.ts",
+            "ost-tool/server/src/index.ts"
+          ],
+          "decisions": [
+            "Zod for schema validation — runtime type safety for AI-generated JSON",
+            "Three debater personalities (optimist, skeptic, pragmatist) for balanced discussion",
+            "Spawns Claude CLI as a child process per request rather than maintaining a persistent connection"
+          ]
+        },
+        {
+          "title": "Validated end-to-end flows and edge cases",
+          "agent": "Enzo",
+          "role": "QA Engineer",
+          "status": "completed",
+          "subtasks": [
+            "Tested full workflow: opportunity input → tree generation → debate → recommendation",
+            "Validated API response structure matches Zod schemas",
+            "Tested error handling when Claude CLI returns malformed JSON",
+            "Verified tree visualization renders correctly with various node counts",
+            "Checked debate view displays all three agent perspectives",
+            "Tested recommendation view formatting and content accuracy"
+          ],
+          "decisions": [
+            "Accepted longer response times for complex trees — AI generation is inherently slow",
+            "Flagged but deferred persistence across browser refreshes — in-memory store is sufficient for MVP"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "teamhq-redesign",
+      "name": "TeamHQ Redesign",
+      "description": "Redesigned the TeamHQ landing page with a dark theme, navigation bar, and Tools section to serve as a central hub.",
+      "status": "completed",
+      "completedDate": "2025-02",
+      "tasks": [
+        {
+          "title": "Scoped redesign requirements",
+          "agent": "Thomas",
+          "role": "Product Manager",
+          "status": "completed",
+          "subtasks": [
+            "Defined dark theme requirement to match OST Tool aesthetic",
+            "Specified sticky navigation bar with smooth-scroll anchor links",
+            "Added Tools section to link to shipped products (starting with OST Tool)",
+            "Required all existing content preserved and rethemed",
+            "Wrote acceptance criteria for responsive dark theme across all breakpoints"
+          ],
+          "filesChanged": [
+            "docs/teamhq-redesign-requirements.md"
+          ],
+          "decisions": [
+            "Positioned TeamHQ as a central hub, not just an informational page",
+            "Tools section placed above Team Roster to emphasize shipped work"
+          ]
+        },
+        {
+          "title": "Confirmed tech approach (stay with plain HTML/CSS)",
+          "agent": "Andrei",
+          "role": "Technical Architect",
+          "status": "completed",
+          "subtasks": [
+            "Evaluated whether redesign warranted a framework switch — decided no",
+            "Confirmed nav bar is achievable with static HTML + anchor links",
+            "Specified CSS custom property swap for dark theme (no JS needed)",
+            "Added Google Fonts for Inter to match OST Tool typography",
+            "Defined smooth scroll via CSS scroll-behavior and scroll-padding-top"
+          ],
+          "filesChanged": [
+            "docs/teamhq-redesign-tech-approach.md"
+          ],
+          "decisions": [
+            "Stay with plain HTML/CSS — the redesign doesn't warrant a framework migration",
+            "Inter via Google Fonts CDN rather than self-hosting — simpler, good caching",
+            "CSS-only smooth scroll over JavaScript scroll libraries"
+          ]
+        },
+        {
+          "title": "Created dark theme design spec",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "completed",
+          "subtasks": [
+            "Defined zinc-scale color palette: zinc-950 bg, zinc-900 cards, zinc-800 borders",
+            "Specified indigo-500 accents with indigo-400 for hover states",
+            "Designed sticky nav bar with brand + sub-label left, links right",
+            "Created Tools section card design with status badges and launch links",
+            "Changed card hover from shadow-lift to border-color brightening (shadows invisible on dark)",
+            "Updated avatar circles to indigo-at-10% background with indigo-400 text",
+            "Ensured WCAG AA contrast ratios for all dark theme color combinations"
+          ],
+          "filesChanged": [
+            "docs/teamhq-redesign-design-spec.md"
+          ],
+          "decisions": [
+            "Border-color hover over box-shadow — shadows are invisible against dark backgrounds",
+            "No hamburger menu on mobile — nav links wrap naturally and there are only 4",
+            "Footer uses zinc-900 (one step lighter than page bg) for subtle separation"
+          ]
+        },
+        {
+          "title": "Implemented dark theme, nav bar, and Tools section",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "completed",
+          "subtasks": [
+            "Replaced entire CSS color system with zinc/indigo dark theme tokens",
+            "Created sticky navigation bar with TeamHQ branding and smooth-scroll links",
+            "Built Tools section with OST Tool card, Live badge, and Launch link with arrow animation",
+            "Updated all existing sections for dark background contrast",
+            "Redesigned agent cards for dark theme readability",
+            "Added Google Fonts Inter import",
+            "Implemented responsive nav that wraps gracefully on mobile"
+          ],
+          "filesChanged": [
+            "index.html",
+            "css/styles.css"
+          ],
+          "decisions": [
+            "Kept Inter font via Google Fonts CDN rather than self-hosting",
+            "Launch link arrow translates right on hover for a subtle interactive feel"
+          ]
+        },
+        {
+          "title": "Validated redesign against acceptance criteria",
+          "agent": "Enzo",
+          "role": "QA Engineer",
+          "status": "completed",
+          "subtasks": [
+            "Verified dark theme colors and contrast ratios across all sections",
+            "Tested nav bar sticky behavior and smooth-scroll to each section",
+            "Confirmed Tools section renders with OST Tool card and working Launch link",
+            "Validated all 6 agents still display correctly with updated styling",
+            "Tested responsive behavior at mobile, tablet, and desktop breakpoints",
+            "Verified OST Tool Launch link opens in new tab with noopener noreferrer"
+          ],
+          "decisions": [
+            "Accepted minor sub-pixel rendering differences across browsers — imperceptible to users"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "task-history",
+      "name": "Task History",
+      "description": "Added a Tasks section to the TeamHQ landing page showing project history with expandable cards and subtask breakdowns.",
+      "status": "completed",
+      "completedDate": "2025-02",
+      "tasks": [
+        {
+          "title": "Scoped requirements and acceptance criteria",
+          "agent": "Thomas",
+          "role": "Product Manager",
+          "status": "completed",
+          "subtasks": [
+            "Defined Tasks section placement between Tools and Team Roster",
+            "Specified expandable project cards with collapsed summary view",
+            "Required expanded view showing per-agent subtask breakdown with avatars and status",
+            "Defined three seed projects with accurate task breakdowns from session history",
+            "Set accordion behavior: only one project card expanded at a time"
+          ],
+          "filesChanged": [
+            "docs/task-history-requirements.md"
+          ],
+          "decisions": [
+            "Accordion pattern (one card at a time) to keep the page scannable",
+            "Status dots over text labels — more compact and visually clean"
+          ]
+        },
+        {
+          "title": "Defined technical approach (vanilla JS, IIFE, fetch + template literals)",
+          "agent": "Andrei",
+          "role": "Technical Architect",
+          "status": "completed",
+          "subtasks": [
+            "Introduced first JavaScript to the landing page — chose vanilla JS in an IIFE",
+            "Specified static JSON data file at data/tasks.json loaded via Fetch API",
+            "Designed CSS grid-template-rows animation for smooth expand/collapse (no JS animation)",
+            "Required single delegated event listener on #tasks-list for performance",
+            "Set progressive enhancement: noscript fallback message for JS-disabled browsers",
+            "Established JS conventions: IIFE wrapper, strict mode, no globals, no dependencies"
+          ],
+          "filesChanged": [
+            "docs/task-history-tech-approach.md"
+          ],
+          "decisions": [
+            "Vanilla JS over a framework — this is the first JS on the page, keep it minimal",
+            "CSS grid-template-rows for animation over JS height calculation — cleaner, GPU-accelerated",
+            "Static JSON over hardcoded HTML — makes future task additions data-driven"
+          ]
+        },
+        {
+          "title": "Created design spec (card states, animations, responsive layout)",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "completed",
+          "subtasks": [
+            "Designed project card collapsed state: name, description, status badge, date, task count, chevron",
+            "Designed expanded state with per-agent subtask rows and 32px avatars",
+            "Specified status indicator colors: green (completed), yellow (in-progress), red (blocked), gray (skipped)",
+            "Defined chevron rotation animation (45deg to -135deg) on expand",
+            "Set mobile responsive behavior: description truncation, header wrapping",
+            "Specified accessibility: button header for keyboard nav, aria-expanded/aria-hidden attributes"
+          ],
+          "filesChanged": [
+            "docs/task-history-design-spec.md"
+          ],
+          "decisions": [
+            "32px task avatars (vs 48px roster avatars) to keep subtask rows compact",
+            "Single-column card layout — projects are sequential, not comparable side-by-side",
+            "Border-top separator on expanded content rather than a visual gap"
+          ]
+        },
+        {
+          "title": "Implemented Tasks section UI",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "completed",
+          "subtasks": [
+            "Created js/tasks.js with IIFE, fetch, and template-literal rendering",
+            "Built project card component with button header and collapsible details panel",
+            "Implemented delegated click handler for expand/collapse accordion behavior",
+            "Added Tasks nav link and section with #tasks-list container and noscript fallback",
+            "Created data/tasks.json with seed data for 3 projects",
+            "Styled all task card elements matching dark theme design spec",
+            "Implemented CSS grid-template-rows animation for smooth expand/collapse"
+          ],
+          "filesChanged": [
+            "index.html",
+            "css/styles.css",
+            "js/tasks.js",
+            "data/tasks.json"
+          ],
+          "decisions": [
+            "Used CSS grid-template-rows for smooth expand/collapse animation — no JS height calc needed",
+            "Template literals over createElement — more readable for this complexity level"
+          ]
+        },
+        {
+          "title": "Validated against acceptance criteria",
+          "agent": "Enzo",
+          "role": "QA Engineer",
+          "status": "completed",
+          "subtasks": [
+            "Verified all 3 seed projects load from JSON and render correctly",
+            "Tested expand/collapse animation smoothness across browsers",
+            "Confirmed accordion behavior: expanding one card collapses the other",
+            "Validated correct agent assignments and task content against session history",
+            "Tested responsive layout on mobile, tablet, and desktop",
+            "Verified keyboard navigation: tab to card headers, enter/space to toggle"
+          ],
+          "decisions": [
+            "Accepted that noscript fallback is plain text — acceptable given the audience"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ost-recommendation-redesign",
+      "name": "OST Recommendation Page Redesign",
+      "description": "Redesigned the OST tool recommendation page to reduce color overload, add expandable debater reasoning, and improve information hierarchy.",
+      "status": "in-progress",
+      "tasks": [
+        {
+          "title": "Scoped requirements for recommendation page redesign",
+          "agent": "Thomas",
+          "role": "Product Manager",
+          "status": "completed",
+          "subtasks": [
+            "Identified color overload problem: 15+ distinct hues competing on one page",
+            "Identified hidden debater reasoning problem: hover-only tooltips not discoverable",
+            "Defined R1: Reduce palette to 3 accent colors beyond zinc neutrals",
+            "Defined R2: Replace hover tooltips with expandable accordion sections",
+            "Defined R3: Improve hierarchy with rank numbers and prominent scores",
+            "Scoped as pure frontend change — no backend or schema modifications needed"
+          ],
+          "filesChanged": [
+            "docs/ost-recommendation-redesign-requirements.md"
+          ],
+          "decisions": [
+            "Accordion pattern over modal for debater reasoning — better for comparison workflows",
+            "Scoped to RecommendationView only — no changes to DebateView or other views"
+          ]
+        },
+        {
+          "title": "Created design spec for recommendation page redesign",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "completed",
+          "subtasks": [
+            "Defined 3-color accent system: indigo (primary), emerald (positive), red (negative)",
+            "Replaced 11 persona badge colors with uniform neutral style",
+            "Designed expandable debater accordion with chevron, XOR toggle logic, and grid height animation",
+            "Specified Expand All / Collapse All toggle with XOR individual override pattern",
+            "Designed rank numbers on solution rows and prominent score display",
+            "Unified three-column card borders to neutral zinc-800 with icon-based differentiation",
+            "Specified all interaction states, transitions, and accessibility requirements"
+          ],
+          "filesChanged": [
+            "docs/ost-recommendation-redesign-design-spec.md"
+          ],
+          "decisions": [
+            "XOR toggle pattern for expand-all — individual clicks act as overrides without losing global state",
+            "Grid-template-rows animation for accordion — CSS-only, no JS height calculation",
+            "No icon library — inline SVG chevron to keep it lightweight"
+          ]
+        },
+        {
+          "title": "Implemented the recommendation page redesign",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "completed",
+          "subtasks": [
+            "Removed PERSONA_BADGE_COLORS map and per-persona colored badges entirely",
+            "Updated scoreColor to 3-tier system: emerald (>=7), zinc (4-6), red (<4) — dropped amber",
+            "Replaced multi-hue impact bars with single indigo-500 bar using opacity variation",
+            "Built expandable DebaterRow component with chevron SVG, aria-expanded, and grid height animation",
+            "Implemented XOR expand-all/collapse-all toggle with individual override Set<string>",
+            "Added rank numbers to solution rows with prominent score display",
+            "Unified three-column borders to zinc-800 with icon prefixes (!, 1., --)",
+            "Increased section spacing to mb-10 and page padding to py-10",
+            "Added button elements with focus-visible outlines for keyboard accessibility"
+          ],
+          "filesChanged": [
+            "ost-tool/client/src/components/RecommendationView.tsx"
+          ],
+          "decisions": [
+            "Used inline SVG for chevron icon — no external icon library needed",
+            "Managed accordion state with useState<Set<string>> and XOR boolean per design spec",
+            "Kept all styling as inline Tailwind classes consistent with existing codebase patterns"
+          ]
+        }
+      ]
+    }
+  ]
+}

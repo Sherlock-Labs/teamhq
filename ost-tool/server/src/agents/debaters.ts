@@ -256,13 +256,19 @@ Evaluate the selected solutions from your perspective as the ${perspective.name}
 
 1. **assessment**: A substantive 2-3 paragraph analysis from your perspective. Be specific, reference the actual solutions by name, and make clear arguments. Don't hedge everything — take a position.
 
-2. **score**: A confidence score from 1-10 representing how confident you are that these solutions will succeed from your perspective (1 = very worried, 10 = highly confident).
+2. **score**: A conviction score from 1-10 representing how strongly you believe these solutions will succeed from your perspective (1 = deeply skeptical, 10 = fully convicted).
 
 3. **keyInsight**: Your single most important takeaway in one sentence. Make it punchy and actionable.
 
 4. **topArguments**: Your top 3 arguments summarized as short bullet points (one sentence each). These should capture the core of your position at a glance.
 
 5. **risks**: Your top 3 risks from your perspective. Each should be specific and actionable, not generic.
+
+6. **solutionScores**: For EACH solution under evaluation, provide an individual conviction score. For each solution, include:
+   - "solutionId": the solution's ID exactly as shown above
+   - "solutionLabel": the solution's name exactly as shown above
+   - "score": 1-10 conviction from your perspective for THIS specific solution
+   - "reason": one sentence explaining your score for this specific solution
 
 Set "perspective" to "${perspective.name}".`;
 

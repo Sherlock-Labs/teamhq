@@ -82,7 +82,7 @@ function DebateCard({ result }: { result: DebateResult }) {
         <span
           className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${style.badge}`}
         >
-          {result.score}/10
+          {result.score}/10 conviction
         </span>
       </div>
 

@@ -9,6 +9,13 @@ export type OSTNode = {
 
 export type OSTTree = { nodes: OSTNode[] };
 
+export type SolutionScore = {
+  solutionId: string;
+  solutionLabel: string;
+  score: number;
+  reason: string;
+};
+
 export type DebateResult = {
   perspective: string;
   assessment: string;
@@ -16,6 +23,7 @@ export type DebateResult = {
   keyInsight: string;
   topArguments: string[];
   risks: string[];
+  solutionScores?: SolutionScore[];
 };
 
 export type SolutionImpact = {

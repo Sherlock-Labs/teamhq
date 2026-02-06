@@ -47,6 +47,15 @@ export const ostTreeJsonSchema = {
 
 // --- Debate Result ---
 
+export const SolutionScoreSchema = z.object({
+  solutionId: z.string(),
+  solutionLabel: z.string(),
+  score: z.number().min(1).max(10),
+  reason: z.string(),
+});
+
+export type SolutionScore = z.infer<typeof SolutionScoreSchema>;
+
 export const DebateResultSchema = z.object({
   perspective: z.string(),
   assessment: z.string(),
@@ -54,6 +63,7 @@ export const DebateResultSchema = z.object({
   keyInsight: z.string(),
   topArguments: z.array(z.string()),
   risks: z.array(z.string()),
+  solutionScores: z.array(SolutionScoreSchema).optional(),
 });
 
 export type DebateResult = z.infer<typeof DebateResultSchema>;
@@ -67,8 +77,21 @@ export const debateResultJsonSchema = {
     keyInsight: { type: "string" },
     topArguments: { type: "array", items: { type: "string" } },
     risks: { type: "array", items: { type: "string" } },
+    solutionScores: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          solutionId: { type: "string" },
+          solutionLabel: { type: "string" },
+          score: { type: "number", minimum: 1, maximum: 10 },
+          reason: { type: "string" },
+        },
+        required: ["solutionId", "solutionLabel", "score", "reason"],
+      },
+    },
   },
-  required: ["perspective", "assessment", "score", "keyInsight", "topArguments", "risks"],
+  required: ["perspective", "assessment", "score", "keyInsight", "topArguments", "risks", "solutionScores"],
 };
 
 // --- Recommendation ---

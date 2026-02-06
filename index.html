@@ -5,9 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TeamHQ — Your AI Product Team</title>
   <meta name="description" content="TeamHQ is the central headquarters for a six-agent AI team — a PM, Designer, Architect, two Developers, and QA Engineer — working together to build software.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="container nav__inner">
+      <div class="nav__brand">
+        <span class="nav__title">TeamHQ</span>
+        <span class="nav__label">Sherlock Labs</span>
+      </div>
+      <div class="nav__links">
+        <a href="#tools" class="nav__link">Tools</a>
+        <a href="#projects" class="nav__link">Projects</a>
+        <a href="#roster" class="nav__link">Team</a>
+        <a href="#how" class="nav__link">How It Works</a>
+      </div>
+    </div>
+  </nav>
 
   <!-- Hero -->
   <header class="hero">
@@ -20,8 +39,100 @@
 
   <main>
 
+    <!-- Tools -->
+    <section class="tools" id="tools" aria-labelledby="tools-heading">
+      <div class="container">
+        <h2 id="tools-heading" class="section-title">Tools</h2>
+        <p class="section-subtitle">What we've built.</p>
+
+        <div class="tools__grid">
+          <article class="tool-card">
+            <div class="tool-card__header">
+              <h3 class="tool-card__name">OST Tool</h3>
+              <span class="tool-card__badge tool-card__badge--live">Live</span>
+            </div>
+            <p class="tool-card__desc">Generate Opportunity Solution Trees with AI to explore product opportunities, debate solutions, and get recommendations.</p>
+            <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" class="tool-card__launch">
+              Launch
+              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="projects" id="projects" aria-labelledby="projects-heading">
+      <div class="container">
+        <h2 id="projects-heading" class="section-title">Projects</h2>
+        <div class="projects__toolbar">
+          <p class="projects__subtitle">Create and manage projects.</p>
+          <button class="projects__new-btn" type="button">+ New Project</button>
+        </div>
+        <div id="projects-list">
+          <noscript>
+            <p class="projects__noscript">Enable JavaScript to manage projects.</p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal: Create/Edit Project -->
+    <div class="modal-overlay" id="project-modal-overlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+        <div class="modal__header">
+          <h3 class="modal__title" id="modal-title">New Project</h3>
+          <button class="modal__close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <form class="modal__form" id="project-form" novalidate>
+          <div class="modal__field">
+            <label class="modal__label" for="project-name">Project Name <span class="modal__required">*</span></label>
+            <input class="modal__input" type="text" id="project-name" name="name"
+                   placeholder="e.g. User Authentication" required autocomplete="off">
+            <p class="modal__error" aria-live="polite"></p>
+          </div>
+          <div class="modal__field">
+            <label class="modal__label" for="project-description">Description</label>
+            <textarea class="modal__textarea" id="project-description" name="description"
+                      placeholder="Brief description of the project" rows="3"></textarea>
+          </div>
+          <div class="modal__field">
+            <label class="modal__label" for="project-status">Status</label>
+            <select class="modal__select" id="project-status" name="status">
+              <option value="planned">Planned</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="modal__actions">
+            <button class="modal__cancel" type="button">Cancel</button>
+            <button class="modal__submit" type="submit">Create Project</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Delete Confirmation -->
+    <div class="modal-overlay" id="delete-modal-overlay" aria-hidden="true">
+      <div class="modal modal--confirm" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-desc" aria-modal="true">
+        <div class="modal__header">
+          <h3 class="modal__title" id="confirm-title">Delete Project</h3>
+          <button class="modal__close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal__body">
+          <p class="modal__confirm-text" id="confirm-desc">
+            Are you sure you want to delete <strong id="delete-project-name"></strong>? This action cannot be undone.
+          </p>
+        </div>
+        <div class="modal__actions">
+          <button class="modal__cancel" type="button">Cancel</button>
+          <button class="modal__delete" type="button">Delete</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Team Roster -->
-    <section class="roster" aria-labelledby="roster-heading">
+    <section class="roster" id="roster" aria-labelledby="roster-heading">
       <div class="container">
         <h2 id="roster-heading" class="section-title">Meet the Team</h2>
         <p class="section-subtitle">Six specialized agents, each with a distinct role and perspective.</p>
@@ -30,7 +141,7 @@
 
           <li role="listitem">
             <article class="agent-card">
-              <div class="agent-card__avatar" aria-hidden="true">T</div>
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/thomas.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Thomas</h3>
               <p class="agent-card__role">Product Manager</p>
               <p class="agent-card__desc">Translates the CEO's vision into concrete, prioritized work and keeps the team focused on what actually matters.</p>
@@ -39,7 +150,7 @@
 
           <li role="listitem">
             <article class="agent-card">
-              <div class="agent-card__avatar" aria-hidden="true">R</div>
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/robert.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Robert</h3>
               <p class="agent-card__role">Product Designer</p>
               <p class="agent-card__desc">Turns requirements into clear, usable designs — every decision starts with who is using it and what they need.</p>
@@ -48,7 +159,7 @@
 
           <li role="listitem">
             <article class="agent-card">
-              <div class="agent-card__avatar" aria-hidden="true">A</div>
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/andrei.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Andrei</h3>
               <p class="agent-card__role">Technical Architect</p>
               <p class="agent-card__desc">Defines how the pieces fit together, makes tech stack decisions, and guides the team toward simple, proven approaches.</p>
@@ -57,7 +168,7 @@
 
           <li role="listitem">
             <article class="agent-card">
-              <div class="agent-card__avatar" aria-hidden="true">A</div>
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/alice.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Alice</h3>
               <p class="agent-card__role">Front-End Developer</p>
               <p class="agent-card__desc">Builds the user interface with a craftsperson's eye for responsiveness, accessibility, and pixel-perfect polish.</p>
@@ -66,7 +177,7 @@
 
           <li role="listitem">
             <article class="agent-card">
-              <div class="agent-card__avatar" aria-hidden="true">J</div>
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/jonah.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Jonah</h3>
               <p class="agent-card__role">Back-End Developer</p>
               <p class="agent-card__desc">Designs APIs, data models, and server-side logic with a focus on reliability, security, and graceful failure handling.</p>
@@ -75,7 +186,7 @@
 
           <li role="listitem">
             <article class="agent-card">
-              <div class="agent-card__avatar" aria-hidden="true">E</div>
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/enzo.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Enzo</h3>
               <p class="agent-card__role">QA Engineer</p>
               <p class="agent-card__desc">The team's constructive skeptic — tests what users actually do, not just the happy path, so the team ships with confidence.</p>
@@ -87,7 +198,7 @@
     </section>
 
     <!-- How It Works -->
-    <section class="how-it-works" aria-labelledby="how-heading">
+    <section class="how-it-works" id="how" aria-labelledby="how-heading">
       <div class="container">
         <h2 id="how-heading" class="section-title">How It Works</h2>
         <p class="section-subtitle">A structured workflow from direction to delivery.</p>
@@ -132,5 +243,6 @@
     </div>
   </footer>
 
+  <script src="js/projects.js" defer></script>
 </body>
 </html>

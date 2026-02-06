@@ -27,6 +27,17 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 5. **Alice** (FE) and **Jonah** (BE) implement in parallel, coordinating on API contracts
 6. **Enzo** (QA) validates everything meets acceptance criteria before it ships
 
+## Workflow Rules
+
+**All work flows through Thomas (PM) first.** When the CEO gives a direction or task:
+
+1. **Spawn Thomas first** — he scopes the work, writes requirements, and defines acceptance criteria
+2. **Thomas decides** who to involve and in what order (Arch, Designer, FE, BE, QA)
+3. **Never skip the PM** — do not directly delegate tasks to other agents or implement features yourself without Thomas scoping the work first
+4. **The only exception** is trivial fixes the CEO explicitly asks to be done directly (typos, one-line changes, etc.)
+
+This ensures work is properly scoped, prioritized, and has clear acceptance criteria before anyone starts building.
+
 ## Spawning Agents
 
 Agents are spawned via the Task tool with `team_name` and the agent's file name:

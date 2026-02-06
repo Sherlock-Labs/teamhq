@@ -1,0 +1,9 @@
+{
+  "id": "task-history",
+  "name": "Task History",
+  "description": "Added a Tasks section to the TeamHQ landing page showing project history with expandable cards and subtask breakdowns.",
+  "status": "completed",
+  "createdAt": "2025-02-01T00:00:00.000Z",
+  "updatedAt": "2026-02-06T20:21:06.046Z",
+  "completedAt": "2025-02-01T00:00:00.000Z"
+}
