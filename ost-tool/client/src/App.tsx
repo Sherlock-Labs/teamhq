@@ -39,19 +39,24 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <header className="border-b border-zinc-800 px-6 py-4">
-        <div className="mx-auto max-w-6xl flex items-center justify-between">
-          <h1 className="text-sm font-bold tracking-wide text-zinc-300">
-            OST Tool
-            <span className="ml-2 text-xs font-normal text-zinc-600">
-              Sherlock Labs
-            </span>
-          </h1>
+    <div className="min-h-screen bg-zinc-950 flex flex-col">
+      <nav className="sticky top-0 z-[100] bg-zinc-950 border-b border-zinc-800 py-4">
+        <div className="mx-auto max-w-[1120px] px-5 sm:px-8 flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center shrink-0">
+            <a href="/" className="flex items-center no-underline">
+              <img src="/img/sherlock-labs-logo.svg" alt="Sherlock Labs" className="h-9 max-sm:h-7 w-auto block" />
+            </a>
+          </div>
+          <div className="flex gap-4 sm:gap-6 flex-wrap">
+            <a href="/" className="text-sm font-medium text-zinc-400 no-underline hover:text-zinc-300 transition-colors flex items-center gap-1.5">
+              <span aria-hidden="true">&larr;</span>
+              TeamHQ
+            </a>
+          </div>
         </div>
-      </header>
+      </nav>
 
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-[1120px] px-5 sm:px-8 flex-1 w-full">
         <StepIndicator current={step} />
 
         {step === 0 && <GoalInput onComplete={handleGoalComplete} />}
@@ -79,6 +84,13 @@ export default function App() {
           <RecommendationView session={session} onReset={handleReset} />
         )}
       </div>
+
+      <footer className="bg-zinc-900 border-t border-zinc-800 py-8 text-center">
+        <div className="mx-auto max-w-[1120px] px-5 sm:px-8">
+          <img src="/img/sherlock-labs-logo.svg" alt="Sherlock Labs" className="h-7 w-auto block mx-auto mb-3" />
+          <p className="text-sm text-zinc-600">Built with Claude Code</p>
+        </div>
+      </footer>
     </div>
   );
 }

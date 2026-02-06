@@ -87,22 +87,25 @@
     .nav__brand {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
 
-    .nav__title {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--zinc-100);
+    .nav__logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
     }
 
-    .nav__label {
-      font-size: 14px;
-      font-weight: 700;
-      font-family: var(--font-mono);
-      color: var(--zinc-400);
-      margin-left: 8px;
-      letter-spacing: 0.04em;
+    .nav__logo {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+
+    @media (max-width: 639px) {
+      .nav__logo {
+        height: 28px;
+      }
     }
 
     .nav__back {
@@ -418,24 +421,22 @@
 
     /* --- Footer --- */
     .footer {
+      background: var(--zinc-900);
       border-top: 1px solid var(--zinc-800);
       padding: 32px 0;
       text-align: center;
     }
 
-    .footer__text {
+    .footer__logo {
+      height: 28px;
+      width: auto;
+      display: block;
+      margin: 0 auto 12px;
+    }
+
+    .footer__attribution {
       font-size: 14px;
       color: var(--zinc-600);
-    }
-
-    .footer__link {
-      color: var(--zinc-500);
-      text-decoration: none;
-      transition: color 0.15s ease;
-    }
-
-    .footer__link:hover {
-      color: var(--zinc-400);
     }
 
     /* --- Responsive --- */
@@ -464,8 +465,9 @@
   <nav class="nav">
     <div class="container nav__inner">
       <div class="nav__brand">
-        <span class="nav__title">PDF Splitter</span>
-        <span class="nav__label">Sherlock Labs</span>
+        <a href="../index.html" class="nav__logo-link">
+          <img src="../img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+        </a>
       </div>
       <a href="../index.html" class="nav__back">
         <span class="nav__back-arrow" aria-hidden="true">&larr;</span>
@@ -506,7 +508,8 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p class="footer__text">A <a href="../index.html" class="footer__link">Sherlock Labs</a> tool</p>
+      <img src="../img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
+      <p class="footer__attribution">Built with Claude Code</p>
     </div>
   </footer>
 
