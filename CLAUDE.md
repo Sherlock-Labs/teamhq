@@ -10,21 +10,21 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 
 | Agent | Name | Role |
 |-------|------|------|
-| `product-manager` | PM | Translates CEO vision into prioritized, scoped work items. Owns the backlog and acceptance criteria. |
-| `frontend-developer` | FE | Implements UIs, components, and client-side logic. Partners with Designer on implementation. |
-| `backend-developer` | BE | Builds APIs, services, data models, and server-side logic. Thinks in systems and failure modes. |
-| `technical-architect` | Arch | Defines system architecture, tech stack, conventions. Makes build-vs-buy decisions. |
-| `qa` | QA | Tests everything — happy paths, edge cases, error states. Writes automated tests and test plans. |
-| `product-designer` | Designer | Designs user flows, wireframes, and interaction specs. Leads with usability over aesthetics. |
+| `product-manager` | Thomas | Translates CEO vision into prioritized, scoped work items. Owns the backlog and acceptance criteria. |
+| `frontend-developer` | Alice | Implements UIs, components, and client-side logic. Partners with Robert on implementation. |
+| `backend-developer` | Jonah | Builds APIs, services, data models, and server-side logic. Thinks in systems and failure modes. |
+| `technical-architect` | Andrei | Defines system architecture, tech stack, conventions. Makes build-vs-buy decisions. |
+| `qa` | Enzo | Tests everything — happy paths, edge cases, error states. Writes automated tests and test plans. |
+| `product-designer` | Robert | Designs user flows, wireframes, and interaction specs. Leads with usability over aesthetics. |
 
 ## How the Team Operates
 
 1. **CEO** sets the vision and direction
-2. **PM** breaks it into scoped, prioritized work with clear acceptance criteria
-3. **Arch** defines the technical approach before code is written
-4. **Designer** specs the user experience and interaction design
-5. **FE** and **BE** implement in parallel, coordinating on API contracts
-6. **QA** validates everything meets acceptance criteria before it ships
+2. **Thomas** (PM) breaks it into scoped, prioritized work with clear acceptance criteria
+3. **Andrei** (Arch) defines the technical approach before code is written
+4. **Robert** (Designer) specs the user experience and interaction design
+5. **Alice** (FE) and **Jonah** (BE) implement in parallel, coordinating on API contracts
+6. **Enzo** (QA) validates everything meets acceptance criteria before it ships
 
 ## Spawning Agents
 
