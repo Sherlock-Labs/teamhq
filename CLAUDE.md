@@ -16,6 +16,7 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 | `technical-architect` | Andrei | Defines system architecture, tech stack, conventions. Makes build-vs-buy decisions. |
 | `qa` | Enzo | Tests everything — happy paths, edge cases, error states. Writes automated tests and test plans. |
 | `product-designer` | Robert | Designs user flows, wireframes, and interaction specs. Leads with usability over aesthetics. |
+| `program-manager` | Dan | Shuffles processes around. Schedules meetings about meetings. Means well. |
 
 ## How the Team Operates
 
