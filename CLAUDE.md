@@ -38,6 +38,26 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 
 This ensures work is properly scoped, prioritized, and has clear acceptance criteria before anyone starts building.
 
+## Proven Pipeline
+
+The team has shipped 5+ projects. This order works:
+
+1. **Thomas (PM)** scopes requirements → writes to `docs/{project}-requirements.md`
+2. **Andrei (Arch)** defines tech approach → writes to `docs/{project}-tech-approach.md`
+3. **Robert (Designer)** writes design spec → writes to `docs/{project}-design-spec.md`
+4. **Alice (FE) + Jonah (BE)** implement in parallel (blocked by steps 1-3)
+5. **Enzo (QA)** validates against acceptance criteria (blocked by step 4)
+
+Each step produces a doc in `docs/` that the next person reads. Don't skip steps — Andrei needs Thomas's scope to define the tech approach, Robert needs both to design within constraints, and the developers need all three to implement correctly.
+
+## Conventions
+
+- **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively
+- **Work logging**: Every agent updates `data/tasks.json` with subtasks, filesChanged, and decisions when they finish (see agent profiles for instructions)
+- **Landing page**: Plain HTML/CSS/vanilla JS — no frameworks. Dark theme with zinc/indigo tokens.
+- **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `ost-tool/` for reference)
+- **CEO tweaks are OK**: Small visual fixes (color adjustments, text changes, layout tweaks) that the CEO explicitly requests can be done directly without the full pipeline
+
 ## Spawning Agents
 
 Agents are spawned via the Task tool with `team_name` and the agent's file name:
