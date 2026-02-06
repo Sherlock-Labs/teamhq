@@ -26,7 +26,10 @@ function formatZodError(err: ZodError) {
 router.get("/projects", async (_req, res) => {
   try {
     const projects = await listProjects();
-    const summaries = projects.map(({ notes, kickoffPrompt, ...rest }) => rest);
+    const summaries = projects.map(({ notes, kickoffPrompt, activeSessionId, ...rest }) => ({
+      ...rest,
+      activeSessionId,
+    }));
     res.json({ projects: summaries });
   } catch (err) {
     console.error("Error listing projects:", err);

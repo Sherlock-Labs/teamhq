@@ -63,6 +63,12 @@ export async function migrateFromTasksJson(): Promise<void> {
       createdAt: completedAt ?? now,
       updatedAt: now,
       completedAt,
+      goals: "",
+      constraints: "",
+      brief: "",
+      notes: [],
+      kickoffPrompt: null,
+      activeSessionId: null,
     };
     await saveProjectDirect(project);
     console.log(`Migration: created project "${project.name}" (${project.id})`);

@@ -26,6 +26,7 @@ export const ProjectSchema = z.object({
   brief: z.string().default(""),
   notes: z.array(NoteSchema).default([]),
   kickoffPrompt: z.string().nullable().default(null),
+  activeSessionId: z.string().nullable().default(null),
 });
 
 export type Project = z.infer<typeof ProjectSchema>;

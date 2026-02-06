@@ -37,6 +37,7 @@ export async function createProject(data: {
     brief: data.brief,
     notes: [],
     kickoffPrompt: null,
+    activeSessionId: null,
   };
   await writeFile(projectPath(project.id), JSON.stringify(project, null, 2));
   return project;
@@ -96,6 +97,20 @@ export async function startProject(id: string, kickoffPrompt: string): Promise<P
   };
   await writeFile(projectPath(id), JSON.stringify(updated, null, 2));
   return updated;
+}
+
+export async function setActiveSession(projectId: string, sessionId: string): Promise<void> {
+  const project = await getProject(projectId);
+  project.activeSessionId = sessionId;
+  project.updatedAt = new Date().toISOString();
+  await writeFile(projectPath(projectId), JSON.stringify(project, null, 2));
+}
+
+export async function clearActiveSession(projectId: string): Promise<void> {
+  const project = await getProject(projectId);
+  project.activeSessionId = null;
+  project.updatedAt = new Date().toISOString();
+  await writeFile(projectPath(projectId), JSON.stringify(project, null, 2));
 }
 
 export async function addNote(projectId: string, content: string): Promise<Note> {
