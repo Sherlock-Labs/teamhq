@@ -1,0 +1,14 @@
+{
+  "id": "85f12716-29e7-472f-b27e-e1aca2d38f6a",
+  "name": "PDF editor",
+  "description": "I'd love to have this little tool where I can upload a PDF and then I can turn that multi-page PDF into individual page PDFs really easily.",
+  "status": "in-progress",
+  "createdAt": "2026-02-06T20:53:13.200Z",
+  "updatedAt": "2026-02-06T20:54:53.567Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": "You have a new project to work on.\n\n## Project: PDF editor\n\n**Description:** I'd love to have this little tool where I can upload a PDF and then I can turn that multi-page PDF into individual page PDFs really easily.\n\n## How to Proceed\n\n1. Spawn Thomas (PM) first. He will scope the work, write requirements, and define who else needs to be involved.\n2. Thomas will write requirements to docs/ and create tasks with dependencies.\n3. Follow Thomas's recommendations for who to spawn next (typically: Andrei for architecture, Robert for design, then Alice and Jonah for implementation, Enzo for QA).\n4. All work flows through Thomas first -- do not skip the PM.\n\n## Team Reference\n\nThe agent definitions are in .claude/agents/:\n- product-manager.md (Thomas) -- PM, scopes work\n- technical-architect.md (Andrei) -- architecture decisions\n- product-designer.md (Robert) -- UI/UX design\n- frontend-developer.md (Alice) -- frontend implementation\n- backend-developer.md (Jonah) -- backend implementation\n- qa.md (Enzo) -- testing and validation"
+}

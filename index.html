@@ -57,6 +57,18 @@
               <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
             </a>
           </article>
+
+          <article class="tool-card">
+            <div class="tool-card__header">
+              <h3 class="tool-card__name">PDF Splitter</h3>
+              <span class="tool-card__badge tool-card__badge--live">Live</span>
+            </div>
+            <p class="tool-card__desc">Split multi-page PDFs into individual pages. Download pages one at a time or all at once as a ZIP. Runs entirely in your browser.</p>
+            <a href="pdf-splitter/index.html" class="tool-card__launch">
+              Launch
+              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
         </div>
       </div>
     </section>
@@ -85,6 +97,7 @@
           <button class="modal__close" type="button" aria-label="Close">&times;</button>
         </div>
         <form class="modal__form" id="project-form" novalidate>
+          <!-- Simple mode fields -->
           <div class="modal__field">
             <label class="modal__label" for="project-name">Project Name <span class="modal__required">*</span></label>
             <input class="modal__input" type="text" id="project-name" name="name"
@@ -92,18 +105,46 @@
             <p class="modal__error" aria-live="polite"></p>
           </div>
           <div class="modal__field">
-            <label class="modal__label" for="project-description">Description</label>
-            <textarea class="modal__textarea" id="project-description" name="description"
-                      placeholder="Brief description of the project" rows="3"></textarea>
+            <label class="modal__label" for="project-brief">Describe your project</label>
+            <textarea class="modal__textarea modal__textarea--brief" id="project-brief" name="brief"
+                      placeholder="What do you want built? Include as much detail as you'd like — goals, constraints, context. The team will figure out the rest." rows="6"></textarea>
           </div>
-          <div class="modal__field">
-            <label class="modal__label" for="project-status">Status</label>
-            <select class="modal__select" id="project-status" name="status">
-              <option value="planned">Planned</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
-            </select>
+
+          <!-- Advanced toggle -->
+          <button class="modal__advanced-toggle" type="button" id="advanced-toggle">
+            <span class="modal__advanced-chevron" aria-hidden="true"></span>
+            <span class="modal__advanced-label">Advanced options</span>
+          </button>
+
+          <!-- Advanced fields (hidden by default) -->
+          <div class="modal__advanced" id="advanced-fields" aria-hidden="true">
+            <div class="modal__advanced-inner">
+              <div class="modal__field">
+                <label class="modal__label" for="project-description">Description</label>
+                <textarea class="modal__textarea" id="project-description" name="description"
+                          placeholder="Short summary for the project card" rows="2"></textarea>
+              </div>
+              <div class="modal__field">
+                <label class="modal__label" for="project-goals">Goals</label>
+                <textarea class="modal__textarea" id="project-goals" name="goals"
+                          placeholder="What does success look like?" rows="2"></textarea>
+              </div>
+              <div class="modal__field">
+                <label class="modal__label" for="project-constraints">Constraints</label>
+                <textarea class="modal__textarea" id="project-constraints" name="constraints"
+                          placeholder="Any boundaries or limitations?" rows="2"></textarea>
+              </div>
+              <div class="modal__field">
+                <label class="modal__label" for="project-status">Status</label>
+                <select class="modal__select" id="project-status" name="status">
+                  <option value="planned">Planned</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            </div>
           </div>
+
           <div class="modal__actions">
             <button class="modal__cancel" type="button">Cancel</button>
             <button class="modal__submit" type="submit">Create Project</button>
@@ -127,6 +168,24 @@
         <div class="modal__actions">
           <button class="modal__cancel" type="button">Cancel</button>
           <button class="modal__delete" type="button">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Kickoff Prompt -->
+    <div class="modal-overlay" id="kickoff-modal-overlay" aria-hidden="true">
+      <div class="modal modal--kickoff" role="dialog" aria-labelledby="kickoff-title" aria-modal="true">
+        <div class="modal__header">
+          <h3 class="modal__title" id="kickoff-title">Kickoff Prompt</h3>
+          <button class="modal__close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <div class="kickoff__body">
+          <div class="kickoff__prompt-area">
+            <pre class="kickoff__prompt"><code id="kickoff-prompt-text"></code></pre>
+          </div>
+          <div class="kickoff__actions">
+            <button class="kickoff__copy-btn" type="button">Copy to Clipboard</button>
+          </div>
         </div>
       </div>
     </div>

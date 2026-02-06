@@ -2,7 +2,7 @@ import { readFile, writeFile, readdir, mkdir, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { v4 as uuidv4 } from "uuid";
 import { ProjectSchema } from "../schemas/project.js";
-import type { Project } from "../schemas/project.js";
+import type { Project, Note } from "../schemas/project.js";
 
 const DATA_DIR = join(import.meta.dirname, "../../../data/projects");
 
@@ -14,21 +14,29 @@ function projectPath(id: string): string {
   return join(DATA_DIR, `${id}.json`);
 }
 
-export async function createProject(
-  name: string,
-  description: string,
-  status: Project["status"]
-): Promise<Project> {
+export async function createProject(data: {
+  name: string;
+  description: string;
+  status: Project["status"];
+  goals: string;
+  constraints: string;
+  brief: string;
+}): Promise<Project> {
   await ensureDir();
   const now = new Date().toISOString();
   const project: Project = {
     id: uuidv4(),
-    name,
-    description,
-    status,
+    name: data.name,
+    description: data.description,
+    status: data.status,
     createdAt: now,
     updatedAt: now,
-    completedAt: status === "completed" ? now : null,
+    completedAt: data.status === "completed" ? now : null,
+    goals: data.goals,
+    constraints: data.constraints,
+    brief: data.brief,
+    notes: [],
+    kickoffPrompt: null,
   };
   await writeFile(projectPath(project.id), JSON.stringify(project, null, 2));
   return project;
@@ -41,7 +49,7 @@ export async function getProject(id: string): Promise<Project> {
 
 export async function updateProject(
   id: string,
-  updates: Partial<Pick<Project, "name" | "description" | "status">>
+  updates: Partial<Pick<Project, "name" | "description" | "status" | "goals" | "constraints" | "brief">>
 ): Promise<Project> {
   const project = await getProject(id);
   const now = new Date().toISOString();
@@ -53,6 +61,8 @@ export async function updateProject(
     createdAt: project.createdAt,
     updatedAt: now,
     completedAt: resolveCompletedAt(project, updates),
+    notes: project.notes,
+    kickoffPrompt: project.kickoffPrompt,
   };
 
   await writeFile(projectPath(id), JSON.stringify(updated, null, 2));
@@ -71,9 +81,44 @@ function resolveCompletedAt(
 }
 
 export async function deleteProject(id: string): Promise<void> {
-  // Verify it exists first
   await getProject(id);
   await unlink(projectPath(id));
+}
+
+export async function startProject(id: string, kickoffPrompt: string): Promise<Project> {
+  const project = await getProject(id);
+  const now = new Date().toISOString();
+  const updated: Project = {
+    ...project,
+    status: "in-progress",
+    kickoffPrompt,
+    updatedAt: now,
+  };
+  await writeFile(projectPath(id), JSON.stringify(updated, null, 2));
+  return updated;
+}
+
+export async function addNote(projectId: string, content: string): Promise<Note> {
+  const project = await getProject(projectId);
+  const now = new Date().toISOString();
+  const note: Note = {
+    id: uuidv4(),
+    content,
+    createdAt: now,
+  };
+  project.notes.unshift(note);
+  project.updatedAt = now;
+  await writeFile(projectPath(projectId), JSON.stringify(project, null, 2));
+  return note;
+}
+
+export async function deleteNote(projectId: string, noteId: string): Promise<void> {
+  const project = await getProject(projectId);
+  const idx = project.notes.findIndex((n) => n.id === noteId);
+  if (idx === -1) throw new Error("Note not found");
+  project.notes.splice(idx, 1);
+  project.updatedAt = new Date().toISOString();
+  await writeFile(projectPath(projectId), JSON.stringify(project, null, 2));
 }
 
 const STATUS_ORDER: Record<string, number> = {
