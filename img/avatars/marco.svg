@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Hair (curly brown) -->
+  <rect x="3" y="0" width="1" height="1" fill="#6B4226"/>
+  <rect x="5" y="0" width="2" height="1" fill="#6B4226"/>
+  <rect x="9" y="0" width="2" height="1" fill="#6B4226"/>
+  <rect x="12" y="0" width="1" height="1" fill="#6B4226"/>
+  <rect x="3" y="1" width="10" height="1" fill="#6B4226"/>
+  <rect x="3" y="2" width="11" height="1" fill="#6B4226"/>
+  <rect x="3" y="3" width="10" height="1" fill="#6B4226"/>
+  <!-- Face (olive skin) -->
+  <rect x="4" y="4" width="8" height="1" fill="#D4A870"/>
+  <rect x="3" y="5" width="10" height="1" fill="#D4A870"/>
+  <rect x="3" y="6" width="10" height="1" fill="#D4A870"/>
+  <rect x="3" y="7" width="10" height="1" fill="#D4A870"/>
+  <rect x="4" y="8" width="8" height="1" fill="#D4A870"/>
+  <rect x="4" y="9" width="8" height="1" fill="#D4A870"/>
+  <rect x="5" y="10" width="6" height="1" fill="#D4A870"/>
+  <!-- Eyes -->
+  <rect x="5" y="6" width="1" height="1" fill="#2A1A10"/>
+  <rect x="10" y="6" width="1" height="1" fill="#2A1A10"/>
+  <!-- Eyebrows -->
+  <rect x="5" y="5" width="2" height="1" fill="#5A3520"/>
+  <rect x="9" y="5" width="2" height="1" fill="#5A3520"/>
+  <!-- Stubble -->
+  <rect x="5" y="9" width="2" height="1" fill="#C09060"/>
+  <rect x="9" y="9" width="2" height="1" fill="#C09060"/>
+  <!-- Smile -->
+  <rect x="6" y="8" width="4" height="1" fill="#B88858"/>
+  <!-- Neck -->
+  <rect x="6" y="11" width="4" height="1" fill="#D4A870"/>
+  <!-- Shirt (slate blue) -->
+  <rect x="2" y="12" width="12" height="4" fill="#5B7B9B"/>
+  <!-- Collar -->
+  <rect x="5" y="12" width="2" height="1" fill="#E8E8F0"/>
+  <rect x="9" y="12" width="2" height="1" fill="#E8E8F0"/>
+</svg>

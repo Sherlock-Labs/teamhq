@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TeamHQ — Your AI Product Team</title>
-  <meta name="description" content="TeamHQ is the central headquarters for a six-agent AI team — a PM, Designer, Architect, two Developers, and QA Engineer — working together to build software.">
+  <meta name="description" content="TeamHQ is the central headquarters for a twelve-agent AI team that researches, scopes, designs, builds, tests, and ships software together.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,6 +23,7 @@
       <div class="nav__links">
         <a href="#tools" class="nav__link">Tools</a>
         <a href="#projects" class="nav__link">Projects</a>
+        <a href="#meetings" class="nav__link">Meetings</a>
         <a href="#roster" class="nav__link">Team</a>
         <a href="#how" class="nav__link">How It Works</a>
       </div>
@@ -34,7 +35,7 @@
     <div class="container">
       <span class="hero__badge">Sherlock Labs</span>
       <h1 class="hero__headline">Your AI product team, assembled and ready</h1>
-      <p class="hero__subhead">TeamHQ is Sherlock Labs' central headquarters for a six-agent AI team &mdash; a PM, Designer, Architect, two Developers, and QA Engineer &mdash; working together to build software.</p>
+      <p class="hero__subhead">TeamHQ is Sherlock Labs' central headquarters for a twelve-agent AI team that researches, scopes, designs, builds, tests, and ships software together.</p>
     </div>
   </header>
 
@@ -203,11 +204,30 @@
       </div>
     </div>
 
+    <!-- Meetings -->
+    <section class="meetings" id="meetings" aria-labelledby="meetings-heading">
+      <div class="container">
+        <h2 id="meetings-heading" class="section-title">Team Meetings</h2>
+        <div class="meetings__toolbar">
+          <p class="meetings__subtitle">Simulated round-table discussions with the full team.</p>
+          <div class="meetings__buttons">
+            <button class="meetings__run-btn meetings__run-btn--charter" type="button" id="meeting-charter-btn">Run Charter</button>
+            <button class="meetings__run-btn meetings__run-btn--weekly" type="button" id="meeting-weekly-btn" disabled>Run Weekly</button>
+          </div>
+        </div>
+        <div id="meetings-list">
+          <noscript>
+            <p class="meetings__noscript">Enable JavaScript to view meetings.</p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
     <!-- Team Roster -->
     <section class="roster" id="roster" aria-labelledby="roster-heading">
       <div class="container">
         <h2 id="roster-heading" class="section-title">Meet the Team</h2>
-        <p class="section-subtitle">Six specialized agents, each with a distinct role and perspective.</p>
+        <p class="section-subtitle">Twelve specialized agents that research, scope, design, build, test, and ship.</p>
 
         <ul class="roster__grid" role="list">
 
@@ -265,6 +285,60 @@
             </article>
           </li>
 
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/priya.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Priya</h3>
+              <p class="agent-card__role">Product Marketer</p>
+              <p class="agent-card__desc">Turns technical complexity into language that makes people care — writes tight copy, hates jargon, and thinks in headlines.</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/suki.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Suki</h3>
+              <p class="agent-card__role">Market Researcher</p>
+              <p class="agent-card__desc">Digs through competitors, market trends, and user patterns until she finds the insight that changes the conversation.</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/marco.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Marco</h3>
+              <p class="agent-card__role">Technical Researcher</p>
+              <p class="agent-card__desc">The team's deep reader — evaluates libraries, reads API docs, and finds the gotchas before they become expensive mistakes.</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nadia.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Nadia</h3>
+              <p class="agent-card__role">Technical Writer</p>
+              <p class="agent-card__desc">Believes that if a feature is not documented, it does not exist — writes for the reader who has never seen the product before.</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/yuki.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Yuki</h3>
+              <p class="agent-card__role">Data Analyst</p>
+              <p class="agent-card__desc">Speaks in numbers — notices patterns in project data, identifies bottlenecks, and delivers the statistic that settles the debate.</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/kai.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Kai</h3>
+              <p class="agent-card__role">AI/Prompt Engineer</p>
+              <p class="agent-card__desc">The team's AI whisperer — designs prompts like a programmer designs functions, with clear inputs, expected outputs, and edge case handling.</p>
+            </article>
+          </li>
+
         </ul>
       </div>
     </section>
@@ -316,5 +390,6 @@
   </footer>
 
   <script src="js/projects.js" defer></script>
+  <script src="js/meetings.js" defer></script>
 </body>
 </html>
