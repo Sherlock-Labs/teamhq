@@ -364,7 +364,8 @@
   font-size: var(--text-sm);
   line-height: var(--leading-relaxed);
   color: var(--color-zinc-300);
-  max-width: 72ch;
+  max-width: 90ch;
+  margin: 0 auto;
 }
 
 .docs-reader__content h1 {
