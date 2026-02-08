@@ -24,6 +24,9 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 | `ai-engineer` | Kai | Designs prompts, optimizes AI integrations, and advises on Claude CLI usage. | Opus |
 | `mobile-developer-1` | Zara | Builds React Native/Expo mobile apps. Expert in native feel, performance, and platform conventions. | Sonnet |
 | `mobile-developer-2` | Leo | Builds React Native/Expo mobile apps. Expert in animations, gestures, and micro-interactions. | Sonnet |
+| `frontend-interactions` | Nina | Front-end specialist in animations, transitions, hover states, and micro-interactions. | Sonnet |
+| `frontend-responsive` | Soren | Front-end specialist in responsive layouts, CSS Grid/Flexbox, fluid typography, and breakpoints. | Sonnet |
+| `frontend-accessibility` | Amara | Front-end specialist in accessibility, WCAG compliance, keyboard navigation, and screen readers. | Sonnet |
 
 ## How the Team Operates
 
@@ -92,7 +95,7 @@ Agents are spawned via the Task tool with `team_name` and the agent's file name:
 
 ```
 subagent_type: "general-purpose"
-name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2")
+name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y")
 model: "opus" or "sonnet" (see Model column in team table above)
 ```
 
