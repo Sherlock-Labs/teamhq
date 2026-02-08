@@ -42,7 +42,7 @@ export default function ProjectsScreen() {
   const [voiceModalVisible, setVoiceModalVisible] = useState(false);
 
   const filteredProjects = useMemo(() => {
-    if (!projects) return [];
+    if (!projects || !Array.isArray(projects)) return [];
     const sorted = [...projects].sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
