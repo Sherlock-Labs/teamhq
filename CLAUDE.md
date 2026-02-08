@@ -8,22 +8,22 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 
 ## The Team
 
-| Agent | Name | Role |
-|-------|------|------|
-| `product-manager` | Thomas | Translates CEO vision into prioritized, scoped work items. Owns the backlog and acceptance criteria. |
-| `product-designer` | Robert | Designs user flows, wireframes, and interaction specs. Leads with usability over aesthetics. |
-| `technical-architect` | Andrei | Defines system architecture, tech stack, conventions. Makes build-vs-buy decisions. |
-| `frontend-developer` | Alice | Implements UIs, components, and client-side logic. Partners with Robert on implementation. |
-| `backend-developer` | Jonah | Builds APIs, services, data models, and server-side logic. Thinks in systems and failure modes. |
-| `qa` | Enzo | Tests everything — happy paths, edge cases, error states. Writes automated tests and test plans. |
-| `product-marketer` | Priya | Writes positioning, product copy, and feature announcements. Thinks in headlines. |
-| `product-researcher` | Suki | Researches competitors, market trends, and user patterns. Delivers actionable insights. |
-| `technical-researcher` | Marco | Evaluates libraries, reads API docs, and produces technical research briefs. |
-| `technical-writer` | Nadia | Writes user guides, maintains READMEs, and keeps documentation current. |
-| `data-analyst` | Yuki | Analyzes project data, identifies patterns, and produces metrics reports. |
-| `ai-engineer` | Kai | Designs prompts, optimizes AI integrations, and advises on Claude CLI usage. |
-| `mobile-developer-1` | Zara | Builds React Native/Expo mobile apps. Expert in native feel, performance, and platform conventions. |
-| `mobile-developer-2` | Leo | Builds React Native/Expo mobile apps. Expert in animations, gestures, and micro-interactions. |
+| Agent | Name | Role | Model |
+|-------|------|------|-------|
+| `product-manager` | Thomas | Translates CEO vision into prioritized, scoped work items. Owns the backlog and acceptance criteria. | Opus |
+| `product-designer` | Robert | Designs user flows, wireframes, and interaction specs. Leads with usability over aesthetics. | Sonnet |
+| `technical-architect` | Andrei | Defines system architecture, tech stack, conventions. Makes build-vs-buy decisions. | Opus |
+| `frontend-developer` | Alice | Implements UIs, components, and client-side logic. Partners with Robert on implementation. | Sonnet |
+| `backend-developer` | Jonah | Builds APIs, services, data models, and server-side logic. Thinks in systems and failure modes. | Sonnet |
+| `qa` | Enzo | Tests everything — happy paths, edge cases, error states. Writes automated tests and test plans. | Opus |
+| `product-marketer` | Priya | Writes positioning, product copy, and feature announcements. Thinks in headlines. | Sonnet |
+| `product-researcher` | Suki | Researches competitors, market trends, and user patterns. Delivers actionable insights. | Sonnet |
+| `technical-researcher` | Marco | Evaluates libraries, reads API docs, and produces technical research briefs. | Sonnet |
+| `technical-writer` | Nadia | Writes user guides, maintains READMEs, and keeps documentation current. | Sonnet |
+| `data-analyst` | Yuki | Analyzes project data, identifies patterns, and produces metrics reports. | Sonnet |
+| `ai-engineer` | Kai | Designs prompts, optimizes AI integrations, and advises on Claude CLI usage. | Opus |
+| `mobile-developer-1` | Zara | Builds React Native/Expo mobile apps. Expert in native feel, performance, and platform conventions. | Sonnet |
+| `mobile-developer-2` | Leo | Builds React Native/Expo mobile apps. Expert in animations, gestures, and micro-interactions. | Sonnet |
 
 ## How the Team Operates
 
@@ -93,9 +93,10 @@ Agents are spawned via the Task tool with `team_name` and the agent's file name:
 ```
 subagent_type: "general-purpose"
 name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2")
+model: "opus" or "sonnet" (see Model column in team table above)
 ```
 
-Each agent file in `.claude/agents/` contains its full personality, responsibilities, and working style.
+**Opus** agents (Thomas, Andrei, Enzo, Kai) handle complex reasoning: scoping, architecture, QA, and AI design. **Sonnet** agents handle implementation, research, copy, and documentation. Each agent's `.md` file also specifies its recommended model.
 
 ## Skills Repository
 
