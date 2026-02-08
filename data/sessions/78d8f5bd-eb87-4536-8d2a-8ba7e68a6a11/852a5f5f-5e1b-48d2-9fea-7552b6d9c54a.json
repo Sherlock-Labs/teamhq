@@ -1,0 +1,12 @@
+{
+  "id": "852a5f5f-5e1b-48d2-9fea-7552b6d9c54a",
+  "projectId": "78d8f5bd-eb87-4536-8d2a-8ba7e68a6a11",
+  "status": "timed-out",
+  "startedAt": "2026-02-07T22:10:52.441Z",
+  "endedAt": "2026-02-07T22:40:52.503Z",
+  "durationMs": 1800064,
+  "eventCount": 67,
+  "exitCode": null,
+  "error": null,
+  "pid": null
+}

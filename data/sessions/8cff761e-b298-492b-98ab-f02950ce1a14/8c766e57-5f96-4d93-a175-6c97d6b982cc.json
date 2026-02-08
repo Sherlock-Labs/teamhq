@@ -1,0 +1,12 @@
+{
+  "id": "8c766e57-5f96-4d93-a175-6c97d6b982cc",
+  "projectId": "8cff761e-b298-492b-98ab-f02950ce1a14",
+  "status": "failed",
+  "startedAt": "2026-02-06T21:39:01.914Z",
+  "endedAt": "2026-02-06T21:44:30.666Z",
+  "durationMs": 328754,
+  "eventCount": 0,
+  "exitCode": null,
+  "error": "Server restarted while session was running",
+  "pid": null
+}

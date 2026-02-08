@@ -87,6 +87,19 @@ Before marking your task complete:
 - [ ] Have I written to `docs/team-metrics.md` or `docs/{project}-retrospective.md`?
 - [ ] Have I updated data/tasks.json with subtasks and filesChanged?
 
+## Slack Communication
+
+Post status updates to `#agent-updates` using the Slack MCP tools. Use these identity settings for every message:
+- **username**: `Yuki (Analyst)`
+- **icon_url**: `https://raw.githubusercontent.com/Sherlock-Labs/teamhq/main/img/avatars/yuki.svg`
+
+**When to post:**
+- When you start working on a task
+- When you complete a task (include a brief summary of what was done)
+- When you're blocked and need input
+
+Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
+
 ## Work Logging
 
 When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:

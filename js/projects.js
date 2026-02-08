@@ -4,6 +4,89 @@
   var API_BASE = '/api/projects';
   var TOAST_DURATION = 4000;
 
+  // --- Agent Registry & Event Classification ---
+
+  var AGENT_REGISTRY = {
+    'pm':                { name: 'Thomas', role: 'Product Manager',        avatar: 'thomas' },
+    'designer':          { name: 'Robert', role: 'Product Designer',       avatar: 'robert' },
+    'arch':              { name: 'Andrei', role: 'Technical Architect',    avatar: 'andrei' },
+    'fe':                { name: 'Alice',  role: 'Front-End Developer',    avatar: 'alice' },
+    'be':                { name: 'Jonah',  role: 'Back-End Developer',     avatar: 'jonah' },
+    'qa':                { name: 'Enzo',   role: 'QA Engineer',            avatar: 'enzo' },
+    'marketer':          { name: 'Priya',  role: 'Product Marketer',       avatar: 'priya' },
+    'market-researcher': { name: 'Suki',   role: 'Market Researcher',      avatar: 'suki' },
+    'tech-researcher':   { name: 'Marco',  role: 'Technical Researcher',   avatar: 'marco' },
+    'writer':            { name: 'Nadia',  role: 'Technical Writer',       avatar: 'nadia' },
+    'analyst':           { name: 'Yuki',   role: 'Data Analyst',           avatar: 'yuki' },
+    'ai-engineer':       { name: 'Kai',    role: 'AI Engineer',            avatar: 'kai' },
+    'mobile-1':          { name: 'Zara',   role: 'Mobile Developer',       avatar: 'zara' },
+    'mobile-2':          { name: 'Leo',    role: 'Mobile Developer',       avatar: 'leo' },
+  };
+
+  var SEMANTIC_TOOLS = {
+    'Task': true, 'SendMessage': true, 'TeamCreate': true,
+    'TeamDelete': true, 'TaskOutput': true
+  };
+  var HIDDEN_TOOLS = {
+    'TaskUpdate': true, 'TaskCreate': true, 'TaskList': true, 'TaskGet': true
+  };
+  var LOW_SIGNAL_TOOLS = { 'Read': true, 'Glob': true, 'Grep': true };
+
+  // --- Pipeline Phase Mapping ---
+
+  var PHASE_DEFINITIONS = [
+    { id: 'research',       label: 'Research',       agents: ['market-researcher', 'tech-researcher'] },
+    { id: 'scoping',        label: 'Scoping',        agents: ['pm'] },
+    { id: 'architecture',   label: 'Architecture',   agents: ['arch', 'ai-engineer'] },
+    { id: 'design',         label: 'Design',         agents: ['designer'] },
+    { id: 'implementation', label: 'Implementation', agents: ['fe', 'be'] },
+    { id: 'qa',             label: 'QA',             agents: ['qa'] },
+  ];
+
+  var AGENT_TO_PHASE = {};
+  (function () {
+    for (var i = 0; i < PHASE_DEFINITIONS.length; i++) {
+      var phase = PHASE_DEFINITIONS[i];
+      for (var j = 0; j < phase.agents.length; j++) {
+        AGENT_TO_PHASE[phase.agents[j]] = phase.id;
+      }
+    }
+  })();
+
+  // --- File Deliverables Constants ---
+
+  var CATEGORY_ORDER = ['docs', 'code', 'data', 'config', 'other'];
+  var CATEGORY_LABELS = { docs: 'Docs', code: 'Code', data: 'Data', config: 'Config', other: 'Other' };
+
+  function classifyEvent(event) {
+    if (event.type === 'tool_result') {
+      var tool = event.data && event.data.tool;
+      if (tool && (SEMANTIC_TOOLS[tool] || HIDDEN_TOOLS[tool])) return 'hidden';
+      if (tool && LOW_SIGNAL_TOOLS[tool]) return 'low';
+      return 'high';
+    }
+    if (event.type !== 'tool_use') return 'high';
+    var tool = event.data.tool;
+    if (SEMANTIC_TOOLS[tool]) return 'semantic';
+    if (HIDDEN_TOOLS[tool]) return 'hidden';
+    if (LOW_SIGNAL_TOOLS[tool]) return 'low';
+    return 'high';
+  }
+
+  function formatGroupSummary(tools) {
+    var reads = 0, globs = 0, greps = 0;
+    for (var i = 0; i < tools.length; i++) {
+      if (tools[i] === 'Read') reads++;
+      else if (tools[i] === 'Glob') globs++;
+      else if (tools[i] === 'Grep') greps++;
+    }
+    var parts = [];
+    if (reads > 0) parts.push('Read ' + reads + ' file' + (reads !== 1 ? 's' : ''));
+    if (globs > 0) parts.push(globs + ' glob search' + (globs !== 1 ? 'es' : ''));
+    if (greps > 0) parts.push(greps + ' grep search' + (greps !== 1 ? 'es' : ''));
+    return parts.join(', ');
+  }
+
   var listContainer = document.getElementById('projects-list');
   var newBtn = document.querySelector('.projects__new-btn');
 
@@ -53,6 +136,29 @@
   var currentStreamingEvent = null;   // Current streaming text event element
   var lastEventId = -1;               // Last event ID received (for reconnection)
   var MAX_RENDERED_EVENTS = 500;      // Max events to render in the DOM
+  var sessionIsLive = false;           // Whether the current session is live (affects panel defaults)
+
+  // Agent tracking state
+  var activeAgents = {};   // taskId -> agentSlug (e.g., 'pm')
+  var currentAgent = null; // Most recently spawned agent slug
+  var lastTaskToolName = null; // Name from the most recent Task tool_use (for taskId mapping)
+
+  // Pipeline phase tracking
+  var pipelinePhase = null;     // Current phase slug: 'research'|'scoping'|'architecture'|'design'|'implementation'|'qa'|null
+  var completedPhases = {};     // { 'research': true, 'scoping': true, ... }
+
+  // Team activity tracking
+  var teamAgents = [];          // Ordered list of { slug, status, taskDescription, spawnTime }
+  var teamAgentIndex = {};      // slug -> index in teamAgents (for dedup and status updates)
+  var lastTaskOutputAgent = null; // Agent slug from the most recent TaskOutput tool_use
+
+  // File deliverables tracking
+  var deliverableFiles = {};    // filePath -> { path, displayPath, action, agent, agentName, time, editCount, category }
+  var deliverableOrder = [];    // filePaths in order of first appearance
+
+  // Event grouping state
+  var currentGroup = null; // { tools: [], events: [], element: null } or null
+  var lastToolClassification = null; // Classification of the last tool_use event
 
   if (!listContainer) return;
 
@@ -383,6 +489,11 @@
           '<span class="session-log__title">' + titleText + '</span>' +
           '<span class="session-log__timer' + timerClass + '">' + timerText + '</span>' +
         '</div>' +
+        '<div class="session-panels">' +
+          '<div class="pipeline-indicator" aria-label="Pipeline progress"></div>' +
+          '<div class="team-activity" aria-hidden="true"></div>' +
+          '<div class="file-deliverables" aria-hidden="true"></div>' +
+        '</div>' +
         '<div class="session-log__body" role="log" aria-live="polite">' +
           '<div class="session-log__events"></div>' +
           '<div class="session-log__jump" aria-hidden="true">' +
@@ -438,6 +549,16 @@
 
   function renderSessionEvent(event) {
     var timeStr = formatRelativeSessionTime(event.timestamp);
+
+    // Semantic tool_use events get special rendering
+    if (event.type === 'tool_use') {
+      var tool = event.data.tool;
+      if (tool === 'Task') return renderAgentBanner(event, timeStr);
+      if (tool === 'SendMessage') return renderMessageCard(event, timeStr);
+      if (tool === 'TeamCreate' || tool === 'TeamDelete') return renderTeamLifecycle(event, timeStr);
+      if (tool === 'TaskOutput') return renderWaitingIndicator(event, timeStr);
+      if (HIDDEN_TOOLS[tool]) return '';
+    }
 
     switch (event.type) {
       case 'assistant_text':
@@ -532,6 +653,132 @@
     );
   }
 
+  // --- Semantic Event Renderers ---
+
+  function renderAgentBanner(event, timeStr) {
+    var input = event.data.input || {};
+    var agentSlug = input.name || '';
+    var agent = AGENT_REGISTRY[agentSlug];
+    var name = agent ? agent.name : agentSlug;
+    var role = agent ? agent.role : 'Agent';
+    var avatarHtml = agent
+      ? '<img class="session-event__agent-avatar" src="img/avatars/' + escapeAttr(agent.avatar) + '.svg" alt="' + escapeAttr(name) + '" width="28" height="28">'
+      : '';
+    var taskDesc = input.description || input.prompt || '';
+    if (taskDesc.length > 120) taskDesc = taskDesc.substring(0, 120) + '...';
+    var unknownClass = agent ? '' : ' session-event--agent-unknown';
+
+    return (
+      '<div class="session-event session-event--agent-spawn' + unknownClass + '" data-event-id="' + event.id + '">' +
+        '<span class="session-event__time">' + timeStr + '</span>' +
+        '<div class="session-event__body">' +
+          avatarHtml +
+          '<div class="session-event__agent-info">' +
+            '<span class="session-event__agent-name">' + escapeHTML(name) + '</span>' +
+            '<span class="session-event__agent-role">' + escapeHTML(role) + '</span>' +
+          '</div>' +
+          (taskDesc ? '<span class="session-event__agent-task">' + escapeHTML(taskDesc) + '</span>' : '') +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderMessageCard(event, timeStr) {
+    var input = event.data.input || {};
+    var recipientSlug = input.recipient || '';
+    var recipientAgent = AGENT_REGISTRY[recipientSlug];
+    var recipientName = recipientAgent ? recipientAgent.name : recipientSlug;
+    var isBroadcast = input.type === 'broadcast';
+
+    // Sender: use currentAgent (most recently spawned agent)
+    var senderAgent = currentAgent ? AGENT_REGISTRY[currentAgent] : null;
+    var senderName = senderAgent ? senderAgent.name : 'Team Lead';
+    var senderAvatarHtml = senderAgent
+      ? '<img class="session-event__message-avatar" src="img/avatars/' + escapeAttr(senderAgent.avatar) + '.svg" alt="' + escapeAttr(senderName) + '" width="20" height="20">'
+      : '';
+
+    var content = input.summary || input.content || '';
+    if (content.length > 200) content = content.substring(0, 200) + '...';
+
+    var recipientClass = isBroadcast ? ' session-event__message-recipient--broadcast' : '';
+    var recipientDisplay = isBroadcast ? 'all' : recipientName;
+
+    return (
+      '<div class="session-event session-event--message" data-event-id="' + event.id + '">' +
+        '<span class="session-event__time">' + timeStr + '</span>' +
+        '<div class="session-event__body">' +
+          '<div class="session-event__message-header">' +
+            senderAvatarHtml +
+            '<span class="session-event__message-sender">' + escapeHTML(senderName) + '</span>' +
+            '<span class="session-event__message-arrow">-&gt;</span>' +
+            '<span class="session-event__message-recipient' + recipientClass + '">' + escapeHTML(recipientDisplay) + '</span>' +
+          '</div>' +
+          '<p class="session-event__message-content">' + escapeHTML(content) + '</p>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderTeamLifecycle(event, timeStr) {
+    var tool = event.data.tool;
+    var text = tool === 'TeamCreate' ? 'Team created' : 'Team disbanded';
+
+    return (
+      '<div class="session-event session-event--lifecycle" data-event-id="' + event.id + '">' +
+        '<span class="session-event__time">' + timeStr + '</span>' +
+        '<div class="session-event__body">' +
+          '<span class="session-event__lifecycle-text">' + escapeHTML(text) + '</span>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderWaitingIndicator(event, timeStr) {
+    var input = event.data.input || {};
+    var taskId = input.taskId || '';
+    var agentSlug = activeAgents[taskId];
+    var agent = agentSlug ? AGENT_REGISTRY[agentSlug] : null;
+    var agentName = agent ? agent.name : 'agent';
+
+    return (
+      '<div class="session-event session-event--waiting" data-event-id="' + event.id + '">' +
+        '<span class="session-event__time">' + timeStr + '</span>' +
+        '<div class="session-event__body">' +
+          '<span class="session-event__waiting-text">Waiting for ' + escapeHTML(agentName) + '...</span>' +
+          '<span class="session-event__waiting-spinner"></span>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderEventGroup(group) {
+    var timeStr = group.events.length > 0 ? formatRelativeSessionTime(group.events[0].timestamp) : '+0:00';
+    var summaryText = formatGroupSummary(group.tools);
+
+    // Render individual events for the expandable content
+    var innerHtml = '';
+    for (var i = 0; i < group.events.length; i++) {
+      var evt = group.events[i];
+      var evtTime = formatRelativeSessionTime(evt.timestamp);
+      innerHtml += renderToolUseEvent(evt, evtTime);
+    }
+
+    return (
+      '<div class="session-event session-event--group" data-event-id="' + (group.events[0] ? group.events[0].id : '') + '">' +
+        '<span class="session-event__time">' + timeStr + '</span>' +
+        '<div class="session-event__body">' +
+          '<button class="session-event__group-toggle" type="button" aria-expanded="false">' +
+            '<span class="session-event__group-chevron" aria-hidden="true"></span>' +
+            '<span class="session-event__group-summary">' + escapeHTML(summaryText) + '</span>' +
+          '</button>' +
+          '<div class="session-event__group-content" aria-hidden="true">' +
+            '<div>' + innerHtml + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
   function getToolInputSummary(toolName, input) {
     if (!input) return '';
     switch (toolName) {
@@ -547,6 +794,10 @@
         return input.pattern ? truncateStr(input.pattern, 80) : '';
       case 'WebFetch':
         return input.url ? truncateStr(input.url, 80) : '';
+      case 'Task':
+        return input.name ? ('Spawning ' + (AGENT_REGISTRY[input.name] ? AGENT_REGISTRY[input.name].name : input.name)) : '';
+      case 'SendMessage':
+        return input.summary || (input.recipient ? ('Message to ' + input.recipient) : '');
       default:
         return '';
     }
@@ -573,10 +824,21 @@
     var logContainer = getLogContainer(projectId);
     if (!logContainer) return;
 
+    sessionIsLive = isLive;
     logContainer.innerHTML = renderSessionLog(null, isLive);
+    renderPipelineIndicator(projectId);
 
     if (isLive) {
       startSessionTimer(projectId);
+    } else {
+      // For historical sessions, set sessionStartTime from first event
+      // (will be corrected when first event arrives)
+      sessionStartTime = null;
+      // Mark as completed so spinners are hidden
+      var sessionLogEl = logContainer.querySelector('.session-log');
+      if (sessionLogEl) {
+        sessionLogEl.setAttribute('data-session-status', 'completed');
+      }
     }
 
     var url = API_BASE + '/' + encodeURIComponent(projectId) + '/sessions/' + encodeURIComponent(sessionId) + '/events';
@@ -619,16 +881,184 @@
     sessionEvents = [];
     currentStreamingEvent = null;
     autoScrollEnabled = true;
+
+    // Reset agent tracking and grouping state
+    activeAgents = {};
+    currentAgent = null;
+    lastTaskToolName = null;
+    currentGroup = null;
+    lastToolClassification = null;
+
+    // Reset Phase 2-3 panel state
+    sessionIsLive = false;
+    pipelinePhase = null;
+    completedPhases = {};
+    teamAgents = [];
+    teamAgentIndex = {};
+    lastTaskOutputAgent = null;
+    deliverableFiles = {};
+    deliverableOrder = [];
+  }
+
+  function flushGroup(eventsContainer) {
+    if (!currentGroup) return;
+    if (currentGroup.events.length === 1) {
+      // Single event — render as normal tool_use, no group wrapper
+      var evt = currentGroup.events[0];
+      var div = document.createElement('div');
+      div.innerHTML = renderToolUseEvent(evt, formatRelativeSessionTime(evt.timestamp));
+      var el = div.firstChild;
+      if (el) eventsContainer.appendChild(el);
+    } else if (currentGroup.events.length > 1) {
+      // Multi-event group — render as collapsed group
+      var div = document.createElement('div');
+      div.innerHTML = renderEventGroup(currentGroup);
+      var el = div.firstChild;
+      if (el) eventsContainer.appendChild(el);
+    }
+    currentGroup = null;
   }
 
   function appendSessionEvent(projectId, event) {
     sessionEvents.push(event);
 
+    // Set sessionStartTime from the first event's timestamp (fixes historical session timestamps)
+    if (sessionStartTime === null && event.timestamp) {
+      sessionStartTime = new Date(event.timestamp).getTime();
+    }
+
     var eventsContainer = getEventsContainer(projectId);
     if (!eventsContainer) return;
 
+    // Track agent state from Task tool_use events
+    if (event.type === 'tool_use' && event.data.tool === 'Task') {
+      var agentName = event.data.input && event.data.input.name;
+      if (agentName) {
+        currentAgent = agentName;
+        lastTaskToolName = agentName;
+      }
+    }
+
+    // Map taskId to agent when we get a tool_result for a Task tool_use
+    if (event.type === 'tool_result' && event.data.tool === 'Task' && lastTaskToolName) {
+      // Try to extract a task ID from the result
+      var output = event.data.output || '';
+      // TaskOutput's input has taskId, but Task results may contain an ID
+      // Store the mapping using the event ID as a reasonable proxy
+      if (event.data.taskId) {
+        activeAgents[event.data.taskId] = lastTaskToolName;
+      }
+      lastTaskToolName = null;
+    }
+
+    // --- Phase 2-3: Pipeline, Team Activity, Deliverables State Updates ---
+
+    // Pipeline phase update
+    if (event.type === 'tool_use' && event.data.tool === 'Task') {
+      var taskAgentName = event.data.input && event.data.input.name;
+      if (taskAgentName && AGENT_TO_PHASE[taskAgentName]) {
+        var newPhase = AGENT_TO_PHASE[taskAgentName];
+        if (pipelinePhase && pipelinePhase !== newPhase) {
+          completedPhases[pipelinePhase] = true;
+        }
+        completedPhases[newPhase] = true;
+        pipelinePhase = newPhase;
+        updatePipelineIndicator(projectId);
+      }
+    }
+
+    // Team activity: agent spawned
+    if (event.type === 'tool_use' && event.data.tool === 'Task') {
+      var agentSlug = event.data.input && event.data.input.name;
+      if (agentSlug) {
+        var taskDesc = event.data.input.description || event.data.input.prompt || '';
+        if (taskDesc.length > 80) taskDesc = taskDesc.substring(0, 80) + '...';
+
+        if (teamAgentIndex.hasOwnProperty(agentSlug)) {
+          var idx = teamAgentIndex[agentSlug];
+          teamAgents[idx].status = 'working';
+          teamAgents[idx].taskDescription = taskDesc;
+        } else {
+          teamAgentIndex[agentSlug] = teamAgents.length;
+          teamAgents.push({
+            slug: agentSlug,
+            status: 'working',
+            taskDescription: taskDesc,
+            spawnTime: event.timestamp
+          });
+        }
+        updateTeamActivityPanel(projectId);
+      }
+    }
+
+    // Team activity: track TaskOutput tool_use to know which agent
+    if (event.type === 'tool_use' && event.data.tool === 'TaskOutput') {
+      var taskId = event.data.input && event.data.input.taskId;
+      if (taskId && activeAgents[taskId]) {
+        lastTaskOutputAgent = activeAgents[taskId];
+      }
+    }
+
+    // Team activity: agent done (TaskOutput result received)
+    if (event.type === 'tool_result' && event.data.tool === 'TaskOutput') {
+      if (lastTaskOutputAgent && teamAgentIndex.hasOwnProperty(lastTaskOutputAgent)) {
+        var idx = teamAgentIndex[lastTaskOutputAgent];
+        teamAgents[idx].status = 'done';
+        updateTeamActivityPanel(projectId);
+      }
+      lastTaskOutputAgent = null;
+    }
+
+    // File deliverables tracking
+    if (event.type === 'tool_use' && (event.data.tool === 'Write' || event.data.tool === 'Edit')) {
+      var filePath = event.data.input && event.data.input.file_path;
+      if (filePath) {
+        var displayPath = formatDeliverablePath(filePath);
+        var category = categorizeFile(filePath);
+        var agentSlug = currentAgent;
+        var agentInfo = agentSlug ? AGENT_REGISTRY[agentSlug] : null;
+        var agentDisplayName = agentInfo ? agentInfo.name : 'Team Lead';
+
+        if (deliverableFiles[filePath]) {
+          deliverableFiles[filePath].editCount++;
+          deliverableFiles[filePath].agent = agentSlug;
+          deliverableFiles[filePath].agentName = agentDisplayName;
+          deliverableFiles[filePath].time = event.timestamp;
+          if (deliverableFiles[filePath].action === 'created' && event.data.tool === 'Edit') {
+            deliverableFiles[filePath].action = 'modified';
+          }
+        } else {
+          deliverableFiles[filePath] = {
+            path: filePath,
+            displayPath: displayPath,
+            action: event.data.tool === 'Write' ? 'created' : 'modified',
+            agent: agentSlug,
+            agentName: agentDisplayName,
+            time: event.timestamp,
+            editCount: 1,
+            category: category
+          };
+          deliverableOrder.push(filePath);
+        }
+        updateDeliverablesPanel(projectId);
+      }
+    }
+
+    // --- End Phase 2-3 state updates ---
+
+    // Classify the event
+    var classification = classifyEvent(event);
+
+    // Track classification for tool_result handling
+    if (event.type === 'tool_use') {
+      lastToolClassification = classification;
+    }
+
     // Handle delta streaming for assistant_text
     if (event.type === 'assistant_text' && event.data && event.data.delta) {
+      // Flush any pending group before streaming text
+      flushGroup(eventsContainer);
+
       if (currentStreamingEvent) {
         // Append to existing streaming element
         var contentEl = currentStreamingEvent.querySelector('.session-event__content');
@@ -652,16 +1082,48 @@
 
       // For non-delta assistant_text, skip if we already streamed it
       if (event.type === 'assistant_text' && !event.data.delta) {
-        // This is a complete text block. If we were streaming, the content is already there.
-        // Only render if we don't have a previous streaming block.
-        // Check if the last rendered element already has this text
         var lastRendered = eventsContainer.lastElementChild;
         if (lastRendered && lastRendered.classList.contains('session-event--text')) {
-          // Already have the text from deltas, skip
           doAutoScroll(projectId);
           return;
         }
       }
+
+      // Hidden events — skip rendering entirely
+      if (classification === 'hidden') {
+        doAutoScroll(projectId);
+        return;
+      }
+
+      // tool_result for low-signal tools — absorbed into group, don't render
+      if (event.type === 'tool_result' && classification === 'low') {
+        doAutoScroll(projectId);
+        return;
+      }
+
+      // Low-signal tool_use — buffer into group
+      if (classification === 'low' && event.type === 'tool_use') {
+        if (currentGroup) {
+          currentGroup.tools.push(event.data.tool);
+          currentGroup.events.push(event);
+          // Update group element summary if it's already in the DOM
+          if (currentGroup.element) {
+            var summaryEl = currentGroup.element.querySelector('.session-event__group-summary');
+            if (summaryEl) summaryEl.textContent = formatGroupSummary(currentGroup.tools);
+          }
+        } else {
+          currentGroup = {
+            tools: [event.data.tool],
+            events: [event],
+            element: null
+          };
+        }
+        doAutoScroll(projectId);
+        return;
+      }
+
+      // High-signal or semantic event — flush any pending group first
+      flushGroup(eventsContainer);
 
       // Trim excess events from DOM
       while (eventsContainer.children.length >= MAX_RENDERED_EVENTS) {
@@ -682,9 +1144,13 @@
   function handleSessionDone(projectId, status, durationMs) {
     stopSessionTimer();
 
-    // Update timer display
+    // Update timer display and mark session as done
     var logEl = getLogContainer(projectId);
     if (logEl) {
+      var sessionLogEl = logEl.querySelector('.session-log');
+      if (sessionLogEl) {
+        sessionLogEl.setAttribute('data-session-status', status || 'completed');
+      }
       var timerEl = logEl.querySelector('.session-log__timer');
       if (timerEl) {
         timerEl.classList.remove('session-log__timer--live');
@@ -732,6 +1198,246 @@
     var logContainer = getLogContainer(projectId);
     if (!logContainer) return null;
     return logContainer.querySelector('.session-log__events');
+  }
+
+  function getPipelineContainer(projectId) {
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return null;
+    return logContainer.querySelector('.pipeline-indicator');
+  }
+
+  function getTeamActivityContainer(projectId) {
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return null;
+    return logContainer.querySelector('.team-activity');
+  }
+
+  function getDeliverablesContainer(projectId) {
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return null;
+    return logContainer.querySelector('.file-deliverables');
+  }
+
+  function formatDeliverablePath(fullPath) {
+    var markers = ['/teamhq/', '/Projects/'];
+    for (var i = 0; i < markers.length; i++) {
+      var idx = fullPath.lastIndexOf(markers[i]);
+      if (idx !== -1) {
+        return fullPath.substring(idx + markers[i].length);
+      }
+    }
+    if (fullPath.length > 60) {
+      return '...' + fullPath.substring(fullPath.length - 57);
+    }
+    return fullPath;
+  }
+
+  function categorizeFile(filePath) {
+    var lower = filePath.toLowerCase();
+    if (lower.indexOf('/docs/') !== -1 || (lower.endsWith('.md') && lower.indexOf('/data/') === -1)) return 'docs';
+    if (lower.indexOf('/data/') !== -1) return 'data';
+    if (lower.endsWith('package.json') || lower.endsWith('tsconfig.json') ||
+        lower.endsWith('.config.js') || lower.endsWith('.config.ts') ||
+        lower.endsWith('vite.config.ts')) return 'config';
+    if (lower.endsWith('.js') || lower.endsWith('.ts') || lower.endsWith('.tsx') ||
+        lower.endsWith('.jsx') || lower.endsWith('.css') || lower.endsWith('.html') ||
+        lower.endsWith('.svg')) return 'code';
+    return 'other';
+  }
+
+  // --- Panel Render/Update Functions ---
+
+  function renderPipelineIndicator(projectId) {
+    var container = getPipelineContainer(projectId);
+    if (!container) return;
+
+    var html = '<div class="pipeline-indicator__steps">';
+    for (var i = 0; i < PHASE_DEFINITIONS.length; i++) {
+      var phase = PHASE_DEFINITIONS[i];
+      var stateClass = 'pipeline-indicator__step--upcoming';
+      html +=
+        '<div class="pipeline-indicator__step ' + stateClass + '" data-phase="' + phase.id + '">' +
+          '<span class="pipeline-indicator__dot"></span>' +
+          '<span class="pipeline-indicator__label">' + escapeHTML(phase.label) + '</span>' +
+        '</div>';
+      if (i < PHASE_DEFINITIONS.length - 1) {
+        html += '<span class="pipeline-indicator__connector"></span>';
+      }
+    }
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  function updatePipelineIndicator(projectId) {
+    var container = getPipelineContainer(projectId);
+    if (!container) return;
+
+    var steps = container.querySelectorAll('.pipeline-indicator__step');
+    for (var i = 0; i < steps.length; i++) {
+      var phaseId = steps[i].getAttribute('data-phase');
+      steps[i].classList.remove(
+        'pipeline-indicator__step--upcoming',
+        'pipeline-indicator__step--current',
+        'pipeline-indicator__step--completed'
+      );
+      if (phaseId === pipelinePhase) {
+        steps[i].classList.add('pipeline-indicator__step--current');
+      } else if (completedPhases[phaseId]) {
+        steps[i].classList.add('pipeline-indicator__step--completed');
+      } else {
+        steps[i].classList.add('pipeline-indicator__step--upcoming');
+      }
+    }
+
+    var connectors = container.querySelectorAll('.pipeline-indicator__connector');
+    for (var i = 0; i < connectors.length; i++) {
+      var nextPhase = PHASE_DEFINITIONS[i + 1];
+      if (nextPhase && completedPhases[nextPhase.id]) {
+        connectors[i].classList.add('pipeline-indicator__connector--active');
+      } else {
+        connectors[i].classList.remove('pipeline-indicator__connector--active');
+      }
+    }
+  }
+
+  function updateTeamActivityPanel(projectId) {
+    var container = getTeamActivityContainer(projectId);
+    if (!container) return;
+
+    if (teamAgents.length === 0) {
+      container.setAttribute('aria-hidden', 'true');
+      container.innerHTML = '';
+      return;
+    }
+
+    container.setAttribute('aria-hidden', 'false');
+
+    var list = container.querySelector('.team-activity__list');
+    if (!list) {
+      var defaultExpanded = sessionIsLive;
+      container.innerHTML =
+        '<div class="team-activity__header">' +
+          '<button class="team-activity__toggle" type="button" aria-expanded="' + defaultExpanded + '">' +
+            '<span class="team-activity__toggle-chevron" aria-hidden="true"></span>' +
+            '<span class="team-activity__title">Team Activity</span>' +
+            '<span class="team-activity__count">' + teamAgents.length + '</span>' +
+          '</button>' +
+        '</div>' +
+        '<div class="team-activity__list" aria-hidden="' + !defaultExpanded + '"></div>';
+      list = container.querySelector('.team-activity__list');
+    }
+
+    var countEl = container.querySelector('.team-activity__count');
+    if (countEl) countEl.textContent = teamAgents.length;
+
+    var html = '';
+    for (var i = 0; i < teamAgents.length; i++) {
+      var ta = teamAgents[i];
+      var agent = AGENT_REGISTRY[ta.slug];
+      var name = agent ? agent.name : ta.slug;
+      var role = agent ? agent.role : 'Agent';
+      var avatarHtml = agent
+        ? '<img class="team-activity__avatar" src="img/avatars/' + escapeAttr(agent.avatar) + '.svg" alt="' + escapeAttr(name) + '" width="20" height="20">'
+        : '<span class="team-activity__avatar team-activity__avatar--placeholder"></span>';
+      var statusClass = ta.status === 'done' ? 'team-activity__status--done' : 'team-activity__status--working';
+
+      html +=
+        '<div class="team-activity__agent" data-agent="' + escapeAttr(ta.slug) + '">' +
+          avatarHtml +
+          '<div class="team-activity__agent-info">' +
+            '<span class="team-activity__agent-name">' + escapeHTML(name) + '</span>' +
+            '<span class="team-activity__agent-role">' + escapeHTML(role) + '</span>' +
+          '</div>' +
+          '<span class="team-activity__agent-task">' + escapeHTML(ta.taskDescription) + '</span>' +
+          '<span class="team-activity__status ' + statusClass + '"></span>' +
+        '</div>';
+    }
+    list.innerHTML = html;
+  }
+
+  function updateDeliverablesPanel(projectId) {
+    var container = getDeliverablesContainer(projectId);
+    if (!container) return;
+
+    var fileCount = deliverableOrder.length;
+    if (fileCount === 0) {
+      container.setAttribute('aria-hidden', 'true');
+      container.innerHTML = '';
+      return;
+    }
+
+    container.setAttribute('aria-hidden', 'false');
+
+    var byCategory = {};
+    for (var i = 0; i < CATEGORY_ORDER.length; i++) {
+      byCategory[CATEGORY_ORDER[i]] = [];
+    }
+    for (var i = 0; i < deliverableOrder.length; i++) {
+      var file = deliverableFiles[deliverableOrder[i]];
+      if (!byCategory[file.category]) byCategory[file.category] = [];
+      byCategory[file.category].push(file);
+    }
+
+    for (var cat in byCategory) {
+      byCategory[cat].sort(function (a, b) {
+        return new Date(b.time).getTime() - new Date(a.time).getTime();
+      });
+    }
+
+    var list = container.querySelector('.file-deliverables__list');
+    if (!list) {
+      container.innerHTML =
+        '<div class="file-deliverables__header">' +
+          '<button class="file-deliverables__toggle" type="button" aria-expanded="false">' +
+            '<span class="file-deliverables__toggle-chevron" aria-hidden="true"></span>' +
+            '<span class="file-deliverables__title">Deliverables</span>' +
+            '<span class="file-deliverables__count">' + fileCount + ' file' + (fileCount !== 1 ? 's' : '') + '</span>' +
+          '</button>' +
+        '</div>' +
+        '<div class="file-deliverables__list" aria-hidden="true"></div>';
+      list = container.querySelector('.file-deliverables__list');
+    }
+
+    var countEl = container.querySelector('.file-deliverables__count');
+    if (countEl) countEl.textContent = fileCount + ' file' + (fileCount !== 1 ? 's' : '');
+
+    var html = '';
+    var rendered = 0;
+    var MAX_SHOWN = 20;
+    var hasMore = fileCount > MAX_SHOWN;
+
+    for (var ci = 0; ci < CATEGORY_ORDER.length; ci++) {
+      var cat = CATEGORY_ORDER[ci];
+      var files = byCategory[cat];
+      if (files.length === 0) continue;
+
+      html += '<div class="file-deliverables__category">';
+      html += '<span class="file-deliverables__category-label">' + CATEGORY_LABELS[cat] + '</span>';
+
+      for (var fi = 0; fi < files.length; fi++) {
+        if (rendered >= MAX_SHOWN && !container.classList.contains('file-deliverables--show-all')) break;
+        var f = files[fi];
+        var actionClass = f.action === 'created' ? 'file-deliverables__action--created' : 'file-deliverables__action--modified';
+        var editBadge = f.editCount > 1 ? '<span class="file-deliverables__edit-count">' + f.editCount + 'x</span>' : '';
+
+        html +=
+          '<div class="file-deliverables__file">' +
+            '<span class="file-deliverables__action ' + actionClass + '">' + f.action + '</span>' +
+            '<span class="file-deliverables__path" title="' + escapeAttr(f.path) + '">' + escapeHTML(f.displayPath) + '</span>' +
+            editBadge +
+            '<span class="file-deliverables__agent">' + escapeHTML(f.agentName) + '</span>' +
+          '</div>';
+        rendered++;
+      }
+
+      html += '</div>';
+    }
+
+    if (hasMore && !container.classList.contains('file-deliverables--show-all')) {
+      html += '<button class="file-deliverables__show-all-btn" type="button">Show all ' + fileCount + ' files</button>';
+    }
+
+    list.innerHTML = html;
   }
 
   function setupAutoScroll(projectId) {
@@ -1411,7 +2117,7 @@
     actionArea.innerHTML =
       '<div class="detail__start-warning">' +
         '<p class="detail__start-warning-text">' +
-          'This project has no goals or brief. The kickoff prompt will have limited context.' +
+          'This project has no goals or brief. Thomas will have limited context.' +
         '</p>' +
         '<div class="detail__start-warning-actions">' +
           '<button class="detail__start-warning-fill" type="button">Fill in Details</button>' +
@@ -1429,26 +2135,38 @@
     actionArea.innerHTML =
       '<button class="detail__start-btn" type="button" disabled>Starting...</button>';
 
-    apiStart(id)
-      .then(function (updated) {
-        // Update local state
-        var idx = findProjectIndex(id);
-        if (idx !== -1) {
-          projects[idx].status = updated.status;
-          projects[idx].updatedAt = updated.updatedAt;
+    apiStartSession(id)
+      .then(function (session) {
+        // Update project state
+        var project = findProject(id);
+        if (project) {
+          project.activeSessionId = session.id;
+          project.status = 'in-progress';
         }
-        detailCache[id] = updated;
+        var cached = detailCache[id];
+        if (cached) {
+          cached.activeSessionId = session.id;
+          cached.status = 'in-progress';
+        }
 
+        // Re-render card list (shows running indicator, in-progress badge)
         renderList();
-        openKickoffModal(updated.kickoffPrompt);
+
+        // Expand card, connect to live session, load history
+        if (expandedId === id) {
+          renderDetailView(id);
+          connectToSession(id, session.id, true);
+          loadSessionHistory(id);
+        }
       })
-      .catch(function () {
+      .catch(function (err) {
         // Restore the Start Work button
         if (actionArea) {
           actionArea.innerHTML =
             '<button class="detail__start-btn" type="button">Start Work</button>';
         }
-        showToast('Failed to start project. Please try again.', true);
+        var msg = (err && err.error) || 'Failed to start project. Please try again.';
+        showToast(msg, true);
       });
   }
 
@@ -1705,6 +2423,51 @@
       return;
     }
 
+    // Event group toggle
+    var groupToggle = e.target.closest('.session-event__group-toggle');
+    if (groupToggle) {
+      var isExpanded = groupToggle.getAttribute('aria-expanded') === 'true';
+      groupToggle.setAttribute('aria-expanded', !isExpanded);
+      var content = groupToggle.nextElementSibling;
+      if (content) {
+        content.setAttribute('aria-hidden', isExpanded);
+      }
+      return;
+    }
+
+    // Team activity toggle
+    var teamToggle = e.target.closest('.team-activity__toggle');
+    if (teamToggle) {
+      var isExpanded = teamToggle.getAttribute('aria-expanded') === 'true';
+      teamToggle.setAttribute('aria-expanded', !isExpanded);
+      var list = teamToggle.closest('.team-activity').querySelector('.team-activity__list');
+      if (list) list.setAttribute('aria-hidden', isExpanded ? 'true' : 'false');
+      return;
+    }
+
+    // File deliverables toggle
+    var deliverablesToggle = e.target.closest('.file-deliverables__toggle');
+    if (deliverablesToggle) {
+      var isExpanded = deliverablesToggle.getAttribute('aria-expanded') === 'true';
+      deliverablesToggle.setAttribute('aria-expanded', !isExpanded);
+      var list = deliverablesToggle.closest('.file-deliverables').querySelector('.file-deliverables__list');
+      if (list) list.setAttribute('aria-hidden', isExpanded ? 'true' : 'false');
+      return;
+    }
+
+    // Show all deliverables
+    var showAllBtn = e.target.closest('.file-deliverables__show-all-btn');
+    if (showAllBtn) {
+      var delContainer = showAllBtn.closest('.file-deliverables');
+      if (delContainer) {
+        delContainer.classList.add('file-deliverables--show-all');
+        var card = delContainer.closest('.project-card');
+        var projectId = card ? card.getAttribute('data-project-id') : activeSessionProjectId;
+        updateDeliverablesPanel(projectId);
+      }
+      return;
+    }
+
     // Session history item
     var histItem = e.target.closest('.session-history__item');
     if (histItem) {
@@ -1844,5 +2607,14 @@
       listContainer.innerHTML =
         '<p class="projects__error">Unable to load projects.</p>';
     });
+
+  // Listen for projects created externally (e.g. from meetings action items)
+  document.addEventListener('projects:refresh', function () {
+    apiGet()
+      .then(function (data) {
+        projects = data;
+        renderList();
+      });
+  });
 
 })();

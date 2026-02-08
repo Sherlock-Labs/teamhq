@@ -1,0 +1,183 @@
+/* ===========================
+   TeamHQ Shared Component Styles
+   Nav, footer, container, and global focus patterns.
+   Depends on tokens.css being loaded first.
+   =========================== */
+
+/* --- Global Base Styles --- */
+
+body {
+  font-family: var(--font-family);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Global Focus Styles --- */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Container --- */
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: var(--space-5);
+  padding-right: var(--space-5);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+}
+
+/* --- Navigation Bar --- */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-zinc-950);
+  border-bottom: 1px solid var(--color-zinc-800);
+  padding: var(--space-4) 0;
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav__logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.nav__logo {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+@media (max-width: 639px) {
+  .nav__logo {
+    height: 28px;
+  }
+}
+
+.nav__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  color: var(--color-zinc-100);
+}
+
+.nav__label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-mono);
+  color: var(--color-zinc-400);
+  margin-left: var(--space-2);
+  letter-spacing: 0.04em;
+}
+
+.nav__links {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+@media (min-width: 640px) {
+  .nav__links {
+    gap: var(--space-6);
+  }
+}
+
+.nav__link {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-zinc-400);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav__link:hover {
+  color: var(--color-zinc-300);
+}
+
+.nav__link--active {
+  color: var(--color-zinc-200);
+  cursor: default;
+}
+
+.nav__link--active:hover {
+  color: var(--color-zinc-200);
+}
+
+/* Back navigation (for sub-pages) */
+
+.nav__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-zinc-400);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav__back:hover {
+  color: var(--color-zinc-200);
+}
+
+.nav__back-arrow {
+  font-size: var(--text-base);
+}
+
+/* --- Footer --- */
+
+.footer {
+  background: var(--color-zinc-900);
+  border-top: 1px solid var(--color-zinc-800);
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+  text-align: center;
+}
+
+.footer__logo {
+  height: 28px;
+  width: auto;
+  display: block;
+  margin: 0 auto var(--space-3);
+}
+
+.footer__name {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-zinc-100);
+  margin-bottom: var(--space-2);
+}
+
+.footer__attribution {
+  font-size: var(--text-sm);
+  color: var(--color-zinc-600);
+}

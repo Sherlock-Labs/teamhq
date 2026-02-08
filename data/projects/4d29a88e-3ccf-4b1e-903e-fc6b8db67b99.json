@@ -1,0 +1,15 @@
+{
+  "id": "4d29a88e-3ccf-4b1e-903e-fc6b8db67b99",
+  "name": "Work with Andrei on the design token spec — consolidate t...",
+  "description": "",
+  "status": "in-progress",
+  "createdAt": "2026-02-08T01:07:32.835Z",
+  "updatedAt": "2026-02-08T01:20:28.438Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "Work with Andrei on the design token spec — consolidate the color palette, type scale, and spacing system into one canonical reference that all tools inherit.\n\nOwner: Robert\nPriority: high\nSource: Charter Meeting #1",
+  "notes": [],
+  "kickoffPrompt": "You have a new project to work on.\n\n## Project: Work with Andrei on the design token spec — consolidate t...\n\n**Brief:**\nWork with Andrei on the design token spec — consolidate the color palette, type scale, and spacing system into one canonical reference that all tools inherit.\n\nOwner: Robert\nPriority: high\nSource: Charter Meeting #1\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
+  "activeSessionId": "0fa61d19-06e1-4332-8581-38cc6dca4df1"
+}

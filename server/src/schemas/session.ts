@@ -10,12 +10,20 @@ export const SessionStatus = z.enum([
 
 export type SessionStatus = z.infer<typeof SessionStatus>;
 
+export const RunnerState = z.enum(["processing", "idle", "ended"]);
+
+export type RunnerState = z.infer<typeof RunnerState>;
+
 export const SessionEventType = z.enum([
   "assistant_text",
   "tool_use",
   "tool_result",
   "system",
   "error",
+  "turn_start",
+  "turn_end",
+  "waiting_for_input",
+  "user_message",
 ]);
 
 export type SessionEventType = z.infer<typeof SessionEventType>;
@@ -40,6 +48,9 @@ export const SessionMetadataSchema = z.object({
   exitCode: z.number().nullable(),
   error: z.string().nullable(),
   pid: z.number().nullable(),
+  cliSessionId: z.string().nullable().default(null),
+  turnCount: z.number().default(1),
+  state: RunnerState.default("processing"),
 });
 
 export type SessionMetadata = z.infer<typeof SessionMetadataSchema>;

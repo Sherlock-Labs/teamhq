@@ -36,6 +36,9 @@ export async function createSessionFiles(
     exitCode: null,
     error: null,
     pid: null,
+    cliSessionId: null,
+    turnCount: 1,
+    state: "processing",
   };
 
   const mPath = metadataPath(projectId, sessionId);

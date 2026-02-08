@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { getProject, startProject, setActiveSession, clearActiveSession } from "../store/projects.js";
 import { createSessionFiles, getSessionMetadata, listSessions, readEventLog } from "../store/sessions.js";
 import { generateKickoffPrompt } from "../kickoff.js";
-import { SessionRunner } from "../session/runner.js";
+import { createRunner } from "../session/runner.js";
 import { sessionManager } from "../session/manager.js";
 import type { SessionEvent, SessionMetadata } from "../schemas/session.js";
 
@@ -57,7 +57,7 @@ router.post("/", async (req: Request, res: Response) => {
   const prompt = project.kickoffPrompt!;
 
   // 7. Create and start the runner
-  const runner = new SessionRunner({
+  const runner = createRunner({
     sessionId,
     projectId,
     prompt,
@@ -199,6 +199,40 @@ router.get("/:sessionId/events", async (req: Request, res: Response) => {
     runner.off("end", onEnd);
     clearInterval(heartbeat);
   });
+});
+
+// POST /api/projects/:id/sessions/:sessionId/message -- Send a follow-up message
+router.post("/:sessionId/message", async (req: Request, res: Response) => {
+  const sessionId = getSessionId(req);
+  const { message } = req.body;
+
+  if (!message || typeof message !== "string" || !message.trim()) {
+    res.status(400).json({ error: "Message is required" });
+    return;
+  }
+
+  if (message.length > 100_000) {
+    res.status(400).json({ error: "Message too long (max 100,000 characters)" });
+    return;
+  }
+
+  const runner = sessionManager.getRunner(sessionId);
+  if (!runner) {
+    res.status(404).json({ error: "Session not found or not active" });
+    return;
+  }
+
+  try {
+    runner.sendMessage(message.trim());
+    res.status(202).json({
+      turnNumber: runner.sessionTurnCount,
+      state: "processing",
+    });
+  } catch (err) {
+    res.status(409).json({
+      error: err instanceof Error ? err.message : "Cannot send message",
+    });
+  }
 });
 
 // POST /api/projects/:id/sessions/:sessionId/stop -- Stop a running session

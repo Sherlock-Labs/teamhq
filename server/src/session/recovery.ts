@@ -32,8 +32,17 @@ export async function recoverOrphanedSessions(): Promise<void> {
         const metadata = JSON.parse(raw);
 
         if (metadata.status === "running") {
-          metadata.status = "failed";
-          metadata.error = "Server restarted while session was running";
+          if (metadata.state === "idle" && metadata.cliSessionId) {
+            // Session was idle between turns -- no process was running.
+            // Mark as stopped (conservative) rather than failed.
+            metadata.status = "stopped";
+            metadata.error = "Server restarted between turns";
+          } else {
+            // Session was actively processing -- process is gone.
+            metadata.status = "failed";
+            metadata.error = "Server restarted while session was running";
+          }
+          metadata.state = "ended";
           metadata.endedAt = new Date().toISOString();
           metadata.pid = null;
           if (metadata.startedAt) {

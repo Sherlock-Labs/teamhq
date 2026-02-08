@@ -31,22 +31,9 @@ export function generateKickoffPrompt(project: Project): string {
   }
 
   sections.push(``);
-  sections.push(`## How to Proceed`);
+  sections.push(`## Instructions`);
   sections.push(``);
-  sections.push(`1. Spawn Thomas (PM) first. He will scope the work, write requirements, and define who else needs to be involved.`);
-  sections.push(`2. Thomas will write requirements to docs/ and create tasks with dependencies.`);
-  sections.push(`3. Follow Thomas's recommendations for who to spawn next (typically: Andrei for architecture, Robert for design, then Alice and Jonah for implementation, Enzo for QA).`);
-  sections.push(`4. All work flows through Thomas first -- do not skip the PM.`);
-  sections.push(``);
-  sections.push(`## Team Reference`);
-  sections.push(``);
-  sections.push(`The agent definitions are in .claude/agents/:`);
-  sections.push(`- product-manager.md (Thomas) -- PM, scopes work`);
-  sections.push(`- technical-architect.md (Andrei) -- architecture decisions`);
-  sections.push(`- product-designer.md (Robert) -- UI/UX design`);
-  sections.push(`- frontend-developer.md (Alice) -- frontend implementation`);
-  sections.push(`- backend-developer.md (Jonah) -- backend implementation`);
-  sections.push(`- qa.md (Enzo) -- testing and validation`);
+  sections.push(`Hand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.`);
 
   return sections.join("\n");
 }

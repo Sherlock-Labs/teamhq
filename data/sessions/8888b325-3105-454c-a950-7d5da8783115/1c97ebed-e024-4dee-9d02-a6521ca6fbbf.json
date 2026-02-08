@@ -1,0 +1,12 @@
+{
+  "id": "1c97ebed-e024-4dee-9d02-a6521ca6fbbf",
+  "projectId": "8888b325-3105-454c-a950-7d5da8783115",
+  "status": "stopped",
+  "startedAt": "2026-02-06T21:59:02.200Z",
+  "endedAt": "2026-02-06T22:00:47.358Z",
+  "durationMs": 105158,
+  "eventCount": 35,
+  "exitCode": null,
+  "error": null,
+  "pid": null
+}

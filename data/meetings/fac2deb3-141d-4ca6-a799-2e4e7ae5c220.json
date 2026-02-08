@@ -1,0 +1,326 @@
+{
+  "id": "fac2deb3-141d-4ca6-a799-2e4e7ae5c220",
+  "type": "charter",
+  "status": "completed",
+  "meetingNumber": 1,
+  "scheduledAt": null,
+  "startedAt": "2026-02-07T21:24:10.645Z",
+  "completedAt": "2026-02-07T21:26:46.130Z",
+  "durationMs": 155483,
+  "error": null,
+  "summary": "The team's inaugural charter meeting established Sherlock Labs' identity as a developer-tools company that builds internal AI-powered productivity tools, with the team itself as the product. Thomas drove the agenda through five topics — mission, vision, priorities, ways of working, and open discussion — with substantive debate on scope discipline, technical foundations, quality culture, and the 30/60/90 day roadmap. The team aligned on shipping small, iterating fast, and maintaining the PM-first pipeline that's already proven across five completed projects.",
+  "keyTakeaways": [
+    "Sherlock Labs' unique value is the team-as-product model: a coordinated AI agent team that ships real software through a structured pipeline, not just individual AI assistants.",
+    "The 30-day priority is hardening the existing tool suite (PDF tools, OST tool, landing page) with proper QA, documentation, and polish — not building new features.",
+    "Technical foundations matter early: Andrei pushed for a shared component library and design token system before the next full-stack project, and the team agreed.",
+    "Enzo secured a commitment that QA is never skipped — every project must include a QA pass before it's considered shipped, and the team will treat QA as a release gate, not an afterthought.",
+    "The PM-first workflow is non-negotiable: all work flows through Thomas for scoping and prioritization, with the only exception being trivial CEO-directed fixes."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's get started. This is our charter meeting — first time the whole team is in a room together. We've shipped five projects already, but we've never actually aligned on who we are and where we're going. I want to walk through five things today: mission, product vision, strategic priorities, ways of working, and open floor. Let's keep it tight. Mission first — what is this team's purpose?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'll start with what I think makes us different. We're not a consulting shop. We're not a SaaS company. We're a team of AI agents that actually ships software together through a structured pipeline. The product is the team itself — the fact that six specialized agents can coordinate, hand off work, and deliver real, working tools. That's the thing worth talking about."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'd refine that slightly. The mission isn't just that we can build things — it's that we build things that are immediately useful. Every tool we've shipped so far solves a real problem: splitting PDFs, combining documents, mapping opportunity trees. We're not building demos. We're building tools people actually use. That distinction matters."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Can I push on that? We say we ship real tools, but I'd argue our quality bar hasn't been consistent. I've been the last step in the pipeline on paper, but in practice QA has been skipped or rushed on a few projects. If we're going to claim we ship production-quality software, we need to actually validate that claim. Every time."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair point, Enzo, and I own that. QA has been deferred more than it should have been. We'll address that when we get to ways of working. But let's nail the mission statement first. I'm hearing: we're a coordinated AI product team that builds real, useful developer tools through a structured pipeline. The differentiator is the coordination — not any single agent, but the team working together."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'd add that we're developer-first. Everything we've built has that terminal aesthetic, dark theme, no-nonsense UI. We're not trying to be Figma or Notion. We're building tools that feel like they belong in a developer's workflow. That focus keeps us from scope-creeping into enterprise SaaS territory."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Agreed. And I'd emphasize the local-first angle. The PDF tools run entirely client-side. No data leaves the browser. That's a deliberate architectural choice that aligns with developer values — privacy, speed, no accounts, no subscriptions. We should keep leaning into that."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So our mission: Sherlock Labs is an AI agent product team that builds practical, developer-first tools through a coordinated pipeline. We value shipping over perfecting, local-first over cloud-dependent, and useful over impressive. Everyone good with that framing? Okay, moving to product vision."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Product vision. What are we building, and for whom? Right now we have a landing page, two PDF tools, and the OST tool. That's a decent start, but it's scattered. Are we a tool suite? A platform? A showcase of what AI teams can build?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I think we need to be honest about what we are right now: a proof of concept. The most valuable thing Sherlock Labs has produced isn't any individual tool — it's the evidence that this pipeline works. CEO sets direction, Thomas scopes, I define the architecture, Robert designs, Alice and Jonah build, Enzo validates. That pipeline is the product."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "But we can't just be a process demo. Users don't care about our pipeline — they care about whether the PDF splitter works. I think the vision should be: we build a growing suite of focused, high-quality developer tools, and the way we build them happens to demonstrate a new model for AI-assisted product development."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Robert's right. From an implementation standpoint, the tools need to stand on their own. If someone lands on the PDF combiner, they shouldn't need to understand our team structure to find it useful. The TeamHQ landing page can tell the meta-story, but each tool should just work."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I'd also think about what kinds of tools we're well-positioned to build. The PDF tools are pure client-side — no backend needed. The OST tool is full-stack with AI integration. We've proven we can do both. But I'd argue our sweet spot is tools that benefit from AI but don't require it. The AI makes it better; the tool works without it."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "From a quality standpoint, I'd rather we build fewer tools and make them bulletproof than ship a dozen half-finished ones. Every tool with our name on it should work flawlessly on the happy path and handle edge cases gracefully. That's what builds trust."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I'm going to synthesize. Our product vision: a curated suite of developer-focused tools, each solving a specific problem well, built and maintained by a coordinated AI team. The tools are the product. The team is the engine. We don't need to build fast — we need to build right. Which brings us to priorities."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Strategic priorities — 30/60/90 day plan. Here's my take. First 30 days: harden what we have. QA pass on every existing tool. Documentation. Polish. No new features. Days 30-60: identify and build one new tool, full pipeline, proving we can do it repeatably. Days 60-90: establish a release cadence and start thinking about distribution — how do people find these tools?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I like the 30-day hardening phase. But I want to add something: before we build the next full-stack tool, we need shared foundations. Right now each tool is an island. The PDF tools share a visual language but no actual code. If we're going to scale to ten tools, we need a shared component library — even if it's just a CSS file with our design tokens and a few reusable patterns."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Andrei's right, and I'd take it further. We have design tokens scattered across files — the landing page has one set, the PDF tools have another that's similar but not identical. I want to consolidate those into a single source of truth. One token file, one type scale, one spacing system. Every new tool inherits it automatically."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm on board with shared tokens, but let's be careful about scope here. A full component library is a project in itself. For the 30-day phase, I'd rather we extract the tokens into a shared CSS file and document the patterns we're already using. That gets us 80% of the value without building a design system from scratch."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Same principle on the backend. The OST tool has an Express server with a particular pattern — routes, Zod validation, JSON file storage. If the next tool needs a backend, I don't want to reinvent that. But I also don't want to over-abstract before we know what the second backend tool looks like. Let's document the patterns and extract when we have two concrete examples."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So the 30-day plan is: QA everything, consolidate design tokens into a shared file, document our patterns, and polish. Andrei, I want you to own the token consolidation and pattern documentation. Robert, work with Andrei on the design token spec. Alice, you'll implement whatever they define. Jonah, document the backend patterns from the OST tool. Enzo — this is your moment. Full QA pass on every shipped tool."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I've been waiting for this. I want to do a proper audit of all five projects. Happy path, edge cases, responsive behavior, keyboard navigation, error states. I'll produce a findings report with severity ratings. But I need a commitment from the team: if I find bugs, they get fixed before we move to the next phase. Not deferred. Fixed."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Deal. Bugs found in the hardening phase get fixed in the hardening phase. That's the whole point. Anyone object? No? Good. Let's talk ways of working."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Ways of working. The PM-first pipeline has been effective. All work flows through me for scoping before anyone starts building. That's not changing. But I want to hear from everyone: what's working, what's not, and what should we formalize?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "The handoff chain works well — requirements doc, then tech approach, then design spec, then implementation. Each doc builds on the last. What I'd improve: sometimes the requirements are light on technical constraints, and I have to guess. Thomas, if there are performance targets, browser support requirements, or infrastructure constraints, put them in the requirements doc. Even a one-liner like 'must work offline' saves me a round trip."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "The chain works for me too. Having Andrei's tech approach before I design is crucial — I need to know the constraints. What I'd add is a quick review loop. Right now I write the spec and Alice implements. If Alice has questions, she asks me. But I'd like to review the implementation against the spec before it goes to QA. Not as a gatekeeper — just a quick visual check."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm fine with that, Robert. Actually, I'd welcome it. There have been a couple of times I had to interpret ambiguous parts of a design spec, and a quick check would have caught drift earlier. Can we make it lightweight though? Not a formal review meeting — just a 'hey, take a look at this' before I hand off to Enzo."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "On the backend side, I'd like to formalize API contract reviews with Alice before I start building. Right now we coordinate informally, but for the next project I want to define the API shape together, write it down, and then we both build to that contract independently. Fewer surprises at integration time."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Here's what I need formalized: QA is a release gate, not an afterthought. I've seen the pattern — everyone finishes their work, someone says 'let's ship it,' and QA becomes optional. I want it in writing: nothing is considered shipped until I've done a pass and given a verdict. Pass or fail. And if it's fail, we fix before we ship."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Done. Let me formalize what I'm hearing. One: the doc chain stays — requirements, tech approach, design spec, implementation. Two: Andrei gets technical constraints in the requirements doc. Three: Robert does a visual review before QA. Four: Alice and Jonah align on API contracts before building. Five: Enzo's QA pass is a mandatory release gate. These are our operating agreements."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "One more thing on ways of working. We should be deliberate about when we use the full pipeline and when we don't. The CEO has said trivial fixes — typos, color tweaks — can skip the pipeline. I agree. But 'trivial' has a way of expanding. Let's define it: if it touches more than one file or changes behavior, it goes through the pipeline. If it's a single-file cosmetic change, the CEO can just do it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a good bright line. One file, cosmetic only, no behavior change — CEO can do it directly. Everything else comes through me. Agreed?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Agreed. And I'd add: even for those small CEO tweaks, if they affect the design system — like changing a token value or a spacing unit — I'd like a heads-up. Not a blocker, just awareness so I can keep the design spec accurate."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair. Okay, open floor. What else should we align on that we haven't covered?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Performance budgets. We haven't talked about them, but as we add more tools, page weight matters. The PDF tools load libraries via CDN — pdf-lib, pdf.js, SortableJS. That's fine for now, but if we keep adding tools to the landing page, we need to make sure the main page stays fast. Each tool is its own page, which helps, but the landing page JavaScript is growing."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Related point: we should think about monitoring. Right now we have zero observability. No error tracking, no analytics, no uptime checks. For client-side tools that's somewhat okay — there's no server to go down. But the OST tool has a backend, and if it breaks, nobody knows. Even a basic health check endpoint would help."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I want to raise accessibility. We mention it in our design specs, but I haven't done a thorough accessibility audit on any of our shipped tools. Keyboard navigation, screen reader compatibility, color contrast — these should be part of every QA pass, not just something we list in a checklist and skip. I'll include it in my hardening audit."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Last thing from me. We should document our architectural decisions somewhere persistent. Right now each project gets a tech approach doc, but there's no cross-project record of why we chose client-side for the PDF tools, why we use Express over other frameworks, why vanilla JS for the landing page. An ADR log would help future decisions build on past reasoning instead of rehashing the same debates."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good points all around. Let me wrap up with decisions and action items. We've aligned on our mission, confirmed the pipeline, committed to a 30-day hardening phase, and established operating agreements. This was a good meeting. Let's go build."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Team mission defined: Sherlock Labs is an AI agent product team that builds practical, developer-first tools through a coordinated pipeline, valuing shipping over perfecting, local-first over cloud-dependent, and useful over impressive.",
+      "rationale": "The team needed a shared identity statement. Each member contributed a facet — Andrei emphasized the pipeline-as-product, Robert insisted tools must stand alone, Alice anchored on developer-first aesthetic, Jonah highlighted local-first architecture.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Robert",
+        "Alice",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "30-day hardening phase before any new feature work: full QA audit of all shipped tools, design token consolidation, pattern documentation, and bug fixes.",
+      "rationale": "Enzo raised that quality has been inconsistent, and the team agreed that strengthening existing tools is more valuable than shipping new ones right now. Bugs found during hardening will be fixed immediately, not deferred.",
+      "participants": [
+        "Thomas",
+        "Enzo",
+        "Andrei",
+        "Robert"
+      ]
+    },
+    {
+      "description": "Shared design tokens will be consolidated into a single source-of-truth CSS file, extracted from existing tools, rather than building a full component library.",
+      "rationale": "Andrei and Robert wanted consistency across tools. Alice pushed back on a full component library as over-scoped, proposing token extraction and pattern documentation instead — 80% of the value without the overhead.",
+      "participants": [
+        "Andrei",
+        "Robert",
+        "Alice"
+      ]
+    },
+    {
+      "description": "QA is a mandatory release gate: nothing ships until Enzo gives a pass/fail verdict, and failures must be fixed before release.",
+      "rationale": "Enzo identified that QA had been skipped or rushed on previous projects, undermining the team's quality claims. Thomas agreed to formalize QA as a blocking step in the pipeline.",
+      "participants": [
+        "Enzo",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "Trivial fix boundary defined: single-file cosmetic changes with no behavior change can bypass the pipeline. Anything touching multiple files or changing behavior goes through Thomas.",
+      "rationale": "Andrei raised that 'trivial' tends to expand without a clear definition. The one-file/cosmetic-only rule gives a concrete bright line. Robert added that design-system-affecting changes need a heads-up even if small.",
+      "participants": [
+        "Andrei",
+        "Thomas",
+        "Robert"
+      ]
+    },
+    {
+      "description": "API contract reviews between Alice and Jonah will be formalized before implementation begins on future full-stack projects.",
+      "rationale": "Jonah proposed defining API shapes together upfront and building to that contract independently, reducing integration surprises. Alice supported this as a practical improvement.",
+      "participants": [
+        "Jonah",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Robert will do a visual review of implementations against the design spec before handoff to QA, as a lightweight check rather than a formal gate.",
+      "rationale": "Robert wanted to catch design drift earlier. Alice welcomed it as long as it stays lightweight — a quick look, not a meeting.",
+      "participants": [
+        "Robert",
+        "Alice"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Enzo",
+      "description": "Conduct a full QA audit of all five shipped projects (landing page, PDF Splitter, PDF Combiner, OST Tool, Task History) covering happy paths, edge cases, responsive behavior, keyboard navigation, accessibility, and error states. Produce a findings report with severity ratings.",
+      "priority": "high"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Define and document the shared design token consolidation plan — audit existing tokens across all tools, propose a single-source-of-truth CSS file structure, and document cross-project architectural patterns.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Work with Andrei on the design token spec — consolidate the color palette, type scale, and spacing system into one canonical reference that all tools inherit.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Implement the consolidated design token CSS file once Andrei and Robert define the spec, and update existing tools to reference the shared tokens.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Document the backend patterns established in the OST tool (Express routes, Zod validation, JSON file storage) as a reference for future full-stack projects. Add a basic health check endpoint to the OST tool backend.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Update CLAUDE.md and team operating docs to reflect the new operating agreements: QA as release gate, trivial-fix boundary definition, design review step, API contract review process.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Start an Architecture Decision Record (ADR) log documenting past cross-project decisions (client-side PDF processing, Express for backends, vanilla JS for landing page) with rationale.",
+      "priority": "low"
+    }
+  ],
+  "mood": "Energized and aligned",
+  "nextMeetingTopics": [
+    "Review Enzo's QA audit findings and prioritize bug fixes",
+    "Status check on design token consolidation (Andrei + Robert)",
+    "Discuss candidates for the next new tool (30-60 day phase)",
+    "Review Jonah's backend pattern documentation",
+    "Accessibility audit results and remediation plan"
+  ]
+}

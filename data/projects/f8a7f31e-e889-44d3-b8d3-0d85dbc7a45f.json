@@ -1,9 +1,0 @@
-{
-  "id": "f8a7f31e-e889-44d3-b8d3-0d85dbc7a45f",
-  "name": "Increase font size in header.",
-  "description": "Can you increase the font size where it says \"Team HQ\" and \"Sherlock Labs\" on the header of our team homepage? In particular, can you also just try to improve the readability of that \"Sherlock Labs\" text? It seems like it's sort of gray on black, and it could be like two shades lighter just to make it a little easier to read. And then I'd like the \"Sherlock Labs\" part to be bolder, maybe like a fun sort of fixed width console style font as well.",
-  "status": "in-progress",
-  "createdAt": "2026-02-06T20:26:04.088Z",
-  "updatedAt": "2026-02-06T20:26:23.254Z",
-  "completedAt": null
-}

@@ -17,6 +17,9 @@ Reusable reference docs for the TeamHQ agent team. Agents read these when perfor
 | [CSS Dark Theme](development/css-dark-theme.md) | Alice, Robert | Design token reference for the dark theme |
 | [Vanilla JS Patterns](development/vanilla-js-patterns.md) | Alice, Jonah | JS patterns used in the codebase |
 | [Component Patterns](development/component-patterns.md) | Alice, Robert | Reusable UI patterns |
+| [React Native & Expo](development/react-native-expo.md) | Zara, Leo, Andrei | Expo project structure, EAS workflows, SDK conventions |
+| [Mobile Component Patterns](development/mobile-component-patterns.md) | Zara, Leo, Robert | RN styling, platform code, lists, state management |
+| [Mobile Animations](development/mobile-animations.md) | Leo, Zara, Robert | Reanimated, Gesture Handler, spring configs, scroll animations |
 
 ## Writing
 

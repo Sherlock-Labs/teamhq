@@ -1,0 +1,12 @@
+{
+  "id": "74eb42b6-2d38-4f9c-ad24-6ece38389e1f",
+  "projectId": "f36066d5-b9ab-4647-902c-997828c7724f",
+  "status": "completed",
+  "startedAt": "2026-02-07T21:45:17.520Z",
+  "endedAt": "2026-02-07T21:48:15.465Z",
+  "durationMs": 177945,
+  "eventCount": 39,
+  "exitCode": 0,
+  "error": null,
+  "pid": null
+}

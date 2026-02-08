@@ -1,0 +1,12 @@
+{
+  "id": "cea3a33b-03bf-4659-bddf-8363c40b06a4",
+  "projectId": "b79e7b71-206b-4d80-9d2d-0e163b4270f1",
+  "status": "stopped",
+  "startedAt": "2026-02-06T21:42:57.502Z",
+  "endedAt": "2026-02-06T21:44:24.989Z",
+  "durationMs": 87487,
+  "eventCount": 33,
+  "exitCode": null,
+  "error": null,
+  "pid": null
+}
