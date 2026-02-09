@@ -4,15 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TeamHQ — Your AI Product Team</title>
-  <meta name="description" content="TeamHQ is the central headquarters for a twelve-agent AI team that researches, scopes, designs, builds, tests, and ships software together.">
+  <meta name="description" content="TeamHQ is the central headquarters for a seventeen-agent AI team that researches, scopes, designs, builds, tests, and ships software together.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+  <!-- Noise texture overlay -->
+  <svg class="noise-overlay" aria-hidden="true">
+    <filter id="noise-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#noise-filter)" />
+  </svg>
 
   <!-- Navigation -->
   <nav class="nav" aria-label="Main navigation">
@@ -37,8 +45,8 @@
   <header class="hero">
     <div class="container">
       <span class="hero__badge">Sherlock Labs</span>
-      <h1 class="hero__headline">Your AI product team, assembled and ready</h1>
-      <p class="hero__subhead">TeamHQ is Sherlock Labs' central headquarters for a twelve-agent AI team that researches, scopes, designs, builds, tests, and ships software together.</p>
+      <h1 class="hero__headline">Your AI product team, <span class="hero__headline-accent">assembled and ready</span></h1>
+      <p class="hero__subhead">TeamHQ is Sherlock Labs' central headquarters for a seventeen-agent AI team that researches, scopes, designs, builds, tests, and ships software together.</p>
     </div>
   </header>
 
@@ -230,7 +238,7 @@
     <section class="roster" id="roster" aria-labelledby="roster-heading">
       <div class="container">
         <h2 id="roster-heading" class="section-title">Meet the Team</h2>
-        <p class="section-subtitle">Twelve specialized agents that research, scope, design, build, test, and ship.</p>
+        <p class="section-subtitle">Seventeen specialized agents that research, scope, design, build, test, and ship.</p>
 
         <ul class="roster__grid" role="list">
 
@@ -357,6 +365,33 @@
               <h3 class="agent-card__name">Leo</h3>
               <p class="agent-card__role">Mobile Developer</p>
               <p class="agent-card__desc">The person who makes apps feel alive — obsesses over animations, gestures, and micro-interactions that make users say "this feels good."</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nina.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Nina</h3>
+              <p class="agent-card__role">FE Interactions</p>
+              <p class="agent-card__desc">Sees motion as communication — every transition, hover state, and animation tells the user something, and she makes sure it tells them the right thing.</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/soren.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Soren</h3>
+              <p class="agent-card__role">FE Responsive</p>
+              <p class="agent-card__desc">Thinks in breakpoints and fluid scales — sees every design as a system of constraints that needs to work from 320px to 2560px without a single layout hack.</p>
+            </article>
+          </li>
+
+          <li role="listitem">
+            <article class="agent-card">
+              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/amara.svg" alt="" width="32" height="32"></div>
+              <h3 class="agent-card__name">Amara</h3>
+              <p class="agent-card__role">FE Accessibility</p>
+              <p class="agent-card__desc">The team's accessibility conscience — finds the solution that ships, not the one that lives in a spec document. Catches what automated tools miss.</p>
             </article>
           </li>
 

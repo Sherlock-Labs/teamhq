@@ -11,14 +11,20 @@
 
   if (!listContainer) return;
 
+  // Read agent identity colors from CSS tokens (single source of truth)
+  var rootStyles = getComputedStyle(document.documentElement);
+  function agentColor(name) {
+    return rootStyles.getPropertyValue('--color-agent-' + name).trim() || '#a1a1aa';
+  }
+
   // Agent display info for transcript rendering
   var AGENTS = {
-    'Thomas': { role: 'Product Manager', avatar: 'img/avatars/thomas.svg', color: '#818cf8' },
-    'Andrei': { role: 'Technical Architect', avatar: 'img/avatars/andrei.svg', color: '#a78bfa' },
-    'Robert': { role: 'Product Designer', avatar: 'img/avatars/robert.svg', color: '#c084fc' },
-    'Alice': { role: 'Front-End Developer', avatar: 'img/avatars/alice.svg', color: '#f472b6' },
-    'Jonah': { role: 'Back-End Developer', avatar: 'img/avatars/jonah.svg', color: '#34d399' },
-    'Enzo': { role: 'QA Engineer', avatar: 'img/avatars/enzo.svg', color: '#fbbf24' },
+    'Thomas': { role: 'Product Manager', avatar: 'img/avatars/thomas.svg', color: agentColor('thomas') },
+    'Andrei': { role: 'Technical Architect', avatar: 'img/avatars/andrei.svg', color: agentColor('andrei') },
+    'Robert': { role: 'Product Designer', avatar: 'img/avatars/robert.svg', color: agentColor('robert') },
+    'Alice': { role: 'Front-End Developer', avatar: 'img/avatars/alice.svg', color: agentColor('alice') },
+    'Jonah': { role: 'Back-End Developer', avatar: 'img/avatars/jonah.svg', color: agentColor('jonah') },
+    'Enzo': { role: 'QA Engineer', avatar: 'img/avatars/enzo.svg', color: agentColor('enzo') },
   };
 
   // State
@@ -248,7 +254,7 @@
   }
 
   function renderTranscriptEntry(entry) {
-    var agent = AGENTS[entry.speaker] || { role: entry.role || '', avatar: '', color: '#a1a1aa' };
+    var agent = AGENTS[entry.speaker] || { role: entry.role || '', avatar: '', color: agentColor('default') };
     var avatarHtml = agent.avatar
       ? '<img src="' + escapeAttr(agent.avatar) + '" alt="" width="28" height="28">'
       : '<span>' + escapeHTML(entry.speaker.charAt(0)) + '</span>';

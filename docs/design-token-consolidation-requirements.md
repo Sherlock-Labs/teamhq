@@ -1,200 +1,246 @@
-# Design Token Consolidation Requirements
+# Design Token Consolidation - Requirements (Updated)
 
 **Author:** Thomas (PM)
-**Date:** 2026-02-07 (updated)
-**Priority:** High
-**Source:** Charter Meeting #1
+**Date:** 2026-02-07
+**Status:** Scoped - Ready for Tech Approach
+**Owner:** Alice (Front-End Developer)
+**Target:** One week
+**Source:** Weekly Meeting #3
 
 ---
 
-## Problem Statement
+## 1. Problem Statement
 
-TeamHQ's design tokens are fragmented across multiple systems with no single source of truth. The two main surfaces share the same visual identity (dark theme, zinc/indigo palette, Inter typeface) but define their design tokens independently:
+TeamHQ already has a well-structured `css/tokens.css` file (182 lines) and a `css/shared.css` file (186 lines) that were extracted in a prior pass. The token system is comprehensive: raw color scales, semantic aliases, typography, spacing, radii, and shadows. The HTML already links all three files in the correct order (`tokens.css` -> `shared.css` -> `styles.css`).
 
-1. **Landing page** (`css/styles.css`) -- ~3,500 lines, CSS custom properties with `--color-` prefix, comprehensive token system (colors, typography, spacing, radii, shadows). However, 53 hardcoded hex values are scattered throughout the file outside the `:root` block, and `meetings.js` contains 7 hardcoded agent identity colors.
-2. **OST Tool** (`ost-tool/client/`) -- Tailwind CSS v4, tokens defined implicitly via Tailwind's zinc/indigo utilities, no shared CSS file with the rest of the repo. Two hardcoded hex values in `TreeView.tsx`.
+**The remaining problem:** Adoption is incomplete. Hardcoded hex values and raw `rgba()` calls still bypass the token system across multiple files. This creates maintenance risk and makes future theme changes expensive.
 
-> **Note:** The PDF Splitter and PDF Combiner tools referenced in the original requirements have been removed from the repo. This scope has been updated to reflect the current codebase.
+This sprint completes the consolidation: replace every remaining hardcoded color value with a token reference so `tokens.css` is truly the single source of truth.
 
-This creates three concrete risks:
+## 2. Current State Audit
 
-- **Drift:** A change to a token in one place doesn't propagate to others. The landing page and OST tool happen to use the same Tailwind color values, but by coincidence, not by design.
-- **Internal inconsistency:** Even within `css/styles.css`, 53 hardcoded hex values bypass the well-structured token system. Colors like `#ef4444`, `#059669`, `#7c3aed`, `#22d3ee`, `#c084fc`, and `#fbbf24` are used in the CSS but never defined as tokens.
-- **Onboarding friction:** No single source of truth for "what does our design system look like?" New tools or pages have to reverse-engineer tokens from existing code.
+### 2.1 What's Already Done (Good Foundation)
 
-## Current State Audit
+- `css/tokens.css` exists with 62+ raw color tokens, 13 semantic tokens, 13 agent identity tokens, full typography/spacing/radius/shadow scales
+- `css/shared.css` exists with nav, footer, container, and global focus styles -- all using token references (only 1 hardcoded rgba remaining)
+- `index.html` correctly links: `tokens.css` -> `shared.css` -> `styles.css`
+- ~997 `var(--` references in styles.css demonstrate strong token adoption overall
 
-### Token Naming Conventions
+### 2.2 What Still Needs Work
 
-| Surface | Prefix | Example | Spacing | Radii |
-|---------|--------|---------|---------|-------|
-| Landing page | `--color-zinc-*`, `--color-indigo-*` | `var(--color-zinc-800)` | `--space-1` through `--space-24` | `--radius-sm/md/lg/xl` |
-| OST Tool | Tailwind classes | `bg-zinc-800` | Tailwind defaults | Tailwind defaults |
+| File | Hardcoded Hex | Raw rgba() | Total |
+|------|:---:|:---:|:---:|
+| `css/styles.css` (3,782 lines) | 9 | ~65 | ~74 |
+| `css/docs.css` (570 lines) | 5 | ~8 | ~13 |
+| `css/shared.css` (186 lines) | 0 | 1 | 1 |
+| `js/meetings.js` | 7 | 0 | 7 |
+| `ost-tool/client/src/components/TreeView.tsx` | 2 | 0 | 2 |
+| `pdf-splitter/index.html` (inline CSS) | ~16 | 0 | ~16 |
+| `pdf-combiner/index.html` (inline CSS) | ~19 | 0 | ~19 |
+| **Total** | **~58** | **~74** | **~132** |
 
-### Color Values (consistent across surfaces)
+### 2.3 Detailed Hex Audit
 
-Both surfaces use the same actual hex values -- the Tailwind zinc and indigo scales:
+**`css/styles.css` -- 9 hardcoded hex values:**
 
-- Zinc: `#f4f4f5` (100) through `#09090b` (950) -- 10 steps
-- Indigo: `#a5b4fc` (300), `#818cf8` (400), `#6366f1` (500), `#4f46e5` (600), `#4338ca` (700) -- plus `#eef2ff` (50), `#e0e7ff` (100)
-- Violet: `#8b5cf6` (500) -- defined as "accent" but role unclear vs. indigo
-- Status: Red `#f87171` (400), Green `#4ade80` (400), Yellow `#facc15` (400)
+| Line | Current | Should Be |
+|------|---------|-----------|
+| 664 | `background: #4ade80` | `var(--color-green-400)` |
+| 668 | `background: #facc15` | `var(--color-yellow-400)` |
+| 672 | `background: #f87171` | `var(--color-red-400)` |
+| 1225 | `background: #ef4444` | `var(--color-red-500)` |
+| 1234 | `background: #dc2626` | `var(--color-red-600)` |
+| 1253 | `background: #ffffff` | `var(--color-white)` or `var(--color-bg-card)` |
+| 1357 | `background: #059669` | `var(--color-emerald-600)` |
+| 1361 | `background: #059669` | `var(--color-emerald-600)` |
+| 2025 | `background: #ffffff` | `var(--color-white)` or `var(--color-bg-card)` |
 
-### Landing Page Internal Inconsistencies
+**`css/docs.css` -- 5 hardcoded hex values:**
 
-The `:root` block (lines 1-109) is well-structured, but 53 hardcoded hex values exist throughout the rest of `css/styles.css`:
+| Line | Current | Should Be | Notes |
+|------|---------|-----------|-------|
+| 180 | `color: #34d399` | `var(--color-emerald-400)` | |
+| 185 | `color: #c084fc` | `var(--color-purple-400)` | |
+| 190 | `color: #fbbf24` | `var(--color-amber-400)` | |
+| 196 | `color: #fb7185` | Needs new token or closest match | Not in tokens.css -- `--color-rose-400` is `#fb7e95`. Robert to confirm. |
+| 201 | `color: #22d3ee` | `var(--color-cyan-400)` | |
 
-- `#4ade80` (green-400) used inline in 4+ places instead of `var(--color-green-400)`
-- `#f87171` (red-400) used inline in 7+ places instead of `var(--color-red-400)`
-- `#facc15` (yellow-400) used inline in 3+ places instead of `var(--color-yellow-400)`
-- `#ef4444`, `#dc2626` (red shades) -- not defined as tokens at all
-- `#059669` (emerald-600) -- not defined as tokens at all
-- `#7c3aed` (violet-600) -- not defined as tokens at all
-- `#22d3ee` (cyan-400), `#c084fc` (purple-400), `#fbbf24` (amber-400) -- not defined as tokens at all
+**`js/meetings.js` -- 7 hardcoded hex values:**
 
-Additionally, `js/meetings.js` has 7 hardcoded hex agent identity colors (`#818cf8`, `#a78bfa`, `#c084fc`, `#f472b6`, `#34d399`, `#fbbf24`, `#a1a1aa`).
+| Line | Agent | Current | Token Equivalent |
+|------|-------|---------|-----------------|
+| 16 | Thomas | `#818cf8` | `--color-agent-thomas` / `--color-indigo-400` |
+| 17 | Andrei | `#a78bfa` | `--color-agent-andrei` / `--color-violet-400` |
+| 18 | Robert | `#c084fc` | `--color-agent-robert` / `--color-purple-400` |
+| 19 | Alice | `#f472b6` | `--color-agent-alice` / `--color-pink-400` |
+| 20 | Jonah | `#34d399` | `--color-agent-jonah` / `--color-emerald-400` |
+| 21 | Enzo | `#fbbf24` | `--color-agent-enzo` / `--color-amber-400` |
+| 251 | Default | `#a1a1aa` | `--color-agent-default` / `--color-zinc-400` |
 
-Despite this, the file has ~997 `var(--` references -- strong token adoption overall, just not complete.
+Note: Agent identity tokens already exist in `tokens.css` (lines 112-125). The JS just needs to read them.
 
-### OST Tool Token State
+**`ost-tool/client/src/components/TreeView.tsx` -- 2 hardcoded hex values:**
 
-- Uses Tailwind CSS v4 with `@import "tailwindcss"` and minimal `@theme` (only sets font-sans to Inter)
-- No custom color theme -- relies entirely on Tailwind's default zinc/indigo/etc palette
-- Color choices match the landing page by coincidence (same Tailwind source), not by design
-- 2 hardcoded hex values in `TreeView.tsx` (`#3f3f46` = zinc-700, `#27272a` = zinc-800)
+| Line | Current | Token Equivalent |
+|------|---------|-----------------|
+| 47 | `stroke: "#3f3f46"` | `--color-zinc-700` |
+| 223 | `color="#27272a"` | `--color-zinc-800` |
 
-### Shared Typography
+**`pdf-splitter/index.html` and `pdf-combiner/index.html`:**
+- Each defines its own `:root` variables (`--zinc-*`, `--indigo-*`, `--red-*`) that duplicate values already in `tokens.css`
+- Also have standalone `color: #fff` values outside the variable system
+- These are self-contained single-file tools with inline `<style>` blocks
 
-Both surfaces use Inter with the same fallback stack. The landing page defines a full type scale (`--text-xs` through `--text-5xl`); the OST tool uses Tailwind's default type scale.
+### 2.4 The rgba() Problem (The Bulk of the Work)
 
-### Shared Component Patterns
+The biggest category is **~65 raw `rgba()` calls in `styles.css`** and **~8 in `docs.css`** that use hardcoded RGB channel values instead of token references.
 
-- **Nav bar**: Sticky, zinc-950 bg, zinc-800 border-bottom, logo + links/back
-- **Footer**: zinc-900 bg, zinc-800 border-top, centered logo + attribution
-- **Primary buttons**: indigo-500 bg, white text, 8px radius, hover to indigo-400 or indigo-600
-- **Cards**: zinc-900 bg, zinc-800 border, 12px radius, hover to zinc-700 border
+**Most common patterns:**
 
-### What the Landing Page Already Has Right
+| Pattern | Color | Count | Opacity Range |
+|---------|-------|:---:|------|
+| `rgba(16, 185, 129, *)` | emerald-500 / accent | ~16 | 0.03 - 0.50 |
+| `rgba(0, 0, 0, *)` | black | ~20 | 0.02 - 0.50 |
+| `rgba(220, 38, 38, *)` | red-600 | ~8 | 0.03 - 0.20 |
+| `rgba(22, 163, 74, *)` | green-600 / status-success | ~4 | 0.06 - 0.08 |
+| `rgba(202, 138, 4, *)` | warning yellow | ~4 | 0.05 - 0.15 |
+| `rgba(74, 222, 128, *)` | green-400 | 2 | 0.0 - 0.4 |
+| `rgba(255, 255, 255, *)` | white | ~3 | 0.02 - 0.85 |
+| `rgba(129, 140, 248, *)` etc. | doc badge colors | ~8 | 0.1 |
 
-The landing page's `css/styles.css` `:root` block (lines 1-109) is already a well-structured token system. It has:
+**Why this is non-trivial:** CSS custom properties store opaque color strings. You can't do `rgba(var(--color-emerald-500), 0.15)` because the token resolves to `#10b981`, not `16, 185, 129`. There are three approaches:
 
-- Raw color scales (zinc, indigo, violet)
-- Semantic aliases (`--color-bg-primary`, `--color-text-primary`, `--color-accent`, etc.)
-- Full typography scale with line heights and font weights
-- Spacing scale (4px increments)
-- Border radius scale
-- Shadow scale
-- Legacy gray scale (marked as legacy, kept for reference)
+1. **`color-mix(in srgb, var(--token) X%, transparent)`** -- Modern CSS, clean, no new tokens needed. Supported in all modern browsers since 2023.
+2. **Opacity variant tokens** -- Define `--color-accent-15: rgba(16, 185, 129, 0.15)` etc. More tokens but simple references.
+3. **RGB channel tokens** -- Define `--color-emerald-500-rgb: 16, 185, 129` alongside the hex token. Allows `rgba(var(--color-emerald-500-rgb), 0.15)`.
 
-This is a solid foundation. The two problems are: (1) the token system lives inside a 3,500-line file alongside all the landing page component styles, and (2) even within the landing page, 53 hardcoded hex values bypass the token system.
+**Andrei needs to evaluate and recommend the approach in the tech doc.**
 
-## Scope
+## 3. Scope
 
 ### In Scope
 
-1. **Extract shared tokens into a standalone file** -- Pull the `:root` token block out of `css/styles.css` into a new `css/tokens.css` (or equivalent) that all surfaces can import
-2. **Rationalize the color palette** -- Consolidate into a coherent, minimal set. Clarify violet's role vs. indigo. Define a complete status color set. Add tokens for all colors currently hardcoded in the CSS (emerald, cyan, purple, amber, etc.)
-3. **Eliminate hardcoded hex values in CSS** -- Replace all 53 hardcoded hex values in `css/styles.css` (outside `:root`) with token references
-4. **Eliminate hardcoded hex values in JS** -- Replace the 7 hardcoded agent identity colors in `meetings.js` with a shared reference
-5. **Extract shared component styles** -- Nav, footer, and common button patterns into a shared `css/shared.css` (or equivalent) that tools can import
-6. **Document the token system** -- Produce a reference doc that lists every token, its value, and when to use it, plus document how CSS custom property tokens map to Tailwind classes
-7. **OST Tool alignment** -- Extend the OST tool's Tailwind `@theme` to reference canonical tokens (or at minimum, document the mapping so future changes stay consistent)
+1. Replace all 9 hardcoded hex values in `css/styles.css` with token references
+2. Replace all 5 hardcoded hex values in `css/docs.css` with token references
+3. Replace the 1 remaining raw `rgba()` in `css/shared.css`
+4. Replace 7 hardcoded hex values in `js/meetings.js` with a token-based approach
+5. Tokenize all ~73 raw `rgba()` calls in `styles.css` and `docs.css` using Andrei's recommended approach
+6. Replace 2 hardcoded hex values in `ost-tool/client/src/components/TreeView.tsx`
+7. Decide on PDF tools strategy (link to shared tokens vs. keep self-contained)
+8. Add any missing tokens to `tokens.css` (e.g., the `#fb7185` question)
+9. Zero visual regressions across all pages
 
 ### Out of Scope (Deferred)
 
-- **Migrating the OST tool to use CSS custom properties** -- The OST tool uses Tailwind, and forcing it onto a CSS-variable system would be over-engineering. As long as the same color/spacing values are used, visual consistency is maintained.
-- **Building a component library** -- We're consolidating tokens and shared styles, not building a reusable UI library with variants and slots.
-- **Theming / light mode** -- Dark theme only for now. Semantic aliases already exist for easy theming later if needed.
-- **Changing any visual appearance** -- This is a refactoring project. Nothing should look different after completion.
-- **Motion/animation tokens** -- Not enough usage to warrant tokenizing.
-- **Component-level tokens** (button sizes, card padding) -- Semantic tokens are sufficient for now.
-- **Automated token generation pipeline** (e.g., Style Dictionary) -- Evaluate in a future phase if the manual approach becomes burdensome.
+- Changing any actual color values -- this is a refactor, not a redesign
+- Dark/light theme switching infrastructure
+- Migrating docs page from dark zinc theme to light neutral theme
+- Refactoring the OST tool's Tailwind system beyond the 2 hardcoded values
+- Mobile app styles (React Native -- different paradigm)
+- Building a design token documentation page (Nadia can do this as a follow-up)
+- Lint rules or CI checks to prevent future hardcoded values (good idea, separate project)
 
-## Acceptance Criteria
+## 4. Acceptance Criteria
 
-1. A single `css/tokens.css` file exists containing all design tokens (colors, typography, spacing, radii, shadows) with the standardized `--color-`, `--text-`, `--space-`, `--radius-`, `--shadow-` prefix convention
-2. `css/styles.css` imports `tokens.css` instead of defining tokens inline, and continues to work identically
-3. Zero hardcoded hex values in `css/styles.css` outside the `:root`/token definitions -- all color references use `var(--token-name)` syntax
-4. Agent identity colors in `meetings.js` reference CSS custom properties or a shared JS constant derived from tokens
-5. A `css/shared.css` file exists with shared component patterns (nav, footer, primary button styles)
-6. All surfaces render identically before and after the migration (visual regression: zero pixel differences)
-7. A `docs/design-tokens-reference.md` documents every token, its value, its semantic purpose, and the Tailwind class equivalent
-8. No new dependencies introduced (no Sass, no PostCSS, no build step for the vanilla HTML tools)
-9. Violet's role is clarified -- either it's the accent and indigo is the brand, or violet is deprecated. Robert decides.
-10. Legacy gray scale is formally deprecated (or removed) -- zinc is the canonical neutral
+### P0 -- Must Have (Release Gate)
 
-## Technical Constraints
+1. **Zero hardcoded hex values** in `styles.css`, `docs.css`, and `shared.css` -- every color references a `tokens.css` variable
+2. **Zero raw rgba() calls** in CSS files that use hardcoded RGB channel values -- all use the tokenization approach Andrei specifies
+3. **Agent colors in `meetings.js`** reference CSS custom properties or a token-based JS constant
+4. **Zero visual regressions** across all pages:
+   - Landing page (`index.html`): hero, tools, projects, meetings, roster, how-it-works, modals, toasts, session log
+   - Docs page (`docs.html`): doc list, reading view, all badge types
+5. **`tokens.css` remains the single source of truth** -- no new token definitions leak into component CSS files
 
-- **No build step for vanilla HTML tools.** The landing page is plain HTML/CSS with no bundler. The shared files must be importable via `<link>` tags and CSS `@import`.
-- **OST tool stays on Tailwind.** The OST tool uses Tailwind CSS v4 and should not be forced to switch. Alignment is via Tailwind `@theme` extension or documentation, not replacing Tailwind classes.
-- **No visual changes.** This is a zero-visual-diff refactoring. The design system should look exactly the same before and after.
-- **Browser support.** CSS custom properties are supported in all modern browsers. No IE11 consideration needed.
+### P1 -- Should Have
 
-## Recommended Team & Phasing
+6. OST tool `TreeView.tsx` hardcoded hex values replaced
+7. PDF tools either linked to shared tokens or explicitly documented as intentionally self-contained
+8. Missing token for `#fb7185` resolved (add to tokens or map to closest match)
 
-### Phase 1: Define + Document (Andrei, Robert)
+### P2 -- Nice to Have (Defer if tight on time)
 
-| Order | Agent | Task |
-|-------|-------|------|
-| 1 | **Andrei** (Arch) | Define the file structure, naming conventions, extraction strategy, and OST tool integration approach. Write `docs/design-token-consolidation-tech-approach.md`. |
-| 2 | **Robert** (Designer) | Rationalize the color palette. Validate token taxonomy. Clarify violet vs. indigo. Define the complete status color set and agent identity colors. Write `docs/design-token-consolidation-design-spec.md`. |
+9. Systematic opacity variant tokens or `color-mix()` utility patterns documented for future use
+10. Nadia writes a design token reference doc
 
-### Phase 2: Landing Page Implementation (Alice)
+## 5. Technical Constraints
 
-| Order | Agent | Task |
-|-------|-------|------|
-| 3 | **Alice** (FE) | Execute the extraction and migration: create `css/tokens.css` and `css/shared.css`, update `css/styles.css` (replace all 53 hardcoded hex values), update `meetings.js`. |
-| 4 | **Robert** (Designer) | Lightweight visual review -- confirm landing page renders identically post-migration. |
-| 5 | **Enzo** (QA) | Visual regression check, verify file structure, confirm no broken references. Pass/fail verdict. |
+- **No build step for landing page.** Plain HTML/CSS -- no preprocessors, no bundling.
+- **OST tool uses Tailwind + React.** Token integration must work within that stack.
+- **Browser support:** Modern browsers only. `color-mix()` supported since 2023.
+- **Performance:** CSS custom property lookups are effectively free. No measurable impact.
+- **File size:** Token consolidation should reduce or maintain CSS file sizes.
 
-### Phase 3: OST Tool Alignment (Alice or Andrei)
+## 6. Phased Delivery
 
-| Order | Agent | Task |
-|-------|-------|------|
-| 6 | **Alice** or **Andrei** | Extend OST tool's Tailwind `@theme` to reference canonical tokens. Replace 2 hardcoded hex values in `TreeView.tsx`. |
-| 7 | **Enzo** (QA) | Verify OST tool renders correctly. Pass/fail verdict. |
+### Phase 1: Straightforward Hex Replacements (Days 1-2)
+- Replace all 9 hardcoded hex values in `styles.css`
+- Replace all 5 hardcoded hex values in `docs.css`
+- Replace 1 hardcoded rgba in `shared.css`
+- Replace 7 hardcoded hex values in `js/meetings.js`
+- Resolve `#fb7185` token question with Robert
 
-### Phase 4: Documentation (Nadia)
+### Phase 2: rgba() Tokenization (Days 2-4)
+- Implement Andrei's recommended approach for the ~73 raw `rgba()` calls
+- Apply across `styles.css` (~65 instances) and `docs.css` (~8 instances)
+- This is the bulk of the work and the most technically nuanced phase
 
-| Order | Agent | Task |
-|-------|-------|------|
-| 8 | **Nadia** (Writer) | Write `docs/design-tokens-reference.md` -- the token reference doc with Tailwind mapping. |
+### Phase 3: Peripheral Files & Cleanup (Day 4-5)
+- OST tool `TreeView.tsx` (2 values)
+- PDF tools decision and implementation
+- Final audit pass to confirm zero hardcoded values remain
+- Add any missing tokens to `tokens.css`
 
-### Why These People
+### Phase 4: QA & Ship (Day 5)
+- Robert's design review (visual diff against current state)
+- Enzo's QA pass (all pages, all components, responsive breakpoints)
+- Fix any regressions found in QA
 
-- **Andrei** -- This is fundamentally an architectural decision about file structure and CSS import strategy. He needs to decide how the shared files are structured and how they compose.
-- **Robert** -- He owns the design system. He needs to rationalize the palette, validate the token taxonomy, and confirm it covers all current and foreseeable needs.
-- **Alice** -- She implements the CSS changes. This is a front-end refactoring task.
-- **Enzo** -- QA is a release gate. Visual regression testing is his call.
-- **Nadia** -- The token reference doc is technical documentation. This is her lane.
+## 7. Team Assignments
+
+| Order | Agent | Task | Blocked By |
+|:---:|-------|------|:---:|
+| 1 | **Thomas** (PM) | Write requirements (this doc) | -- |
+| 2 | **Andrei** (Arch) | Write tech approach -- especially the `rgba()` tokenization strategy, PDF tools decision, JS agent colors approach | Thomas |
+| 3 | **Robert** (Designer) | Confirm token inventory completeness (especially `#fb7185`), validate the exact token-to-value mappings, lightweight design spec | Thomas, Andrei |
+| 4 | **Alice** (FE) | Implement all phases -- she owns the CSS architecture | Thomas, Andrei, Robert |
+| 5 | **Robert** (Designer) | Design review -- visual diff of implementation vs. current state | Alice |
+| 6 | **Enzo** (QA) | Full QA pass -- all pages, all components, responsive breakpoints, zero regressions | Robert (review) |
 
 ### Who Is NOT Needed
 
-- **Jonah** (BE) -- No backend work. This is purely CSS/HTML.
-- **Kai** (AI) -- No AI integration needed for this project.
-- **Priya** (Marketer) -- No external-facing messaging needed.
-- **Suki/Marco** (Researchers) -- No research phase needed; this is an internal refactoring.
-- **Yuki** (Analyst) -- No data analysis needed for this scope.
+- **Jonah** (BE) -- No backend work
+- **Kai** (AI) -- No AI integration
+- **Priya** (Marketer) -- No external messaging
+- **Suki/Marco** (Researchers) -- No research needed
+- **Yuki** (Analyst) -- No data analysis needed
+- **Nadia** (Writer) -- Could write token reference doc as follow-up, but not blocking
+- **Soren** (Responsive) -- On standby if Alice finds responsive breakpoint issues
+- **Nina** (Interactions) -- No animation/transition changes
+- **Amara** (A11y) -- No accessibility changes
 
-## Risks
+## 8. Risks
 
 | Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| CSS `@import` causes FOUC (flash of unstyled content) | Low | Medium | Use `<link>` tags in HTML rather than CSS `@import`. Andrei to decide in tech approach. |
-| Shared nav/footer styles conflict with tool-specific overrides | Medium | Low | BEM naming convention already in use. Shared styles should be additive, not overriding. |
-| OST tool Tailwind config drifts from shared tokens | Low | Low | Explicit `@theme` mapping or documented reference keeps alignment. |
-| Visual regression from replacing hardcoded values | Low | High | QA visual regression testing by Enzo. Pixel-perfect match required. |
-| Scope creep into component library | Medium | Medium | Token systems can grow unbounded. Phase 1 defines the boundary; resist adding tokens for hypothetical needs. |
+|------|:---:|:---:|------------|
+| `rgba()` tokenization is non-trivial | High | Medium | Andrei evaluates approaches in tech doc before Alice starts Phase 2 |
+| `#fb7185` in docs.css doesn't match any existing token exactly | Low | Low | Robert confirms correct color; add to tokens or use closest match |
+| PDF tools break if linked to shared tokens | Low | Medium | Test carefully or keep self-contained |
+| docs.css uses zinc (dark) while landing page uses neutral (light) -- mixing contexts | Medium | Low | Both scales are in tokens.css already; document intent |
+| Visual regression from rgba tokenization | Medium | High | QA release gate; Enzo does pixel-level comparison |
 
-## Open Questions for Andrei
+## 9. Open Questions
 
-1. Should `tokens.css` use `@import` or should each HTML file link it separately via `<link>`? (Performance vs. convenience trade-off.)
-2. Should shared component styles (nav, footer) go into `tokens.css` or a separate `shared.css`? (Separation of concerns vs. fewer files.)
-3. For the OST tool: is it worth extending `@theme` in the Tailwind config to map custom properties to Tailwind theme values, or is documentation sufficient?
-4. Should agent identity colors live in `tokens.css` as CSS custom properties, or in a separate JS constants file?
+1. **`rgba()` approach:** `color-mix()` vs. opacity variant tokens vs. RGB channel tokens. Andrei to decide.
+2. **`#fb7185` in docs.css:** Not in tokens.css. `--color-rose-400` is `#fb7e95`. Robert to confirm.
+3. **PDF tools strategy:** Link to shared `tokens.css` or keep self-contained? Andrei to recommend.
+4. **JS agent colors:** Read CSS custom properties at runtime via `getComputedStyle()`, or define a shared JS constant? Andrei to recommend.
+5. **Should `shared.css` nav background `rgba(255, 255, 255, 0.85)` become a token?** It's a frosted-glass effect -- might be better as a one-off.
 
-## Open Questions for Robert
+## 10. Success Metrics
 
-1. What is violet's role? Is it the accent color (with indigo as brand), or should it be deprecated in favor of indigo for everything?
-2. The CSS uses colors not in the token set: emerald-600 (`#059669`), cyan-400 (`#22d3ee`), purple-400 (`#c084fc`), amber-400 (`#fbbf24`). Should these be added as tokens or replaced with existing palette colors?
-3. Should agent identity colors (currently 7 hardcoded hex values in `meetings.js`) be standardized as part of the token system?
+- Zero hardcoded hex values in CSS files (excluding `tokens.css` definitions)
+- Zero hardcoded hex values in JS files
+- All `rgba()` patterns use token-based approach
+- Zero visual regressions confirmed by QA
+- `tokens.css` is the provable single source of truth for all color values

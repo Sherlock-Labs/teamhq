@@ -44,7 +44,7 @@ function getLayoutedElements(
         id: `e-${n.parentId}-${n.id}`,
         source: n.parentId,
         target: n.id,
-        style: { stroke: "#3f3f46" },
+        style: { stroke: "var(--color-zinc-700)" },
       });
       g.setEdge(n.parentId, n.id);
     }
@@ -220,7 +220,7 @@ export default function TreeView({ session, onComplete }: Props) {
           minZoom={0.2}
           maxZoom={1.5}
         >
-          <Background color="#27272a" gap={20} />
+          <Background color="var(--color-zinc-800)" gap={20} />
         </ReactFlow>
       </div>
 

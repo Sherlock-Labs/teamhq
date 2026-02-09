@@ -2,8 +2,8 @@
   <title>Sherlock Labs</title>
   <defs>
     <linearGradient id="brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366F1"/>
-      <stop offset="100%" stop-color="#8B5CF6"/>
+      <stop offset="0%" stop-color="#FB6182"/>
+      <stop offset="100%" stop-color="#e8496a"/>
     </linearGradient>
   </defs>
 
@@ -19,7 +19,7 @@
     <polyline points="18,22 30,28 18,34" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 
     <!-- Blinking cursor bar inside the lens -->
-    <rect x="34" y="22" width="3" height="12" rx="1" fill="#f4f4f5" opacity="0.85"/>
+    <rect x="34" y="22" width="3" height="12" rx="1" fill="#171717" opacity="0.85"/>
   </g>
 
   <!-- === WORDMARK: "$ Sherlock Labs" in monospace style === -->
@@ -29,8 +29,8 @@
 
     <!-- "Sherlock Labs" — single text element with tspan for color split -->
     <text x="22" y="52" font-family="'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'Liberation Mono', monospace" font-size="28" letter-spacing="1">
-      <tspan font-weight="700" fill="#f4f4f5">Sherlock</tspan>
-      <tspan font-weight="400" fill="#6366F1"> Labs</tspan>
+      <tspan font-weight="700" fill="#171717">Sherlock</tspan>
+      <tspan font-weight="400" fill="#FB6182"> Labs</tspan>
     </text>
   </g>
 </svg>

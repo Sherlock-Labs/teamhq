@@ -155,7 +155,7 @@
 }
 
 .doc-item:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--color-white-rgb), 0.02);
 }
 
 /* --- Doc Type Badges --- */
@@ -173,39 +173,39 @@
 
 .doc-item__badge--requirements {
   color: var(--color-indigo-400);
-  background: rgba(129, 140, 248, 0.1);
+  background: rgba(var(--color-indigo-400-rgb), 0.1);
 }
 
 .doc-item__badge--tech-approach {
-  color: #34d399;
-  background: rgba(52, 211, 153, 0.1);
+  color: var(--color-emerald-400);
+  background: rgba(var(--color-emerald-400-rgb), 0.1);
 }
 
 .doc-item__badge--design-spec {
-  color: #c084fc;
-  background: rgba(192, 132, 252, 0.1);
+  color: var(--color-purple-400);
+  background: rgba(var(--color-purple-400-rgb), 0.1);
 }
 
 .doc-item__badge--research {
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.1);
+  color: var(--color-amber-400);
+  background: rgba(var(--color-amber-400-rgb), 0.1);
 }
 
 .doc-item__badge--qa-report,
 .doc-item__badge--qa-findings {
-  color: #fb7185;
-  background: rgba(251, 113, 133, 0.1);
+  color: var(--color-rose-400);
+  background: rgba(var(--color-rose-400-rgb), 0.1);
 }
 
 .doc-item__badge--backend-analysis {
-  color: #22d3ee;
-  background: rgba(34, 211, 238, 0.1);
+  color: var(--color-cyan-400);
+  background: rgba(var(--color-cyan-400-rgb), 0.1);
 }
 
 .doc-item__badge--adr,
 .doc-item__badge--other {
   color: var(--color-zinc-400);
-  background: rgba(161, 161, 170, 0.1);
+  background: rgba(var(--color-zinc-400-rgb), 0.1);
 }
 
 /* --- Doc Item Title --- */

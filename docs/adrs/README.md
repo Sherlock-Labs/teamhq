@@ -13,6 +13,7 @@ This directory contains Architecture Decision Records (ADRs) documenting the sig
 | [005](005-vite-react-for-interactive-tools.md) | Vite + React for Interactive Tools | Accepted | React only when interactivity demands it (OST tool's tree visualization). Vanilla JS for everything else. |
 | [006](006-npm-workspaces-for-fullstack.md) | npm Workspaces for Full-Stack Tools | Accepted | Co-locate frontend and backend with npm workspaces. One `npm run dev` starts both via concurrently, Vite proxy handles /api routing. |
 | [007](007-single-file-tools-pattern.md) | Single-File Tools Pattern | Accepted | Standalone browser tools are a single `index.html` with embedded CSS/JS and CDN libraries. No build step, no framework, no package.json. |
+| [008](008-unified-saas-stack.md) | Unified SaaS Stack for Sherlock Labs | Proposed | Supabase recommended as primary platform (auth + Postgres + storage). Clerk+Neon+Vercel is the upgrade path if multi-product auth becomes painful. Convex, PocketBase, and Firebase eliminated. |
 
 ## Writing New ADRs
 

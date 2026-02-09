@@ -27,6 +27,7 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 | `frontend-interactions` | Nina | Front-end specialist in animations, transitions, hover states, and micro-interactions. | Sonnet |
 | `frontend-responsive` | Soren | Front-end specialist in responsive layouts, CSS Grid/Flexbox, fluid typography, and breakpoints. | Sonnet |
 | `frontend-accessibility` | Amara | Front-end specialist in accessibility, WCAG compliance, keyboard navigation, and screen readers. | Sonnet |
+| `payments-engineer` | Howard | Builds payment flows, billing logic, and Stripe integrations. Expert in subscriptions, webhooks, and PCI compliance. | Sonnet |
 
 ## How the Team Operates
 
@@ -95,7 +96,7 @@ Agents are spawned via the Task tool with `team_name` and the agent's file name:
 
 ```
 subagent_type: "general-purpose"
-name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y")
+name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments")
 model: "opus" or "sonnet" (see Model column in team table above)
 ```
 
