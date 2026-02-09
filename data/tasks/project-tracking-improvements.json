@@ -2,7 +2,7 @@
   "id": "project-tracking-improvements",
   "name": "Project Tracking Improvements",
   "description": "Added a Portfolio section to the TeamHQ landing page that showcases the team's completed work with rich data — agent contributions, task breakdowns, decisions, file deliverables, and summary statistics.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Scoped requirements for project tracking improvements",

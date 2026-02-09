@@ -2,7 +2,7 @@
   "id": "ceo-response-input",
   "name": "CEO Response Input",
   "description": "Add a message input to the session viewer so the CEO can respond to agent questions directly from the web UI during a running session.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Scoped requirements for CEO response input feature",

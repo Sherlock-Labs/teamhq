@@ -2,7 +2,7 @@
   "id": "custom-meetings",
   "name": "Custom Meetings",
   "description": "Add custom meeting type to the existing meeting system — CEO picks 2-6 agents and provides instructions, agents discuss and produce action items.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Scoped requirements for custom meetings feature",

@@ -2,7 +2,7 @@
   "id": "teamhq-mobile-app",
   "name": "TeamHQ Mobile App",
   "description": "Voice-first mobile companion app for the CEO. Speak a project into existence, monitor team progress, and manage projects from the phone.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Built project screens, voice recording flow, and data hooks (Mobile Developer 1)",

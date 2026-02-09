@@ -2,7 +2,7 @@
   "id": "ost-recommendation-redesign",
   "name": "OST Recommendation Page Redesign",
   "description": "Redesigned the OST tool recommendation page to reduce color overload, add expandable debater reasoning, and improve information hierarchy.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Scoped requirements for recommendation page redesign",

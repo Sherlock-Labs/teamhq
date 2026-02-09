@@ -2,7 +2,7 @@
   "id": "teamhq-redesign-v2",
   "name": "TeamHQ Redesign v2",
   "description": "Visual redesign of the TeamHQ landing page — switching from dark theme with rose accent to clean light theme with royal jaguar green (#006B3F), inspired by youngjerks.com aesthetic.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Scoped redesign v2 requirements",
