@@ -1,15 +1,15 @@
 {
   "id": "502920e5-6b99-4d98-97ba-7f88a355e7dd",
   "projectId": "7726b222-f868-48bb-9a46-a31fd4b3e99e",
-  "status": "running",
+  "status": "timed-out",
   "startedAt": "2026-02-09T20:52:34.633Z",
-  "endedAt": null,
-  "durationMs": null,
-  "eventCount": 26,
+  "endedAt": "2026-02-09T21:24:18.569Z",
+  "durationMs": 1903936,
+  "eventCount": 28,
   "exitCode": null,
   "error": null,
   "pid": null,
   "cliSessionId": "1a14029d-843e-4f35-89dc-e0aac415a01f",
   "turnCount": 1,
-  "state": "idle"
+  "state": "ended"
 }

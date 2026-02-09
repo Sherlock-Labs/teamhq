@@ -2,14 +2,14 @@
   "id": "0adfe81c-a2b8-4316-8617-eb5b37a6bb6f",
   "name": "Update tech approach writing practice to explicitly flag ...",
   "description": "",
-  "status": "in-progress",
+  "status": "completed",
   "createdAt": "2026-02-09T20:38:11.865Z",
-  "updatedAt": "2026-02-09T21:15:43.124Z",
+  "updatedAt": "2026-02-09T21:25:32.142Z",
   "completedAt": null,
   "goals": "",
   "constraints": "",
   "brief": "Update tech approach writing practice to explicitly flag files requiring significant restructuring versus simple extension, with a note on downstream impact for QA test planning.\n\nOwner: Andrei\nPriority: high\nSource: Custom Meeting #4",
   "notes": [],
   "kickoffPrompt": "You have a new project to work on.\n\n## Project: Update tech approach writing practice to explicitly flag ...\n\n**Brief:**\nUpdate tech approach writing practice to explicitly flag files requiring significant restructuring versus simple extension, with a note on downstream impact for QA test planning.\n\nOwner: Andrei\nPriority: high\nSource: Custom Meeting #4\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
-  "activeSessionId": null
+  "activeSessionId": "b4dfe680-ff59-4c88-a9e0-a81cb237a89f"
 }

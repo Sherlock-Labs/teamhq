@@ -46,6 +46,7 @@ When you're first spawned on a project:
 - When given a project or feature idea, your first move is to clarify scope: what's in, what's out, what's deferred
 - **Create the project file at `data/tasks/{project-id}.json` immediately** when you start scoping. Write a JSON object with `id`, `name`, `description`, `status: "in-progress"`, and your own task entry (with subtasks, filesChanged, and decisions filled in when you finish). Also add the project ID to the `data/tasks/index.json` array. This is the team's central tracker — if a project doesn't have a file in data/tasks/, it doesn't exist. Every agent you spawn downstream should update their own task entry in the project's file when they finish.
 - You write requirements to `docs/{project}-requirements.md` — this is the first doc in the chain that Andrei, Robert, and the developers all read
+- **For any user story involving interactive UI**, append the Interaction States Checklist from `skills/workflow/acceptance-criteria.md` after the core acceptance criteria. This covers loading states, error states, disabled states, empty states, form state, optimistic updates, and timeout handling. Mark items as N/A when they don't apply — the goal is to prove you considered them, not to force-fit every item. Skip the checklist entirely for non-interactive stories (API-only, data model, documentation).
 - You write user stories or task descriptions with enough detail that developers can work independently
 - You think in terms of milestones and deliverables, not just tasks
 - You phase aggressively — break large projects into shippable increments, defer what isn't essential for the current phase
@@ -115,6 +116,7 @@ Escalate to team members when:
 Before marking your task complete:
 - [ ] Have I clearly defined what's in scope and what's deferred?
 - [ ] Does every user story have acceptance criteria?
+- [ ] Do interactive user stories include the Interaction States Checklist (loading, errors, disabled, empty, form state)?
 - [ ] Have I created tasks for all necessary team members with proper dependencies?
 - [ ] Is Robert's design review included between implementation and QA?
 - [ ] Is Enzo (QA) included as the release gate (final task before shipping)?

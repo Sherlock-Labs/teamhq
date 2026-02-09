@@ -1,0 +1,45 @@
+{
+  "id": "ac-template-expansion",
+  "name": "Acceptance Criteria Template Expansion",
+  "description": "Expand acceptance criteria template to systematically cover interaction edge cases (async operations, disabled states, error recovery, loading states, empty states, form state, optimistic updates, timeout handling) in addition to core user flows.",
+  "status": "completed",
+  "priority": "medium",
+  "source": "Custom Meeting #4",
+  "startDate": "2026-02-09",
+  "completionDate": "2026-02-09",
+  "tasks": [
+    {
+      "agent": "product-manager",
+      "agentName": "Thomas",
+      "task": "Scope project, write requirements, and implement template changes",
+      "status": "completed",
+      "subtasks": [
+        "Audited AC patterns across 4 existing requirements docs (ceo-response-input, custom-meetings, project-tracking-improvements, session-introspection)",
+        "Identified inconsistency: interaction edge cases covered ad-hoc depending on whether PM thought of them, not systematically",
+        "Designed a 7-section Interaction States Checklist covering: loading/async, error states, disabled states, empty/zero states, form state, optimistic updates, timeout/connectivity",
+        "Wrote requirements doc with before/after example showing the template applied to an existing user story",
+        "Created workflow skill at skills/workflow/acceptance-criteria.md with full checklist template and agent usage guide",
+        "Updated PM agent definition to reference the checklist in How You Work section",
+        "Added checklist verification to PM self-review checklist",
+        "Updated skills/README.md index with new acceptance-criteria skill",
+        "Created task tracking file"
+      ],
+      "filesChanged": [
+        "docs/ac-template-expansion-requirements.md",
+        "skills/workflow/acceptance-criteria.md",
+        "skills/README.md",
+        ".claude/agents/product-manager.md",
+        "data/tasks/ac-template-expansion.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "One general checklist instead of per-component templates (forms, lists, modals). Simpler to adopt, specialize later if patterns emerge.",
+        "Checklist is appended after core AC, not a replacement. Core functional criteria remain unchanged.",
+        "N/A is a required answer for non-applicable items. This eliminates ambiguity about whether an edge case was forgotten vs. intentionally excluded.",
+        "PM owns the checklist, not Designer or FE. This keeps it in the requirements phase where it belongs — before design and implementation.",
+        "No retroactive updates to existing requirements docs. Those projects are shipped. The template applies going forward.",
+        "No full pipeline needed. This is a PM-owned process deliverable — no Arch, Designer, or QA involvement required."
+      ]
+    }
+  ]
+}
