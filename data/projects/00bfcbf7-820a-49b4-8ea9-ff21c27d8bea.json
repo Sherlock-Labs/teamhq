@@ -1,0 +1,15 @@
+{
+  "id": "00bfcbf7-820a-49b4-8ea9-ff21c27d8bea",
+  "name": "Quick competitive scan of the podcast show notes tool mar...",
+  "description": "",
+  "status": "planned",
+  "createdAt": "2026-02-09T20:07:22.012Z",
+  "updatedAt": "2026-02-09T20:07:22.012Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "Quick competitive scan of the podcast show notes tool market — identify top 5 competitors, their pricing models, feature sets, and gaps an indie-focused tool could exploit.\n\nOwner: Suki\nPriority: high\nSource: Custom Meeting #3",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null
+}

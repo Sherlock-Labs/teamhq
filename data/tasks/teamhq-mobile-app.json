@@ -1,0 +1,72 @@
+{
+  "id": "teamhq-mobile-app",
+  "name": "TeamHQ Mobile App",
+  "description": "Voice-first mobile companion app for the CEO. Speak a project into existence, monitor team progress, and manage projects from the phone.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Built project screens, voice recording flow, and data hooks (Mobile Developer 1)",
+      "agent": "Zara",
+      "role": "Mobile Developer",
+      "status": "completed",
+      "subtasks": [
+        "Created TypeScript type definitions matching server schemas (types/api.ts, types/voice.ts)",
+        "Built API fetch wrapper with configurable base URL from Zustand settings store (lib/api.ts)",
+        "Built WebSocket client for voice transcription streaming (lib/websocket.ts)",
+        "Created time formatting utilities — relative time, duration, duration from ms (lib/time.ts)",
+        "Built 6 TanStack Query hooks: useProjects, useProject, useSessions, useCreateProject, useAddNote (with optimistic updates), useStartSession",
+        "Built useVoiceRecording hook — full voice pipeline: audio capture via @mykin-ai/expo-audio-stream, WebSocket streaming to server, transcript accumulation, silence detection with 2s detect + 3s countdown auto-stop",
+        "Built useVoiceExtraction hook — POST /api/voice/extract mutation for LLM-powered project name extraction",
+        "Built Project List screen (app/(tabs)/index.tsx) — FlatList with stagger animations, status filter chips, pull-to-refresh with haptics, loading/empty/error states, Mic FAB integration, voice modal trigger",
+        "Built Project Detail screen (app/project/[id].tsx) — ScrollView with project info sections, notes list with add-note bottom sheet, session history with status badges, start session with confirmation dialog, active session pulsing indicator",
+        "Built VoiceRecordingOverlay — full-screen modal with 5 states: Recording (waveform + live transcript + stop button + silence countdown), Review (editable transcript + auto-extracted project name + Create & Go / Save Draft), Creating (loading state), Error (retry flow), Permission Denied (open settings / manual entry fallback)",
+        "Built TranscriptView — live transcript display with auto-scroll, blinking cursor, and 'Listening...' placeholder",
+        "Built WaveformVisualizer — 40-bar waveform driven by audioLevel prop with spring animations and center-weighted distribution",
+        "Built ProjectCard component with active session pulsing dot and FadeInUp stagger",
+        "Built NotesList component with add-note bottom sheet modal and keyboard avoidance",
+        "Created functional stubs for Leo's shared components (Button, Card, Badge, MicFAB, ConfirmDialog, LoadingScreen, ErrorScreen, EmptyScreen) following the design spec interfaces",
+        "Created tokens.ts with full design spec values and settings Zustand store as stubs for Leo"
+      ],
+      "filesChanged": [
+        "mobile/types/api.ts",
+        "mobile/types/voice.ts",
+        "mobile/lib/api.ts",
+        "mobile/lib/websocket.ts",
+        "mobile/lib/time.ts",
+        "mobile/lib/tokens.ts",
+        "mobile/stores/settings.ts",
+        "mobile/hooks/useProjects.ts",
+        "mobile/hooks/useProject.ts",
+        "mobile/hooks/useSessions.ts",
+        "mobile/hooks/useCreateProject.ts",
+        "mobile/hooks/useAddNote.ts",
+        "mobile/hooks/useStartSession.ts",
+        "mobile/hooks/useVoiceRecording.ts",
+        "mobile/hooks/useVoiceExtraction.ts",
+        "mobile/app/(tabs)/index.tsx",
+        "mobile/app/project/[id].tsx",
+        "mobile/components/voice/VoiceRecordingOverlay.tsx",
+        "mobile/components/voice/TranscriptView.tsx",
+        "mobile/components/voice/WaveformVisualizer.tsx",
+        "mobile/components/projects/ProjectCard.tsx",
+        "mobile/components/projects/NotesList.tsx",
+        "mobile/components/ui/Button.tsx",
+        "mobile/components/ui/Card.tsx",
+        "mobile/components/ui/Badge.tsx",
+        "mobile/components/ui/MicFAB.tsx",
+        "mobile/components/ui/ConfirmDialog.tsx",
+        "mobile/components/ui/LoadingScreen.tsx",
+        "mobile/components/ui/ErrorScreen.tsx",
+        "mobile/components/ui/EmptyScreen.tsx"
+      ],
+      "decisions": [
+        "Created stub versions of Leo's shared components to unblock my screens — they follow the exact interface contract from Robert's design spec so Leo's polished versions are drop-in replacements",
+        "Used React Native Modal (not Expo Router modal) for the voice overlay — it's a transient interaction that doesn't need to be a routable screen, per Andrei's recommendation",
+        "Silence detection implemented with 2s detect + 3s countdown auto-stop — tracks audio levels from the streaming library and auto-stops recording after 5s of silence",
+        "Optimistic updates on useAddNote — appends note to cache immediately, rolls back on error. Other mutations use standard invalidation.",
+        "Client-side filtering for project status — filter the cached data instead of making additional API calls",
+        "Used useRef for recording state tracking to avoid stale closures in audio stream callbacks"
+      ]
+    }
+  ]
+}

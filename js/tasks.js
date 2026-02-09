@@ -4,13 +4,17 @@
   var container = document.getElementById('tasks-list');
   if (!container) return;
 
-  fetch('data/tasks.json')
+  fetch('data/tasks/index.json')
     .then(function (response) {
-      if (!response.ok) throw new Error('Failed to load tasks');
+      if (!response.ok) throw new Error('Failed to load task index');
       return response.json();
     })
-    .then(function (data) {
-      var projects = data.projects;
+    .then(function (ids) {
+      return Promise.all(ids.map(function (id) {
+        return fetch('data/tasks/' + id + '.json').then(function (r) { return r.json(); });
+      }));
+    })
+    .then(function (projects) {
       if (!projects || projects.length === 0) {
         container.innerHTML = '<p class="tasks__empty">No projects yet.</p>';
         return;

@@ -1,0 +1,77 @@
+{
+  "id": "ost-recommendation-redesign",
+  "name": "OST Recommendation Page Redesign",
+  "description": "Redesigned the OST tool recommendation page to reduce color overload, add expandable debater reasoning, and improve information hierarchy.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scoped requirements for recommendation page redesign",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Identified color overload problem: 15+ distinct hues competing on one page",
+        "Identified hidden debater reasoning problem: hover-only tooltips not discoverable",
+        "Defined R1: Reduce palette to 3 accent colors beyond zinc neutrals",
+        "Defined R2: Replace hover tooltips with expandable accordion sections",
+        "Defined R3: Improve hierarchy with rank numbers and prominent scores",
+        "Scoped as pure frontend change — no backend or schema modifications needed"
+      ],
+      "filesChanged": [
+        "docs/ost-recommendation-redesign-requirements.md"
+      ],
+      "decisions": [
+        "Accordion pattern over modal for debater reasoning — better for comparison workflows",
+        "Scoped to RecommendationView only — no changes to DebateView or other views"
+      ]
+    },
+    {
+      "title": "Created design spec for recommendation page redesign",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Defined 3-color accent system: indigo (primary), emerald (positive), red (negative)",
+        "Replaced 11 persona badge colors with uniform neutral style",
+        "Designed expandable debater accordion with chevron, XOR toggle logic, and grid height animation",
+        "Specified Expand All / Collapse All toggle with XOR individual override pattern",
+        "Designed rank numbers on solution rows and prominent score display",
+        "Unified three-column card borders to neutral zinc-800 with icon-based differentiation",
+        "Specified all interaction states, transitions, and accessibility requirements"
+      ],
+      "filesChanged": [
+        "docs/ost-recommendation-redesign-design-spec.md"
+      ],
+      "decisions": [
+        "XOR toggle pattern for expand-all — individual clicks act as overrides without losing global state",
+        "Grid-template-rows animation for accordion — CSS-only, no JS height calculation",
+        "No icon library — inline SVG chevron to keep it lightweight"
+      ]
+    },
+    {
+      "title": "Implemented the recommendation page redesign",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Removed PERSONA_BADGE_COLORS map and per-persona colored badges entirely",
+        "Updated scoreColor to 3-tier system: emerald (>=7), zinc (4-6), red (<4) — dropped amber",
+        "Replaced multi-hue impact bars with single indigo-500 bar using opacity variation",
+        "Built expandable DebaterRow component with chevron SVG, aria-expanded, and grid height animation",
+        "Implemented XOR expand-all/collapse-all toggle with individual override Set<string>",
+        "Added rank numbers to solution rows with prominent score display",
+        "Unified three-column borders to zinc-800 with icon prefixes (!, 1., --)",
+        "Increased section spacing to mb-10 and page padding to py-10",
+        "Added button elements with focus-visible outlines for keyboard accessibility"
+      ],
+      "filesChanged": [
+        "ost-tool/client/src/components/RecommendationView.tsx"
+      ],
+      "decisions": [
+        "Used inline SVG for chevron icon — no external icon library needed",
+        "Managed accordion state with useState<Set<string>> and XOR boolean per design spec",
+        "Kept all styling as inline Tailwind classes consistent with existing codebase patterns"
+      ]
+    }
+  ]
+}

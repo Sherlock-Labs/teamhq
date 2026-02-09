@@ -93,7 +93,7 @@ Before marking your task complete:
 - [ ] Are failure modes handled gracefully (invalid output, timeouts, etc.)?
 - [ ] Have I optimized for token efficiency without sacrificing quality?
 - [ ] Have I written to `docs/{project}-ai-patterns.md` or updated `skills/ai/`?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -110,7 +110,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Designed JSON schema for OST recommendation output with 5 required fields" not "Worked on prompts")
 - **filesChanged**: Every file you created or modified

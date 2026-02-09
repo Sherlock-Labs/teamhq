@@ -1,0 +1,242 @@
+{
+  "id": "custom-meetings",
+  "name": "Custom Meetings",
+  "description": "Add custom meeting type to the existing meeting system — CEO picks 2-6 agents and provides instructions, agents discuss and produce action items.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scoped requirements for custom meetings feature",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Analyzed existing meeting system: 2 types (charter/weekly), 6 hardcoded agents, Claude CLI with structured output",
+        "Defined custom meeting type with participant selection (2-6 agents from full 18-agent roster)",
+        "Wrote 3 user stories: create custom meeting, prompt uses selected agents only, view results",
+        "Specified data model changes: participants[] and instructions fields on Meeting schema",
+        "Specified API changes: extend POST /api/meetings/run with participants and instructions",
+        "Defined frontend creation flow: New Meeting button, participant grid, instructions textarea",
+        "Documented technical constraints: no new deps, same CLI integration, same storage, same polling",
+        "Identified risks: prompt quality with arbitrary combos, agent personality loading, large prompts"
+      ],
+      "filesChanged": [
+        "docs/custom-meetings-requirements.md"
+      ],
+      "decisions": [
+        "Scoped to custom meeting type only — no templates, no scheduling, no streaming",
+        "2-6 participant limit to keep prompt size manageable and meetings focused",
+        "Thomas facilitates if present, otherwise first listed participant leads",
+        "Same async poll pattern — no SSE needed for meetings"
+      ]
+    },
+    {
+      "title": "Define technical approach for custom meetings",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Decided extend-not-rebuild approach — all changes go into existing files, no new files",
+        "Specified MeetingType enum extension to include 'custom' alongside charter/weekly",
+        "Designed RunMeetingSchema with Zod refine for conditional validation (participants + instructions required for custom)",
+        "Added VALID_AGENT_KEYS constant for server-side participant key validation (all 18 agents)",
+        "Designed gatherCustomMeetingContext function to load agent personalities for selected participants only",
+        "Specified buildCustomInstructions prompt function with facilitator logic (Thomas if present, else first participant)",
+        "Documented file-by-file changes across 7 files: schema, context, prompt, runner, store, routes, frontend",
+        "Defined API validation: 2-6 participants required, all must be valid agent keys, instructions non-empty",
+        "Decided custom meetings don't require charter-first guard (unlike weekly meetings)"
+      ],
+      "filesChanged": [
+        "docs/custom-meetings-tech-approach.md"
+      ],
+      "decisions": [
+        "Extend existing files, no new files — keeps the codebase compact and avoids route/schema sprawl",
+        "Custom meetings don't require a charter first — they're standalone, unlike weekly meetings",
+        "Same Claude runner, same polling pattern — no new infrastructure",
+        "Personality excerpt truncation stays at 1500 char — with 6 agents that's ~9KB, well within prompt limits",
+        "Facilitator logic in prompt, not code — Thomas if present, first listed participant otherwise"
+      ]
+    },
+    {
+      "title": "Design custom meeting creation flow and card display",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Designed 'New Meeting' button in toolbar using indigo-500 color (distinct from charter green and weekly violet)",
+        "Designed collapsible creation form with grid-template-rows animation (consistent with app patterns)",
+        "Specified participant grid: CSS Grid auto-fill, clickable cards with avatar/name/role, selected state with accent border",
+        "Defined count indicator with contextual hints: warning color when < 2, accent when max 6",
+        "Designed instructions textarea with standard app input styling and 'What should they discuss?' placeholder",
+        "Specified Custom badge for meeting cards: indigo-500 text on indigo-400-rgb/0.08 background",
+        "Designed overlapping participant avatars on custom meeting cards (20x20, -6px overlap)",
+        "Created instructions display in detail view: italic text with accent left border",
+        "Defined responsive behavior: 3-col mobile, 4-5 col tablet, 6-col desktop for participant grid",
+        "Specified full accessibility: button role=checkbox with aria-checked, aria-hidden form, live region for count"
+      ],
+      "filesChanged": [
+        "docs/custom-meetings-design-spec.md"
+      ],
+      "decisions": [
+        "Indigo for custom meetings (distinct from charter green and weekly violet) — clear visual differentiation",
+        "No new design tokens needed — all styling uses existing CSS custom properties",
+        "Participant avatars hidden on mobile to save space, just name and abbreviated role",
+        "Collapsible form over modal — keeps context visible and follows existing app patterns",
+        "Overlapping avatar row on cards — compact, scannable, instantly shows who was in the meeting"
+      ]
+    },
+    {
+      "title": "Implement custom meetings frontend — creation form, participant selection, card display",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Added 'New Meeting' indigo button to meetings toolbar in index.html alongside existing Charter/Weekly buttons",
+        "Built collapsible creation form with grid-template-rows 0fr/1fr animation pattern, matching existing app expand/collapse conventions",
+        "Expanded AGENTS map from 6 core agents to all 18 team agents with avatar paths and CSS token colors for transcript rendering",
+        "Created AGENT_ROSTER array with agent keys, display names, and abbreviated roles for participant selection grid",
+        "Built AGENT_KEY_TO_NAME lookup map for resolving backend agent keys to display names on meeting cards",
+        "Implemented participant grid: 18 clickable button cards with role=checkbox, aria-checked, avatar, name, and role — 6-col desktop, 4-col tablet, 3-col mobile",
+        "Implemented participant selection logic with 2-6 limit enforcement: selected state with accent border, disabled state (opacity 0.4, pointer-events none) on unselected cards when max 6 reached",
+        "Added live count indicator with contextual hints: warning color when below minimum, accent color at max, polite aria-live region for screen readers",
+        "Built instructions textarea with app-standard styling, focus ring, placeholder text, and input event listener for real-time validation",
+        "Implemented Start Meeting button: disabled until 2+ participants selected AND instructions non-empty AND no meeting running",
+        "Updated apiRun function to accept optional participants array and instructions string, passing them in POST body for custom type",
+        "Created handleCustomRun function: validates inputs, collapses form, sets running state, calls API with participants and instructions, starts polling",
+        "Updated renderCard to handle custom type: 'Custom' badge text, indigo badge styling via CSS class, overlapping participant avatars (20x20, -6px margin) with comma-separated names",
+        "Updated renderDetailView to show CEO instructions at top of detail view for custom meetings — italic text with accent left border, uppercase label",
+        "Updated running indicator to show correct badge type and label for custom meetings",
+        "Updated button state management: custom button shows 'Cancel' when form open, 'Running...' when custom meeting in progress, disabled during any meeting run",
+        "Updated 'Start as Project' source label to handle custom meeting type correctly",
+        "Added --color-agent-{name} CSS tokens for 6 missing agents (zara, leo, nina, soren, amara, howard) in tokens.css so agentColor() reads correct colors",
+        "Added custom meeting badge CSS: indigo-500 text on indigo-400-rgb/0.08 background",
+        "Added full responsive rules: 3-col grid on mobile with avatars hidden, 4-col on tablet, full-width Start button on mobile",
+        "Added reduced-motion rules for create form, participant cards, and textarea transitions"
+      ],
+      "filesChanged": [
+        "index.html",
+        "js/meetings.js",
+        "css/styles.css",
+        "css/tokens.css"
+      ],
+      "decisions": [
+        "Added missing --color-agent- tokens for 6 newer agents (zara, leo, nina, soren, amara, howard) in tokens.css — the agentColor() function reads these and needs them for all 18 agents, not just the original 12",
+        "Used abbreviated role labels in AGENT_ROSTER (e.g. 'PM', 'FE Dev', 'A11y') instead of full titles to keep participant cards compact, especially on mobile where space is tight",
+        "Participant grid uses fixed 6-column layout on desktop (not auto-fill) to guarantee all 18 agents fit in exactly 3 rows — more predictable than auto-fill which could produce uneven last rows",
+        "Form collapses automatically when a custom meeting starts and resets all state (selected participants + instructions) on successful API call — prevents stale form state",
+        "Participant avatars on meeting cards are placed inside the summary div rather than a separate row to keep the card layout consistent with charter/weekly cards that don't have participants",
+        "Used delegated event handling on participantGrid for click events rather than attaching 18 individual listeners — simpler and avoids re-binding on potential re-renders"
+      ]
+    },
+    {
+      "title": "Implement custom meetings backend — schema, prompt, API, context loading",
+      "agent": "Jonah",
+      "role": "Back-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Added participants[] and instructions fields to MeetingSchema with backward-compatible defaults (empty array and null)",
+        "Extended RunMeetingSchema with optional participants (min 2, max 6) and instructions (min 1 char) fields, plus Zod refine for conditional validation on custom type",
+        "Updated createMeeting in store to accept and persist optional participants and instructions",
+        "Created gatherCustomMeetingContext function in context.ts that loads agent personalities only for selected participants",
+        "Created loadAgentPersonalitiesForParticipants helper that reads .claude/agents/{key}.md for each participant",
+        "Expanded AGENT_DISPLAY_NAMES in prompt.ts from 6 core agents to all 18 team agents",
+        "Updated buildMeetingPrompt to accept optional participants and instructions, branching to buildCustomInstructions for custom type",
+        "Updated buildSystemInstruction to accept optional participantCount for dynamic team size and transcript range (15-30 for custom, 20-40 for standard)",
+        "Created buildCustomInstructions function with facilitator logic (Thomas if present, otherwise first participant), participant list, and CEO instructions",
+        "Updated runMeeting in runner.ts to accept participants and instructions, branch context gathering on type, and skip charter-first guard for custom meetings",
+        "Updated POST /api/meetings/run route with custom-specific validation: valid agent keys against VALID_AGENT_KEYS set, 2-6 participant range, non-empty instructions",
+        "Changed charter-first guard in both runner and routes to apply only to weekly meetings (custom meetings are standalone)",
+        "Verified TypeScript compiles with zero errors and backward compatibility with existing meeting JSON files"
+      ],
+      "filesChanged": [
+        "server/src/schemas/meeting.ts",
+        "server/src/store/meetings.ts",
+        "server/src/meetings/context.ts",
+        "server/src/meetings/prompt.ts",
+        "server/src/meetings/runner.ts",
+        "server/src/routes/meetings.ts"
+      ],
+      "decisions": [
+        "Charter-first guard narrowed to weekly only — custom meetings are standalone and don't require prior charter, matching Andrei's tech approach decision",
+        "Double validation on custom meetings — Zod schema refine provides structural validation, route handler adds semantic validation (valid agent keys). Belt-and-suspenders approach since invalid agent keys would silently skip personality loading otherwise",
+        "System instruction made dynamic — participant count and transcript range adjust for custom meetings (15-30 entries vs 20-40), keeping prompt expectations proportional to meeting size",
+        "Backward-compatible schema changes — participants defaults to [] and instructions defaults to null, so existing meeting JSON files parse without modification",
+        "No changes to MeetingOutputJsonSchema — custom meetings produce the same structured output shape as charter/weekly, keeping the frontend rendering path identical"
+      ]
+    },
+    {
+      "title": "Design review of custom meetings implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Reviewed New Meeting button: indigo-500 bg, indigo-600 hover, correct label and toggle behavior — matches spec",
+        "Reviewed creation form animation: grid-template-rows 0fr/1fr with 0.25s ease, aria-hidden toggle — matches spec",
+        "Reviewed participant grid: fixed repeat(6, 1fr) instead of auto-fill — minor deviation, acceptable for predictable 3-row layout",
+        "Reviewed participant card states: unselected, selected, hover, max-disabled all match spec values exactly",
+        "Reviewed accessibility: button role=checkbox with aria-checked, aria-live polite count indicator, visible label for textarea — matches spec",
+        "Reviewed count indicator: warning color below min, accent at max, correct hint text — matches spec",
+        "Reviewed textarea: bg, border, radius, padding, font, min-height, resize, focus ring all match spec",
+        "Reviewed Start Meeting button: right-aligned desktop, full-width mobile, disabled state with opacity 0.4 — matches spec (uses native disabled instead of aria-disabled, acceptable)",
+        "Reviewed custom badge: indigo-500 text on indigo-400-rgb/0.08 background — exact match",
+        "Reviewed participant avatars on card: 20x20, 1.5px border, -6px overlap, names in text-xs — exact match",
+        "Reviewed instructions detail view: italic, accent left border, uppercase label — exact match",
+        "Reviewed responsive breakpoints: 3-col mobile with hidden avatars, 4-col tablet, 6-col desktop — matches spec (tablet 4 vs 4-5 is minor)",
+        "Reviewed running state: form collapses, button shows Running... — running card missing participant avatars (minor, transient element)",
+        "Reviewed token additions: 6 new agent identity tokens for zara, leo, nina, soren, amara, howard — not custom-meeting tokens, fills gap in existing system",
+        "Noted bonus: reduced-motion rules added for form, cards, textarea transitions — accessibility improvement beyond spec"
+      ],
+      "filesChanged": [
+        "data/tasks/custom-meetings.json"
+      ],
+      "decisions": [
+        "PASS — implementation faithfully matches design spec with only minor, acceptable deviations",
+        "Accepted fixed 6-col grid over auto-fill: more predictable layout for exactly 18 agents, functionally equivalent",
+        "Accepted native disabled over aria-disabled on Start button: better default behavior for button elements",
+        "Accepted missing participant avatars on running indicator card: transient element, completed card has full avatar display",
+        "Accepted 6 new agent identity tokens: these were missing from the token system and needed regardless of this feature"
+      ]
+    },
+    {
+      "title": "QA validation of custom meetings feature",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Reviewed requirements doc: 3 user stories, acceptance criteria for creation, prompt, and display",
+        "Reviewed Zod schema: MeetingType enum includes 'custom', RunMeetingSchema has refine for conditional validation, participants min(2).max(6) and instructions min(1) — correct",
+        "Reviewed VALID_AGENT_KEYS: all 18 agent keys present, used as Set for O(1) lookup — correct",
+        "Reviewed MeetingSchema backward compatibility: participants defaults to [], instructions defaults to null — existing meeting JSON files parse without modification (verified against charter meeting file)",
+        "Reviewed route validation: double validation pattern (Zod structural + route semantic for agent key validity), charter-first guard only applies to weekly, concurrent meeting guard returns 409 — correct",
+        "Verified path traversal protection: VALID_AGENT_KEYS validation runs BEFORE runMeeting() call, so attacker-supplied agent keys like '../../etc/passwd' are rejected at route level",
+        "Reviewed context.ts: gatherCustomMeetingContext loads personalities for selected participants only, CORE_AGENTS unchanged for charter/weekly — correct separation",
+        "Reviewed prompt.ts: AGENT_DISPLAY_NAMES expanded to all 18 agents, buildCustomInstructions has correct facilitator logic (Thomas if present, else first participant), transcript range adjusted to 15-30 — correct",
+        "Reviewed runner.ts: context branching on type, participants and instructions passed through to createMeeting and buildMeetingPrompt, charter-first guard skipped for custom — correct",
+        "Reviewed store/meetings.ts: createMeeting accepts optional participants and instructions, defaults to [] and null — correct",
+        "Reviewed frontend AGENTS map: all 18 agents with avatar paths and CSS token colors — correct",
+        "Reviewed frontend AGENT_ROSTER: all 18 agents with keys matching backend VALID_AGENT_KEYS — verified exact match",
+        "Reviewed creation form HTML: proper aria-hidden, role='group', aria-live='polite' count indicator, visible label for textarea — accessible",
+        "Reviewed participant selection logic: click toggles, max 6 enforcement via disabled class with opacity 0.4 and pointer-events none — correct",
+        "Reviewed form validation: Start button disabled until count >= 2, count <= 6, and instructions trimmed non-empty — correct",
+        "Reviewed API call: apiRun sends {type:'custom', participants:[], instructions:''} — correct payload shape",
+        "Reviewed custom meeting card: badge with 'Custom' label and indigo styling, overlapping participant avatars with names — correct",
+        "Reviewed detail view: instructions section shown for custom meetings with escapeHTML, placed before key takeaways — correct",
+        "Reviewed running indicator: custom badge type and label handled, form collapses, button states update — correct",
+        "Reviewed XSS prevention: escapeHTML on instructions, agent names, summary, toast messages; escapeAttr on data attributes — comprehensive protection",
+        "Reviewed button states: charter/weekly/custom buttons disabled during running meeting, custom shows Cancel/Running as appropriate — correct",
+        "Reviewed polling: picks up completed meetings, clears running state, works for all types — correct",
+        "Verified all 18 avatar SVG files exist EXCEPT howard.svg — minor bug, broken image for Howard",
+        "Reviewed CSS: all new styles use existing design tokens, no new custom properties, responsive breakpoints match spec, reduced-motion rules included",
+        "Verified backward compatibility: existing charter meeting JSON files (without participants/instructions fields) parse correctly due to Zod defaults"
+      ],
+      "filesChanged": [
+        "data/tasks/custom-meetings.json"
+      ],
+      "decisions": [
+        "PASS — feature implementation is correct, secure, accessible, and matches requirements with one minor non-blocking bug",
+        "Minor bug: howard.svg avatar file is missing from img/avatars/ — if Howard is selected as a participant, his avatar will show as a broken image on the participant card and meeting card. Non-blocking because the feature still works (name renders correctly), but should be fixed before shipping",
+        "Dead code in handleRun: the 'custom' label branch at line 603 of meetings.js is unreachable since custom meetings use handleCustomRun instead. Harmless but could be cleaned up",
+        "Security review passed: path traversal protected by VALID_AGENT_KEYS allowlist, XSS protected by escapeHTML/escapeAttr, no user input reaches the DOM unescaped"
+      ]
+    }
+  ]
+}

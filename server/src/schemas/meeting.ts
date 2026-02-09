@@ -1,7 +1,18 @@
 import { z } from "zod";
 
-export const MeetingType = z.enum(["charter", "weekly"]);
+export const MeetingType = z.enum(["charter", "weekly", "custom"]);
 export type MeetingType = z.infer<typeof MeetingType>;
+
+/** All valid agent keys — used for participant validation on custom meetings */
+export const VALID_AGENT_KEYS = new Set([
+  "product-manager", "technical-architect", "product-designer",
+  "frontend-developer", "backend-developer", "qa",
+  "product-marketer", "product-researcher", "technical-researcher",
+  "technical-writer", "data-analyst", "ai-engineer",
+  "mobile-developer-1", "mobile-developer-2",
+  "frontend-interactions", "frontend-responsive", "frontend-accessibility",
+  "payments-engineer",
+]);
 
 export const MeetingStatus = z.enum(["running", "completed", "failed"]);
 export type MeetingStatus = z.infer<typeof MeetingStatus>;
@@ -47,6 +58,8 @@ export const MeetingSchema = z.object({
   actionItems: z.array(ActionItemSchema).default([]),
   mood: z.string().nullable(),
   nextMeetingTopics: z.array(z.string()).default([]),
+  participants: z.array(z.string()).default([]),
+  instructions: z.string().nullable().default(null),
 });
 
 export type Meeting = z.infer<typeof MeetingSchema>;
@@ -54,7 +67,17 @@ export type Meeting = z.infer<typeof MeetingSchema>;
 export const RunMeetingSchema = z.object({
   type: MeetingType,
   agenda: z.string().optional(),
-});
+  participants: z.array(z.string()).min(2).max(6).optional(),
+  instructions: z.string().min(1).optional(),
+}).refine(
+  (data) => {
+    if (data.type === "custom") {
+      return data.participants && data.participants.length >= 2 && data.instructions;
+    }
+    return true;
+  },
+  { message: "Custom meetings require participants (2-6) and instructions" }
+);
 
 export type RunMeetingInput = z.infer<typeof RunMeetingSchema>;
 

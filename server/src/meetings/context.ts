@@ -26,6 +26,24 @@ export interface MeetingContext {
 }
 
 /**
+ * Gathers context for a custom meeting — loads agent personalities
+ * only for the specified participants instead of CORE_AGENTS.
+ */
+export async function gatherCustomMeetingContext(
+  participants: string[]
+): Promise<MeetingContext> {
+  const [agentPersonalities, projects, previousMeetings, recentDocs] =
+    await Promise.all([
+      loadAgentPersonalitiesForParticipants(participants),
+      loadProjects(),
+      loadPreviousMeetings(),
+      loadRecentDocs(),
+    ]);
+
+  return { agentPersonalities, projects, previousMeetings, recentDocs };
+}
+
+/**
  * Gathers all context needed for a meeting prompt.
  */
 export async function gatherMeetingContext(): Promise<MeetingContext> {
@@ -43,6 +61,24 @@ export async function gatherMeetingContext(): Promise<MeetingContext> {
 async function loadAgentPersonalities(): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
   for (const agentName of CORE_AGENTS) {
+    try {
+      const content = await readFile(
+        join(AGENTS_DIR, `${agentName}.md`),
+        "utf-8"
+      );
+      result[agentName] = content;
+    } catch {
+      // Agent file missing — skip
+    }
+  }
+  return result;
+}
+
+async function loadAgentPersonalitiesForParticipants(
+  participants: string[]
+): Promise<Record<string, string>> {
+  const result: Record<string, string> = {};
+  for (const agentName of participants) {
     try {
       const content = await readFile(
         join(AGENTS_DIR, `${agentName}.md`),

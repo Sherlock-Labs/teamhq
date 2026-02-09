@@ -1,0 +1,162 @@
+{
+  "id": "phase3a-live-agent-progress",
+  "name": "Phase 3a: Live Agent Progress",
+  "description": "Replace the copy-paste kickoff with a Run button that executes agent sessions server-side, streaming a live activity log to the browser.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scoped Phase 3a requirements",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Defined problem statement: CEO has no visibility into agent sessions from the web UI",
+        "Documented Claude CLI streaming output format and flags",
+        "Phased the feature aggressively: 3a (MVP live log), 3b (structured view), 3c (multi-session)",
+        "Wrote 4 user stories: run from browser, live log, session history, timeout/safety",
+        "Defined session data model with NDJSON event logs and JSON metadata sidecars",
+        "Specified 5 new API endpoints for session lifecycle",
+        "Detailed frontend changes: log view, session controls, history list, running indicator",
+        "Identified key architectural questions for Andrei"
+      ],
+      "filesChanged": [
+        "docs/teamhq-phase3-requirements.md"
+      ],
+      "decisions": [
+        "SSE over WebSocket for transport — unidirectional, simpler, EventSource auto-reconnects",
+        "NDJSON append-only files for event storage — cheap writes, easy replay, no database",
+        "30-minute session timeout, 3 concurrent max, 1 per project",
+        "--dangerously-skip-permissions acceptable for 3a (single-user local tool)"
+      ]
+    },
+    {
+      "title": "Defined Phase 3a technical approach",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Documented Claude CLI stream-json output format with event type mapping",
+        "Designed normalized event model decoupling frontend from CLI internals",
+        "Architected SessionRunner class with child process lifecycle management",
+        "Designed SessionManager singleton for concurrency tracking and limits",
+        "Specified SSE endpoint with replay-from-offset, heartbeat, and fan-out",
+        "Defined CLI-to-event mapping table for all event types",
+        "Planned server restart recovery and graceful shutdown hooks",
+        "Documented integration points for both backend and frontend teams"
+      ],
+      "filesChanged": [
+        "docs/teamhq-phase3-tech-approach.md"
+      ],
+      "decisions": [
+        "In-memory EventEmitter per session for SSE fan-out — simple, handles multiple tabs",
+        "readline for line splitting over manual newline parsing — handles buffering correctly",
+        "No new npm dependencies — uses Node built-ins (child_process, readline, events, fs)",
+        "Race condition safe: check-then-register is synchronous (no await gap)"
+      ]
+    },
+    {
+      "title": "Designed live log UI, session controls, and session history",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Designed terminal-like session log with dark zinc-950 background and monospace text",
+        "Specified 5 event type visual treatments: assistant_text, tool_use, tool_result, system, error",
+        "Designed streaming text cursor with blink animation for delta events",
+        "Created collapsible tool_result with grid-template-rows animation (collapsed by default)",
+        "Designed session controls with 4 action area states (planned, ready, running, completed)",
+        "Created running indicator with green pulsing dot for project cards",
+        "Designed session history list with status dots, dates, durations, and event counts",
+        "Specified auto-scroll behavior with 'Jump to latest' sticky button and gradient overlay",
+        "Defined responsive behavior: reduced log height on mobile, hidden timestamps on narrow screens",
+        "Documented WCAG AA contrast ratios for all new text colors"
+      ],
+      "filesChanged": [
+        "docs/teamhq-phase3-design-spec.md"
+      ],
+      "decisions": [
+        "Tool results collapsed by default — can be 200 lines, would overwhelm the log if expanded",
+        "Timestamps as relative time (+m:ss) rather than absolute — more meaningful when watching live",
+        "Border-left accent for system and error events — distinguishes from main text flow without background tint",
+        "Blinking cursor on streaming text — provides strong liveness signal without being distracting",
+        "Session log max-height 480px (360px mobile) — tall enough to be useful, short enough to not hide history/notes below"
+      ]
+    },
+    {
+      "title": "Implemented Phase 3a frontend — live log, session controls, SSE client",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Added CSS custom properties for session colors (green-400, red-400, yellow-400)",
+        "Implemented session log container with terminal-like dark background and monospace text",
+        "Built 5 event type renderers: assistant_text (with delta streaming and blinking cursor), tool_use (with icon and input summary), tool_result (collapsed by default with grid-template-rows animation), system (with border-left accent, green for completed), error (red tint background)",
+        "Built SSE client using native EventSource API with session_event and session_done listeners",
+        "Implemented auto-scroll with scroll-lock detection (50px threshold) and 'Jump to latest' sticky button with gradient overlay",
+        "Built session controls with 4 states: planned (Start Work), ready (Run Session + View Prompt), running (green pulse indicator + Stop), completed (Run New Session)",
+        "Implemented session history list with status dots, dates, durations, and event counts",
+        "Added running indicator (green pulsing dot) to project cards when activeSessionId is set",
+        "Built session timer that ticks every second with pulse animation for live sessions",
+        "Implemented tool input summary extraction for Read/Edit/Write/Bash/Grep/Glob/WebFetch tools with 80-char truncation",
+        "Added responsive styles: reduced log height on mobile (360px), hidden timestamps below 480px, stacked session controls on mobile",
+        "Added renderDetailViewAndSessions helper to preserve session state across note add/delete operations",
+        "Integrated session loading into expandCard flow — auto-connects to live SSE when opening a card with activeSessionId",
+        "Added SSE cleanup on card collapse (disconnectSession)"
+      ],
+      "filesChanged": [
+        "css/styles.css",
+        "js/projects.js"
+      ],
+      "decisions": [
+        "Used native EventSource API instead of custom SSE implementation — browser handles reconnection automatically with Last-Event-ID",
+        "Delta text streaming accumulates into a single DOM element rather than creating one per delta — reduces DOM nodes and matches the blinking cursor UX",
+        "Session log re-renders from SSE replay after note operations — simpler than trying to preserve the DOM, and SSE replay is fast",
+        "MAX_RENDERED_EVENTS set to 500 — keeps DOM lean for long sessions without losing any persisted events",
+        "Tool result toggle uses same grid-template-rows pattern as existing expand/collapse — consistent animation across the UI"
+      ]
+    },
+    {
+      "title": "Implemented Phase 3a backend — session runner, SSE streaming, storage, API endpoints",
+      "agent": "Jonah",
+      "role": "Back-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Created session Zod schemas: SessionStatus, SessionEventType, SessionEventSchema, SessionMetadataSchema",
+        "Built session file store: createSessionFiles, getSessionMetadata, listSessions, readEventLog with NDJSON append-only storage",
+        "Implemented SessionRunner class: spawns claude CLI with --verbose --output-format stream-json --include-partial-messages --dangerously-skip-permissions, parses NDJSON stdout via readline, maps CLI events to normalized event model, appends to NDJSON log, emits via EventEmitter",
+        "Implemented CLI-to-event mapping: system init, content_block_delta (text deltas), assistant (text + tool_use), tool_result (with 200-line truncation), result (session completed with duration/cost)",
+        "Built SessionManager singleton: tracks running sessions in memory, enforces concurrency limits (1 per project, 3 global), provides runner lookup and graceful stopAll",
+        "Implemented server restart recovery: scans data/sessions/ for orphaned 'running' sessions and marks them as 'failed'",
+        "Built session routes with Express mergeParams: POST start, GET list, GET metadata, GET events (SSE), POST stop",
+        "Implemented SSE endpoint: replays existing events from NDJSON with offset support, subscribes to live EventEmitter events, sends heartbeat every 15s, handles client disconnect cleanup",
+        "Added activeSessionId field to project schema with setActiveSession/clearActiveSession store functions",
+        "Updated project list endpoint to include activeSessionId in response",
+        "Added graceful shutdown hooks (SIGTERM/SIGINT) to stop all running sessions",
+        "Mounted session routes in index.ts, integrated recovery on startup",
+        "Fixed CLI flag: added --verbose (required by claude -p with --output-format stream-json)",
+        "Fixed migrate.ts to include new schema fields (goals, constraints, brief, notes, kickoffPrompt, activeSessionId)",
+        "Tested all endpoints: session start, concurrency limit (409), SSE streaming, SSE replay with offset, session stop, session list, recovery"
+      ],
+      "filesChanged": [
+        "server/src/schemas/session.ts",
+        "server/src/store/sessions.ts",
+        "server/src/session/runner.ts",
+        "server/src/session/manager.ts",
+        "server/src/session/recovery.ts",
+        "server/src/routes/sessions.ts",
+        "server/src/schemas/project.ts",
+        "server/src/store/projects.ts",
+        "server/src/routes/projects.ts",
+        "server/src/index.ts",
+        "server/src/migrate.ts"
+      ],
+      "decisions": [
+        "Added --verbose flag to claude spawn args — required by CLI when using -p with --output-format stream-json",
+        "Used Record<string, string> cast for req.params in session routes — Express 5 mergeParams works at runtime but TypeScript types don't auto-merge",
+        "Fire-and-forget appendFile for NDJSON writes in the hot path — throughput is low enough that the small risk of event loss on crash is acceptable",
+        "Event limit of 5000 per session with automatic process termination — prevents unbounded log files",
+        "Tool result output truncated to 200 lines with truncation indicator — keeps NDJSON files manageable"
+      ]
+    }
+  ]
+}

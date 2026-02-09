@@ -2,8 +2,8 @@
   <title>Sherlock Labs</title>
   <defs>
     <linearGradient id="brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FB6182"/>
-      <stop offset="100%" stop-color="#e8496a"/>
+      <stop offset="0%" stop-color="#006B3F"/>
+      <stop offset="100%" stop-color="#005432"/>
     </linearGradient>
   </defs>
 
@@ -25,12 +25,12 @@
   <!-- === WORDMARK: "$ Sherlock Labs" in monospace style === -->
   <g id="wordmark" transform="translate(80, 0)">
     <!-- Terminal prompt symbol -->
-    <text x="0" y="52" font-family="'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'Liberation Mono', monospace" font-size="20" font-weight="600" fill="#4ADE80" letter-spacing="1">$</text>
+    <text x="0" y="52" font-family="'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'Liberation Mono', monospace" font-size="20" font-weight="600" fill="#16a34a" letter-spacing="1">$</text>
 
     <!-- "Sherlock Labs" — single text element with tspan for color split -->
     <text x="22" y="52" font-family="'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'Liberation Mono', monospace" font-size="28" letter-spacing="1">
       <tspan font-weight="700" fill="#171717">Sherlock</tspan>
-      <tspan font-weight="400" fill="#FB6182"> Labs</tspan>
+      <tspan font-weight="400" fill="#006B3F"> Labs</tspan>
     </text>
   </g>
 </svg>

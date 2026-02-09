@@ -1,0 +1,112 @@
+{
+  "id": "teamhq-landing-page",
+  "name": "TeamHQ Landing Page",
+  "description": "Built the original TeamHQ landing page -- a single-page static site introducing the AI product team.",
+  "status": "completed",
+  "completedDate": "2025-01",
+  "tasks": [
+    {
+      "title": "Scoped requirements and acceptance criteria",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Defined page purpose: clean informational site, not a SaaS signup flow",
+        "Wrote acceptance criteria for all 6 agent cards with name, role, and description",
+        "Specified hero section with headline and subhead",
+        "Required 'How It Works' section with 4-step workflow",
+        "Set responsive design requirement across mobile, tablet, and desktop"
+      ],
+      "filesChanged": [
+        "docs/landing-page-requirements.md"
+      ],
+      "decisions": [
+        "Kept scope minimal — no external APIs, no sign-up forms, just a clean informational page",
+        "Deferred dark theme to a future iteration"
+      ]
+    },
+    {
+      "title": "Defined tech approach (plain HTML/CSS, no build step)",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Evaluated React, Astro, and Tailwind — rejected all as overkill for a single static page",
+        "Chose plain HTML + CSS with no build step or bundler",
+        "Defined file structure: index.html, css/styles.css",
+        "Specified CSS custom properties for theming and design tokens",
+        "Set mobile-first responsive approach with 3 breakpoints"
+      ],
+      "filesChanged": [
+        "docs/tech-approach.md"
+      ],
+      "decisions": [
+        "Plain HTML/CSS over any framework — one page, no routing, no dynamic data, no component reuse",
+        "System font stack initially (no web fonts) to keep zero external dependencies",
+        "CSS custom properties for all colors, spacing, and typography for future themability"
+      ]
+    },
+    {
+      "title": "Created design spec (layout, typography, colors)",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Defined color palette: indigo brand colors with neutral grays",
+        "Specified typography scale with system fonts and 8px spacing base unit",
+        "Designed agent card layout: 1-col mobile, 2-col tablet, 3-col desktop grid",
+        "Created 48px avatar circles with monogram initials",
+        "Designed 'How It Works' section with numbered step circles and connecting line on desktop",
+        "Specified hover states: shadow lift with subtle translateY(-2px) on cards",
+        "Set responsive breakpoints: mobile (<640px), tablet (640-1023px), desktop (1024+)"
+      ],
+      "filesChanged": [
+        "docs/design-spec.md"
+      ],
+      "decisions": [
+        "Section backgrounds alternate white/gray-50/white for visual separation",
+        "Max-width 1120px centered — wide enough for 3-col grid without feeling sprawling",
+        "Monogram avatars over icons or illustrations — simpler and more personal"
+      ]
+    },
+    {
+      "title": "Implemented the landing page",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Built semantic HTML structure: header, main with 3 sections, footer",
+        "Implemented all CSS design tokens as custom properties in :root",
+        "Created responsive grid layout for 6 agent cards",
+        "Built 'How It Works' 4-step section with numbered circles and connecting line",
+        "Implemented hover states with box-shadow and translateY transitions",
+        "Added hero section with headline, subhead, and badge",
+        "Ensured full responsive behavior across all 3 breakpoints"
+      ],
+      "filesChanged": [
+        "index.html",
+        "css/styles.css"
+      ],
+      "decisions": [
+        "Used semantic HTML elements (article, section, header) for accessibility",
+        "Kept all styles in a single CSS file — no need for splitting at this scale"
+      ]
+    },
+    {
+      "title": "Validated against acceptance criteria",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Verified all 6 agents display with correct names, roles, and descriptions",
+        "Tested responsive layout across mobile, tablet, and desktop breakpoints",
+        "Confirmed no external API calls — page is fully static",
+        "Validated page loads as a single HTML file with one CSS dependency",
+        "Checked content accuracy against agent definitions in .claude/agents/"
+      ],
+      "decisions": [
+        "Accepted system font rendering differences across OS — consistent enough for launch"
+      ]
+    }
+  ]
+}

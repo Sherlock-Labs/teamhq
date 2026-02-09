@@ -7,32 +7,31 @@
   <meta name="description" content="TeamHQ is the central headquarters for a seventeen-agent AI team that researches, scopes, designs, builds, tests, and ships software together.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-  <!-- Noise texture overlay -->
-  <svg class="noise-overlay" aria-hidden="true">
-    <filter id="noise-filter">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-    </filter>
-    <rect width="100%" height="100%" filter="url(#noise-filter)" />
-  </svg>
-
   <!-- Navigation -->
   <nav class="nav" aria-label="Main navigation">
     <div class="container nav__inner">
       <div class="nav__brand">
         <a href="#" class="nav__logo-link">
-          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+          <svg class="nav__logo-icon" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="28" cy="28" r="22" fill="none" stroke="var(--color-accent)" stroke-width="4"/>
+            <line x1="44" y1="44" x2="60" y2="60" stroke="var(--color-accent)" stroke-width="4" stroke-linecap="round"/>
+            <polyline points="18,22 30,28 18,34" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="34" y="22" width="3" height="12" rx="1" fill="var(--color-text-primary)" opacity="0.85"/>
+          </svg>
+          <span class="nav__logo-text">Sherlock <span class="nav__logo-text-accent">Labs</span></span>
         </a>
       </div>
       <div class="nav__links">
         <a href="#tools" class="nav__link">Tools</a>
         <a href="#projects" class="nav__link">Projects</a>
+        <a href="#portfolio" class="nav__link">Portfolio</a>
         <a href="#meetings" class="nav__link">Meetings</a>
         <a href="docs.html" class="nav__link">Docs</a>
         <a href="#roster" class="nav__link">Team</a>
@@ -215,6 +214,22 @@
       </div>
     </div>
 
+    <!-- Portfolio -->
+    <section class="portfolio" id="portfolio" aria-labelledby="portfolio-heading">
+      <div class="container">
+        <h2 id="portfolio-heading" class="section-title">Portfolio</h2>
+        <p class="section-subtitle">What the team has shipped.</p>
+
+        <div class="portfolio__stats" id="portfolio-stats" aria-label="Portfolio summary statistics"></div>
+
+        <div class="portfolio__list" id="portfolio-list">
+          <noscript>
+            <p class="portfolio__noscript">Enable JavaScript to view the portfolio.</p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
     <!-- Meetings -->
     <section class="meetings" id="meetings" aria-labelledby="meetings-heading">
       <div class="container">
@@ -224,8 +239,32 @@
           <div class="meetings__buttons">
             <button class="meetings__run-btn meetings__run-btn--charter" type="button" id="meeting-charter-btn">Run Charter</button>
             <button class="meetings__run-btn meetings__run-btn--weekly" type="button" id="meeting-weekly-btn" disabled>Run Weekly</button>
+            <button class="meetings__run-btn meetings__run-btn--custom" type="button" id="meeting-custom-btn">New Meeting</button>
           </div>
         </div>
+
+        <!-- Custom Meeting Creation Form -->
+        <div class="meetings__create-form" id="meetings-create-form" aria-hidden="true">
+          <div class="meetings__create-form-inner">
+            <div class="meetings__create-form-content">
+              <div class="meetings__create-form-header">
+                <label class="meetings__create-form-label">Select Participants (2-6)</label>
+                <span class="meetings__create-form-count" id="participant-count" role="status" aria-live="polite">0 selected <span class="meetings__create-form-count-hint">(min 2)</span></span>
+              </div>
+              <div class="meetings__participant-grid" id="participant-grid" role="group" aria-label="Select meeting participants">
+                <!-- Populated by JS -->
+              </div>
+              <div class="meetings__create-form-field">
+                <label class="meetings__create-form-label" for="meeting-instructions">What should they discuss?</label>
+                <textarea class="meetings__create-form-textarea" id="meeting-instructions" placeholder="What should they discuss?" rows="3"></textarea>
+              </div>
+              <div class="meetings__create-form-actions">
+                <button class="meetings__run-btn meetings__run-btn--custom meetings__start-btn" type="button" id="meeting-start-btn" disabled>Start Meeting</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="meetings-list">
           <noscript>
             <p class="meetings__noscript">Enable JavaScript to view meetings.</p>
@@ -242,8 +281,8 @@
 
         <ul class="roster__grid" role="list">
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="thomas">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/thomas.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Thomas</h3>
               <p class="agent-card__role">Product Manager</p>
@@ -251,17 +290,17 @@
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="robert">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/robert.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Robert</h3>
               <p class="agent-card__role">Product Designer</p>
-              <p class="agent-card__desc">Turns requirements into clear, usable designs — every decision starts with who is using it and what they need.</p>
+              <p class="agent-card__desc">Turns requirements into clear, usable designs. Every decision starts with who is using it and what they need.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="andrei">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/andrei.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Andrei</h3>
               <p class="agent-card__role">Technical Architect</p>
@@ -269,8 +308,8 @@
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="alice">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/alice.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Alice</h3>
               <p class="agent-card__role">Front-End Developer</p>
@@ -278,8 +317,8 @@
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="jonah">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/jonah.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Jonah</h3>
               <p class="agent-card__role">Back-End Developer</p>
@@ -287,26 +326,26 @@
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="enzo">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/enzo.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Enzo</h3>
               <p class="agent-card__role">QA Engineer</p>
-              <p class="agent-card__desc">The team's constructive skeptic — tests what users actually do, not just the happy path, so the team ships with confidence.</p>
+              <p class="agent-card__desc">The team's constructive skeptic. Tests what users actually do, not just the happy path, so the team ships with confidence.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="priya">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/priya.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Priya</h3>
               <p class="agent-card__role">Product Marketer</p>
-              <p class="agent-card__desc">Turns technical complexity into language that makes people care — writes tight copy, hates jargon, and thinks in headlines.</p>
+              <p class="agent-card__desc">Turns technical complexity into language that makes people care. Writes tight copy, hates jargon, and thinks in headlines.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="suki">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/suki.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Suki</h3>
               <p class="agent-card__role">Market Researcher</p>
@@ -314,88 +353,90 @@
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="marco">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/marco.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Marco</h3>
               <p class="agent-card__role">Technical Researcher</p>
-              <p class="agent-card__desc">The team's deep reader — evaluates libraries, reads API docs, and finds the gotchas before they become expensive mistakes.</p>
+              <p class="agent-card__desc">The team's deep reader. Evaluates libraries, reads API docs, and finds the gotchas before they become expensive mistakes.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="nadia">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nadia.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Nadia</h3>
               <p class="agent-card__role">Technical Writer</p>
-              <p class="agent-card__desc">Believes that if a feature is not documented, it does not exist — writes for the reader who has never seen the product before.</p>
+              <p class="agent-card__desc">Believes that if a feature is not documented, it does not exist. Writes for the reader who has never seen the product before.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="yuki">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/yuki.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Yuki</h3>
               <p class="agent-card__role">Data Analyst</p>
-              <p class="agent-card__desc">Speaks in numbers — notices patterns in project data, identifies bottlenecks, and delivers the statistic that settles the debate.</p>
+              <p class="agent-card__desc">Speaks in numbers. Notices patterns in project data, identifies bottlenecks, and delivers the statistic that settles the debate.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="kai">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/kai.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Kai</h3>
               <p class="agent-card__role">AI/Prompt Engineer</p>
-              <p class="agent-card__desc">The team's AI whisperer — designs prompts like a programmer designs functions, with clear inputs, expected outputs, and edge case handling.</p>
+              <p class="agent-card__desc">The team's AI whisperer. Designs prompts like a programmer designs functions, with clear inputs, expected outputs, and edge case handling.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="zara">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/zara.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Zara</h3>
               <p class="agent-card__role">Mobile Developer</p>
-              <p class="agent-card__desc">Lives and breathes React Native — makes cross-platform apps feel truly native with buttery performance and platform-perfect conventions.</p>
+              <p class="agent-card__desc">Lives and breathes React Native. Makes cross-platform apps feel truly native with buttery performance and platform-perfect conventions.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="leo">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/leo.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Leo</h3>
               <p class="agent-card__role">Mobile Developer</p>
-              <p class="agent-card__desc">The person who makes apps feel alive — obsesses over animations, gestures, and micro-interactions that make users say "this feels good."</p>
+              <p class="agent-card__desc">The person who makes apps feel alive. Obsesses over animations, gestures, and micro-interactions that make users say "this feels good."</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="nina">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nina.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Nina</h3>
               <p class="agent-card__role">FE Interactions</p>
-              <p class="agent-card__desc">Sees motion as communication — every transition, hover state, and animation tells the user something, and she makes sure it tells them the right thing.</p>
+              <p class="agent-card__desc">Sees motion as communication. Every transition, hover state, and animation tells the user something, and she makes sure it tells them the right thing.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="soren">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/soren.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Soren</h3>
               <p class="agent-card__role">FE Responsive</p>
-              <p class="agent-card__desc">Thinks in breakpoints and fluid scales — sees every design as a system of constraints that needs to work from 320px to 2560px without a single layout hack.</p>
+              <p class="agent-card__desc">Thinks in breakpoints and fluid scales. Sees every design as a system of constraints that needs to work from 320px to 2560px without a single layout hack.</p>
             </article>
           </li>
 
-          <li role="listitem">
-            <article class="agent-card">
+          <li role="listitem" data-agent="amara">
+            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
               <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/amara.svg" alt="" width="32" height="32"></div>
               <h3 class="agent-card__name">Amara</h3>
               <p class="agent-card__role">FE Accessibility</p>
-              <p class="agent-card__desc">The team's accessibility conscience — finds the solution that ships, not the one that lives in a spec document. Catches what automated tools miss.</p>
+              <p class="agent-card__desc">The team's accessibility conscience. Finds the solution that ships, not the one that lives in a spec document. Catches what automated tools miss.</p>
             </article>
           </li>
 
         </ul>
+
+        <div id="recent-output"></div>
       </div>
     </section>
 
@@ -446,6 +487,8 @@
   </footer>
 
   <script src="js/projects.js" defer></script>
+  <script src="js/portfolio.js" defer></script>
   <script src="js/meetings.js" defer></script>
+  <script src="js/roster.js" defer></script>
 </body>
 </html>

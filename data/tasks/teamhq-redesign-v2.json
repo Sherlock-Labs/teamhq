@@ -1,0 +1,67 @@
+{
+  "id": "teamhq-redesign-v2",
+  "name": "TeamHQ Redesign v2",
+  "description": "Visual redesign of the TeamHQ landing page — switching from dark theme with rose accent to clean light theme with royal jaguar green (#006B3F), inspired by youngjerks.com aesthetic.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scoped redesign v2 requirements",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Defined light theme direction — white backgrounds, dark text, clean and quiet",
+        "Researched and recommended royal jaguar green (#006B3F) with supporting shades",
+        "Specified typography change: Geist for everything, drop Atkinson Hyperlegible Mono",
+        "Defined card treatment simplification — no shadows, no hover transforms, thin borders only",
+        "Listed removals: noise overlay, hero radial gradient, frosted glass nav, eyebrow labels",
+        "Scoped as CSS-layer refresh — no HTML structure changes, no JS changes",
+        "Wrote 15 acceptance criteria covering all visual changes",
+        "Flagged risks: logo on white, agent identity color contrast, docs.html impact"
+      ],
+      "filesChanged": [
+        "docs/teamhq-redesign-v2-requirements.md"
+      ],
+      "decisions": [
+        "Light theme over refined dark — matches Young Jerks reference and CEO direction",
+        "Geist for headings over adding Neue Haas Grotesk — already loaded, avoids new font dependency",
+        "No architecture step needed — pure CSS/visual refresh",
+        "docs.html redesign deferred to separate pass"
+      ]
+    },
+    {
+      "title": "Created design spec with exact token values and component treatments",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Mapped all semantic token changes: backgrounds, text, accent, borders, shadows, radius, font-heading",
+        "Added 3 new green accent RGB tokens for rgba() usage",
+        "Audited all 12 agent identity colors for WCAG AA contrast on white — none pass at -400",
+        "Created 18 new --color-agent-*-text tokens using -600 variants for accessible text",
+        "Wrote component-level specs for all 16 component types",
+        "Documented all hover/interaction states for cards, links, buttons, and form inputs",
+        "Audited logo SVG — flagged rose gradient and $ symbol needing color updates",
+        "Listed all hardcoded dark values and rgba(white) patterns needing manual replacement"
+      ],
+      "filesChanged": [
+        "docs/teamhq-redesign-v2-design-spec.md"
+      ],
+      "decisions": [
+        "Uniform 4px border-radius across all components — matches Young Jerks sharp edges",
+        "Remove all card shadows, keep shadow-lg only for floating elements (modals, toasts)",
+        "Activity grid empty cells: #f0f0f0 light gray fill instead of transparent",
+        "Left-align section headings for editorial feel"
+      ]
+    },
+    {
+      "title": "Implementing redesign v2 across all CSS and HTML files",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "in-progress",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    }
+  ]
+}

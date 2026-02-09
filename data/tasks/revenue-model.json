@@ -1,0 +1,64 @@
+{
+  "id": "revenue-model",
+  "name": "Revenue Model Spreadsheet",
+  "description": "Build a structured revenue model covering all three brainstormed product ideas (Audio Ad Stripper, Smart PDF Redactor, Podcast Show Notes Generator) with API costs, pricing tiers, break-even analysis, and 30/60/90 day revenue projections.",
+  "status": "completed",
+  "tasks": [
+    {
+      "title": "Scoped requirements for revenue model analysis",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Reviewed Custom Meeting #3 transcript to identify all three product ideas and associated cost/pricing data from the brainstorm",
+        "Reviewed meeting decisions: per-use pricing consensus, build effort estimates, success thresholds",
+        "Cross-referenced with monetization strategy doc and SherlockPDF tech approach for infrastructure context",
+        "Defined deliverable structure: cost structure, pricing tiers, unit economics, 30/60/90 projections, comparison table",
+        "Set conservative adoption assumptions appropriate for a small indie team with no marketing budget",
+        "Identified reference docs Yuki should read before starting",
+        "Determined lean pipeline: Thomas scoping only, Yuki executes, no other agents needed"
+      ],
+      "filesChanged": [
+        "docs/revenue-model-requirements.md",
+        "data/tasks/revenue-model.json"
+      ],
+      "decisions": [
+        "Analytical project only — no software build, no architecture, no design, no QA pipeline needed",
+        "Markdown with tables as output format — simple, readable, no tooling overhead",
+        "Yuki is sole executor — no downstream agents unless she identifies specific gaps",
+        "Conservative adoption assumptions: 5-15 paying users at 30 days, not optimistic projections"
+      ]
+    },
+    {
+      "title": "Produce revenue model analysis document",
+      "agent": "Yuki",
+      "role": "Data Analyst",
+      "status": "completed",
+      "subtasks": [
+        "Read and cross-referenced 6 source documents: requirements doc, Meeting #3 transcript, monetization strategy, payments research, SherlockPDF tech approach, agent definition",
+        "Researched current Gemini 2.5 Flash API pricing from Google's published rates (Feb 2026): $0.30/1M text input, $1.00/1M audio input, $2.50/1M output",
+        "Built cost structure for Audio Ad Stripper: $0.25 avg API cost/file, $0.77 total cost/file at $3.99 price point",
+        "Built cost structure for Smart PDF Redactor: $0.02 avg API cost/file, $0.44 total cost/file at $2.99 price point",
+        "Built cost structure for Podcast Show Notes Generator: $0.45 avg API cost/file, $0.90 total cost/file at $2.49 price point",
+        "Defined 3 pricing tiers per product (per-file, small bundle, large bundle) aligned with meeting consensus on per-use pricing",
+        "Calculated unit economics: gross margins ranging from 64% (Show Notes per-episode) to 93% (Redactor bundles)",
+        "Calculated break-even volumes: Redactor 2 files/month, Ad Stripper 4 files/month, Show Notes 6 files/month",
+        "Built 30/60/90 day projections for all three products with low/mid/high scenarios using Thomas's conservative adoption assumptions",
+        "Created comparison table ranking all three products across 13 dimensions including revenue, margins, build effort, infrastructure advantage, and technical risk",
+        "Documented all 12 assumptions explicitly with basis and risk-if-wrong for each",
+        "Produced build-order ranking: Redactor first (highest profit, best margins, existing infrastructure), Ad Stripper second (viral potential, strong margins), Show Notes third (fastest build but lowest margins)"
+      ],
+      "filesChanged": [
+        "docs/revenue-model-analysis.md",
+        "data/tasks/revenue-model.json"
+      ],
+      "decisions": [
+        "Corrected Marco's 2-3 cent API estimate upward: at published Gemini 2.5 Flash audio rates ($1.00/1M tokens), a 30-min file costs ~$0.49, not 2-3 cents. Used $0.25 blended average accounting for shorter files and batch mode.",
+        "Used blended average API costs rather than worst-case to reflect realistic usage mix of file lengths and potential batch mode savings",
+        "Weighted revenue per user by estimated tier mix rather than assuming all users buy at the cheapest tier",
+        "Gave PDF Redactor slightly higher 30-day user estimates (8 low vs 5) to reflect SherlockPDF's existing distribution channel as a zero-cost acquisition advantage",
+        "Ranked Redactor first despite longest build time because effective time-to-revenue is shortest when infrastructure and distribution are factored in"
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { createMeeting, updateMeeting, getMeetingCount } from "../store/meetings.js";
 import { MeetingOutputJsonSchema } from "../schemas/meeting.js";
 import type { Meeting, MeetingType } from "../schemas/meeting.js";
-import { gatherMeetingContext } from "./context.js";
+import { gatherMeetingContext, gatherCustomMeetingContext } from "./context.js";
 import { buildMeetingPrompt } from "./prompt.js";
 import { runClaude } from "./claude-runner.js";
 
@@ -12,10 +12,12 @@ import { runClaude } from "./claude-runner.js";
  */
 export async function runMeeting(
   type: MeetingType,
-  agenda?: string
+  agenda?: string,
+  participants?: string[],
+  instructions?: string,
 ): Promise<Meeting> {
-  // Guard: first meeting must be charter
-  if (type !== "charter") {
+  // Guard: first meeting must be charter (only for weekly — custom meetings are standalone)
+  if (type === "weekly") {
     const count = await getMeetingCount();
     if (count === 0) {
       throw new Error(
@@ -25,7 +27,7 @@ export async function runMeeting(
   }
 
   // Create the meeting record in "running" state
-  const meeting = await createMeeting(type);
+  const meeting = await createMeeting(type, participants, instructions);
   const startTime = Date.now();
 
   console.log(
@@ -33,11 +35,13 @@ export async function runMeeting(
   );
 
   try {
-    // Gather context
-    const context = await gatherMeetingContext();
+    // Gather context — custom meetings load only selected participants' personalities
+    const context = type === "custom" && participants
+      ? await gatherCustomMeetingContext(participants)
+      : await gatherMeetingContext();
 
     // Build the prompt
-    const prompt = buildMeetingPrompt(type, context, agenda);
+    const prompt = buildMeetingPrompt(type, context, agenda, participants, instructions);
 
     console.log(
       `[meeting-runner] Prompt built (${prompt.length} chars), calling Claude...`

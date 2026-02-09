@@ -751,6 +751,303 @@
           ]
         }
       ]
+    },
+    {
+      "id": "activity-profiles",
+      "name": "Team Activity Profiles & Recent Output",
+      "description": "Added clickable agent cards that expand inline profile panels with GitHub-style daily activity grids and project contribution lists, plus a Recent Output section showing the last 3 completed projects.",
+      "status": "completed",
+      "completedDate": "2025-02",
+      "tasks": [
+        {
+          "title": "Planned and implemented activity profiles feature (CEO direct)",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "completed",
+          "subtasks": [
+            "Added data-agent attributes and tabindex/role/aria-expanded to all 17 roster list items in index.html",
+            "Added 19 --color-agent-*-rgb tokens to tokens.css for rgba() opacity-based activity grids",
+            "Created js/roster.js — IIFE fetching data/tasks.json, building per-agent activity index",
+            "Implemented GitHub-style daily activity grid (7-row CSS grid, columns per week, month labels)",
+            "Built inline profile panel with grid-template-rows expand/collapse animation",
+            "Rendered project contribution list per agent with role, subtask count, and file count",
+            "Built Recent Output section showing last 3 completed projects with agent count, files, and decisions",
+            "Added delegated click handler and keyboard support (Enter/Space) on roster grid",
+            "Added responsive styles and reduced-motion support for profile panels",
+            "Added recent-output container div and roster.js script tag to index.html"
+          ],
+          "filesChanged": [
+            "index.html",
+            "css/tokens.css",
+            "css/styles.css",
+            "js/roster.js"
+          ],
+          "decisions": [
+            "Daily grid over monthly grid — CEO directed, matches GitHub contribution graph pattern",
+            "Month-level data spread across all days in active months — honest representation given data granularity",
+            "Profile panel inserted after last item in visual grid row for full-width span",
+            "Horizontal scroll on activity grid for narrow screens rather than truncating"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "teamhq-redesign-v2",
+      "name": "TeamHQ Redesign v2",
+      "description": "Visual redesign of the TeamHQ landing page — switching from dark theme with rose accent to clean light theme with royal jaguar green (#006B3F), inspired by youngjerks.com aesthetic.",
+      "status": "in-progress",
+      "tasks": [
+        {
+          "title": "Scoped redesign v2 requirements",
+          "agent": "Thomas",
+          "role": "Product Manager",
+          "status": "completed",
+          "subtasks": [
+            "Defined light theme direction — white backgrounds, dark text, clean and quiet",
+            "Researched and recommended royal jaguar green (#006B3F) with supporting shades",
+            "Specified typography change: Geist for everything, drop Atkinson Hyperlegible Mono",
+            "Defined card treatment simplification — no shadows, no hover transforms, thin borders only",
+            "Listed removals: noise overlay, hero radial gradient, frosted glass nav, eyebrow labels",
+            "Scoped as CSS-layer refresh — no HTML structure changes, no JS changes",
+            "Wrote 15 acceptance criteria covering all visual changes",
+            "Flagged risks: logo on white, agent identity color contrast, docs.html impact"
+          ],
+          "filesChanged": [
+            "docs/teamhq-redesign-v2-requirements.md"
+          ],
+          "decisions": [
+            "Light theme over refined dark — matches Young Jerks reference and CEO direction",
+            "Geist for headings over adding Neue Haas Grotesk — already loaded, avoids new font dependency",
+            "No architecture step needed — pure CSS/visual refresh",
+            "docs.html redesign deferred to separate pass"
+          ]
+        },
+        {
+          "title": "Created design spec with exact token values and component treatments",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "completed",
+          "subtasks": [
+            "Mapped all semantic token changes: backgrounds, text, accent, borders, shadows, radius, font-heading",
+            "Added 3 new green accent RGB tokens for rgba() usage",
+            "Audited all 12 agent identity colors for WCAG AA contrast on white — none pass at -400",
+            "Created 18 new --color-agent-*-text tokens using -600 variants for accessible text",
+            "Wrote component-level specs for all 16 component types",
+            "Documented all hover/interaction states for cards, links, buttons, and form inputs",
+            "Audited logo SVG — flagged rose gradient and $ symbol needing color updates",
+            "Listed all hardcoded dark values and rgba(white) patterns needing manual replacement"
+          ],
+          "filesChanged": [
+            "docs/teamhq-redesign-v2-design-spec.md"
+          ],
+          "decisions": [
+            "Uniform 4px border-radius across all components — matches Young Jerks sharp edges",
+            "Remove all card shadows, keep shadow-lg only for floating elements (modals, toasts)",
+            "Activity grid empty cells: #f0f0f0 light gray fill instead of transparent",
+            "Left-align section headings for editorial feel"
+          ]
+        },
+        {
+          "title": "Implementing redesign v2 across all CSS and HTML files",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "in-progress",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        }
+      ]
+    },
+    {
+      "id": "custom-meetings",
+      "name": "Custom Meetings",
+      "description": "Add custom meeting type to the existing meeting system — CEO picks 2-6 agents and provides instructions, agents discuss and produce action items.",
+      "status": "in-progress",
+      "tasks": [
+        {
+          "title": "Scoped requirements for custom meetings feature",
+          "agent": "Thomas",
+          "role": "Product Manager",
+          "status": "completed",
+          "subtasks": [
+            "Analyzed existing meeting system: 2 types (charter/weekly), 6 hardcoded agents, Claude CLI with structured output",
+            "Defined custom meeting type with participant selection (2-6 agents from full 18-agent roster)",
+            "Wrote 3 user stories: create custom meeting, prompt uses selected agents only, view results",
+            "Specified data model changes: participants[] and instructions fields on Meeting schema",
+            "Specified API changes: extend POST /api/meetings/run with participants and instructions",
+            "Defined frontend creation flow: New Meeting button, participant grid, instructions textarea",
+            "Documented technical constraints: no new deps, same CLI integration, same storage, same polling",
+            "Identified risks: prompt quality with arbitrary combos, agent personality loading, large prompts"
+          ],
+          "filesChanged": [
+            "docs/custom-meetings-requirements.md"
+          ],
+          "decisions": [
+            "Scoped to custom meeting type only — no templates, no scheduling, no streaming",
+            "2-6 participant limit to keep prompt size manageable and meetings focused",
+            "Thomas facilitates if present, otherwise first listed participant leads",
+            "Same async poll pattern — no SSE needed for meetings"
+          ]
+        },
+        {
+          "title": "Define technical approach for custom meetings",
+          "agent": "Andrei",
+          "role": "Technical Architect",
+          "status": "completed",
+          "subtasks": [
+            "Decided extend-not-rebuild approach — all changes go into existing files, no new files",
+            "Specified MeetingType enum extension to include 'custom' alongside charter/weekly",
+            "Designed RunMeetingSchema with Zod refine for conditional validation (participants + instructions required for custom)",
+            "Added VALID_AGENT_KEYS constant for server-side participant key validation (all 18 agents)",
+            "Designed gatherCustomMeetingContext function to load agent personalities for selected participants only",
+            "Specified buildCustomInstructions prompt function with facilitator logic (Thomas if present, else first participant)",
+            "Documented file-by-file changes across 7 files: schema, context, prompt, runner, store, routes, frontend",
+            "Defined API validation: 2-6 participants required, all must be valid agent keys, instructions non-empty",
+            "Decided custom meetings don't require charter-first guard (unlike weekly meetings)"
+          ],
+          "filesChanged": [
+            "docs/custom-meetings-tech-approach.md"
+          ],
+          "decisions": [
+            "Extend existing files, no new files — keeps the codebase compact and avoids route/schema sprawl",
+            "Custom meetings don't require a charter first — they're standalone, unlike weekly meetings",
+            "Same Claude runner, same polling pattern — no new infrastructure",
+            "Personality excerpt truncation stays at 1500 char — with 6 agents that's ~9KB, well within prompt limits",
+            "Facilitator logic in prompt, not code — Thomas if present, first listed participant otherwise"
+          ]
+        },
+        {
+          "title": "Design custom meeting creation flow and card display",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "completed",
+          "subtasks": [
+            "Designed 'New Meeting' button in toolbar using indigo-500 color (distinct from charter green and weekly violet)",
+            "Designed collapsible creation form with grid-template-rows animation (consistent with app patterns)",
+            "Specified participant grid: CSS Grid auto-fill, clickable cards with avatar/name/role, selected state with accent border",
+            "Defined count indicator with contextual hints: warning color when < 2, accent when max 6",
+            "Designed instructions textarea with standard app input styling and 'What should they discuss?' placeholder",
+            "Specified Custom badge for meeting cards: indigo-500 text on indigo-400-rgb/0.08 background",
+            "Designed overlapping participant avatars on custom meeting cards (20x20, -6px overlap)",
+            "Created instructions display in detail view: italic text with accent left border",
+            "Defined responsive behavior: 3-col mobile, 4-5 col tablet, 6-col desktop for participant grid",
+            "Specified full accessibility: button role=checkbox with aria-checked, aria-hidden form, live region for count"
+          ],
+          "filesChanged": [
+            "docs/custom-meetings-design-spec.md"
+          ],
+          "decisions": [
+            "Indigo for custom meetings (distinct from charter green and weekly violet) — clear visual differentiation",
+            "No new design tokens needed — all styling uses existing CSS custom properties",
+            "Participant avatars hidden on mobile to save space, just name and abbreviated role",
+            "Collapsible form over modal — keeps context visible and follows existing app patterns",
+            "Overlapping avatar row on cards — compact, scannable, instantly shows who was in the meeting"
+          ]
+        },
+        {
+          "title": "Implement custom meetings frontend — creation form, participant selection, card display",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        },
+        {
+          "title": "Implement custom meetings backend — schema, prompt, API, context loading",
+          "agent": "Jonah",
+          "role": "Back-End Developer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        },
+        {
+          "title": "Design review of custom meetings implementation",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        },
+        {
+          "title": "QA validation of custom meetings feature",
+          "agent": "Enzo",
+          "role": "QA Engineer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        }
+      ]
+    },
+    {
+      "id": "project-tracking-improvements",
+      "name": "Project Tracking Improvements",
+      "description": "Added a Portfolio section to the TeamHQ landing page that showcases the team's completed work with rich data — agent contributions, task breakdowns, decisions, file deliverables, and summary statistics.",
+      "status": "in-progress",
+      "tasks": [
+        {
+          "title": "Scoped requirements for project tracking improvements",
+          "agent": "Thomas",
+          "role": "Product Manager",
+          "status": "completed",
+          "subtasks": [
+            "Analyzed data/tasks.json — found 9 projects with per-agent tasks, subtasks, decisions, and filesChanged",
+            "Identified that rich task data was invisible on the landing page (old tasks.js disconnected)",
+            "Scoped Portfolio section: summary stats, project cards, expandable task breakdowns, contributor highlights, decision rollups",
+            "Defined 6 requirements (R1-R6) with detailed acceptance criteria",
+            "Specified technical constraints: plain HTML/CSS/vanilla JS, no backend changes, no new dependencies",
+            "Wrote implementation notes for Robert, Alice, and Enzo"
+          ],
+          "filesChanged": [
+            "docs/project-tracking-improvements-requirements.md"
+          ],
+          "decisions": [
+            "New Portfolio section between Projects and Meetings — keeps active project management separate from historical showcase",
+            "Static JSON over Express API — portfolio showcases historical work, not real-time management",
+            "Nested accordion for task details — reuses established grid-template-rows pattern",
+            "Deferred filtering, timeline viz, and search to keep v1 focused"
+          ]
+        },
+        {
+          "title": "Create design spec for Portfolio section",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        },
+        {
+          "title": "Implement Portfolio section UI",
+          "agent": "Alice",
+          "role": "Front-End Developer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        },
+        {
+          "title": "Design review of Portfolio implementation",
+          "agent": "Robert",
+          "role": "Product Designer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        },
+        {
+          "title": "QA validation of Portfolio section",
+          "agent": "Enzo",
+          "role": "QA Engineer",
+          "status": "pending",
+          "subtasks": [],
+          "filesChanged": [],
+          "decisions": []
+        }
+      ]
     }
   ]
 }

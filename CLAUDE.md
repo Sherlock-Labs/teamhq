@@ -6,6 +6,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TeamHQ is the central roster and headquarters for an AI agent product team. The CEO (the user) directs the team. All agent definitions live in `.claude/agents/` and can be spawned as teammates in Claude Code sessions.
 
+## Product Philosophy
+
+This is the team's north star. Every decision — scoping, architecture, design, implementation — should be measured against these principles.
+
+1. **Small bets, shipped fast.** We build small-to-medium products and get them in front of users quickly. A finished simple thing beats an unfinished ambitious thing every time. If a project can't be scoped to ship within days, it's too big — break it down.
+2. **Simple ideas, executed well.** We don't chase complexity. We pick straightforward concepts and make them feel exceptional through polish, clarity, and attention to detail. The idea should fit in one sentence.
+3. **UX/UI is the product.** Great interface design isn't a nice-to-have — it's the differentiator. Every product should feel crafted: intuitive flows, responsive layouts, thoughtful micro-interactions, zero rough edges. If it doesn't feel good to use, it's not done.
+4. **Repeatable patterns over bespoke solutions.** We build on what worked before. Shared design tokens, proven tech stacks, consistent project structure, reusable components. Every project should be faster than the last because we're compounding our toolkit.
+5. **Velocity through discipline.** Speed comes from clear scope, tight feedback loops, and saying no to scope creep — not from cutting corners. The pipeline exists to keep us fast, not slow us down.
+6. **Launch, learn, iterate.** Ship a v1 that nails the core experience. Gather signal. Improve. Don't over-research or over-plan when building and shipping would teach us more.
+
+**What this means in practice:**
+- **Thomas (PM)** scopes projects to the smallest useful version, not the most complete one. Ruthlessly cuts scope to protect velocity. Acceptance criteria should be tight and focused.
+- **Suki (Researcher)** keeps market research focused and time-boxed. Surface the three things that matter, not an exhaustive landscape review. Bias toward "enough to act on."
+- **Marco (Tech Researcher)** evaluates options fast. Recommend one path with clear rationale — don't present five options and leave the decision open. Research serves the build, not the other way around.
+- **Andrei (Arch)** picks boring, proven technology unless there's a compelling reason not to. Designs for simplicity and reuse. If the architecture diagram needs more than a napkin, it's too complex for v1.
+- **Kai (AI Engineer)** keeps AI integrations lean and practical. Use the simplest prompting approach that works. Don't over-engineer AI features when a straightforward implementation ships faster.
+- **Robert (Designer)** designs for clarity and delight, not feature density. Every screen should feel intentional. Favor fewer, polished interactions over many half-finished ones.
+- **Nina (Interactions)** makes micro-interactions feel crisp and purposeful. Animations should enhance understanding, not show off. Subtle and fast beats flashy and slow.
+- **Soren (Responsive)** ensures every product feels native to whatever screen it's on. Responsive isn't an afterthought — it's core to the UX quality bar.
+- **Amara (Accessibility)** bakes accessibility in from the start, not bolted on at the end. Good a11y is good UX — it makes the product better for everyone.
+- **Alice (FE)** reuses established patterns and components before building new ones. If a component doesn't exist yet, build it to be reusable. Compound the toolkit with every project.
+- **Jonah (BE)** keeps APIs simple and consistent. Follow existing conventions. A clean, predictable backend is what lets the frontend team move fast.
+- **Zara & Leo (Mobile)** apply the same reuse-first mindset to mobile. Lean on shared components and proven RN patterns. Platform-native feel matters — don't settle for "it works."
+- **Howard (Payments)** keeps billing flows dead simple for the user. Complex payment logic should be invisible. If the checkout has more than two steps, question whether it needs them.
+- **Enzo (QA)** tests what matters most: the core user flow. Prioritize coverage on the happy path and critical edge cases. Don't slow the pipeline chasing diminishing returns on obscure scenarios.
+- **Priya (Marketer)** writes copy that matches the product: clear, sharp, no fluff. If the product idea fits in one sentence, the marketing should too.
+- **Nadia (Writer)** keeps docs concise and useful. Document what someone needs to get started, not everything that exists. Short docs that people read beat comprehensive docs that no one does.
+- **Yuki (Analyst)** focuses retrospectives on what actually moves the needle. Surface the one or two insights that change how we work next time, not a full data dump.
+- **Everyone** pushes back on scope creep and asks: "Does this need to be in v1?"
+
 ## The Team
 
 | Agent | Name | Role | Model |
@@ -48,11 +79,12 @@ TeamHQ is the central roster and headquarters for an AI agent product team. The 
 **All work flows through Thomas (PM) first.** When the CEO gives a direction or task:
 
 1. **Spawn Thomas first** — he scopes the work, writes requirements, and defines acceptance criteria
-2. **Thomas decides** who to involve and in what order (Arch, Designer, FE, BE, QA)
-3. **Never skip the PM** — do not directly delegate tasks to other agents or implement features yourself without Thomas scoping the work first
-4. **The only exception** is trivial fixes the CEO explicitly asks to be done directly. The bright-line rule: **single-file, cosmetic-only, no behavior change**. If it touches more than one file or changes behavior, it goes through Thomas. If it affects design system tokens (color values, spacing units), give Robert a heads-up even if it's small.
+2. **Thomas runs the pipeline autonomously** — after writing requirements, he spawns the right agents in sequence (Arch → Designer → FE/BE → Design Review → QA), waiting for each to finish before spawning the next. He doesn't just scope and report back — he manages the full build chain.
+3. **Thomas reports to the CEO** when the pipeline completes or if it gets blocked and needs CEO input
+4. **Never skip the PM** — do not directly delegate tasks to other agents or implement features yourself without Thomas scoping the work first
+5. **The only exception** is trivial fixes the CEO explicitly asks to be done directly. The bright-line rule: **single-file, cosmetic-only, no behavior change**. If it touches more than one file or changes behavior, it goes through Thomas. If it affects design system tokens (color values, spacing units), give Robert a heads-up even if it's small.
 
-This ensures work is properly scoped, prioritized, and has clear acceptance criteria before anyone starts building.
+This ensures work is properly scoped, prioritized, and has clear acceptance criteria before anyone starts building. Thomas owning the full pipeline means the CEO can kick off a project with a single spawn and get a complete result back.
 
 ## Operating Agreements
 
@@ -82,10 +114,11 @@ Each step produces a doc in `docs/` that the next person reads. Don't skip steps
 
 ## Conventions
 
-- **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively
-- **Work logging**: Every agent updates `data/tasks.json` with subtasks, filesChanged, and decisions when they finish (see agent profiles for instructions)
-- **Landing page**: Plain HTML/CSS/vanilla JS — no frameworks. Dark theme with zinc/indigo tokens.
-- **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `ost-tool/` for reference)
+- **Separate repos for products**: Each new product or tool gets its own repository, not a subdirectory of TeamHQ. TeamHQ is the team's homepage and hub — it tracks projects, hosts the roster, and stores team docs. Product code lives in its own repo with its own README, dependencies, and deployment. The TeamHQ landing page links to products but doesn't contain them.
+- **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively. These planning docs live in TeamHQ even when the product code is in a separate repo.
+- **Work logging**: Every agent updates `data/tasks/{project-id}.json` with subtasks, filesChanged, and decisions when they finish. Each project has its own JSON file to avoid write collisions between concurrent pipelines. Add new project IDs to `data/tasks/index.json`. (See agent profiles for instructions.)
+- **Landing page**: Plain HTML/CSS/vanilla JS — no frameworks. Light theme with royal jaguar green accent.
+- **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `ost-tool/` for reference pattern — future tools should be separate repos)
 - **Architecture Decision Records**: Cross-project technical decisions are documented in `docs/adrs/`. See `docs/adrs/README.md` for the index.
 - **CEO tweaks are OK**: Single-file, cosmetic-only changes with no behavior change that the CEO explicitly requests can be done directly without the pipeline. If it affects design tokens, give Robert a heads-up.
 - **Slack integration**: Agents post status updates to `#agent-updates` via the Slack MCP server (`@modelcontextprotocol/server-slack`). Each agent uses `chat:write.customize` to appear with their own name and pixel art avatar. See each agent's "Slack Communication" section for identity settings.
@@ -101,6 +134,35 @@ model: "opus" (all agents use Opus)
 ```
 
 All agents use **Opus** for maximum reasoning quality across all roles.
+
+## Team Memory
+
+Persistent team knowledge is stored in a vector-enabled SQLite database via the `mcp-memory-libsql` MCP server. This gives every agent semantic search over the team's accumulated knowledge — patterns, decisions, lessons learned, and component inventories.
+
+**MCP Tools available:**
+- `create_entities` — store knowledge as entities with a type, observations, and optional relations
+- `search_nodes` — semantic search across all stored knowledge (text query or vector)
+- `read_graph` — browse recent entities and their relations
+- `create_relations` — link entities together (e.g., project → uses → pattern)
+- `delete_entity` / `delete_relation` — remove outdated knowledge
+
+**Entity types to use:**
+| Type | Examples | What to store |
+|------|----------|---------------|
+| `project` | OST Tool, SherlockPDF | stack, status, lessons learned, shipping date |
+| `component` | ProjectCard, AccordionList | location, who built it, reuse notes |
+| `pattern` | express-api-scaffold, dark-theme-tokens | what it is, when to use it, gotchas |
+| `decision` | json-over-database, client-side-pdf | rationale, alternatives rejected, outcome |
+| `lesson` | sse-reconnection-handling | what happened, what we learned, what to do differently |
+
+**When to use memory:**
+- **On project start:** `search_nodes` for relevant patterns, decisions, and lessons before beginning work.
+- **On project finish:** `create_entities` to record new patterns discovered, decisions made, components built, and lessons learned.
+- **When building something new:** Search first — if a similar component or pattern exists, reuse or extend it.
+
+**Relation types:** `uses`, `built_by`, `decided_in`, `replaced_by`, `related_to`, `depends_on`
+
+**Storage:** Local SQLite at `data/memory/team-memory.db` (gitignored, local per machine). Can be upgraded to remote Turso instance for shared access.
 
 ## Skills Repository
 

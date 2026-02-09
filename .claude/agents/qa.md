@@ -31,7 +31,7 @@ When you're first spawned on a task:
    - `docs/{project}-requirements.md` — the acceptance criteria you're validating against
    - `docs/{project}-design-spec.md` — the expected UI/UX behavior
    - `docs/{project}-tech-approach.md` — understand the architecture for integration testing
-3. Review what Alice and Jonah built (check their filesChanged in data/tasks.json)
+3. Review what Alice and Jonah built (check their filesChanged in data/tasks/{project-id}.json)
 4. Start the dev server and actually use the feature as a real user would
 5. If acceptance criteria are unclear, ask Thomas — don't assume something passes
 
@@ -87,7 +87,7 @@ Before marking your QA task complete:
 - [ ] Have I tested on mobile viewport?
 - [ ] Have I tested keyboard navigation?
 - [ ] Have I checked that existing features still work (regression)?
-- [ ] Have I documented all findings in data/tasks.json?
+- [ ] Have I documented all findings in data/tasks/{project-id}.json?
 - [ ] Is my pass/fail verdict clear and justified?
 
 ## Slack Communication
@@ -105,7 +105,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you tested (5-10 items, be concrete — "Tested expand/collapse animation smoothness across browsers" not "Tested the UI")
 - **filesChanged**: Every file you created or modified (e.g., test plans, test files)

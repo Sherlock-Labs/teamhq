@@ -1,0 +1,113 @@
+{
+  "id": "teamhq-redesign",
+  "name": "TeamHQ Redesign",
+  "description": "Redesigned the TeamHQ landing page with a dark theme, navigation bar, and Tools section to serve as a central hub.",
+  "status": "completed",
+  "completedDate": "2025-02",
+  "tasks": [
+    {
+      "title": "Scoped redesign requirements",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Defined dark theme requirement to match OST Tool aesthetic",
+        "Specified sticky navigation bar with smooth-scroll anchor links",
+        "Added Tools section to link to shipped products (starting with OST Tool)",
+        "Required all existing content preserved and rethemed",
+        "Wrote acceptance criteria for responsive dark theme across all breakpoints"
+      ],
+      "filesChanged": [
+        "docs/teamhq-redesign-requirements.md"
+      ],
+      "decisions": [
+        "Positioned TeamHQ as a central hub, not just an informational page",
+        "Tools section placed above Team Roster to emphasize shipped work"
+      ]
+    },
+    {
+      "title": "Confirmed tech approach (stay with plain HTML/CSS)",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Evaluated whether redesign warranted a framework switch — decided no",
+        "Confirmed nav bar is achievable with static HTML + anchor links",
+        "Specified CSS custom property swap for dark theme (no JS needed)",
+        "Added Google Fonts for Inter to match OST Tool typography",
+        "Defined smooth scroll via CSS scroll-behavior and scroll-padding-top"
+      ],
+      "filesChanged": [
+        "docs/teamhq-redesign-tech-approach.md"
+      ],
+      "decisions": [
+        "Stay with plain HTML/CSS — the redesign doesn't warrant a framework migration",
+        "Inter via Google Fonts CDN rather than self-hosting — simpler, good caching",
+        "CSS-only smooth scroll over JavaScript scroll libraries"
+      ]
+    },
+    {
+      "title": "Created dark theme design spec",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Defined zinc-scale color palette: zinc-950 bg, zinc-900 cards, zinc-800 borders",
+        "Specified indigo-500 accents with indigo-400 for hover states",
+        "Designed sticky nav bar with brand + sub-label left, links right",
+        "Created Tools section card design with status badges and launch links",
+        "Changed card hover from shadow-lift to border-color brightening (shadows invisible on dark)",
+        "Updated avatar circles to indigo-at-10% background with indigo-400 text",
+        "Ensured WCAG AA contrast ratios for all dark theme color combinations"
+      ],
+      "filesChanged": [
+        "docs/teamhq-redesign-design-spec.md"
+      ],
+      "decisions": [
+        "Border-color hover over box-shadow — shadows are invisible against dark backgrounds",
+        "No hamburger menu on mobile — nav links wrap naturally and there are only 4",
+        "Footer uses zinc-900 (one step lighter than page bg) for subtle separation"
+      ]
+    },
+    {
+      "title": "Implemented dark theme, nav bar, and Tools section",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Replaced entire CSS color system with zinc/indigo dark theme tokens",
+        "Created sticky navigation bar with TeamHQ branding and smooth-scroll links",
+        "Built Tools section with OST Tool card, Live badge, and Launch link with arrow animation",
+        "Updated all existing sections for dark background contrast",
+        "Redesigned agent cards for dark theme readability",
+        "Added Google Fonts Inter import",
+        "Implemented responsive nav that wraps gracefully on mobile"
+      ],
+      "filesChanged": [
+        "index.html",
+        "css/styles.css"
+      ],
+      "decisions": [
+        "Kept Inter font via Google Fonts CDN rather than self-hosting",
+        "Launch link arrow translates right on hover for a subtle interactive feel"
+      ]
+    },
+    {
+      "title": "Validated redesign against acceptance criteria",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Verified dark theme colors and contrast ratios across all sections",
+        "Tested nav bar sticky behavior and smooth-scroll to each section",
+        "Confirmed Tools section renders with OST Tool card and working Launch link",
+        "Validated all 6 agents still display correctly with updated styling",
+        "Tested responsive behavior at mobile, tablet, and desktop breakpoints",
+        "Verified OST Tool Launch link opens in new tab with noopener noreferrer"
+      ],
+      "decisions": [
+        "Accepted minor sub-pixel rendering differences across browsers — imperceptible to users"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "5c8a19a4-e600-4234-a526-08ceddc3a0d0",
+  "projectId": "764cecde-b80e-425f-9583-ddf9791410e5",
+  "status": "running",
+  "startedAt": "2026-02-09T20:07:27.181Z",
+  "endedAt": null,
+  "durationMs": null,
+  "eventCount": 56,
+  "exitCode": null,
+  "error": null,
+  "pid": null,
+  "cliSessionId": "de9a1eb7-f976-46d6-9249-ab5e7c38399c",
+  "turnCount": 1,
+  "state": "idle"
+}

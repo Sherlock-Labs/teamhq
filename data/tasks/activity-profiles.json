@@ -1,0 +1,39 @@
+{
+  "id": "activity-profiles",
+  "name": "Team Activity Profiles & Recent Output",
+  "description": "Added clickable agent cards that expand inline profile panels with GitHub-style daily activity grids and project contribution lists, plus a Recent Output section showing the last 3 completed projects.",
+  "status": "completed",
+  "completedDate": "2025-02",
+  "tasks": [
+    {
+      "title": "Planned and implemented activity profiles feature (CEO direct)",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Added data-agent attributes and tabindex/role/aria-expanded to all 17 roster list items in index.html",
+        "Added 19 --color-agent-*-rgb tokens to tokens.css for rgba() opacity-based activity grids",
+        "Created js/roster.js — IIFE fetching data/tasks.json, building per-agent activity index",
+        "Implemented GitHub-style daily activity grid (7-row CSS grid, columns per week, month labels)",
+        "Built inline profile panel with grid-template-rows expand/collapse animation",
+        "Rendered project contribution list per agent with role, subtask count, and file count",
+        "Built Recent Output section showing last 3 completed projects with agent count, files, and decisions",
+        "Added delegated click handler and keyboard support (Enter/Space) on roster grid",
+        "Added responsive styles and reduced-motion support for profile panels",
+        "Added recent-output container div and roster.js script tag to index.html"
+      ],
+      "filesChanged": [
+        "index.html",
+        "css/tokens.css",
+        "css/styles.css",
+        "js/roster.js"
+      ],
+      "decisions": [
+        "Daily grid over monthly grid — CEO directed, matches GitHub contribution graph pattern",
+        "Month-level data spread across all days in active months — honest representation given data granularity",
+        "Profile panel inserted after last item in visual grid row for full-width span",
+        "Horizontal scroll on activity grid for narrow screens rather than truncating"
+      ]
+    }
+  ]
+}

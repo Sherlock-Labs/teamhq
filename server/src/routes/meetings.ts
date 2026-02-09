@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { listMeetings, getMeeting, getMeetingCount } from "../store/meetings.js";
-import { RunMeetingSchema } from "../schemas/meeting.js";
+import { RunMeetingSchema, VALID_AGENT_KEYS } from "../schemas/meeting.js";
 import { runMeeting } from "../meetings/runner.js";
 import { ZodError } from "zod";
 
@@ -39,14 +39,35 @@ router.post("/meetings/run", async (req, res) => {
   try {
     const parsed = RunMeetingSchema.parse(req.body);
 
-    // Validate charter-first guard BEFORE sending 202
-    if (parsed.type !== "charter") {
+    // Validate charter-first guard BEFORE sending 202 (only for weekly — custom is standalone)
+    if (parsed.type === "weekly") {
       const count = await getMeetingCount();
       if (count === 0) {
         res.status(400).json({
           error:
             "The first meeting must be a charter meeting. Run a charter meeting first to establish the team's mission and priorities.",
         });
+        return;
+      }
+    }
+
+    // Custom meeting validation: validate participant keys and instructions
+    if (parsed.type === "custom") {
+      if (!parsed.participants || parsed.participants.length < 2) {
+        res.status(400).json({ error: "Custom meetings require at least 2 participants" });
+        return;
+      }
+      if (parsed.participants.length > 6) {
+        res.status(400).json({ error: "Custom meetings allow at most 6 participants" });
+        return;
+      }
+      const invalid = parsed.participants.filter((p: string) => !VALID_AGENT_KEYS.has(p));
+      if (invalid.length > 0) {
+        res.status(400).json({ error: `Invalid participant keys: ${invalid.join(", ")}` });
+        return;
+      }
+      if (!parsed.instructions) {
+        res.status(400).json({ error: "Custom meetings require instructions" });
         return;
       }
     }
@@ -68,7 +89,7 @@ router.post("/meetings/run", async (req, res) => {
     });
 
     // Run meeting asynchronously (don't await)
-    runMeeting(parsed.type, parsed.agenda).catch((err) => {
+    runMeeting(parsed.type, parsed.agenda, parsed.participants, parsed.instructions).catch((err) => {
       console.error("[meeting-route] Background meeting failed:", err);
     });
   } catch (err) {

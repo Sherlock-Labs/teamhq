@@ -1,0 +1,109 @@
+{
+  "id": "project-tracking-improvements",
+  "name": "Project Tracking Improvements",
+  "description": "Added a Portfolio section to the TeamHQ landing page that showcases the team's completed work with rich data — agent contributions, task breakdowns, decisions, file deliverables, and summary statistics.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scoped requirements for project tracking improvements",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Analyzed data/tasks.json — found 9 projects with per-agent tasks, subtasks, decisions, and filesChanged",
+        "Identified that rich task data was invisible on the landing page (old tasks.js disconnected)",
+        "Scoped Portfolio section: summary stats, project cards, expandable task breakdowns, contributor highlights, decision rollups",
+        "Defined 6 requirements (R1-R6) with detailed acceptance criteria",
+        "Specified technical constraints: plain HTML/CSS/vanilla JS, no backend changes, no new dependencies",
+        "Wrote implementation notes for Robert, Alice, and Enzo"
+      ],
+      "filesChanged": [
+        "docs/project-tracking-improvements-requirements.md"
+      ],
+      "decisions": [
+        "New Portfolio section between Projects and Meetings — keeps active project management separate from historical showcase",
+        "Static JSON over Express API — portfolio showcases historical work, not real-time management",
+        "Nested accordion for task details — reuses established grid-template-rows pattern",
+        "Deferred filtering, timeline viz, and search to keep v1 focused"
+      ]
+    },
+    {
+      "title": "Create design spec for Portfolio section",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Defined section placement between Projects and Meetings with nav link",
+        "Designed stats row with 6 metric cards (flex layout, responsive wrapping)",
+        "Designed project cards with status badges, agent avatars, date, chevron",
+        "Specified expandable card details with grid-template-rows animation",
+        "Designed per-project metrics row, task list reusing existing .task-item patterns",
+        "Created contributors summary with avatar, name, subtask/file counts",
+        "Designed key decisions rollup with collapsible accordion",
+        "Specified responsive breakpoints: mobile 2-col stats, tablet 3-col, desktop 6-col",
+        "Documented full accessibility requirements (aria-expanded, aria-hidden, focus-visible, reduced-motion)",
+        "Defined animation specs consistent with existing patterns"
+      ],
+      "filesChanged": [
+        "docs/project-tracking-improvements-design-spec.md"
+      ],
+      "decisions": [
+        "Reuse existing .task-item CSS classes for task breakdown — no new classes needed for task details",
+        "Agent avatars hidden on mobile to save space",
+        "Only project-level accordion is one-at-a-time — nested task expansion is independent",
+        "Key decisions section collapsed by default to save space"
+      ]
+    },
+    {
+      "title": "Implement Portfolio section UI",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Created js/portfolio.js with IIFE pattern matching existing tasks.js — fetches data/tasks/index.json, loads each project JSON, computes aggregate stats, renders full Portfolio section",
+        "Added Portfolio section HTML to index.html between Projects and Meetings with proper semantic structure (section, aria-labelledby, container wrapper)",
+        "Added Portfolio nav link between Projects and Meetings in the navigation bar",
+        "Implemented summary stats row with 6 metric cards: Projects, Completed, Agents, Tasks, Files, Decisions — all computed dynamically from task data",
+        "Built portfolio project cards with status badges (reusing project-card badge treatment), agent avatar clusters with overlap and +N overflow, completion dates, and chevron expand/collapse",
+        "Implemented one-at-a-time project accordion with grid-template-rows animation matching existing patterns",
+        "Added per-project metrics row (tasks, files, decisions) at the top of expanded details",
+        "Rendered task breakdown lists reusing existing .task-item patterns with agent SVG avatars instead of letter initials, nested independent accordion for subtasks/files/decisions",
+        "Built contributors summary section ordered by subtask count with avatar, name, and contribution stats",
+        "Implemented key decisions rollup as collapsible accordion, collapsed by default, aggregating decisions from all agents with agent attribution",
+        "Added full responsive CSS: mobile 2-col stats with truncated descriptions and hidden avatars, tablet 3-col, desktop 6-col",
+        "Added accessibility: all interactive elements are buttons with aria-expanded/aria-hidden, focus-visible outlines, keyboard Enter/Space support, reduced-motion media query",
+        "Added pending status treatment (gray dot) to .task-item__status CSS"
+      ],
+      "filesChanged": [
+        "js/portfolio.js",
+        "index.html",
+        "css/styles.css",
+        "data/tasks/project-tracking-improvements.json"
+      ],
+      "decisions": [
+        "Used SVG avatar images in task items instead of initial letters — provides richer visual identity consistent with the rest of the landing page",
+        "Added escapeHTML utility for all user-facing text — prevents potential XSS from task data content",
+        "Added pending status to both formatStatus and CSS — data includes pending tasks not covered by existing status treatments",
+        "Kept portfolio.js as separate file rather than merging with tasks.js — each section is self-contained per existing architecture"
+      ]
+    },
+    {
+      "title": "Design review of Portfolio implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "title": "QA validation of Portfolio section",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    }
+  ]
+}

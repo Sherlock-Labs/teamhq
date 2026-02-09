@@ -31,7 +31,7 @@
   --color-neutral-900: #171717;
   --color-neutral-950: #0a0a0a;
 
-  /* Rose/Pink — Brand Accent (replaces Indigo as primary) */
+  /* Rose/Pink — kept for agent identity (Priya uses rose-400) */
   --color-rose-50: #fff1f3;
   --color-rose-100: #ffe0e6;
   --color-rose-200: #ffc9d2;
@@ -95,9 +95,14 @@
   --color-emerald-400-rgb: 52, 211, 153;
   --color-emerald-500-rgb: 16, 185, 129;
 
-  /* Rose accent */
+  /* Rose accent (kept for agent identity) */
   --color-rose-500-rgb: 251, 97, 130;
   --color-rose-600-rgb: 232, 73, 106;
+
+  /* Royal Jaguar Green RGB */
+  --color-green-accent-rgb: 0, 107, 63;
+  --color-green-accent-hover-rgb: 0, 140, 82;
+  --color-green-accent-active-rgb: 0, 84, 50;
 
   /* Status */
   --color-green-400-rgb: 74, 222, 128;
@@ -114,29 +119,50 @@
   --color-cyan-400-rgb: 34, 211, 238;
   --color-zinc-400-rgb: 161, 161, 170;
 
+  /* Agent Identity RGB (for rgba() opacity-based activity grids) */
+  --color-agent-thomas-rgb: 129, 140, 248;   /* indigo-400 */
+  --color-agent-andrei-rgb: 167, 139, 250;   /* violet-400 */
+  --color-agent-robert-rgb: 192, 132, 252;   /* purple-400 */
+  --color-agent-alice-rgb: 244, 114, 182;    /* pink-400 */
+  --color-agent-jonah-rgb: 52, 211, 153;     /* emerald-400 */
+  --color-agent-enzo-rgb: 251, 191, 36;      /* amber-400 */
+  --color-agent-priya-rgb: 251, 126, 149;    /* rose-400 */
+  --color-agent-suki-rgb: 45, 212, 191;      /* teal-400 */
+  --color-agent-marco-rgb: 251, 146, 60;     /* orange-400 */
+  --color-agent-nadia-rgb: 56, 189, 248;     /* sky-400 */
+  --color-agent-yuki-rgb: 163, 230, 53;      /* lime-400 */
+  --color-agent-kai-rgb: 34, 211, 238;       /* cyan-400 */
+  --color-agent-zara-rgb: 163, 230, 53;      /* lime-400 */
+  --color-agent-leo-rgb: 251, 146, 60;       /* orange-400 */
+  --color-agent-nina-rgb: 244, 114, 182;     /* pink-400 */
+  --color-agent-soren-rgb: 56, 189, 248;     /* sky-400 */
+  --color-agent-amara-rgb: 45, 212, 191;     /* teal-400 */
+  --color-agent-howard-rgb: 167, 139, 250;   /* violet-400 */
+  --color-agent-default-rgb: 163, 163, 170;  /* neutral-400 */
+
   /* --- Semantic Tokens --- */
 
   /* Backgrounds */
-  --color-bg-primary: #0c0c0e;
-  --color-bg-secondary: #111113;
-  --color-bg-card: #18181b;
-  --color-bg-frosted: rgba(12, 12, 14, 0.80);
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #fafafa;
+  --color-bg-card: #ffffff;
+  --color-bg-frosted: rgba(255, 255, 255, 0.92);
 
   /* Text */
-  --color-text-primary: #ebebeb;
-  --color-text-secondary: #9a9a9a;
-  --color-text-tertiary: #606068;
+  --color-text-primary: #171717;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #999999;
 
   /* Interactive */
-  --color-accent: var(--color-rose-500);
-  --color-accent-hover: var(--color-rose-400);
-  --color-accent-active: var(--color-rose-600);
-  --color-accent-bg: rgba(var(--color-rose-500-rgb), 0.08);
-  --color-accent-light: rgba(var(--color-rose-500-rgb), 0.06);
+  --color-accent: #006B3F;
+  --color-accent-hover: #008C52;
+  --color-accent-active: #005432;
+  --color-accent-bg: rgba(0, 107, 63, 0.06);
+  --color-accent-light: rgba(0, 107, 63, 0.04);
 
   /* Borders */
-  --color-border: rgba(var(--color-white-rgb), 0.06);
-  --color-border-strong: rgba(var(--color-white-rgb), 0.10);
+  --color-border: #e5e5e5;
+  --color-border-strong: #d4d4d4;
 
   /* Status (unchanged) */
   --color-status-success: #16a34a;
@@ -156,12 +182,39 @@
   --color-agent-nadia: var(--color-sky-400);
   --color-agent-yuki: var(--color-lime-400);
   --color-agent-kai: var(--color-cyan-400);
+  --color-agent-zara: var(--color-lime-400);
+  --color-agent-leo: var(--color-orange-400);
+  --color-agent-nina: var(--color-pink-400);
+  --color-agent-soren: var(--color-sky-400);
+  --color-agent-amara: var(--color-teal-400);
+  --color-agent-howard: var(--color-violet-400);
   --color-agent-default: var(--color-neutral-400);
+
+  /* Agent Identity — Text Colors (darker variants for light background WCAG AA) */
+  --color-agent-thomas-text: #4f46e5;   /* indigo-600 — 6.3:1 */
+  --color-agent-andrei-text: #7c3aed;   /* violet-600 — 6.1:1 */
+  --color-agent-robert-text: #9333ea;   /* purple-600 — 5.2:1 */
+  --color-agent-alice-text: #db2777;    /* pink-600 — 4.6:1 */
+  --color-agent-jonah-text: #059669;    /* emerald-600 — 4.6:1 */
+  --color-agent-enzo-text: #d97706;     /* amber-600 — 4.5:1 */
+  --color-agent-priya-text: #e11d48;    /* rose-600 — 5.0:1 */
+  --color-agent-suki-text: #0d9488;     /* teal-600 — 4.5:1 */
+  --color-agent-marco-text: #ea580c;    /* orange-600 — 4.6:1 */
+  --color-agent-nadia-text: #0284c7;    /* sky-600 — 4.8:1 */
+  --color-agent-yuki-text: #65a30d;     /* lime-600 */
+  --color-agent-kai-text: #0891b2;      /* cyan-600 — 4.5:1 */
+  --color-agent-zara-text: #65a30d;     /* lime-600 */
+  --color-agent-leo-text: #ea580c;      /* orange-600 */
+  --color-agent-nina-text: #db2777;     /* pink-600 */
+  --color-agent-soren-text: #0284c7;    /* sky-600 */
+  --color-agent-amara-text: #0d9488;    /* teal-600 */
+  --color-agent-howard-text: #7c3aed;   /* violet-600 */
+  --color-agent-default-text: #525252;  /* neutral-600 */
 
   /* --- Typography --- */
 
   --font-family: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-heading: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-heading: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   --text-xs: 0.75rem;
@@ -200,17 +253,17 @@
 
   /* --- Border Radius --- */
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
 
   /* --- Shadows --- */
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
-  --shadow-ring: 0 0 0 1px rgba(var(--color-white-rgb), 0.06);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-ring: none;
 }

@@ -4,10 +4,18 @@
   var API_BASE = '/api/meetings';
   var TOAST_DURATION = 4000;
   var POLL_INTERVAL = 5000;
+  var MIN_PARTICIPANTS = 2;
+  var MAX_PARTICIPANTS = 6;
 
   var listContainer = document.getElementById('meetings-list');
   var charterBtn = document.getElementById('meeting-charter-btn');
   var weeklyBtn = document.getElementById('meeting-weekly-btn');
+  var customBtn = document.getElementById('meeting-custom-btn');
+  var createForm = document.getElementById('meetings-create-form');
+  var participantGrid = document.getElementById('participant-grid');
+  var participantCountEl = document.getElementById('participant-count');
+  var instructionsTextarea = document.getElementById('meeting-instructions');
+  var startBtn = document.getElementById('meeting-start-btn');
 
   if (!listContainer) return;
 
@@ -17,7 +25,7 @@
     return rootStyles.getPropertyValue('--color-agent-' + name).trim() || '#a1a1aa';
   }
 
-  // Agent display info for transcript rendering
+  // Agent display info for transcript rendering (all 18 agents)
   var AGENTS = {
     'Thomas': { role: 'Product Manager', avatar: 'img/avatars/thomas.svg', color: agentColor('thomas') },
     'Andrei': { role: 'Technical Architect', avatar: 'img/avatars/andrei.svg', color: agentColor('andrei') },
@@ -25,14 +33,54 @@
     'Alice': { role: 'Front-End Developer', avatar: 'img/avatars/alice.svg', color: agentColor('alice') },
     'Jonah': { role: 'Back-End Developer', avatar: 'img/avatars/jonah.svg', color: agentColor('jonah') },
     'Enzo': { role: 'QA Engineer', avatar: 'img/avatars/enzo.svg', color: agentColor('enzo') },
+    'Priya': { role: 'Product Marketer', avatar: 'img/avatars/priya.svg', color: agentColor('priya') },
+    'Suki': { role: 'Product Researcher', avatar: 'img/avatars/suki.svg', color: agentColor('suki') },
+    'Marco': { role: 'Technical Researcher', avatar: 'img/avatars/marco.svg', color: agentColor('marco') },
+    'Nadia': { role: 'Technical Writer', avatar: 'img/avatars/nadia.svg', color: agentColor('nadia') },
+    'Yuki': { role: 'Data Analyst', avatar: 'img/avatars/yuki.svg', color: agentColor('yuki') },
+    'Kai': { role: 'AI Engineer', avatar: 'img/avatars/kai.svg', color: agentColor('kai') },
+    'Zara': { role: 'Mobile Developer', avatar: 'img/avatars/zara.svg', color: agentColor('zara') },
+    'Leo': { role: 'Mobile Developer', avatar: 'img/avatars/leo.svg', color: agentColor('leo') },
+    'Nina': { role: 'Interactions Specialist', avatar: 'img/avatars/nina.svg', color: agentColor('nina') },
+    'Soren': { role: 'Responsive Specialist', avatar: 'img/avatars/soren.svg', color: agentColor('soren') },
+    'Amara': { role: 'Accessibility Specialist', avatar: 'img/avatars/amara.svg', color: agentColor('amara') },
+    'Howard': { role: 'Payments Engineer', avatar: 'img/avatars/howard.svg', color: agentColor('howard') },
   };
+
+  // Agent roster for participant selection (key matches backend agent keys)
+  var AGENT_ROSTER = [
+    { key: 'product-manager', name: 'Thomas', role: 'PM' },
+    { key: 'technical-architect', name: 'Andrei', role: 'Architect' },
+    { key: 'product-designer', name: 'Robert', role: 'Designer' },
+    { key: 'frontend-developer', name: 'Alice', role: 'FE Dev' },
+    { key: 'backend-developer', name: 'Jonah', role: 'BE Dev' },
+    { key: 'qa', name: 'Enzo', role: 'QA' },
+    { key: 'product-marketer', name: 'Priya', role: 'Marketer' },
+    { key: 'product-researcher', name: 'Suki', role: 'Researcher' },
+    { key: 'technical-researcher', name: 'Marco', role: 'Tech Research' },
+    { key: 'technical-writer', name: 'Nadia', role: 'Writer' },
+    { key: 'data-analyst', name: 'Yuki', role: 'Analyst' },
+    { key: 'ai-engineer', name: 'Kai', role: 'AI Engineer' },
+    { key: 'mobile-developer-1', name: 'Zara', role: 'Mobile' },
+    { key: 'mobile-developer-2', name: 'Leo', role: 'Mobile' },
+    { key: 'frontend-interactions', name: 'Nina', role: 'Interactions' },
+    { key: 'frontend-responsive', name: 'Soren', role: 'Responsive' },
+    { key: 'frontend-accessibility', name: 'Amara', role: 'A11y' },
+    { key: 'payments-engineer', name: 'Howard', role: 'Payments' },
+  ];
+
+  // Map agent keys to display names (for participant avatars on cards)
+  var AGENT_KEY_TO_NAME = {};
+  AGENT_ROSTER.forEach(function (a) { AGENT_KEY_TO_NAME[a.key] = a.name; });
 
   // State
   var meetings = [];
   var detailCache = {};  // id -> full meeting data (with transcript)
   var expandedId = null;
-  var runningMeetingType = null;  // 'charter' | 'weekly' | null
+  var runningMeetingType = null;  // 'charter' | 'weekly' | 'custom' | 'running' | null
   var pollTimer = null;
+  var selectedParticipants = {};  // key -> true
+  var createFormOpen = false;
 
   // --- API ---
 
@@ -53,9 +101,11 @@
       });
   }
 
-  function apiRun(type, agenda) {
+  function apiRun(type, agenda, participants, instructions) {
     var body = { type: type };
     if (agenda) body.agenda = agenda;
+    if (participants) body.participants = participants;
+    if (instructions) body.instructions = instructions;
     return fetch(API_BASE + '/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -64,6 +114,126 @@
       if (!res.ok) return res.json().then(function (err) { throw err; });
       return res.json();
     });
+  }
+
+  // --- Creation Form ---
+
+  function getSelectedCount() {
+    var count = 0;
+    for (var key in selectedParticipants) {
+      if (selectedParticipants[key]) count++;
+    }
+    return count;
+  }
+
+  function getSelectedKeys() {
+    var keys = [];
+    for (var key in selectedParticipants) {
+      if (selectedParticipants[key]) keys.push(key);
+    }
+    return keys;
+  }
+
+  function toggleCreateForm() {
+    createFormOpen = !createFormOpen;
+    if (createForm) {
+      createForm.setAttribute('aria-hidden', createFormOpen ? 'false' : 'true');
+    }
+    if (customBtn) {
+      customBtn.textContent = createFormOpen ? 'Cancel' : 'New Meeting';
+    }
+    if (!createFormOpen) {
+      resetCreateForm();
+    }
+  }
+
+  function resetCreateForm() {
+    selectedParticipants = {};
+    if (instructionsTextarea) instructionsTextarea.value = '';
+    updateParticipantGrid();
+    updateCreateFormValidation();
+  }
+
+  function renderParticipantGrid() {
+    if (!participantGrid) return;
+    var html = '';
+    for (var i = 0; i < AGENT_ROSTER.length; i++) {
+      var agent = AGENT_ROSTER[i];
+      var avatarPath = 'img/avatars/' + agent.name.toLowerCase() + '.svg';
+      html +=
+        '<button class="meetings__participant-card" type="button" ' +
+          'role="checkbox" aria-checked="false" ' +
+          'data-agent-key="' + escapeAttr(agent.key) + '">' +
+          '<div class="meetings__participant-avatar">' +
+            '<img src="' + escapeAttr(avatarPath) + '" alt="" width="24" height="24">' +
+          '</div>' +
+          '<span class="meetings__participant-name">' + escapeHTML(agent.name) + '</span>' +
+          '<span class="meetings__participant-role">' + escapeHTML(agent.role) + '</span>' +
+        '</button>';
+    }
+    participantGrid.innerHTML = html;
+  }
+
+  function updateParticipantGrid() {
+    if (!participantGrid) return;
+    var count = getSelectedCount();
+    var atMax = count >= MAX_PARTICIPANTS;
+    var cards = participantGrid.querySelectorAll('.meetings__participant-card');
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var key = card.getAttribute('data-agent-key');
+      var isSelected = !!selectedParticipants[key];
+      card.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+      // Disable unselected cards when max is reached
+      if (atMax && !isSelected) {
+        card.classList.add('meetings__participant-card--disabled');
+      } else {
+        card.classList.remove('meetings__participant-card--disabled');
+      }
+    }
+  }
+
+  function updateCreateFormValidation() {
+    var count = getSelectedCount();
+    var instructionsValue = instructionsTextarea ? instructionsTextarea.value.trim() : '';
+    var isValid = count >= MIN_PARTICIPANTS && count <= MAX_PARTICIPANTS && instructionsValue.length > 0;
+
+    // Update count display
+    if (participantCountEl) {
+      var hint = '';
+      var countClass = '';
+      if (count < MIN_PARTICIPANTS) {
+        hint = ' <span class="meetings__create-form-count-hint">(min ' + MIN_PARTICIPANTS + ')</span>';
+        countClass = 'meetings__create-form-count meetings__create-form-count--warning';
+      } else if (count >= MAX_PARTICIPANTS) {
+        hint = ' <span class="meetings__create-form-count-hint">(max)</span>';
+        countClass = 'meetings__create-form-count meetings__create-form-count--max';
+      } else {
+        countClass = 'meetings__create-form-count';
+      }
+      participantCountEl.className = countClass;
+      participantCountEl.innerHTML = count + ' selected' + hint;
+    }
+
+    // Update start button
+    if (startBtn) {
+      startBtn.disabled = !isValid || !!runningMeetingType;
+    }
+  }
+
+  function handleParticipantClick(e) {
+    var card = e.target.closest('.meetings__participant-card');
+    if (!card) return;
+    if (card.classList.contains('meetings__participant-card--disabled')) return;
+
+    var key = card.getAttribute('data-agent-key');
+    if (selectedParticipants[key]) {
+      delete selectedParticipants[key];
+    } else {
+      selectedParticipants[key] = true;
+    }
+    updateParticipantGrid();
+    updateCreateFormValidation();
   }
 
   // --- Rendering ---
@@ -83,12 +253,18 @@
 
     // Show running indicator if a meeting is in progress
     if (runningMeetingType) {
+      var badgeType = runningMeetingType;
+      var badgeLabel = 'Charter';
+      if (runningMeetingType === 'weekly') badgeLabel = 'Weekly';
+      else if (runningMeetingType === 'custom') badgeLabel = 'Custom';
+      else if (runningMeetingType === 'running') { badgeLabel = 'Meeting'; badgeType = 'charter'; }
+
       html +=
         '<div class="meeting-card meeting-card--running">' +
           '<div class="meeting-card__header">' +
             '<div class="meeting-card__meta">' +
-              '<span class="meeting-card__badge meeting-card__badge--' + runningMeetingType + '">' +
-                (runningMeetingType === 'charter' ? 'Charter' : 'Weekly') +
+              '<span class="meeting-card__badge meeting-card__badge--' + escapeAttr(badgeType) + '">' +
+                escapeHTML(badgeLabel) +
               '</span>' +
               '<span class="meeting-card__running-text">' +
                 '<span class="meeting-card__running-dot"></span>' +
@@ -122,10 +298,37 @@
   }
 
   function renderCard(meeting) {
-    var typeBadge = meeting.type === 'charter' ? 'Charter' : 'Weekly';
+    var typeBadge = 'Charter';
+    if (meeting.type === 'weekly') typeBadge = 'Weekly';
+    else if (meeting.type === 'custom') typeBadge = 'Custom';
+
     var statusBadge = '';
     if (meeting.status === 'failed') {
       statusBadge = '<span class="meeting-card__status meeting-card__status--failed">Failed</span>';
+    }
+
+    // Build participant avatars for custom meetings
+    var participantsHtml = '';
+    if (meeting.type === 'custom' && meeting.participants && meeting.participants.length > 0) {
+      var avatarsHtml = '';
+      var namesArr = [];
+      for (var i = 0; i < meeting.participants.length; i++) {
+        var participantKey = meeting.participants[i];
+        var participantName = AGENT_KEY_TO_NAME[participantKey] || participantKey;
+        namesArr.push(participantName);
+        var agent = AGENTS[participantName];
+        if (agent && agent.avatar) {
+          avatarsHtml +=
+            '<div class="meeting-card__participant-avatar">' +
+              '<img src="' + escapeAttr(agent.avatar) + '" alt="" width="20" height="20">' +
+            '</div>';
+        }
+      }
+      participantsHtml =
+        '<div class="meeting-card__participants">' +
+          avatarsHtml +
+          '<span class="meeting-card__participant-names">' + escapeHTML(namesArr.join(', ')) + '</span>' +
+        '</div>';
     }
 
     return (
@@ -140,6 +343,7 @@
           '</div>' +
           '<div class="meeting-card__summary">' +
             '<p class="meeting-card__summary-text">' + escapeHTML(meeting.summary || 'No summary available.') + '</p>' +
+            participantsHtml +
           '</div>' +
           '<div class="meeting-card__info">' +
             (meeting.mood ? '<span class="meeting-card__mood">' + escapeHTML(meeting.mood) + '</span>' : '') +
@@ -163,6 +367,15 @@
     if (!meeting) return;
 
     var html = '';
+
+    // Instructions (custom meetings only)
+    if (meeting.type === 'custom' && meeting.instructions) {
+      html +=
+        '<div class="meeting-detail__instructions">' +
+          '<p class="meeting-detail__instructions-label">Meeting Instructions</p>' +
+          '<p>' + escapeHTML(meeting.instructions) + '</p>' +
+        '</div>';
+    }
 
     // Key Takeaways
     if (meeting.keyTakeaways && meeting.keyTakeaways.length > 0) {
@@ -348,6 +561,31 @@
         weeklyBtn.title = '';
       }
     }
+
+    if (customBtn) {
+      if (runningMeetingType) {
+        customBtn.disabled = true;
+        if (runningMeetingType === 'custom') {
+          customBtn.textContent = 'Running...';
+        } else if (!createFormOpen) {
+          customBtn.textContent = 'New Meeting';
+        }
+      } else {
+        customBtn.disabled = false;
+        customBtn.textContent = createFormOpen ? 'Cancel' : 'New Meeting';
+      }
+    }
+
+    // Close create form when a meeting starts
+    if (runningMeetingType && createFormOpen) {
+      createFormOpen = false;
+      if (createForm) {
+        createForm.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    // Update start button disabled state
+    updateCreateFormValidation();
   }
 
   // --- Run Meeting ---
@@ -360,7 +598,44 @@
 
     apiRun(type)
       .then(function () {
-        showToast((type === 'charter' ? 'Charter' : 'Weekly') + ' meeting started. This may take a minute...');
+        var label = 'Charter';
+        if (type === 'weekly') label = 'Weekly';
+        else if (type === 'custom') label = 'Custom';
+        showToast(label + ' meeting started. This may take a minute...');
+        startPolling();
+      })
+      .catch(function (err) {
+        runningMeetingType = null;
+        renderList();
+        var msg = (err && err.error) || 'Failed to start meeting';
+        showToast(msg, true);
+      });
+  }
+
+  function handleCustomRun() {
+    if (runningMeetingType) return;
+
+    var participants = getSelectedKeys();
+    var instructions = instructionsTextarea ? instructionsTextarea.value.trim() : '';
+
+    if (participants.length < MIN_PARTICIPANTS || participants.length > MAX_PARTICIPANTS) {
+      showToast('Select ' + MIN_PARTICIPANTS + '-' + MAX_PARTICIPANTS + ' participants.', true);
+      return;
+    }
+    if (!instructions) {
+      showToast('Please enter meeting instructions.', true);
+      return;
+    }
+
+    runningMeetingType = 'custom';
+    createFormOpen = false;
+    if (createForm) createForm.setAttribute('aria-hidden', 'true');
+    renderList();
+
+    apiRun('custom', null, participants, instructions)
+      .then(function () {
+        showToast('Custom meeting started. This may take a minute...');
+        resetCreateForm();
         startPolling();
       })
       .catch(function (err) {
@@ -414,26 +689,53 @@
     weeklyBtn.addEventListener('click', function () { handleRun('weekly'); });
   }
 
+  if (customBtn) {
+    customBtn.addEventListener('click', function () {
+      if (runningMeetingType) return;
+      toggleCreateForm();
+    });
+  }
+
+  if (startBtn) {
+    startBtn.addEventListener('click', function () {
+      handleCustomRun();
+    });
+  }
+
+  if (participantGrid) {
+    participantGrid.addEventListener('click', handleParticipantClick);
+  }
+
+  if (instructionsTextarea) {
+    instructionsTextarea.addEventListener('input', function () {
+      updateCreateFormValidation();
+    });
+  }
+
   listContainer.addEventListener('click', function (e) {
     // Start as Project button
-    var startBtn = e.target.closest('.meeting-detail__action-start');
-    if (startBtn && !startBtn.disabled) {
-      startBtn.disabled = true;
-      startBtn.textContent = 'Creating...';
+    var actionStartBtn = e.target.closest('.meeting-detail__action-start');
+    if (actionStartBtn && !actionStartBtn.disabled) {
+      actionStartBtn.disabled = true;
+      actionStartBtn.textContent = 'Creating...';
 
-      var desc = startBtn.getAttribute('data-action-desc');
-      var owner = startBtn.getAttribute('data-action-owner');
-      var priority = startBtn.getAttribute('data-action-priority');
-      var meetingNum = startBtn.getAttribute('data-meeting-number');
-      var meetingType = startBtn.getAttribute('data-meeting-type');
+      var desc = actionStartBtn.getAttribute('data-action-desc');
+      var owner = actionStartBtn.getAttribute('data-action-owner');
+      var priority = actionStartBtn.getAttribute('data-action-priority');
+      var meetingNum = actionStartBtn.getAttribute('data-meeting-number');
+      var meetingType = actionStartBtn.getAttribute('data-meeting-type');
 
       // Truncate description to a short project name
       var name = desc.length > 60 ? desc.substring(0, 57) + '...' : desc;
 
+      var typeLabel = 'Charter';
+      if (meetingType === 'weekly') typeLabel = 'Weekly';
+      else if (meetingType === 'custom') typeLabel = 'Custom';
+
       var brief = desc +
         '\n\nOwner: ' + owner +
         '\nPriority: ' + priority +
-        '\nSource: ' + (meetingType === 'charter' ? 'Charter' : 'Weekly') +
+        '\nSource: ' + typeLabel +
         ' Meeting #' + meetingNum;
 
       fetch('/api/projects', {
@@ -446,8 +748,8 @@
           return res.json();
         })
         .then(function () {
-          startBtn.textContent = 'Created';
-          startBtn.classList.add('meeting-detail__action-start--created');
+          actionStartBtn.textContent = 'Created';
+          actionStartBtn.classList.add('meeting-detail__action-start--created');
           document.dispatchEvent(new CustomEvent('projects:refresh'));
           showToast('Project created! View it in the Projects section above.');
           var projectsSection = document.getElementById('projects');
@@ -456,8 +758,8 @@
           }
         })
         .catch(function () {
-          startBtn.disabled = false;
-          startBtn.textContent = 'Start as Project';
+          actionStartBtn.disabled = false;
+          actionStartBtn.textContent = 'Start as Project';
           showToast('Failed to create project. Please try again.', true);
         });
       return;
@@ -551,6 +853,9 @@
   }
 
   // --- Init ---
+
+  // Render participant grid
+  renderParticipantGrid();
 
   apiGet()
     .then(function (data) {

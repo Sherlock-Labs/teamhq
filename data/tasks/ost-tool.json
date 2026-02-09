@@ -1,0 +1,101 @@
+{
+  "id": "ost-tool",
+  "name": "OST Tool",
+  "description": "Full-stack Opportunity Solution Tree tool -- generates trees with AI, supports debate between solutions, and provides recommendations.",
+  "status": "completed",
+  "completedDate": "2025-02",
+  "tasks": [
+    {
+      "title": "Designed system architecture (Vite+React frontend, Express backend, Claude CLI integration)",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Chose Vite + React for the frontend — interactive tree visualization needs a real framework",
+        "Selected Express.js for the backend API server",
+        "Designed Claude CLI integration using claude -p with --output-format json and --json-schema for structured AI output",
+        "Set up npm workspaces monorepo with /server and /client packages",
+        "Configured Vite proxy for /api routes to Express during development",
+        "Defined session-based architecture for persisting user tree state"
+      ],
+      "filesChanged": [
+        "ost-tool/package.json",
+        "ost-tool/server/package.json",
+        "ost-tool/client/package.json"
+      ],
+      "decisions": [
+        "React over plain HTML — tree visualization with React Flow requires component state and interactivity",
+        "Claude CLI over API — simpler integration, no API key management, leverages local Claude installation",
+        "npm workspaces over separate repos — keeps frontend and backend co-located with shared scripts",
+        "In-memory session store over database — sufficient for single-user tool, avoids infrastructure complexity"
+      ]
+    },
+    {
+      "title": "Built React Flow tree visualization, debate UI, and recommendation view",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Integrated React Flow for interactive OST tree visualization",
+        "Built DebateView component for multi-agent solution discussions",
+        "Created RecommendationView component for AI-generated recommendations",
+        "Defined TypeScript types for tree nodes, debates, and recommendations",
+        "Implemented tree node expansion/collapse interactions",
+        "Connected all views to Express API endpoints"
+      ],
+      "filesChanged": [
+        "ost-tool/client/src/components/DebateView.tsx",
+        "ost-tool/client/src/components/RecommendationView.tsx",
+        "ost-tool/client/src/types.ts",
+        "ost-tool/client/src/App.tsx"
+      ],
+      "decisions": [
+        "React Flow over D3 — better React integration and built-in node/edge management",
+        "Kept debate and recommendation as separate views rather than inline panels"
+      ]
+    },
+    {
+      "title": "Built Express API, Claude CLI integration, and session store",
+      "agent": "Jonah",
+      "role": "Back-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Created Express API routes for tree generation, debate, and recommendations",
+        "Implemented Claude CLI integration with structured JSON output via --json-schema",
+        "Built in-memory session store for persisting user tree state across requests",
+        "Defined agent personalities for debate feature (optimist, skeptic, pragmatist)",
+        "Created Zod schemas for request/response validation",
+        "Added error handling for Claude CLI failures and malformed responses"
+      ],
+      "filesChanged": [
+        "ost-tool/server/src/routes/ost.ts",
+        "ost-tool/server/src/agents/debaters.ts",
+        "ost-tool/server/src/schemas/ost.ts",
+        "ost-tool/server/src/index.ts"
+      ],
+      "decisions": [
+        "Zod for schema validation — runtime type safety for AI-generated JSON",
+        "Three debater personalities (optimist, skeptic, pragmatist) for balanced discussion",
+        "Spawns Claude CLI as a child process per request rather than maintaining a persistent connection"
+      ]
+    },
+    {
+      "title": "Validated end-to-end flows and edge cases",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Tested full workflow: opportunity input → tree generation → debate → recommendation",
+        "Validated API response structure matches Zod schemas",
+        "Tested error handling when Claude CLI returns malformed JSON",
+        "Verified tree visualization renders correctly with various node counts",
+        "Checked debate view displays all three agent perspectives",
+        "Tested recommendation view formatting and content accuracy"
+      ],
+      "decisions": [
+        "Accepted longer response times for complex trees — AI generation is inherently slow",
+        "Flagged but deferred persistence across browser refreshes — in-memory store is sufficient for MVP"
+      ]
+    }
+  ]
+}

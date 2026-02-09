@@ -75,7 +75,7 @@ Before marking your task complete:
 - [ ] Have I considered mobile/responsive behavior?
 - [ ] Have I checked accessibility (contrast, font sizes, keyboard navigation)?
 - [ ] Have I written the spec to `docs/{project}-design-spec.md`?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -92,7 +92,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Defined zinc-scale color palette: zinc-950 bg, zinc-900 cards" not "Chose colors")
 - **filesChanged**: Every file you created or modified (e.g., design spec docs)

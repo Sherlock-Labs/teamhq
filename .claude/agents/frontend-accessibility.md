@@ -31,7 +31,7 @@ When you're first spawned on a task:
    - `docs/{project}-requirements.md` — PM's requirements
    - `docs/{project}-tech-approach.md` — Arch's technical decisions
    - `docs/{project}-design-spec.md` — Designer's UI/UX specs
-3. Review any files changed by dependency tasks (check their filesChanged in data/tasks.json)
+3. Review any files changed by dependency tasks (check their filesChanged in data/tasks/{project-id}.json)
 4. Read the existing code you'll be auditing or modifying
 5. Run an accessibility audit before making changes — understand the baseline
 
@@ -92,7 +92,7 @@ Before marking your task complete:
 - [ ] Does the heading hierarchy make sense when read in sequence?
 - [ ] Are dynamic content changes announced to screen readers?
 - [ ] Have I coordinated with Alice on any shared files?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -109,7 +109,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Added aria-live='polite' region for doc loading state announcements" not "Fixed accessibility")
 - **filesChanged**: Every file you created or modified

@@ -91,7 +91,7 @@ Before marking your task complete:
 - [ ] Are comparison tables complete and fair (not cherry-picked)?
 - [ ] Have I flagged uncertainties and limitations?
 - [ ] Have I written to `docs/{project}-research.md`?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -108,7 +108,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Analyzed 5 competitor landing pages for positioning patterns" not "Did research")
 - **filesChanged**: Every file you created or modified

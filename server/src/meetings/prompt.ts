@@ -8,6 +8,18 @@ const AGENT_DISPLAY_NAMES: Record<string, { name: string; role: string }> = {
   "frontend-developer": { name: "Alice", role: "Front-End Developer" },
   "backend-developer": { name: "Jonah", role: "Back-End Developer" },
   "qa": { name: "Enzo", role: "QA Engineer" },
+  "product-marketer": { name: "Priya", role: "Product Marketer" },
+  "product-researcher": { name: "Suki", role: "Product Researcher" },
+  "technical-researcher": { name: "Marco", role: "Technical Researcher" },
+  "technical-writer": { name: "Nadia", role: "Technical Writer" },
+  "data-analyst": { name: "Yuki", role: "Data Analyst" },
+  "ai-engineer": { name: "Kai", role: "AI Engineer" },
+  "mobile-developer-1": { name: "Zara", role: "Mobile Developer" },
+  "mobile-developer-2": { name: "Leo", role: "Mobile Developer" },
+  "frontend-interactions": { name: "Nina", role: "Interactions Specialist" },
+  "frontend-responsive": { name: "Soren", role: "Responsive Specialist" },
+  "frontend-accessibility": { name: "Amara", role: "Accessibility Specialist" },
+  "payments-engineer": { name: "Howard", role: "Payments Engineer" },
 };
 
 /**
@@ -16,12 +28,15 @@ const AGENT_DISPLAY_NAMES: Record<string, { name: string; role: string }> = {
 export function buildMeetingPrompt(
   type: MeetingType,
   context: MeetingContext,
-  agenda?: string
+  agenda?: string,
+  participants?: string[],
+  instructions?: string,
 ): string {
   const sections: string[] = [];
 
-  // System instruction
-  sections.push(buildSystemInstruction());
+  // System instruction — pass participant count for custom meetings
+  const participantCount = type === "custom" && participants ? participants.length : undefined;
+  sections.push(buildSystemInstruction(participantCount));
 
   // Agent personalities
   sections.push(buildPersonalitiesSection(context.agentPersonalities));
@@ -40,7 +55,9 @@ export function buildMeetingPrompt(
   }
 
   // Meeting-specific instructions
-  if (type === "charter") {
+  if (type === "custom" && participants && instructions) {
+    sections.push(buildCustomInstructions(participants, instructions));
+  } else if (type === "charter") {
     sections.push(buildCharterInstructions(agenda));
   } else {
     sections.push(buildWeeklyInstructions(context.previousMeetings, agenda));
@@ -49,24 +66,22 @@ export function buildMeetingPrompt(
   return sections.join("\n\n---\n\n");
 }
 
-function buildSystemInstruction(): string {
+function buildSystemInstruction(participantCount?: number): string {
+  const teamSize = participantCount || 6;
+  const transcriptRange = participantCount ? "15-30" : "20-40";
+
   return `# Team Meeting Simulation
 
-You are simulating a team meeting for Sherlock Labs, an AI agent product team. The team consists of 6 agents who work together to build software products.
+You are simulating a team meeting for Sherlock Labs, an AI agent product team. The team consists of ${teamSize} agents in this meeting.
 
-**Your job**: Simulate a realistic, natural round-table discussion between all 6 team members. Each agent should speak in character, reflecting their personality, expertise, and communication style as defined below.
+**Your job**: Simulate a realistic, natural round-table discussion between all ${teamSize} team members. Each agent should speak in character, reflecting their personality, expertise, and communication style as defined below.
 
 **Guidelines for the simulation**:
 - Each agent should contribute meaningfully based on their role and expertise
 - Include natural disagreements and debates — not everyone agrees on everything
 - Show agents building on each other's ideas and responding to concerns
-- Thomas (PM) should facilitate and drive toward decisions
-- Andrei (Architect) should weigh in on technical feasibility
-- Robert (Designer) should advocate for user experience
-- Alice (FE) and Jonah (BE) should raise implementation concerns
-- Enzo (QA) should flag risks and testing gaps
 - The transcript should feel like a real team conversation, not a series of prepared statements
-- Aim for 20-40 transcript entries showing real back-and-forth
+- Aim for ${transcriptRange} transcript entries showing real back-and-forth
 - End with clear decisions and action items`;
 }
 
@@ -236,6 +251,46 @@ The discussion should be candid and efficient. This is a working meeting, not a 
   }
 
   return instructions;
+}
+
+function buildCustomInstructions(
+  participants: string[],
+  instructions: string,
+): string {
+  const participantNames = participants
+    .map((key) => {
+      const info = AGENT_DISPLAY_NAMES[key];
+      return info ? `${info.name} (${info.role})` : key;
+    })
+    .join(", ");
+
+  // Determine facilitator: Thomas if present, otherwise first listed participant
+  const hasPM = participants.includes("product-manager");
+  const facilitatorKey = hasPM ? "product-manager" : participants[0];
+  const facilitatorInfo = AGENT_DISPLAY_NAMES[facilitatorKey];
+  const facilitator = facilitatorInfo
+    ? `${facilitatorInfo.name} (${facilitatorInfo.role})`
+    : facilitatorKey;
+
+  return `# Meeting Type: CUSTOM MEETING
+
+This is a **custom meeting** called by the CEO with a specific set of participants and topic.
+
+**Participants**: ${participantNames}
+**Facilitator**: ${facilitator} — drives the agenda and ensures decisions are reached.
+
+**CEO's Instructions / Topic**:
+${instructions}
+
+**Guidelines**:
+- ONLY the listed participants speak — no other team members appear in the transcript
+- ${facilitator} should open the meeting, state the topic, and facilitate the discussion
+- Each participant should contribute meaningfully based on their expertise and role
+- The discussion should be focused on the CEO's instructions
+- Aim for 15-30 transcript entries — this is a focused meeting, not a full team sync
+- End with clear decisions and action items assigned ONLY to the participants
+- Action items should be concrete and actionable
+- Natural disagreements and back-and-forth are encouraged — this shouldn't feel scripted`;
 }
 
 function formatDate(isoStr: string): string {

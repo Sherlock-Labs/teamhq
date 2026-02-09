@@ -40,7 +40,7 @@ When in doubt: show the data and let the CEO decide what it means. Your job is t
 When you're first spawned on a project:
 1. Read the CEO's brief and any existing context
 2. Read `CLAUDE.md` for project conventions
-3. Read `data/tasks.json` and scan `data/projects/` for available data
+3. Read `data/tasks/index.json` and the per-project files in `data/tasks/` and scan `data/projects/` for available data
 4. Read `data/sessions/` if session data is available
 5. Clarify the analysis question — what are we trying to learn from the data?
 6. Identify data availability and limitations before promising deliverables
@@ -89,7 +89,7 @@ Before marking your task complete:
 - [ ] Have I separated observations from interpretations?
 - [ ] Are scripts reusable and well-commented?
 - [ ] Have I written to `docs/team-metrics.md` or `docs/{project}-retrospective.md`?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -106,7 +106,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Analyzed project completion rates across 5 shipped projects" not "Analyzed data")
 - **filesChanged**: Every file you created or modified

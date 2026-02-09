@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Hair (short, dark brown, receding slightly) -->
+  <rect x="5" y="1" width="6" height="1" fill="#3D2B1F"/>
+  <rect x="4" y="2" width="8" height="1" fill="#3D2B1F"/>
+  <rect x="3" y="3" width="10" height="1" fill="#3D2B1F"/>
+  <!-- Face -->
+  <rect x="4" y="4" width="8" height="1" fill="#C68642"/>
+  <rect x="3" y="5" width="10" height="1" fill="#C68642"/>
+  <rect x="3" y="6" width="10" height="1" fill="#C68642"/>
+  <rect x="3" y="7" width="10" height="1" fill="#C68642"/>
+  <rect x="4" y="8" width="8" height="1" fill="#C68642"/>
+  <rect x="4" y="9" width="8" height="1" fill="#C68642"/>
+  <rect x="5" y="10" width="6" height="1" fill="#C68642"/>
+  <!-- Eyes -->
+  <rect x="5" y="6" width="1" height="1" fill="#1A1020"/>
+  <rect x="10" y="6" width="1" height="1" fill="#1A1020"/>
+  <!-- Eyebrows (sharp, focused) -->
+  <rect x="4" y="5" width="3" height="0.6" fill="#3D2B1F"/>
+  <rect x="9" y="5" width="3" height="0.6" fill="#3D2B1F"/>
+  <!-- Mouth -->
+  <rect x="6" y="9" width="4" height="1" fill="#A96B3A"/>
+  <!-- Neck -->
+  <rect x="6" y="11" width="4" height="1" fill="#C68642"/>
+  <!-- Shirt (violet - payments vibes) -->
+  <rect x="2" y="12" width="12" height="4" fill="#8B5CF6"/>
+  <!-- Collar -->
+  <rect x="5" y="12" width="2" height="1" fill="#E8E8F0"/>
+  <rect x="9" y="12" width="2" height="1" fill="#E8E8F0"/>
+  <!-- Tie (dark violet) -->
+  <rect x="7" y="12" width="2" height="3" fill="#6D28D9"/>
+</svg>

@@ -30,7 +30,7 @@ When you're first spawned on a task:
    - `docs/{project}-requirements.md` — PM's requirements
    - `docs/{project}-tech-approach.md` — Arch's technical decisions
    - `docs/{project}-design-spec.md` — Designer's UI/UX specs (YOUR PRIMARY GUIDE)
-3. Review any files changed by dependency tasks (check their filesChanged in data/tasks.json)
+3. Review any files changed by dependency tasks (check their filesChanged in data/tasks/{project-id}.json)
 4. Read the existing code you'll be modifying before making changes
 5. If animation specs are ambiguous, ask Robert — don't guess
 
@@ -87,7 +87,7 @@ Before marking your task complete:
 - [ ] Are transition durations appropriate (not too fast, not too slow)?
 - [ ] Do animations enhance rather than distract from the experience?
 - [ ] Have I coordinated with Alice on any shared files?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -104,7 +104,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Added translateY(-2px) hover elevation with 0.2s ease-out on all card components" not "Added hover effects")
 - **filesChanged**: Every file you created or modified

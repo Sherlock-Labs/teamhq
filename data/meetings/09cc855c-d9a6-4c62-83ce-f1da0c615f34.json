@@ -1,0 +1,325 @@
+{
+  "id": "09cc855c-d9a6-4c62-83ce-f1da0c615f34",
+  "type": "weekly",
+  "status": "completed",
+  "meetingNumber": 2,
+  "scheduledAt": null,
+  "startedAt": "2026-02-09T18:21:24.198Z",
+  "completedAt": "2026-02-09T18:24:02.331Z",
+  "durationMs": 158132,
+  "error": null,
+  "summary": "The team's second weekly status meeting covered progress on the 30-day hardening phase action items from the charter meeting, debated the docs viewer project scope and timeline, and discussed the mobile app as the next major initiative. Thomas drove a tight agenda reviewing each action item, surfacing the design token consolidation completion and docs viewer as the main workstreams, while Enzo pushed for his QA audit to be unblocked before new features ship.",
+  "keyTakeaways": [
+    "Design token consolidation is complete — all hardcoded colors replaced with token references across all files, establishing tokens.css as the true single source of truth.",
+    "The docs viewer is actively in development with requirements, tech approach, and design spec all at v2 — separate page architecture with Express API backend.",
+    "Enzo's full QA audit of all five shipped projects is still in progress and remains a high priority before any new feature work ships.",
+    "The mobile app (React Native/Expo) is scoped and spec'd but blocked on the hardening phase completing — team agreed it's the next major initiative after hardening.",
+    "Andrei's ADR log is established with 7 retrospective ADRs documented — the team now has a canonical record of architectural decisions."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's get into it. Same format as last time — action item review first, then project updates, then we'll talk about what's next. I want to keep this tight. We had seven action items out of the charter meeting. Let's go down the list."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Enzo, you had the big one — full QA audit of all five shipped projects. Where are we?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I've completed the audit on the landing page and the PDF Splitter. Both have findings — mostly responsive edge cases and a couple of keyboard navigation gaps. The PDF Combiner and OST Tool are next. I'd estimate I'm about 40% through the full audit. It's thorough work — I'm testing happy paths, edge cases, responsive, keyboard nav, and accessibility for each one."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "40% — are we going to finish within the 30-day window? That's the commitment we made."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Yes, but only if I'm not pulled into new feature QA before the audit is done. The OST Tool is the most complex one — full-stack, AI integration, multiple interaction modes. That'll take the most time. Task History should be straightforward."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair. You stay on the audit. Nothing new ships until you've given verdicts on the existing tools anyway — that was the deal. Andrei, design token consolidation and the ADR log — both were on you."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Both done. The ADR log is live at docs/adrs/ with seven retrospective ADRs — vanilla JS for landing page, Express for backends, client-side PDF processing, JSON file storage, the token system architecture, and a couple others. Each one has context, decision, rationale, and alternatives considered. The README has a full index."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "On the design token consolidation — Robert and I defined the spec together. The big technical decision was using RGB channel tokens for the rgba() opacity problem. Alice implemented it. Every hardcoded hex and raw rgba() call across all files now goes through tokens.css. We're talking about 132 replacements across CSS, JS, and TSX files. Zero visual regressions."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'll confirm from the design side — I reviewed Alice's implementation against the spec. The one intentional change was the rose-400 normalization, where we had a stray Tailwind default that didn't match our custom scale. The visual difference is imperceptible. Everything else is pixel-identical to before the consolidation. The token system is now genuinely the single source of truth."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "It was a big changeset but the approach was clean. The RGB channel tokens were the right call — I was skeptical about color-mix() and Andrei's reasoning on the sRGB mixing differences convinced me. The paired hex-plus-rgb tokens add a small maintenance burden, but it's worth it for exact visual fidelity. I updated all six files: styles.css, docs.css, shared.css, meetings.js, the OST TreeView component, and both PDF tool inline styles."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I want to note — I haven't formally QA'd the token consolidation changes yet. Alice and Robert did their own review, which is great, but this is exactly the kind of change where a subtle regression could hide. 132 replacements across the codebase. I'd like to include a visual regression check as part of my ongoing audit."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good call. Roll it into your audit — you're already looking at each tool anyway. Flag anything that looks off. Alice, you also had the implementation task for the tokens. That's done. Jonah, you had backend pattern documentation and a health check endpoint for the OST tool."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The health check endpoint is live — GET /api/health on the OST tool returns a simple status response. The pattern documentation is about 80% done. I've documented the Express route structure, Zod validation patterns, JSON file storage approach, and error handling conventions. I still need to add the SSE patterns we use for the AI streaming and the file-watching approach. Should be wrapped up this week."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. And I updated CLAUDE.md with the operating agreements — QA as release gate, trivial-fix boundary, design review step, API contract process. All reflected. That was my action item. So summary: five of seven action items complete or nearly complete, Enzo's audit is the big remaining one, and Jonah's pattern docs are close. Not bad for two days."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Moving to project updates. The docs viewer is the active workstream. We've got v2 requirements, tech approach, and design spec all written. Andrei, give us the quick architecture summary."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Separate page — docs.html — not embedded in the homepage. Express API serves the markdown files with extracted metadata: title, author, reading time, modification dates. Frontend uses marked.js to render markdown in a reading view. Two views: list view grouped by project, and a reading view. New CSS file for docs-specific styles. Same server on port 3002, same Vite proxy pattern."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "The design is document-browsing focused. List view shows docs grouped by project with author avatars, reading time estimates, and doc type badges. The reading view has a metadata bar at the top and proper markdown typography. I designed it to feel like a well-organized internal wiki, not a file browser. Dark theme, same token system, all consistent with the rest of TeamHQ."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I've reviewed the design spec and tech approach. It's clear — I can build from these. One question: the nav bar on docs.html needs to highlight 'Docs' as active. Robert's spec shows it as a span instead of an anchor. That means the nav HTML is slightly different between index.html and docs.html. Since we don't have templating, I'll just duplicate and adjust. It's fine, just noting it."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That's the right approach. ADR-001 says no frameworks, so HTML duplication between pages is the pragmatic choice. If we get to three or four pages we might reconsider, but for two pages it's not worth adding a build step."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The API side is straightforward. Two endpoints — list all docs with metadata, and read a single doc by path. I'll extract title from the first H1 or bold author line, compute reading time from word count, and pull modification dates from the filesystem. The metadata extraction is the only part with any complexity. I'll follow the patterns from the OST tool routes."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "When is the docs viewer expected to be ready for QA? I want to make sure it doesn't collide with my audit timeline. I'd rather finish the audit first and then QA the docs viewer fresh."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's the right sequencing. Audit first, docs viewer QA after. Alice and Jonah — realistic timeline for implementation?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "The frontend is medium complexity. List view, reading view, filtering, responsive layout, the markdown rendering. I'd say a few focused sessions once the API is ready."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "API should be quick. Two endpoints, filesystem reads, some string parsing for metadata. I can have it ready for Alice to integrate against pretty fast. We should align on the response shapes before I start — per our API contract agreement."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Alice and Jonah, align on the contract first. Let's not repeat old mistakes. Now — new ideas and priorities. The mobile app is the elephant in the room. We have full specs: requirements, tech approach, design spec, even Kai's voice prompt design. But we agreed to the 30-day hardening phase first."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "The mobile app is well-scoped. React Native with Expo, voice-forward interface, dark theme matching our web tokens. The tech approach is solid. But I agree — we should finish hardening before we start a net-new platform. The mobile app will benefit from the patterns we're documenting now."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'd push back slightly. The mobile design spec is done and I'm confident in it. If Zara and Leo have bandwidth during the hardening phase, they could start on the component foundation — the token system, basic navigation shell, the card components. That's not feature work, it's infrastructure that doesn't conflict with hardening."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'd rather they wait. If they start building mobile components now, I'm going to have more surface area to QA before anything ships. Let me finish the web audit cleanly, then we can open the mobile workstream with a clear baseline."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I'm with Enzo on this one. The whole point of the hardening phase was focus. If we start chipping away at it with 'just infrastructure' work on mobile, we're already scope creeping our own plan. Mobile starts after hardening. That's the line."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Agreed. And honestly, having Jonah's backend pattern documentation done before mobile starts will save Zara and Leo time. They'll be building against the same Express server patterns."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Blockers and risks. Anyone have anything that's slowing them down or worrying them?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "One risk on the docs viewer — the metadata extraction from markdown files is heuristic. Not every doc has a consistent author line or frontmatter. I'll do my best to parse it, but we should expect some docs to have incomplete metadata. I'd rather show 'Unknown' than guess wrong."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That's fine. The design handles missing metadata gracefully — if there's no author, the avatar slot just doesn't render. I designed for that case. Better to show nothing than fabricated data."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "My concern is about the findings I'm generating. I've got a growing list of bugs from the audit, but nobody's assigned to fix them yet. When do we triage and prioritize the fixes? I don't want to finish the audit and have a 30-item bug list that just sits there."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good point. Once your audit is complete, we'll do a dedicated triage session. You bring the findings report with severity ratings, and we'll prioritize as a team. Critical and high bugs get fixed before any new features. Medium and low get backlogged. Sound reasonable?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "That works. As long as the critical ones actually get fixed and don't just get deprioritized because something shinier comes along."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "They won't. QA is the release gate — that cuts both ways. If existing tools have critical bugs, they're effectively not shipped until those are fixed. Alright, next steps. Let me go around the table. Enzo — finish the QA audit, OST Tool and Task History are next."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "On it. I'll include the token consolidation visual regression check as I go through each tool."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Jonah — finish the backend pattern docs and build the docs viewer API. Align with Alice on the contract first."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Will do. Pattern docs this week, then API contract alignment with Alice, then implementation."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alice — once Jonah has the API contract ready, start on the docs viewer frontend. Robert — you're in review mode. Check Alice's implementation against the design spec when it's ready."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Ready when the contract is defined. I'll review the design spec one more time in the meantime."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Standing by for the design review. I'll also use the downtime to refine the mobile design spec based on any patterns that come out of the docs viewer build."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'll support Jonah on the docs API if any architecture questions come up, and I'll be available for the docs viewer implementation review. The ADR log is done, so I'm mostly in advisory mode this sprint."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good meeting. Clear priorities: finish the audit, finish the pattern docs, build the docs viewer. No new initiatives until hardening is done. We'll reconvene next week — I expect the audit to be complete and the docs viewer to be in implementation. Let's ship."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Mobile app development will not begin until the 30-day hardening phase is complete, including the QA audit and bug fixes.",
+      "rationale": "Robert suggested Zara and Leo could start mobile component infrastructure during hardening, but Thomas and Enzo argued this would scope-creep the hardening phase. The team agreed to maintain focus — mobile starts after hardening, not during.",
+      "participants": [
+        "Thomas",
+        "Enzo",
+        "Robert",
+        "Alice",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "A dedicated bug triage session will be held after Enzo completes the full QA audit, with critical and high bugs fixed before any new feature work.",
+      "rationale": "Enzo raised concern that his growing bug list would be deprioritized. Thomas committed to a structured triage: critical/high bugs get fixed immediately, medium/low get backlogged. This maintains the QA-as-release-gate principle.",
+      "participants": [
+        "Thomas",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Token consolidation visual regression will be checked as part of Enzo's existing QA audit rather than as a separate QA pass.",
+      "rationale": "Enzo noted the 132 token replacements haven't been formally QA'd. Since he's already auditing each tool, rolling the visual regression check into the existing audit avoids duplication while ensuring nothing was missed.",
+      "participants": [
+        "Enzo",
+        "Thomas",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Docs viewer will follow the established API contract process — Alice and Jonah align on response shapes before building independently.",
+      "rationale": "This follows the operating agreement established in the charter meeting. Jonah and Alice both confirmed they'll define the contract first, then build to it in parallel.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Alice"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Enzo",
+      "description": "Complete QA audit of remaining three projects (PDF Combiner, OST Tool, Task History) including token consolidation visual regression checks. Produce a full findings report with severity ratings.",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Finish backend pattern documentation (add SSE streaming patterns and file-watching approach), then align with Alice on docs viewer API contract and implement the two API endpoints.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Build the docs viewer frontend (list view, reading view, filtering, responsive layout) once Jonah has the API contract defined.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Review Alice's docs viewer implementation against the design spec before QA handoff. Refine mobile design spec in the meantime based on patterns from the docs viewer build.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Schedule and run a bug triage session once Enzo's QA audit is complete. Prioritize critical/high bugs for immediate fixing.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Support Jonah on docs viewer API architecture questions and be available for implementation review.",
+      "priority": "low"
+    }
+  ],
+  "mood": "Focused and disciplined",
+  "nextMeetingTopics": [
+    "Review Enzo's complete QA audit findings and triage bugs by severity",
+    "Docs viewer implementation status — is it ready for design review and QA?",
+    "Jonah's backend pattern documentation — is it complete and usable?",
+    "Token consolidation visual regression results from Enzo's audit",
+    "Mobile app timeline — is hardening phase complete enough to greenlight mobile development?"
+  ]
+}

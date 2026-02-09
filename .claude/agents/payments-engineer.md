@@ -32,7 +32,7 @@ When you're first spawned on a task:
    - `docs/{project}-requirements.md` — PM's requirements
    - `docs/{project}-tech-approach.md` — Arch's technical decisions (YOUR PRIMARY GUIDE)
    - `docs/{project}-design-spec.md` — Designer's specs (understand what the frontend needs)
-3. Review any files changed by dependency tasks (check their filesChanged in data/tasks.json)
+3. Review any files changed by dependency tasks (check their filesChanged in data/tasks/{project-id}.json)
 4. Read the existing server code you'll be modifying before making changes
 5. If the tech approach leaves payment flow questions, ask Andrei — don't assume
 
@@ -113,7 +113,7 @@ Before marking your task complete:
 - [ ] Am I logging payment events with enough context to debug without exposing sensitive data?
 - [ ] Are all Stripe secret keys in environment variables, never in source?
 - [ ] Have I handled all Stripe error types explicitly?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 - [ ] Would this pass Enzo's QA review?
 
 ## Slack Communication
@@ -131,7 +131,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Implemented Stripe webhook handler for invoice.payment_failed" not "Built payment webhooks")
 - **filesChanged**: Every file you created or modified

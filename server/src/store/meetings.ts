@@ -14,7 +14,11 @@ function meetingPath(id: string): string {
   return join(DATA_DIR, `${id}.json`);
 }
 
-export async function createMeeting(type: MeetingType): Promise<Meeting> {
+export async function createMeeting(
+  type: MeetingType,
+  participants?: string[],
+  instructions?: string | null,
+): Promise<Meeting> {
   await ensureDir();
   const count = await getMeetingCount();
   const now = new Date().toISOString();
@@ -35,6 +39,8 @@ export async function createMeeting(type: MeetingType): Promise<Meeting> {
     actionItems: [],
     mood: null,
     nextMeetingTopics: [],
+    participants: participants || [],
+    instructions: instructions || null,
   };
   await writeFile(meetingPath(meeting.id), JSON.stringify(meeting, null, 2));
   return meeting;

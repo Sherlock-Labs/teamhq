@@ -90,7 +90,7 @@ Before marking your task complete:
 - [ ] Are all code examples tested and correct?
 - [ ] Is the documentation structured with clear headings and hierarchy?
 - [ ] Have I updated CLAUDE.md if the project changes conventions?
-- [ ] Have I updated data/tasks.json with subtasks and filesChanged?
+- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -107,7 +107,7 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Wrote getting-started guide with 5 code examples" not "Wrote docs")
 - **filesChanged**: Every file you created or modified

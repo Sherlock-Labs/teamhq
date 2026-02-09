@@ -1,6 +1,10 @@
 # MCP config (contains secrets)
 .mcp.json
 
+# Team memory database (local per machine)
+data/memory/*.db
+data/memory/*.db-*
+
 # Node
 node_modules/
 

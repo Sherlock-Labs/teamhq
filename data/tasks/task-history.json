@@ -1,0 +1,115 @@
+{
+  "id": "task-history",
+  "name": "Task History",
+  "description": "Added a Tasks section to the TeamHQ landing page showing project history with expandable cards and subtask breakdowns.",
+  "status": "completed",
+  "completedDate": "2025-02",
+  "tasks": [
+    {
+      "title": "Scoped requirements and acceptance criteria",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Defined Tasks section placement between Tools and Team Roster",
+        "Specified expandable project cards with collapsed summary view",
+        "Required expanded view showing per-agent subtask breakdown with avatars and status",
+        "Defined three seed projects with accurate task breakdowns from session history",
+        "Set accordion behavior: only one project card expanded at a time"
+      ],
+      "filesChanged": [
+        "docs/task-history-requirements.md"
+      ],
+      "decisions": [
+        "Accordion pattern (one card at a time) to keep the page scannable",
+        "Status dots over text labels — more compact and visually clean"
+      ]
+    },
+    {
+      "title": "Defined technical approach (vanilla JS, IIFE, fetch + template literals)",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Introduced first JavaScript to the landing page — chose vanilla JS in an IIFE",
+        "Specified static JSON data file at data/tasks.json loaded via Fetch API",
+        "Designed CSS grid-template-rows animation for smooth expand/collapse (no JS animation)",
+        "Required single delegated event listener on #tasks-list for performance",
+        "Set progressive enhancement: noscript fallback message for JS-disabled browsers",
+        "Established JS conventions: IIFE wrapper, strict mode, no globals, no dependencies"
+      ],
+      "filesChanged": [
+        "docs/task-history-tech-approach.md"
+      ],
+      "decisions": [
+        "Vanilla JS over a framework — this is the first JS on the page, keep it minimal",
+        "CSS grid-template-rows for animation over JS height calculation — cleaner, GPU-accelerated",
+        "Static JSON over hardcoded HTML — makes future task additions data-driven"
+      ]
+    },
+    {
+      "title": "Created design spec (card states, animations, responsive layout)",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Designed project card collapsed state: name, description, status badge, date, task count, chevron",
+        "Designed expanded state with per-agent subtask rows and 32px avatars",
+        "Specified status indicator colors: green (completed), yellow (in-progress), red (blocked), gray (skipped)",
+        "Defined chevron rotation animation (45deg to -135deg) on expand",
+        "Set mobile responsive behavior: description truncation, header wrapping",
+        "Specified accessibility: button header for keyboard nav, aria-expanded/aria-hidden attributes"
+      ],
+      "filesChanged": [
+        "docs/task-history-design-spec.md"
+      ],
+      "decisions": [
+        "32px task avatars (vs 48px roster avatars) to keep subtask rows compact",
+        "Single-column card layout — projects are sequential, not comparable side-by-side",
+        "Border-top separator on expanded content rather than a visual gap"
+      ]
+    },
+    {
+      "title": "Implemented Tasks section UI",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Created js/tasks.js with IIFE, fetch, and template-literal rendering",
+        "Built project card component with button header and collapsible details panel",
+        "Implemented delegated click handler for expand/collapse accordion behavior",
+        "Added Tasks nav link and section with #tasks-list container and noscript fallback",
+        "Created data/tasks.json with seed data for 3 projects",
+        "Styled all task card elements matching dark theme design spec",
+        "Implemented CSS grid-template-rows animation for smooth expand/collapse"
+      ],
+      "filesChanged": [
+        "index.html",
+        "css/styles.css",
+        "js/tasks.js",
+        "data/tasks.json"
+      ],
+      "decisions": [
+        "Used CSS grid-template-rows for smooth expand/collapse animation — no JS height calc needed",
+        "Template literals over createElement — more readable for this complexity level"
+      ]
+    },
+    {
+      "title": "Validated against acceptance criteria",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Verified all 3 seed projects load from JSON and render correctly",
+        "Tested expand/collapse animation smoothness across browsers",
+        "Confirmed accordion behavior: expanding one card collapses the other",
+        "Validated correct agent assignments and task content against session history",
+        "Tested responsive layout on mobile, tablet, and desktop",
+        "Verified keyboard navigation: tab to card headers, enter/space to toggle"
+      ],
+      "decisions": [
+        "Accepted that noscript fallback is plain text — acceptable given the audience"
+      ]
+    }
+  ]
+}
