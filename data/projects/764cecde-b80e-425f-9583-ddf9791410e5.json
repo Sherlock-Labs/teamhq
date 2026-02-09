@@ -2,14 +2,14 @@
   "id": "764cecde-b80e-425f-9583-ddf9791410e5",
   "name": "Build a simple revenue model spreadsheet for all three pr...",
   "description": "",
-  "status": "in-progress",
+  "status": "completed",
   "createdAt": "2026-02-09T19:56:27.632Z",
-  "updatedAt": "2026-02-09T20:07:27.182Z",
-  "completedAt": null,
+  "updatedAt": "2026-02-09T20:44:29.378Z",
+  "completedAt": "2026-02-09T20:44:22.300Z",
   "goals": "",
   "constraints": "",
   "brief": "Build a simple revenue model spreadsheet for all three product ideas — include API costs, pricing tiers, break-even volume, and 30/60/90 day revenue projections at conservative adoption rates.\n\nOwner: Yuki\nPriority: low\nSource: Custom Meeting #3",
   "notes": [],
   "kickoffPrompt": "You have a new project to work on.\n\n## Project: Build a simple revenue model spreadsheet for all three pr...\n\n**Brief:**\nBuild a simple revenue model spreadsheet for all three product ideas — include API costs, pricing tiers, break-even volume, and 30/60/90 day revenue projections at conservative adoption rates.\n\nOwner: Yuki\nPriority: low\nSource: Custom Meeting #3\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
-  "activeSessionId": "5c8a19a4-e600-4234-a526-08ceddc3a0d0"
+  "activeSessionId": null
 }

@@ -54,3 +54,5 @@
 {"id":53,"timestamp":"2026-02-09T20:14:29.357Z","type":"system","data":{"message":"Turn 1 completed (7m 0s)"}}
 {"id":54,"timestamp":"2026-02-09T20:14:29.357Z","type":"turn_end","data":{"turnNumber":1,"exitCode":0,"durationMs":420687}}
 {"id":55,"timestamp":"2026-02-09T20:14:29.357Z","type":"waiting_for_input","data":{"turnNumber":1}}
+{"id":56,"timestamp":"2026-02-09T20:44:29.376Z","type":"system","data":{"message":"Session timed out (idle)"}}
+{"id":57,"timestamp":"2026-02-09T20:44:29.377Z","type":"error","data":{"message":"Session timed out"}}

@@ -1,0 +1,242 @@
+{
+  "id": "ceo-response-input",
+  "name": "CEO Response Input",
+  "description": "Add a message input to the session viewer so the CEO can respond to agent questions directly from the web UI during a running session.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scoped requirements for CEO response input feature",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Analyzed existing session viewer architecture: SSE-based event stream, session log with event rendering, session history panel",
+        "Discovered backend already fully supports follow-up messages: POST /sessions/:sessionId/message endpoint, BaseSessionRunner.sendMessage(), StreamingRunner.deliverMessage() via stdin, ResumeRunner.deliverMessage() via --resume",
+        "Discovered session state machine already supports idle/processing transitions with waiting_for_input and user_message event types in Zod schema",
+        "Identified the gap as purely frontend: waiting_for_input and user_message events are emitted by backend but completely ignored by the web UI",
+        "Wrote 4 user stories: respond to agent questions, see responses in transcript, see waiting-for-input indicator, input bar state management",
+        "Specified input bar design: text input + send button at bottom of session log, appears only when session is live and idle",
+        "Specified two new event renderers: waiting_for_input (invitation banner) and user_message (CEO message with distinct visual style)",
+        "Specified session runner state tracking variable to manage input bar visibility across processing/idle/ended states",
+        "Defined error handling: inline errors for 400/404/409, send button disabled during request, typed text preserved on error",
+        "Scoped out queued responses for ended sessions, rich text, response suggestions, notifications, and multi-line input as v2 candidates",
+        "Documented timing edge case (idle timeout during typing), double-send prevention, and message truncation (500 char in event log) as known risks"
+      ],
+      "filesChanged": [
+        "docs/ceo-response-input-requirements.md"
+      ],
+      "decisions": [
+        "Frontend-only feature — zero backend changes needed, all API and runner infrastructure already exists",
+        "No queued responses for ended sessions — too complex for v1, unclear value, session context would be stale anyway",
+        "Single-line input for v1, not textarea — most CEO responses are short directives, not paragraphs",
+        "No notification system for v1 — CEO discovers waiting state by viewing the session log, notifications are a good v2 feature",
+        "Accept 30-minute idle timeout as-is — no countdown warning in v1, the existing timeout is generous enough"
+      ]
+    },
+    {
+      "title": "Defined tech approach for CEO response input feature",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Read and analyzed requirements doc (4 user stories, frontend-only scope, existing backend infrastructure)",
+        "Audited js/projects.js session viewer: identified SSE event handling in appendSessionEvent(), event rendering switch in renderSessionEvent(), session state variables, DOM structure of renderSessionLog()",
+        "Audited server/src/session/base-runner.ts: confirmed sendMessage() emits user_message then turn_start, onTurnComplete() emits waiting_for_input, state machine enforces idle-only message acceptance",
+        "Audited server/src/routes/sessions.ts: confirmed POST /:sessionId/message endpoint validates message, checks runner existence, calls sendMessage(), returns 202/400/404/409",
+        "Audited server/src/schemas/session.ts: confirmed SessionEventType enum includes waiting_for_input and user_message, RunnerState enum has processing/idle/ended",
+        "Mapped all 8 SSE event types: identified turn_start, turn_end, waiting_for_input, and user_message as unhandled by frontend",
+        "Designed sessionRunnerState state variable with processing/idle/ended/unknown states, driven by SSE events (turn_start, waiting_for_input, session_done)",
+        "Specified input bar DOM structure: text input + send button + error span, placed after session-log__body inside session-log container",
+        "Specified input bar lifecycle: shown on waiting_for_input when live, hidden on turn_start/session_done, disabled during POST, error preserved on failure",
+        "Designed two new event renderers: renderWaitingForInputEvent (session-event--input-needed) and renderUserMessageEvent (session-event--user-message)",
+        "Specified CSS using existing design tokens: same input pattern as detail__notes-input, accent green backgrounds matching tool_use events, BEM naming following session-log convention",
+        "Specified event listener wiring: click handler for send button, Enter key handler for input, input event for send button enable/disable",
+        "Documented 6 edge cases with mitigations: session ends while typing, double-send, SSE reconnection, historical replay, message too long, empty message",
+        "Chose session-event--input-needed class name to avoid conflict with existing session-event--waiting (TaskOutput spinner)"
+      ],
+      "filesChanged": [
+        "docs/ceo-response-input-tech-approach.md"
+      ],
+      "decisions": [
+        "No turn_start or turn_end rendering in transcript — they create noise; waiting_for_input and agent activity events convey the same information more clearly",
+        "State transitions driven by SSE events only, never by POST response — avoids race conditions between API response and event stream",
+        "CSS class session-event--input-needed (not --waiting-for-input) to avoid collision with existing session-event--waiting class used for TaskOutput polling indicator",
+        "Input bar is a fixed DOM element shown/hidden via aria-hidden, not appended/removed — makes show/hide idempotent and avoids DOM churn on SSE reconnection replays",
+        "Send button disabled when input is empty (via input event listener) and during POST flight — double-send prevention at the UI layer before the API layer",
+        "Error span is inline below input bar, not a toast — keeps context close to the action and avoids competing with the existing showToast() system for transient project-level messages"
+      ]
+    },
+    {
+      "title": "Wrote design spec for CEO response input feature",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Read and analyzed Thomas's requirements (4 user stories, frontend-only scope, existing backend API)",
+        "Read and analyzed Andrei's tech approach (state machine, event handling, CSS specification, edge cases)",
+        "Audited existing session log styles in css/styles.css: session-event base layout, tool_use/system/error event treatments, waiting spinner, agent spawn banners, message cards",
+        "Audited existing input patterns: detail__notes-input (progress notes) and detail__run-btn (session controls) for reuse as input bar visual precedent",
+        "Audited css/tokens.css: confirmed all needed tokens exist (color-accent, color-green-accent-rgb, color-bg-card, color-border, color-status-error, spacing, typography, radius)",
+        "Designed input bar: horizontal flex layout anchored below session-log__body, text input + send button, reuses detail__notes-input and detail__run-btn patterns exactly",
+        "Designed waiting-for-input event: green accent wash (0.04 opacity) background, italic medium-weight accent-colored text, differentiates from existing session-event--waiting spinner",
+        "Designed user-message event: slightly stronger green wash (0.06 opacity), uppercase 'YOU' label in accent green, monospace message text matching assistant_text convention",
+        "Specified 4-state lifecycle: processing (bar hidden), idle (bar visible), sending (bar disabled), ended (bar hidden) — all transitions driven by SSE events",
+        "Decided against auto-focus on idle — session log is read-first interface, auto-focus would interrupt transcript scanning",
+        "Decided against right-alignment for CEO messages — timeline is uniformly left-aligned, background color + label provides sufficient differentiation",
+        "Decided against spinner on send button — local API call is sub-second, disabled state is sufficient feedback",
+        "Specified inline error pattern with role='alert' for screen reader announcement, text preserved on error for retry",
+        "Documented WCAG AA/AAA compliance for all foreground/background combinations in a contrast ratio table",
+        "Specified responsive behavior: no new breakpoints needed, existing mobile styles handle new elements correctly",
+        "Specified full accessibility: aria-label on input, role='alert' on error, aria-hidden toggling, keyboard Enter-to-send, tab order, no focus trap",
+        "Provided visual hierarchy analysis showing how green wash clusters mark CEO interaction points in the transcript",
+        "Wrote implementation notes for Alice mapping design decisions to existing CSS line references"
+      ],
+      "filesChanged": [
+        "docs/ceo-response-input-design-spec.md"
+      ],
+      "decisions": [
+        "No new design tokens — all styles built from existing tokens in tokens.css, zero additions needed",
+        "Input bar reuses detail__notes-input pattern exactly — same border, radius, padding, focus ring, placeholder color. Familiarity over novelty.",
+        "Send button uses filled accent green (like detail__run-btn) not outlined style (like detail__notes-add-btn) — it is the primary action and earns visual weight",
+        "No auto-focus on idle state — read-first interface, CEO needs to scan agent output before responding",
+        "No right-alignment for user messages — breaks timeline's uniform left-aligned flow; green background + YOU label is sufficient differentiation",
+        "Green wash opacity 0.04 for waiting-for-input, 0.06 for user-message — creates a paired visual cluster at each CEO interaction point in the transcript",
+        "No spinner on send button — sub-second local API call does not warrant animation overhead; disabled state is sufficient",
+        "Inline error (not toast) — contextual feedback adjacent to the input, does not compete with existing showToast() system",
+        "Monospace font for CEO message text — matches assistant_text and tool output convention, keeps CEO messages feeling part of the same technical conversation",
+        "No session-ended replacement text for input bar — bar simply disappears; existing session status indicator already communicates completion"
+      ]
+    },
+    {
+      "title": "Implemented CEO response input feature (frontend)",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Read and analyzed all three planning docs: requirements (Thomas), tech approach (Andrei), design spec (Robert)",
+        "Added sessionRunnerState variable ('processing'|'idle'|'ended'|'unknown') alongside existing session state variables",
+        "Added apiSendMessage() function — POSTs to /api/projects/:id/sessions/:sessionId/message with { message } body",
+        "Added renderWaitingForInputEvent() — renders waiting_for_input events with green wash background and italic accent text",
+        "Added renderUserMessageEvent() — renders user_message events with slightly stronger green wash, uppercase 'YOU' label, and monospace message text",
+        "Added waiting_for_input and user_message cases to the renderSessionEvent() switch statement (previously falling through to default empty string)",
+        "Added input bar HTML to renderSessionLog() — text input with aria-label, send button, error span with role='alert', all hidden by default via aria-hidden",
+        "Added runner state tracking in appendSessionEvent() — turn_start sets processing and hides bar, waiting_for_input sets idle and shows bar when live",
+        "Added sessionRunnerState = 'ended' and hideInputBar() to handleSessionDone()",
+        "Added sessionRunnerState reset to 'unknown' in disconnectSession()",
+        "Set sessionRunnerState to 'processing' or 'ended' based on isLive flag in connectToSession()",
+        "Added showInputBar() — shows bar, clears input, enables input, disables send button (empty), clears errors",
+        "Added hideInputBar() — hides bar via aria-hidden='true'",
+        "Added clearInputError() — clears error text and hides error span",
+        "Added handleSendMessage() — validates non-empty, disables input/button, calls apiSendMessage, clears on success, shows inline error on failure, preserves text on error",
+        "Wired send button click handler in delegated click listener on listContainer",
+        "Wired Enter key handler for session-log__input in existing keydown listener",
+        "Added input event listener to enable/disable send button based on whether input has content",
+        "Added all CSS styles: input bar (flex layout, border-top separator, matching detail__notes-input pattern), send button (accent green fill, matching detail__run-btn), input focus ring (green accent box-shadow), error text (status-error color, text-xs, role=alert), waiting_for_input event (0.04 opacity green wash, italic accent text), user_message event (0.06 opacity green wash, uppercase YOU label, monospace body text)",
+        "Used flex-wrap: wrap on input bar so error span takes full width on new line"
+      ],
+      "filesChanged": [
+        "js/projects.js",
+        "css/styles.css",
+        "data/tasks/ceo-response-input.json"
+      ],
+      "decisions": [
+        "Send button starts disabled on showInputBar() — matches spec that button is disabled until text is entered, via input event listener",
+        "Used flex-wrap: wrap on input-bar container so the error span (width: 100%) flows to a new line below input and button — simpler than nesting additional containers",
+        "Followed Andrei's tech approach exactly for state machine, event lifecycle, and API integration — no deviations needed",
+        "Followed Robert's design spec exactly for all CSS values, token references, and visual treatments — no deviations needed",
+        "No auto-focus on input when bar appears — per Robert's explicit design decision, read-first interface"
+      ]
+    },
+    {
+      "title": "Design review of CEO response input implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Checked input bar HTML structure: matches spec exactly — div.session-log__input-bar with aria-hidden='true', input with type='text', placeholder='Reply to the team...', autocomplete='off', maxlength='10000', aria-label='Reply to the session', button with disabled attribute, error span with role='alert' and aria-hidden='true'",
+        "Checked input bar CSS: flex layout, align-items center, gap var(--space-2), padding var(--space-3) var(--space-4), border-top 1px solid var(--color-border), background var(--color-bg-card) — all match spec",
+        "Checked input field CSS: flex 1, font-family var(--font-family), font-size var(--text-sm), color var(--color-text-primary), background #ffffff, border 1px solid var(--color-border), border-radius var(--radius-md), padding var(--space-2) var(--space-3), transition border-color 0.15s ease — all match spec",
+        "Checked input focus ring: outline none, border-color var(--color-accent), box-shadow 0 0 0 3px rgba(var(--color-green-accent-rgb), 0.15) — matches spec exactly",
+        "Checked input placeholder color: var(--color-neutral-400) — matches spec",
+        "Checked input disabled state: opacity 0.6, cursor not-allowed — matches spec",
+        "Checked send button: font-size var(--text-sm), font-weight var(--font-weight-medium), color var(--color-white), background var(--color-accent), border none, border-radius var(--radius-md), padding var(--space-2) var(--space-4), white-space nowrap — all match spec",
+        "Checked send button hover: background var(--color-accent-hover) with :not(:disabled) — matches spec",
+        "Checked send button disabled: opacity 0.5, cursor not-allowed — matches spec",
+        "Checked error span: display block, width 100%, font-size var(--text-xs), color var(--color-status-error), padding-top var(--space-1) — matches spec",
+        "Checked waiting-for-input event CSS: padding var(--space-2) var(--space-4), background rgba(var(--color-green-accent-rgb), 0.04) — matches spec (green wash 0.04)",
+        "Checked waiting-for-input body: display flex, align-items center, gap var(--space-2) — matches spec",
+        "Checked waiting-for-input text: font-size var(--text-sm), font-weight var(--font-weight-medium), color var(--color-accent), font-style italic — matches spec",
+        "Checked user-message event CSS: padding var(--space-2) var(--space-4), background rgba(var(--color-green-accent-rgb), 0.06) — matches spec (green wash 0.06)",
+        "Checked user-message body: display flex, flex-direction column, gap var(--space-1) — matches spec",
+        "Checked user-label: font-size var(--text-xs), font-weight var(--font-weight-semibold), color var(--color-accent), text-transform uppercase, letter-spacing 0.04em — matches spec",
+        "Checked user-text: font-family var(--font-mono), font-size var(--text-sm), line-height var(--leading-relaxed), color var(--color-text-primary), margin 0 — matches spec (monospace text)",
+        "Checked state transitions: turn_start hides bar and sets processing, waiting_for_input shows bar when live, session_done hides bar and sets ended — matches spec",
+        "Checked no auto-focus: showInputBar() clears input and enables it but does not call input.focus() — matches spec",
+        "Checked accessibility: aria-label on input, role='alert' on error span, aria-hidden toggling on bar and error, Enter-to-send via keydown listener — all match spec",
+        "Checked user messages are left-aligned: no right-alignment CSS, messages use same left-aligned timeline layout as all other events — matches spec",
+        "Checked error handling: handleSendMessage disables input/button, preserves text on error, shows inline error with aria-hidden='false', clears error on next showInputBar — matches spec",
+        "Noted one minor deviation: input bar uses flex-wrap: wrap (spec CSS block does not include flex-wrap). This is an acceptable implementation choice — Alice added it so the error span (width: 100%) wraps to a new line. The spec noted this as an acceptable alternative in the implementation notes."
+      ],
+      "filesChanged": [
+        "data/tasks/ceo-response-input.json"
+      ],
+      "decisions": [
+        "PASS — implementation matches design spec with no meaningful deviations",
+        "flex-wrap: wrap on input bar is an acceptable implementation detail not in spec CSS — the spec explicitly called out flex-wrap as an alternative in Section 7 implementation notes",
+        "All design tokens, colors, spacing, typography, focus states, opacity values, and ARIA attributes match spec exactly",
+        "All seven review checklist items verified: HTML structure, send button styling, waiting-for-input event, user-message event, state transitions, accessibility, and left-alignment"
+      ]
+    },
+    {
+      "title": "QA review of CEO response input feature",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Read and analyzed all three planning docs: requirements (Thomas, 4 user stories with acceptance criteria), tech approach (Andrei, state machine, edge cases, naming decisions), design spec (Robert, visual treatments, accessibility, responsive behavior)",
+        "Verified state machine correctness: sessionRunnerState initialized as 'unknown' (line 140), set to 'processing' or 'ended' in connectToSession() based on isLive flag (line 877), set to 'processing' on turn_start (line 983), set to 'idle' on waiting_for_input (line 987), set to 'ended' in handleSessionDone() (line 1213), reset to 'unknown' in disconnectSession() (line 941) — all transitions match the tech approach state diagram",
+        "Verified input bar shown only when live + idle: showInputBar() is called only inside the waiting_for_input handler with a sessionIsLive guard (line 988), hideInputBar() is called on turn_start (line 984) and handleSessionDone() (line 1214) — correct gating",
+        "Verified input bar hidden by default: rendered with aria-hidden='true' in renderSessionLog() (line 519), CSS rule .session-log__input-bar[aria-hidden='true'] { display: none } (line 2738) — bar is invisible until explicitly shown",
+        "Verified Enter-to-send: keydown listener on listContainer checks for Enter key + session-log__input class (line 2674), calls handleSendMessage() with correct projectId — correct",
+        "Verified send button disabled when empty: send button starts disabled in HTML (line 521), showInputBar() sets sendBtn.disabled = true (line 1559), input event listener toggles sendBtn.disabled based on trimmed input value (line 2689) — correct",
+        "Verified send button disabled when text present: input event listener sets sendBtn.disabled = !e.target.value.trim() (line 2689), so non-empty input enables the button — correct",
+        "Verified input disabled during send: handleSendMessage() sets input.disabled = true and sendBtn.disabled = true immediately before the async API call (lines 1593-1594) — prevents double-send",
+        "Verified input clears after successful send: .then() handler sets input.value = '' (line 1601) — correct",
+        "Verified error display on failure: .catch() handler re-enables input and button (lines 1605-1606), sets error text (line 1614), sets aria-hidden='false' on error span (line 1615) — correct",
+        "Verified typed text preserved on error: no input.value clearing in the .catch() handler, explicit comment 'Do NOT clear the input' (line 1617) — correct",
+        "Verified API integration: apiSendMessage() POSTs to correct endpoint /api/projects/:id/sessions/:sessionId/message with { message } JSON body (lines 272-285), uses encodeURIComponent on path params, handles non-OK responses by throwing parsed JSON error — correct",
+        "Verified waiting_for_input event rendering: renderWaitingForInputEvent() produces div with class session-event--input-needed, includes timestamp, body with 'Waiting for your input' text in session-event__input-needed-text span (lines 779-787) — matches design spec",
+        "Verified user_message event rendering: renderUserMessageEvent() produces div with class session-event--user-message, includes timestamp, 'You' label (CSS uppercases to 'YOU'), message text escaped via escapeHTML() in session-event__user-text paragraph (lines 790-800) — matches design spec",
+        "Verified XSS protection: user message text is passed through escapeHTML() before insertion into HTML (line 797). escapeHTML() uses DOM-based escaping via document.createTextNode() + div.innerHTML (lines 1840-1844) — this is a robust escaping method that handles all HTML special characters including <, >, &, quotes. No raw user input is ever inserted as innerHTML without escaping.",
+        "Verified waiting_for_input CSS: green wash background at 0.04 opacity (line 2807), flex body with center alignment (lines 2810-2813), italic accent-colored medium-weight text (lines 2816-2821) — all match design spec exactly",
+        "Verified user_message CSS: green wash background at 0.06 opacity (line 2827), column flex body with space-1 gap (lines 2830-2833), uppercase YOU label in accent color with 0.04em letter-spacing (lines 2836-2842), monospace message text with leading-relaxed and margin:0 (lines 2844-2850) — all match design spec exactly",
+        "Verified input bar CSS: flex layout with wrap, space-2 gap, space-3/space-4 padding, border-top separator, bg-card background (lines 2728-2736). Input field: flex-1, font-family, text-sm, text-primary color, white bg, border, radius-md, space-2/space-3 padding, border-color transition (lines 2742-2751). Focus ring: accent border + green box-shadow (lines 2754-2757). Send button: accent green fill, white text, radius-md, space-2/space-4 padding, hover state, disabled state (lines 2769-2788). Error: block display, width 100%, text-xs, status-error color, space-1 top padding (lines 2791-2800) — all match design spec",
+        "Verified accessibility: aria-label='Reply to the session' on input (line 520), role='alert' on error span (line 522), aria-hidden toggling on input bar (lines 1555, 1568) and error span (lines 1577, 1615), Enter-to-send via keydown (line 2674), no auto-focus in showInputBar() — all match design spec requirements",
+        "Verified historical sessions: connectToSession() sets sessionRunnerState to 'ended' when isLive is false (line 877), waiting_for_input handler checks sessionIsLive before calling showInputBar (line 988) so input bar never appears for historical sessions, but events still render in transcript — correct",
+        "Verified empty/whitespace-only message blocking: handleSendMessage() trims input value and returns early if empty (lines 1589-1590) — correct",
+        "Verified session ends while typing: handleSessionDone() calls hideInputBar() (line 1214) which sets aria-hidden='true' making bar invisible immediately — correct behavior",
+        "Verified double-send prevention: input and button disabled synchronously before async POST (lines 1593-1594), click handler also checks !sendBtn.disabled (line 2638), disabled inputs cannot receive keydown events so Enter path is also safe — correct",
+        "Verified existing event types still render correctly: switch statement retains all original cases (assistant_text, tool_use, tool_result, system, error) unchanged (lines 585-594), new cases added before default (lines 595-598) — no regressions",
+        "Verified input bar placement: rendered after session-log__body but inside session-log container (lines 518-523), sits below scrollable events area — correct per spec",
+        "Verified turn_start not rendered as visible event: not in the switch statement, falls through to default:'' (line 599-600), only used for state tracking (lines 982-984) — correct per tech approach",
+        "Verified showInputBar() behavior deviation from tech approach: tech approach spec showed sendBtn.disabled = false, but implementation sets sendBtn.disabled = true (line 1559). This is the CORRECT behavior — the send button should start disabled when the input is empty, and the input event listener enables it when text is entered. Alice's implementation note documents this intentional deviation.",
+        "Verified 'You' label accessibility: HTML source text is 'You' (line 796) with CSS text-transform: uppercase rendering it as 'YOU' visually — this is the correct approach for screen readers which will read 'You' naturally rather than spelling 'Y-O-U'"
+      ],
+      "filesChanged": [
+        "data/tasks/ceo-response-input.json"
+      ],
+      "decisions": [
+        "PASS — all 8 test areas pass with zero bugs found",
+        "State machine: all transitions correct (unknown -> processing on live connect, processing -> idle on waiting_for_input, idle -> processing on turn_start, any -> ended on session_done, reset to unknown on disconnect)",
+        "Input bar behavior: correctly gated to live+idle only, Enter-to-send works, button disabled when empty, input disabled during send, clears on success, error with preserved text on failure — all acceptance criteria met",
+        "API integration: correct endpoint, correct HTTP method, correct body format, correct error handling — matches backend contract",
+        "Event rendering: both new event types render correctly with correct CSS classes, correct visual treatments, correct green wash opacities — match design spec",
+        "Security: escapeHTML() uses DOM-based escaping (createTextNode + innerHTML), which is robust against all XSS vectors — no injection possible",
+        "Accessibility: aria-label, role='alert', aria-hidden toggling, keyboard support, no auto-focus, proper contrast ratios, screen-reader-friendly 'You' text — all WCAG requirements met",
+        "Edge cases: empty message blocked, historical sessions handled, session-end-while-typing handled, double-send prevented — all mitigations verified",
+        "No regressions: existing event rendering switch cases unchanged, session connection/disconnection flow unchanged, DOM structure consistent with existing patterns",
+        "One intentional deviation from tech approach noted: showInputBar() sets sendBtn.disabled = true (not false as in Andrei's spec). This is correct behavior — button should be disabled when input is empty and enabled via the input event listener."
+      ]
+    }
+  ]
+}

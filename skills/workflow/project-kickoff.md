@@ -51,11 +51,11 @@ When creating tasks in the task list:
 | Suki | CEO brief | `docs/{project}-research.md` |
 | Marco | CEO brief, requirements | `docs/{project}-technical-research.md` |
 | Thomas | CEO brief, research | `docs/{project}-requirements.md` |
-| Andrei | Requirements | `docs/{project}-tech-approach.md` |
+| Andrei | Requirements | `docs/{project}-tech-approach.md` (includes file-level change impact classifications) |
 | Robert | Requirements, tech approach | `docs/{project}-design-spec.md` |
 | Alice | All specs | Implementation code |
 | Jonah | All specs | Implementation code |
-| Enzo | All specs, code | Test results, bug reports |
+| Enzo | All specs (especially tech approach for restructuring flags), code | Test results, bug reports |
 | Priya | Requirements, design spec | `docs/{project}-messaging.md` |
 | Nadia | All docs, code | User guides, README updates |
 | Yuki | All data | `docs/{project}-retrospective.md` |
@@ -67,6 +67,10 @@ Before starting a project:
 - [ ] Research is done (if the domain is unfamiliar)
 - [ ] Thomas has created tasks with proper dependencies
 - [ ] Each task description specifies what to read and what to produce
+
+## Notes
+
+- **Tech approach includes change impact classifications.** Andrei classifies every file in the tech approach as Extend (low risk), Modify (moderate risk), or Restructure (high risk). Files marked Restructure include QA impact notes describing what existing functionality is affected. Enzo should read these before writing his test plan to plan regression testing proactively.
 
 ## Anti-patterns
 

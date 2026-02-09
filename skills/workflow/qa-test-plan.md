@@ -65,14 +65,25 @@ What is being tested and what is out of scope.
 
 1. **Read the requirements** — understand what acceptance criteria must be met
 2. **Read the design spec** — understand the expected user experience
-3. **Write test cases** before testing — prevents confirmation bias
-4. **Test happy paths first** — verify the feature works as intended
-5. **Test edge cases** — empty inputs, long text, special characters, concurrent actions
-6. **Test error states** — network failures, invalid data, missing resources
-7. **Test accessibility** — keyboard, screen reader, focus management
-8. **Test responsive** — resize browser to mobile, tablet, desktop breakpoints
-9. **Document results** in the test plan
-10. **Report issues** with severity and reproduction steps
+3. **Check the tech approach for change impact classifications** — identify files flagged as Restructure (see below)
+4. **Write test cases** before testing — prevents confirmation bias
+5. **Test happy paths first** — verify the feature works as intended
+6. **Test edge cases** — empty inputs, long text, special characters, concurrent actions
+7. **Test error states** — network failures, invalid data, missing resources
+8. **Test accessibility** — keyboard, screen reader, focus management
+9. **Test responsive** — resize browser to mobile, tablet, desktop breakpoints
+10. **Document results** in the test plan
+11. **Report issues** with severity and reproduction steps
+
+## Using Change Impact Classifications
+
+Andrei's tech approach classifies each file as **Extend** (low risk), **Modify** (moderate risk), or **Restructure** (high risk). Use these to prioritize your testing:
+
+- **Extend files** — Test the new functionality. Existing behavior is unlikely to regress.
+- **Modify files** — Test new functionality plus the specific code paths that changed. Moderate regression risk.
+- **Restructure files** — These need dedicated regression testing. The tech approach includes **QA impact notes** for each Restructure file describing what existing functionality is affected. Plan regression test cases for all mentioned areas, not just the new feature.
+
+When writing your test plan, add a **Regression (Restructured Files)** section for any files flagged as Restructure. Cover the existing functionality called out in the QA impact notes.
 
 ## Severity Levels
 

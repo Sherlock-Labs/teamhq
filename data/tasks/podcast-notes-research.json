@@ -1,0 +1,67 @@
+{
+  "id": "podcast-notes-research",
+  "name": "Podcast Show Notes Tool — Competitive Scan",
+  "description": "Quick competitive scan of the podcast show notes tool market. Identify top 5 competitors, pricing models, feature sets, and gaps an indie-focused pay-per-episode tool could exploit.",
+  "status": "completed",
+  "tasks": [
+    {
+      "title": "Scoped requirements for podcast show notes competitive scan",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read Custom Meeting #3 transcript to extract context on the podcast show notes idea, Suki's initial observations, and team consensus on positioning",
+        "Read revenue-model task file and requirements doc for format reference and to understand what Yuki already modeled for this product",
+        "Defined research question: is there a viable gap for a simple, pay-per-episode indie-focused tool?",
+        "Specified Top 5 competitor analysis with 9-dimension comparison table (product, pricing model, price points, target audience, core features, input method, output format, AI model, limitations)",
+        "Defined pricing landscape analysis requirements: lowest price, modal pricing model, pay-per-episode availability, free tier patterns, switching triggers",
+        "Required 3-5 specific feature gaps — actionable and concrete, not generic",
+        "Required go/no-go recommendation with clear rationale",
+        "Scoped as research-only project: Suki sole executor, no architecture/design/build/QA pipeline"
+      ],
+      "filesChanged": [
+        "docs/podcast-notes-research-requirements.md",
+        "data/projects/7726b222-f868-48bb-9a46-a31fd4b3e99e.json",
+        "data/tasks/podcast-notes-research.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Research-only project — no software build, no downstream pipeline agents needed",
+        "Capped at 5 competitors to keep it focused per product philosophy ('enough to act on')",
+        "Required go/no-go recommendation so the output is directly actionable for the CEO",
+        "Referenced Yuki's existing revenue model to avoid duplicate work on pricing/unit economics"
+      ]
+    },
+    {
+      "title": "Produce competitive scan of podcast show notes tool market",
+      "agent": "Suki",
+      "role": "Product Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Read Thomas's requirements doc, Meeting #3 transcript, Yuki's revenue model, and competitive analysis skill reference",
+        "Researched Castmagic pricing and features via WebSearch and WebFetch — confirmed $29-999/mo subscription tiers, 5-80 hrs/mo, content repurposing suite",
+        "Researched Podium pricing via WebSearch and third-party sources — $24/mo Creator plan, $6-9/hr pay-as-you-go credits, English-only transcripts on base tier",
+        "Researched Podsqueeze pricing and features — confirmed free tier (30 min), $8.99-89.99/mo paid plans, strongest indie offering of incumbents",
+        "Researched Capsho pricing — single $99/mo tier (300 min), heavy content marketing focus, AI personas feature",
+        "Researched Descript pricing and podcast features — $0-50/mo tiers, show notes as secondary feature within editing platform",
+        "Evaluated Riverside.fm but excluded from top 5 — recording platform with show notes as add-on, different buying decision",
+        "Searched for pay-per-episode pricing models across all tools — confirmed no competitor offers clean per-episode checkout as primary model",
+        "Verified indie podcaster market data — 85% not monetizing (Podnews 2025), 619M global listeners projected 2026",
+        "Compiled 9-dimension comparison table for all 5 competitors with verified pricing from primary sources",
+        "Analyzed pricing landscape: subscription-dominant market, $20/mo threshold where indie creators drop off, free tiers as loss leaders",
+        "Identified 5 specific feature gaps: (1) no pay-per-episode workflow, (2) over-featured suites for simple use case, (3) no host-optimized markdown export, (4) SEO features gated behind expensive tiers, (5) poor link resolution from audio mentions",
+        "Wrote Go recommendation with clear rationale tied to market gap, pricing opportunity, and Yuki's unit economics validation"
+      ],
+      "filesChanged": [
+        "docs/podcast-notes-research.md"
+      ],
+      "decisions": [
+        "Selected Castmagic, Podium, Podsqueeze, Capsho, and Descript as top 5 — these are the most relevant direct competitors for AI-powered podcast show notes generation",
+        "Excluded Riverside.fm from top 5 because it's a recording platform that added show notes as a feature, not a show notes tool — different competitive category",
+        "Recommended Go based on clear market gap: no pay-per-episode tool exists, all competitors are over-featured content suites at $20+/mo, indie segment is underserved",
+        "Flagged pay-per-episode conversion as the key unvalidated assumption — recommended soft launch with both per-episode and bundle options",
+        "Flagged show notes quality as table stakes risk — if output quality isn't noticeably better than free-tier competitors, the value prop reduces to pricing alone"
+      ]
+    }
+  ]
+}

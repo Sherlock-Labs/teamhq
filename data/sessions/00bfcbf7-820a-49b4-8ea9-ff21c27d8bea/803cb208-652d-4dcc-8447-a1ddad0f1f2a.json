@@ -1,0 +1,15 @@
+{
+  "id": "803cb208-652d-4dcc-8447-a1ddad0f1f2a",
+  "projectId": "00bfcbf7-820a-49b4-8ea9-ff21c27d8bea",
+  "status": "stopped",
+  "startedAt": "2026-02-09T20:43:46.828Z",
+  "endedAt": "2026-02-09T20:57:52.517Z",
+  "durationMs": 845689,
+  "eventCount": 67,
+  "exitCode": null,
+  "error": null,
+  "pid": null,
+  "cliSessionId": "123ba433-7106-4926-9552-9a474dfe6ac2",
+  "turnCount": 1,
+  "state": "ended"
+}

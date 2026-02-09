@@ -137,6 +137,7 @@
   var lastEventId = -1;               // Last event ID received (for reconnection)
   var MAX_RENDERED_EVENTS = 500;      // Max events to render in the DOM
   var sessionIsLive = false;           // Whether the current session is live (affects panel defaults)
+  var sessionRunnerState = 'unknown';  // 'processing' | 'idle' | 'ended' | 'unknown'
 
   // Agent tracking state
   var activeAgents = {};   // taskId -> agentSlug (e.g., 'pm')
@@ -266,6 +267,21 @@
         return res.json();
       })
       .then(function (data) { return data.sessions; });
+  }
+
+  function apiSendMessage(projectId, sessionId, message) {
+    return fetch(
+      API_BASE + '/' + encodeURIComponent(projectId) +
+      '/sessions/' + encodeURIComponent(sessionId) + '/message',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message }),
+      }
+    ).then(function (res) {
+      if (!res.ok) return res.json().then(function (err) { throw err; });
+      return res.json();
+    });
   }
 
   // --- Rendering ---
@@ -500,6 +516,11 @@
             '<button class="session-log__jump-btn" type="button">Jump to latest</button>' +
           '</div>' +
         '</div>' +
+        '<div class="session-log__input-bar" aria-hidden="true">' +
+          '<input class="session-log__input" type="text" placeholder="Reply to the team..." autocomplete="off" maxlength="10000" aria-label="Reply to the session">' +
+          '<button class="session-log__send-btn" type="button" disabled>Send</button>' +
+          '<span class="session-log__input-error" role="alert" aria-hidden="true"></span>' +
+        '</div>' +
       '</div>'
     );
   }
@@ -571,6 +592,10 @@
         return renderSystemEvent(event, timeStr);
       case 'error':
         return renderErrorEvent(event, timeStr);
+      case 'waiting_for_input':
+        return renderWaitingForInputEvent(event, timeStr);
+      case 'user_message':
+        return renderUserMessageEvent(event, timeStr);
       default:
         return '';
     }
@@ -583,7 +608,7 @@
       '<div class="session-event session-event--text' + streamClass + '" data-event-id="' + event.id + '">' +
         '<span class="session-event__time">' + timeStr + '</span>' +
         '<div class="session-event__body">' +
-          '<span class="session-event__content">' + escapeHTML(event.data.text || '') + '</span>' +
+          '<div class="session-event__content session-event__prose">' + renderMarkdown(event.data.text || '') + '</div>' +
         '</div>' +
       '</div>'
     );
@@ -751,6 +776,30 @@
     );
   }
 
+  function renderWaitingForInputEvent(event, timeStr) {
+    return (
+      '<div class="session-event session-event--input-needed" data-event-id="' + event.id + '">' +
+        '<span class="session-event__time">' + timeStr + '</span>' +
+        '<div class="session-event__body">' +
+          '<span class="session-event__input-needed-text">Waiting for your input</span>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderUserMessageEvent(event, timeStr) {
+    var msg = (event.data && event.data.message) || '';
+    return (
+      '<div class="session-event session-event--user-message" data-event-id="' + event.id + '">' +
+        '<span class="session-event__time">' + timeStr + '</span>' +
+        '<div class="session-event__body">' +
+          '<span class="session-event__user-label">You</span>' +
+          '<p class="session-event__user-text">' + escapeHTML(msg) + '</p>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
   function renderEventGroup(group) {
     var timeStr = group.events.length > 0 ? formatRelativeSessionTime(group.events[0].timestamp) : '+0:00';
     var summaryText = formatGroupSummary(group.tools);
@@ -825,6 +874,7 @@
     if (!logContainer) return;
 
     sessionIsLive = isLive;
+    sessionRunnerState = isLive ? 'processing' : 'ended';
     logContainer.innerHTML = renderSessionLog(null, isLive);
     renderPipelineIndicator(projectId);
 
@@ -888,6 +938,7 @@
     lastTaskToolName = null;
     currentGroup = null;
     lastToolClassification = null;
+    sessionRunnerState = 'unknown';
 
     // Reset Phase 2-3 panel state
     sessionIsLive = false;
@@ -925,6 +976,16 @@
     // Set sessionStartTime from the first event's timestamp (fixes historical session timestamps)
     if (sessionStartTime === null && event.timestamp) {
       sessionStartTime = new Date(event.timestamp).getTime();
+    }
+
+    // --- Runner state tracking ---
+    if (event.type === 'turn_start') {
+      sessionRunnerState = 'processing';
+      hideInputBar(projectId);
+    }
+    if (event.type === 'waiting_for_input') {
+      sessionRunnerState = 'idle';
+      if (sessionIsLive) showInputBar(projectId);
     }
 
     var eventsContainer = getEventsContainer(projectId);
@@ -1076,6 +1137,12 @@
     } else {
       // End any current streaming block
       if (currentStreamingEvent) {
+        // Re-render accumulated text as markdown
+        var contentEl = currentStreamingEvent.querySelector('.session-event__content');
+        if (contentEl) {
+          contentEl.innerHTML = renderMarkdown(contentEl.textContent || '');
+          contentEl.classList.add('session-event__prose');
+        }
         currentStreamingEvent.classList.remove('session-event--streaming');
         currentStreamingEvent = null;
       }
@@ -1143,6 +1210,8 @@
 
   function handleSessionDone(projectId, status, durationMs) {
     stopSessionTimer();
+    sessionRunnerState = 'ended';
+    hideInputBar(projectId);
 
     // Update timer display and mark session as done
     var logEl = getLogContainer(projectId);
@@ -1476,6 +1545,79 @@
     if (jumpEl) jumpEl.setAttribute('aria-hidden', 'true');
   }
 
+  // --- Input Bar ---
+
+  function showInputBar(projectId) {
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return;
+    var bar = logContainer.querySelector('.session-log__input-bar');
+    if (bar) {
+      bar.setAttribute('aria-hidden', 'false');
+      var input = bar.querySelector('.session-log__input');
+      var sendBtn = bar.querySelector('.session-log__send-btn');
+      if (input) { input.disabled = false; input.value = ''; }
+      if (sendBtn) sendBtn.disabled = true;
+      clearInputError(projectId);
+    }
+  }
+
+  function hideInputBar(projectId) {
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return;
+    var bar = logContainer.querySelector('.session-log__input-bar');
+    if (bar) bar.setAttribute('aria-hidden', 'true');
+  }
+
+  function clearInputError(projectId) {
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return;
+    var errorEl = logContainer.querySelector('.session-log__input-error');
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function handleSendMessage(projectId) {
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return;
+
+    var input = logContainer.querySelector('.session-log__input');
+    var sendBtn = logContainer.querySelector('.session-log__send-btn');
+    if (!input || !sendBtn) return;
+
+    var message = input.value.trim();
+    if (!message) return;
+
+    // Disable input and button immediately (prevents double-send)
+    input.disabled = true;
+    sendBtn.disabled = true;
+    clearInputError(projectId);
+
+    apiSendMessage(activeSessionProjectId, viewingSessionId, message)
+      .then(function () {
+        // Success: clear input. The SSE events (user_message, turn_start)
+        // will hide the input bar and render the message.
+        input.value = '';
+      })
+      .catch(function (err) {
+        // Re-enable input so the user can retry
+        input.disabled = false;
+        sendBtn.disabled = false;
+
+        var msg = 'Failed to send message';
+        if (err && err.error) {
+          msg = err.error;
+        }
+        var errorEl = logContainer.querySelector('.session-log__input-error');
+        if (errorEl) {
+          errorEl.textContent = msg;
+          errorEl.setAttribute('aria-hidden', 'false');
+        }
+        // Do NOT clear the input — preserve the user's text for retry
+      });
+  }
+
   // --- Session Timer ---
 
   function startSessionTimer(projectId) {
@@ -1686,6 +1828,13 @@
     var d = new Date(dateStr);
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+
+  function renderMarkdown(str) {
+    if (typeof marked !== 'undefined' && marked.parse) {
+      try { return marked.parse(str); } catch (e) { /* fall through */ }
+    }
+    return escapeHTML(str);
   }
 
   function escapeHTML(str) {
@@ -2484,6 +2633,15 @@
       return;
     }
 
+    // Send message button (CEO response input)
+    var sendBtn = e.target.closest('.session-log__send-btn');
+    if (sendBtn && !sendBtn.disabled) {
+      var card = sendBtn.closest('.project-card');
+      var id = card.getAttribute('data-project-id');
+      handleSendMessage(id);
+      return;
+    }
+
     // Add note button
     var addNoteBtn = e.target.closest('.detail__notes-add-btn');
     if (addNoteBtn) {
@@ -2505,13 +2663,31 @@
     }
   });
 
-  // Enter key on notes input
+  // Enter key on notes input and session message input
   listContainer.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && e.target.classList.contains('detail__notes-input')) {
       e.preventDefault();
       var card = e.target.closest('.project-card');
       var id = card.getAttribute('data-project-id');
       handleAddNote(id);
+    }
+    if (e.key === 'Enter' && e.target.classList.contains('session-log__input')) {
+      e.preventDefault();
+      var card = e.target.closest('.project-card');
+      var id = card.getAttribute('data-project-id');
+      handleSendMessage(id);
+    }
+  });
+
+  // Enable/disable send button based on input content
+  listContainer.addEventListener('input', function (e) {
+    if (e.target.classList.contains('session-log__input')) {
+      var card = e.target.closest('.project-card');
+      if (!card) return;
+      var sendBtn = card.querySelector('.session-log__send-btn');
+      if (sendBtn) {
+        sendBtn.disabled = !e.target.value.trim();
+      }
     }
   });
 

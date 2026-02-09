@@ -1,0 +1,15 @@
+{
+  "id": "7726b222-f868-48bb-9a46-a31fd4b3e99e",
+  "name": "Podcast Show Notes Tool — Competitive Scan",
+  "description": "Quick competitive scan of the podcast show notes tool market. Identify top 5 competitors, pricing models, feature sets, and gaps an indie-focused pay-per-episode tool could exploit.",
+  "status": "in-progress",
+  "createdAt": "2026-02-09T21:00:00.000Z",
+  "updatedAt": "2026-02-09T20:52:34.633Z",
+  "completedAt": null,
+  "goals": "Validate whether there's a viable gap in the podcast show notes market for a simple, pay-per-episode indie-focused tool.",
+  "constraints": "Research only — no build. 5 competitors max. Enough to act on, not an exhaustive landscape.",
+  "brief": "Quick competitive scan of the podcast show notes tool market — identify top 5 competitors, their pricing models, feature sets, and gaps an indie-focused tool could exploit.\n\nOwner: Suki\nPriority: high\nSource: Custom Meeting #3",
+  "notes": [],
+  "kickoffPrompt": "You have a new project to work on.\n\n## Project: Podcast Show Notes Tool — Competitive Scan\n\n**Description:** Quick competitive scan of the podcast show notes tool market. Identify top 5 competitors, pricing models, feature sets, and gaps an indie-focused pay-per-episode tool could exploit.\n\n**Goals:**\nValidate whether there's a viable gap in the podcast show notes market for a simple, pay-per-episode indie-focused tool.\n\n**Constraints:**\nResearch only — no build. 5 competitors max. Enough to act on, not an exhaustive landscape.\n\n**Brief:**\nQuick competitive scan of the podcast show notes tool market — identify top 5 competitors, their pricing models, feature sets, and gaps an indie-focused tool could exploit.\n\nOwner: Suki\nPriority: high\nSource: Custom Meeting #3\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
+  "activeSessionId": "502920e5-6b99-4d98-97ba-7f88a355e7dd"
+}

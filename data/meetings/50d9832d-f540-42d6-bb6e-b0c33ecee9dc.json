@@ -1,0 +1,242 @@
+{
+  "id": "50d9832d-f540-42d6-bb6e-b0c33ecee9dc",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 4,
+  "scheduledAt": null,
+  "startedAt": "2026-02-09T20:35:52.987Z",
+  "completedAt": "2026-02-09T20:37:50.516Z",
+  "durationMs": 117528,
+  "error": null,
+  "summary": "The team debriefed on the custom meetings feature pipeline, discussing what worked well (clean handoffs, parallel FE/BE builds, extend-don't-rebuild architecture) and what could improve (design spec detail for JS-heavy features, earlier API contract alignment, and tighter QA integration from the start). The conversation surfaced concrete process improvements around design specs for interactive components and the need for a lightweight API contract template.",
+  "keyTakeaways": [
+    "The extend-don't-rebuild architecture decision saved significant time — Andrei's approach of adding custom type alongside charter/weekly using the same execution path kept the scope tight and avoided rework.",
+    "Parallel FE/BE builds worked well because the API contract was clear, but the team agreed that contract alignment should happen earlier and more formally — a lightweight template would help.",
+    "Robert's design spec was strong on visual details but light on JS interaction behavior — for features with significant client-side logic, the spec needs interaction state machines or flow diagrams, not just CSS values.",
+    "Alice's full JS rewrite of meetings.js was the riskiest part of the project — the team should flag full-file rewrites earlier so QA can plan regression testing accordingly.",
+    "The pipeline completed without major blockers, validating the PM → Arch → Designer → FE/BE parallel → Design Review → QA sequence for features that extend existing systems."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's get into it. The CEO wants a debrief on the custom meetings feature — what went well in the pipeline, what we'd improve. I'll keep this tight. Let's go around and each speak from our own experience, then we'll discuss. I'll start: from the PM side, scoping this was straightforward. The requirements were clean — one new meeting type, participant selection, instructions field, same output format. I was happy with how small we kept v1. No recurring meetings, no templates, no preset groups. That discipline paid off."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Agreed on the scope discipline. From my end, the key decision was extend-don't-rebuild. The existing meeting runner, prompt builder, context loader — all of it was well-structured enough that we could add 'custom' as a third type alongside charter and weekly without touching the core execution path. Six server files changed, zero new infrastructure. That's the kind of project I like."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I had the opposite experience, actually. The backend extension was clean, sure. But on the frontend, I ended up doing a full rewrite of meetings.js. The existing code wasn't structured to handle a creation form, participant selection state, dynamic button behavior — it was built for two static meeting types. So 'extend' on the backend meant 'rewrite' on the frontend."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a good point. Did the scope of that rewrite surprise you, or did you see it coming from the specs?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I saw it coming once I read the existing code. But I think we could have flagged it earlier. When Andrei's tech approach said 'extend existing files,' I don't think anyone realized how much the JS file would need to change. The HTML and CSS were true extensions — add a form, add some styles. The JS was a different story. Four files total, but meetings.js was basically ground-up."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'll take some responsibility there. My design spec was detailed on the visual side — the participant grid, the avatar display on cards, the creation form layout, the indigo color for the new button. But I didn't spec the interaction state machine thoroughly enough. The toggle behavior between 'New Meeting' and 'Cancel,' the form validation flow, the disabled states during a running meeting — those were described, but not with the rigor Alice needed for a full JS rewrite."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Right. Your CSS values were precise — I could implement the visual layer without guessing. But the behavior layer was more like guidelines than a spec. I had to make judgment calls on things like: what happens if a meeting finishes while the form is open? Do we auto-collapse? Do we re-enable the button immediately? I figured it out, but those are the kinds of things that can drift from intent."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "And those are exactly the things I have to test. If Alice is making judgment calls on interaction behavior, I'm validating against acceptance criteria that might not cover those cases. I had to go back to the requirements doc several times to figure out what the 'correct' behavior was supposed to be for edge cases."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair criticism. My acceptance criteria covered the core flows — create a meeting, select participants, run it, see results. But I didn't write criteria for the interaction edge cases Enzo's describing. That's a gap."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I think the fix is straightforward. For features that have significant client-side interactivity — not just display components, but things with forms, state transitions, conditional UI — my design spec should include an interaction flow diagram. Not a formal state machine, but something like: 'User clicks New Meeting → form appears, button becomes Cancel, other run buttons disabled. User clicks Cancel → form collapses, buttons re-enable.' Step by step, every branch."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That would have helped me too. When I wrote the tech approach, I focused on the server-side changes because that's where the architectural decisions were. But I should have called out that the frontend was a bigger lift than the backend. I saw the existing meetings.js — I knew it was tightly coupled to two meeting types. I should have flagged that the frontend 'extension' was really a rewrite."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Don't beat yourself up. I handled it fine. But yeah, a heads-up in the tech approach like 'frontend JS will require significant restructuring to support dynamic meeting types' would have helped me estimate better and would have told Enzo to plan for regression testing on all meeting types, not just the new one."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Exactly. When I saw 'extend existing meeting system,' I planned my test cases around the new custom type. But Alice rewrote the JS that handles charter and weekly meetings too. I caught that and expanded my regression testing, but it would have been better to know upfront. I should be planning test scope from the tech approach, not discovering it when I read the diff."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Okay, that's a clear action item. Andrei, when the tech approach identifies a file that needs significant restructuring versus a simple extension, call it out explicitly. And Enzo, you should be reading the tech approach doc, not just the requirements."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I already do read it. But the tech approach said 'extend' — the signal wasn't there. If Andrei flags restructuring risk, I'll plan accordingly."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Let's talk about what went well. The parallel FE/BE build — how did that go? Jonah's not here, but Alice, did the API contract work?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "It worked well. The contract was clear from Andrei's tech approach — the RunMeetingSchema with participants array and instructions string, the same SSE streaming response. Jonah built to that contract, I built to that contract, and when we integrated, it just worked. No surprises."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That's the benefit of extending an existing system. The contract was already proven for charter and weekly — we just added two optional fields. If this had been a net-new API, we'd have needed a more formal contract alignment session between Alice and Jonah. For extensions, the tech approach doc was sufficient."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "The design review step went smoothly too. Alice's implementation matched the visual spec closely — the participant grid, the avatar sizing on cards, the indigo button. The only thing I flagged was a small spacing issue on the creation form. One round of review, one small fix, done. That's how it should work."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "From QA, I'll say: the structured output format being identical for all meeting types made my job easier. I could validate custom meeting output against the same schema as charter and weekly. The 18-agent participant roster worked, the 2-6 participant constraint was enforced. The core feature was solid."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So let me summarize what I'm hearing. Three things went well: tight v1 scope, clean extend-don't-rebuild architecture on the backend, and the parallel build with a clear API contract. Three things to improve: design specs need interaction flow diagrams for JS-heavy features, the tech approach should flag restructuring risk explicitly, and acceptance criteria should cover interaction edge cases, not just core flows."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'd add one more positive: the 18-agent roster display. We had to figure out how to show all agents in a selectable grid without it feeling overwhelming. The 6-column grid with small avatars and names worked — it's scannable and fast. That's a reusable pattern now. Any future feature that needs agent selection can use the same grid."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Agreed. I built that grid to be reusable. If we need agent selection anywhere else — task assignment, team composition for a new project — the pattern is there."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That's exactly the compounding toolkit philosophy. Build it once, reuse it forever. I'd like to document that pattern in team memory so the next project that needs agent selection doesn't start from scratch."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good call. Alice, can you write that up as a reusable pattern? And Andrei, add it to team memory. Let's also make the process improvements concrete. Robert, you'll add interaction flow diagrams to your design spec template for interactive features. Andrei, you'll flag restructuring risk in tech approaches. And I'll expand my acceptance criteria to cover interaction edge cases. Enzo, anything else from your end?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "One thing. I'd like to be looped in earlier on projects that involve full-file rewrites. Not to start testing — just to start planning. If I know Alice is rewriting meetings.js, I can prepare regression test cases for charter and weekly meetings before the code even lands. Right now I'm reactive. I'd rather be proactive."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's reasonable. When the tech approach identifies a significant rewrite, I'll flag it to you so you can start planning. Doesn't change the pipeline order — you still test last — but you get the heads-up early. Alright, I think we've got a clean set of action items. Good retro, everyone. The feature shipped clean and the pipeline held. Let's make the next one even smoother."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Design specs for JS-heavy features will include interaction flow diagrams covering all state transitions and edge cases, not just visual specifications.",
+      "rationale": "Alice had to make judgment calls on interaction behavior that wasn't specified, and Enzo had difficulty validating edge cases against incomplete acceptance criteria. Adding interaction flows to the design spec closes this gap for features with significant client-side logic.",
+      "participants": [
+        "Robert",
+        "Alice",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Tech approach documents will explicitly flag files requiring significant restructuring versus simple extension, distinguishing 'extend' from 'rewrite' risk.",
+      "rationale": "Andrei's tech approach described the frontend work as 'extending existing files,' but Alice ended up doing a full rewrite of meetings.js. This misled both Alice's estimation and Enzo's test planning. Explicit restructuring flags would set accurate expectations across the team.",
+      "participants": [
+        "Andrei",
+        "Alice",
+        "Enzo",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "The 18-agent participant selection grid is now a documented reusable pattern available for future features requiring agent selection.",
+      "rationale": "The 6-column avatar grid with selection state was purpose-built for custom meetings but is generic enough to reuse for task assignment, team composition, or any feature needing agent selection. Documenting it as a pattern compounds the team's toolkit.",
+      "participants": [
+        "Alice",
+        "Robert",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Enzo will receive early notification when the tech approach identifies full-file rewrites, allowing QA test planning to begin before implementation is complete.",
+      "rationale": "Enzo discovered the meetings.js rewrite only when reviewing the diff, forcing reactive regression planning. Early notification lets him prepare regression test cases for affected features proactively without changing the pipeline order.",
+      "participants": [
+        "Enzo",
+        "Thomas",
+        "Andrei"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Robert",
+      "description": "Add interaction flow diagrams to the design spec template for features with significant client-side interactivity — document all state transitions, conditional UI, and edge case behaviors, not just visual specs.",
+      "priority": "high"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Update tech approach writing practice to explicitly flag files requiring significant restructuring versus simple extension, with a note on downstream impact for QA test planning.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Expand acceptance criteria template to cover interaction edge cases (form state during async operations, disabled states, error recovery) in addition to core user flows.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Alice",
+      "description": "Document the 18-agent participant selection grid as a reusable component pattern, including the 6-column layout, selection state management, and avatar sizing.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Record the agent selection grid pattern in team memory so future projects can discover and reuse it.",
+      "priority": "low"
+    },
+    {
+      "owner": "Thomas",
+      "description": "When the tech approach identifies a significant file rewrite, notify Enzo early so he can begin regression test planning before implementation is complete.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Constructive and self-aware",
+  "nextMeetingTopics": [
+    "Review whether interaction flow diagrams in design specs are working for the next JS-heavy feature",
+    "Check if the agent selection grid pattern was reused in any new features",
+    "Evaluate whether early QA notification on file rewrites improved test planning",
+    "Assess if restructuring risk flags in tech approaches set accurate expectations"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "frontend-developer",
+    "product-designer",
+    "qa"
+  ],
+  "instructions": "Debrief on the custom meetings feature we just shipped. What went well in the pipeline? What would you improve for next time? Each person should speak from their own experience on this project."
+}

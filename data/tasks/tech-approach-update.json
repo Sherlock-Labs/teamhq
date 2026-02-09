@@ -1,0 +1,89 @@
+{
+  "id": "tech-approach-update",
+  "name": "Tech Approach Update — Change Impact Classification",
+  "description": "Update tech approach writing practice to explicitly flag files requiring significant restructuring versus simple extension, with a note on downstream impact for QA test planning. Originated from Custom Meeting #4 action item.",
+  "status": "completed",
+  "tasks": [
+    {
+      "title": "Scoped requirements for tech approach update",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read Custom Meeting #4 transcript and action items to understand the problem",
+        "Reviewed 4 existing tech approach docs (custom-meetings, sherlockpdf, task-history, redesign) to understand current format and patterns",
+        "Reviewed Andrei's agent definition, Enzo's agent definition, QA test plan skill, project kickoff skill, and code review skill",
+        "Defined three-level change impact classification: Extend, Modify, Restructure",
+        "Specified QA impact notes requirement for restructured files",
+        "Wrote acceptance criteria covering agent definition update, QA skill update, and project kickoff skill update",
+        "Determined lightweight pipeline: PM (requirements) -> Andrei (implementation) -> Enzo (review)",
+        "Scoped out retroactive updates to past tech approach docs and formal template creation"
+      ],
+      "filesChanged": [
+        "docs/tech-approach-update-requirements.md",
+        "data/tasks/tech-approach-update.json"
+      ],
+      "decisions": [
+        "Three classification levels (Extend/Modify/Restructure) — minimal overhead, one word per file",
+        "QA impact notes only required for Restructure, not for Extend or Modify — keeps it lightweight",
+        "No formal tech approach template file — Andrei's flexibility in doc structure is valuable, we just add a required section",
+        "Lightweight pipeline: PM -> Arch -> QA review. No design, no FE/BE, no design review needed for a process update",
+        "Enzo reviews to confirm the QA integration is useful from a tester's perspective"
+      ]
+    },
+    {
+      "title": "Implement change impact classification in agent definition and skill docs",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Read requirements doc, agent definition, QA test plan skill, and project kickoff skill to understand current state",
+        "Added 'Change Impact Classification' section to technical-architect.md with three-level table (Extend/Modify/Restructure) including definitions and regression risk levels",
+        "Added 'QA Impact Notes' subsection requiring impact notes for Restructure-classified files with a concrete example from the custom meetings project",
+        "Added 'How to Classify' subsection with practical guidance and a litmus test for the Modify vs Restructure boundary",
+        "Added bullet point in 'How You Work' linking to the new classification section",
+        "Added two new self-review checklist items: file change type classification and QA impact notes for Restructure files",
+        "Updated QA test plan skill procedure to include checking tech approach for change impact classifications as step 3",
+        "Added 'Using Change Impact Classifications' section to QA test plan skill with per-level testing guidance and instruction to add a Regression section for Restructure files",
+        "Updated project kickoff 'What Each Agent Reads and Produces' table — Andrei's row notes classifications, Enzo's row emphasizes reading tech approach for restructuring flags",
+        "Added Notes section to project kickoff skill explaining the change impact classification practice"
+      ],
+      "filesChanged": [
+        ".claude/agents/technical-architect.md",
+        "skills/workflow/qa-test-plan.md",
+        "skills/workflow/project-kickoff.md",
+        "data/tasks/tech-approach-update.json"
+      ],
+      "decisions": [
+        "Placed Change Impact Classification as its own top-level section rather than burying it inside 'How You Work' — it's a significant enough practice to warrant visibility and easy reference",
+        "Included a concrete example from the custom meetings project (meetings.js restructure) since that's the incident that motivated this change — makes it real and memorable",
+        "Added a practical litmus test for Modify vs Restructure boundary ('would a developer be surprised?') rather than relying purely on abstract definitions",
+        "In the QA test plan skill, added classifications as step 3 in the procedure (after reading requirements and design spec) rather than as a separate disconnected section — integrates naturally into Enzo's existing workflow",
+        "Suggested Enzo add a 'Regression (Restructured Files)' section to test plans rather than prescribing a rigid format — respects Thomas's scope decision that how Enzo uses the input is his call"
+      ]
+    },
+    {
+      "title": "Review change impact classification for QA usefulness",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Read requirements doc (docs/tech-approach-update-requirements.md) to understand all four acceptance criteria",
+        "Reviewed Andrei's updated agent definition — confirmed Change Impact Classification section with three-level table, QA Impact Notes subsection, How to Classify guidance, and two new self-review checklist items",
+        "Verified the Modify vs Restructure boundary is practical — the 'would a developer be surprised?' litmus test addresses the exact ambiguity that caused the custom meetings issue",
+        "Reviewed QA test plan skill — confirmed step 3 added to procedure for checking classifications, and new 'Using Change Impact Classifications' section with per-level testing guidance",
+        "Reviewed project kickoff skill — confirmed Andrei's row notes classifications in output, Enzo's row emphasizes reading tech approach for restructuring flags, and Notes section explains the full practice",
+        "Assessed QA integration usefulness from a tester's perspective — classifications give me the upfront signal I need to plan regression testing proactively instead of discovering restructuring risk from diffs",
+        "Checked all four acceptance criteria (AC1-AC4) — all sub-criteria met"
+      ],
+      "filesChanged": [
+        "data/tasks/tech-approach-update.json"
+      ],
+      "decisions": [
+        "PASS verdict — all acceptance criteria met, classifications are clear and unambiguous, QA integration is genuinely useful and fits naturally into existing workflow",
+        "No issues found — the implementation is well-scoped, respects the out-of-scope boundaries, and solves the actual problem from the custom meetings project"
+      ]
+    }
+  ]
+}

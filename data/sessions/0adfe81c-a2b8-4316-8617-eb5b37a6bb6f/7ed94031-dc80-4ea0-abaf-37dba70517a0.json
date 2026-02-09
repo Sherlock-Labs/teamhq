@@ -1,0 +1,15 @@
+{
+  "id": "7ed94031-dc80-4ea0-abaf-37dba70517a0",
+  "projectId": "0adfe81c-a2b8-4316-8617-eb5b37a6bb6f",
+  "status": "timed-out",
+  "startedAt": "2026-02-09T20:38:17.949Z",
+  "endedAt": "2026-02-09T21:15:43.120Z",
+  "durationMs": 2245171,
+  "eventCount": 80,
+  "exitCode": null,
+  "error": null,
+  "pid": null,
+  "cliSessionId": "155a0f7a-b155-4302-89a8-cff5a1dbdbbf",
+  "turnCount": 1,
+  "state": "ended"
+}
