@@ -1,4 +1,5 @@
 import { Router, type Request, type Response } from "express";
+import type Stripe from "stripe";
 import { stripe, getPriceId } from "../stripe.js";
 
 const router = Router();
@@ -17,7 +18,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     const clientUrl = process.env.CLIENT_URL || "http://localhost:3003";
 
-    const sessionParams: Parameters<typeof stripe.checkout.sessions.create>[0] = {
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: "subscription",
       line_items: [{ price: getPriceId(priceId), quantity: 1 }],
       automatic_tax: { enabled: true },

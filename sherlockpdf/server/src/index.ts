@@ -1,11 +1,14 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import checkoutRoutes from "./routes/checkout.js";
 import statusRoutes from "./routes/status.js";
 import portalRoutes from "./routes/portal.js";
 import webhookRoutes from "./routes/webhook.js";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = parseInt(process.env.PORT || "3003", 10);
 const CLIENT_URL = process.env.CLIENT_URL || "https://pdf.sherlocklabs.ai";
@@ -37,7 +40,13 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
+// Serve static frontend (parent directory: sherlockpdf/)
+const staticRoot = path.resolve(__dirname, "../../");
+app.use(express.static(staticRoot));
+app.get("/{*splat}", (_req, res) => {
+  res.sendFile(path.join(staticRoot, "index.html"));
+});
+
 app.listen(PORT, () => {
-  console.log(`SherlockPDF API server running on http://localhost:${PORT}`);
-  console.log(`Accepting requests from: ${CLIENT_URL}`);
+  console.log(`SherlockPDF running on http://localhost:${PORT}`);
 });
