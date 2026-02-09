@@ -57,6 +57,7 @@ export async function migrateFromTasksJson(): Promise<void> {
     const completedAt = parseCompletedDate(legacy.completedDate);
     const project: Project = {
       id: legacy.id,
+      slug: null,
       name: legacy.name,
       description: legacy.description,
       status: mapStatus(legacy.status),
@@ -69,6 +70,7 @@ export async function migrateFromTasksJson(): Promise<void> {
       notes: [],
       kickoffPrompt: null,
       activeSessionId: null,
+      pipeline: { tasks: [] },
     };
     await saveProjectDirect(project);
     console.log(`Migration: created project "${project.name}" (${project.id})`);

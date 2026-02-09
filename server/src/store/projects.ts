@@ -1,10 +1,58 @@
 import { readFile, writeFile, readdir, mkdir, unlink } from "node:fs/promises";
 import { join } from "node:path";
+import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
-import { ProjectSchema } from "../schemas/project.js";
+import { ProjectSchema, PipelineTaskSchema } from "../schemas/project.js";
 import type { Project, Note } from "../schemas/project.js";
 
 const DATA_DIR = join(import.meta.dirname, "../../../data/projects");
+const TASKS_DIR = join(import.meta.dirname, "../../../data/tasks");
+
+// --- Slug utility ---
+
+export function toSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")   // non-alphanumeric -> hyphen
+    .replace(/^-+|-+$/g, "")        // trim leading/trailing hyphens
+    .slice(0, 80);                   // reasonable max length
+}
+
+// --- Tasks file schema for merge-on-read ---
+
+const TasksFileSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().optional().default(""),
+  status: z.string().optional().default("planned"),
+  completedDate: z.string().optional(),
+  tasks: z.array(PipelineTaskSchema).default([]),
+});
+
+// --- Merge-on-read ---
+
+async function mergeTasksPipeline(project: Project): Promise<Project> {
+  if (!project.slug) return project;
+
+  try {
+    const tasksPath = join(TASKS_DIR, `${project.slug}.json`);
+    const raw = await readFile(tasksPath, "utf-8");
+    const tasksFile = TasksFileSchema.parse(JSON.parse(raw));
+
+    if (tasksFile.tasks.length > 0) {
+      // External file takes precedence (R2: source of truth for agent-written data)
+      return {
+        ...project,
+        pipeline: { tasks: tasksFile.tasks },
+      };
+    }
+  } catch {
+    // No matching tasks file or parse error — return project unchanged
+  }
+
+  return project;
+}
 
 async function ensureDir(): Promise<void> {
   await mkdir(DATA_DIR, { recursive: true });
@@ -16,6 +64,7 @@ function projectPath(id: string): string {
 
 export async function createProject(data: {
   name: string;
+  slug?: string;
   description: string;
   status: Project["status"];
   goals: string;
@@ -26,6 +75,7 @@ export async function createProject(data: {
   const now = new Date().toISOString();
   const project: Project = {
     id: uuidv4(),
+    slug: data.slug ?? toSlug(data.name),
     name: data.name,
     description: data.description,
     status: data.status,
@@ -38,6 +88,7 @@ export async function createProject(data: {
     notes: [],
     kickoffPrompt: null,
     activeSessionId: null,
+    pipeline: { tasks: [] },
   };
   await writeFile(projectPath(project.id), JSON.stringify(project, null, 2));
   return project;
@@ -45,7 +96,8 @@ export async function createProject(data: {
 
 export async function getProject(id: string): Promise<Project> {
   const raw = await readFile(projectPath(id), "utf-8");
-  return ProjectSchema.parse(JSON.parse(raw));
+  const project = ProjectSchema.parse(JSON.parse(raw));
+  return mergeTasksPipeline(project);
 }
 
 export async function updateProject(
@@ -150,7 +202,8 @@ export async function listProjects(): Promise<Project[]> {
     if (!file.endsWith(".json")) continue;
     try {
       const raw = await readFile(join(DATA_DIR, file), "utf-8");
-      projects.push(ProjectSchema.parse(JSON.parse(raw)));
+      const project = ProjectSchema.parse(JSON.parse(raw));
+      projects.push(await mergeTasksPipeline(project));
     } catch {
       // skip corrupt files
     }

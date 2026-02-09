@@ -35,7 +35,6 @@
       <div class="nav__links">
         <a href="#tools" class="nav__link">Tools</a>
         <a href="#projects" class="nav__link">Projects</a>
-        <a href="#portfolio" class="nav__link">Portfolio</a>
         <a href="#meetings" class="nav__link">Meetings</a>
         <a href="docs.html" class="nav__link">Docs</a>
         <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
@@ -110,6 +109,7 @@
           <p class="projects__subtitle">Create and manage projects.</p>
           <button class="projects__new-btn" type="button">+ New Project</button>
         </div>
+        <div class="projects__stats" id="projects-stats" aria-label="Project summary statistics"></div>
         <div id="projects-list">
           <noscript>
             <p class="projects__noscript">Enable JavaScript to manage projects.</p>
@@ -218,22 +218,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Portfolio -->
-    <section class="portfolio" id="portfolio" aria-labelledby="portfolio-heading">
-      <div class="container">
-        <h2 id="portfolio-heading" class="section-title">Portfolio</h2>
-        <p class="section-subtitle">What the team has shipped.</p>
-
-        <div class="portfolio__stats" id="portfolio-stats" aria-label="Portfolio summary statistics"></div>
-
-        <div class="portfolio__list" id="portfolio-list">
-          <noscript>
-            <p class="portfolio__noscript">Enable JavaScript to view the portfolio.</p>
-          </noscript>
-        </div>
-      </div>
-    </section>
 
     <!-- Meetings -->
     <section class="meetings" id="meetings" aria-labelledby="meetings-heading">
@@ -496,7 +480,6 @@
   <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js"></script>
   <script src="js/spreadsheet.js" defer></script>
   <script src="js/projects.js" defer></script>
-  <script src="js/portfolio.js" defer></script>
   <script src="js/meetings.js" defer></script>
   <script src="js/roster.js" defer></script>
 </body>

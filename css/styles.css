@@ -43,7 +43,6 @@ body {
 
 #tools-heading::before,
 #projects-heading::before,
-#portfolio-heading::before,
 #meetings-heading::before,
 #roster-heading::before,
 #how-heading::before {
@@ -54,7 +53,6 @@ body {
 
 .tools,
 .projects,
-.portfolio,
 .meetings,
 .roster,
 .how-it-works {
@@ -4387,41 +4385,17 @@ body {
 }
 
 /* ===========================
-   Portfolio Section
+   Project Stats Row (consolidated from Portfolio)
    =========================== */
 
-.portfolio {
-  background: var(--color-bg-primary);
-  padding-top: var(--space-8);
-  padding-bottom: var(--space-8);
-}
-
-@media (min-width: 1024px) {
-  .portfolio {
-    padding-top: var(--space-12);
-    padding-bottom: var(--space-12);
-  }
-}
-
-.portfolio__empty,
-.portfolio__error,
-.portfolio__noscript {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  text-align: center;
-  padding: var(--space-8) 0;
-}
-
-/* --- Stats Row --- */
-
-.portfolio__stats {
+.projects__stats {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
   margin-bottom: var(--space-6);
 }
 
-.portfolio__stat {
+.projects__stat {
   flex: 1 1 auto;
   min-width: 100px;
   padding: var(--space-4);
@@ -4430,7 +4404,7 @@ body {
   background: var(--color-bg-card);
 }
 
-.portfolio__stat-value {
+.projects__stat-value {
   font-size: var(--text-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
@@ -4438,7 +4412,7 @@ body {
   margin-bottom: var(--space-1);
 }
 
-.portfolio__stat-label {
+.projects__stat-label {
   font-size: var(--text-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-tertiary);
@@ -4448,109 +4422,21 @@ body {
 
 /* Mobile: 2 per row */
 @media (max-width: 639px) {
-  .portfolio__stat {
+  .projects__stat {
     min-width: calc(50% - var(--space-4));
   }
 }
 
-/* --- Portfolio Card List --- */
+/* ===========================
+   Project Card — Avatar Cluster
+   =========================== */
 
-.portfolio__list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-/* --- Portfolio Card --- */
-
-.portfolio-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  transition: border-color 0.15s ease;
-}
-
-.portfolio-card:hover {
-  border-color: var(--color-accent);
-}
-
-/* Expanded card indicator */
-.portfolio-card:has(.portfolio-card__header[aria-expanded="true"]) {
-  border-left: 3px solid var(--color-accent);
-}
-
-/* --- Portfolio Card Header --- */
-
-.portfolio-card__header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-5);
-  width: 100%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  color: inherit;
-  font: inherit;
-}
-
-.portfolio-card__header:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-.portfolio-card__info {
-  flex: 1;
-  min-width: 0;
-}
-
-.portfolio-card__name {
-  font-size: var(--text-base);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-1);
-}
-
-.portfolio-card__desc {
-  font-size: var(--text-sm);
-  line-height: var(--leading-relaxed);
-  color: var(--color-text-secondary);
-}
-
-@media (max-width: 639px) {
-  .portfolio-card__desc {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-@media (min-width: 640px) {
-  .portfolio-card__desc {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: unset;
-  }
-}
-
-/* --- Portfolio Card Meta --- */
-
-.portfolio-card__meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-shrink: 0;
-}
-
-/* --- Agent Avatars --- */
-
-.portfolio-card__avatars {
+.project-card__avatars {
   display: flex;
   align-items: center;
 }
 
-.portfolio-card__avatar {
+.project-card__avatar {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -4558,11 +4444,11 @@ body {
   margin-left: -6px;
 }
 
-.portfolio-card__avatar:first-child {
+.project-card__avatar:first-child {
   margin-left: 0;
 }
 
-.portfolio-card__avatar-overflow {
+.project-card__avatar-overflow {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -4578,85 +4464,34 @@ body {
 }
 
 @media (max-width: 639px) {
-  .portfolio-card__avatars {
+  .project-card__avatars {
     display: none;
   }
 }
 
-/* --- Portfolio Badge (reuses project-card badge treatment) --- */
+/* ===========================
+   Project Card — Pipeline Stat Counts
+   =========================== */
 
-.portfolio-card__badge {
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-medium);
-  padding: var(--space-1) var(--space-3);
-  border-radius: 9999px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-.portfolio-card__badge[data-status="completed"] {
-  color: var(--color-status-success);
-  background: rgba(var(--color-green-600-rgb), 0.10);
-}
-
-.portfolio-card__badge[data-status="in-progress"] {
-  color: var(--color-status-warning);
-  background: rgba(var(--color-warning-rgb), 0.10);
-}
-
-.portfolio-card__badge[data-status="planned"] {
-  color: var(--color-text-secondary);
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.portfolio-card__date {
+.project-card__pipeline-stats {
   font-size: var(--text-xs);
   color: var(--color-text-tertiary);
   white-space: nowrap;
 }
 
-/* --- Portfolio Card Chevron --- */
+/* ===========================
+   Pipeline Section (detail view)
+   =========================== */
 
-.portfolio-card__chevron {
-  flex-shrink: 0;
-  width: 12px;
-  height: 12px;
-  margin-left: var(--space-2);
-  border-right: 2px solid var(--color-neutral-400);
-  border-bottom: 2px solid var(--color-neutral-400);
-  transform: rotate(45deg);
-  transition: transform 0.3s ease;
-}
-
-.portfolio-card__header[aria-expanded="true"] .portfolio-card__chevron {
-  transform: rotate(-135deg);
-}
-
-/* --- Portfolio Card Details (Expand/Collapse) --- */
-
-.portfolio-card__details {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s ease;
-}
-
-.portfolio-card__details[aria-hidden="false"] {
-  grid-template-rows: 1fr;
-}
-
-.portfolio-card__details-inner {
-  overflow: hidden;
-}
-
-.portfolio-card__details[aria-hidden="false"] .portfolio-card__details-inner {
-  padding: var(--space-4) var(--space-5) var(--space-5);
+.pipeline__section {
+  padding-top: var(--space-5);
+  margin-top: var(--space-5);
   border-top: 1px solid var(--color-border);
 }
 
-/* --- Per-Project Metrics Row --- */
+/* --- Pipeline Metrics Row --- */
 
-.portfolio-card__metrics {
+.pipeline__metrics {
   display: flex;
   gap: var(--space-6);
   margin-bottom: var(--space-5);
@@ -4664,76 +4499,76 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 
-.portfolio-card__metric {
+.pipeline__metric {
   display: flex;
   align-items: baseline;
   gap: var(--space-1);
 }
 
-.portfolio-card__metric-value {
+.pipeline__metric-value {
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
-.portfolio-card__metric-label {
+.pipeline__metric-label {
   font-size: var(--text-xs);
   color: var(--color-text-tertiary);
 }
 
-/* --- Portfolio Card Task List --- */
+/* --- Pipeline Task List --- */
 
-.portfolio-card__task-list {
+.pipeline__task-list {
   /* Uses existing .task-item styles */
 }
 
-/* --- Contributors Summary --- */
+/* --- Pipeline Contributors Summary --- */
 
-.portfolio-card__contributors {
+.pipeline__contributors {
   padding-top: var(--space-4);
   margin-top: var(--space-4);
   border-top: 1px solid var(--color-border);
 }
 
-.portfolio-card__contributors-list {
+.pipeline__contributors-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
 }
 
-.portfolio-card__contributor {
+.pipeline__contributor {
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
-.portfolio-card__contributor-avatar {
+.pipeline__contributor-avatar {
   width: 20px;
   height: 20px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.portfolio-card__contributor-name {
+.pipeline__contributor-name {
   font-size: var(--text-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
 }
 
-.portfolio-card__contributor-summary {
+.pipeline__contributor-summary {
   font-size: var(--text-xs);
   color: var(--color-text-tertiary);
 }
 
-/* --- Key Decisions Rollup --- */
+/* --- Pipeline Key Decisions Rollup --- */
 
-.portfolio-card__decisions-rollup {
+.pipeline__decisions-rollup {
   padding-top: var(--space-4);
   margin-top: var(--space-4);
   border-top: 1px solid var(--color-border);
 }
 
-.portfolio-card__decisions-toggle {
+.pipeline__decisions-toggle {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -4747,18 +4582,18 @@ body {
   font: inherit;
 }
 
-.portfolio-card__decisions-toggle:focus-visible {
+.pipeline__decisions-toggle:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-.portfolio-card__decisions-toggle-text {
+.pipeline__decisions-toggle-text {
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
-.portfolio-card__decisions-toggle-chevron {
+.pipeline__decisions-toggle-chevron {
   flex-shrink: 0;
   width: 8px;
   height: 8px;
@@ -4768,33 +4603,33 @@ body {
   transition: transform 0.25s ease;
 }
 
-.portfolio-card__decisions-toggle[aria-expanded="true"] .portfolio-card__decisions-toggle-chevron {
+.pipeline__decisions-toggle[aria-expanded="true"] .pipeline__decisions-toggle-chevron {
   transform: rotate(-135deg);
 }
 
 /* Decisions content expand/collapse */
 
-.portfolio-card__decisions-content {
+.pipeline__decisions-content {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.25s ease;
 }
 
-.portfolio-card__decisions-content[aria-hidden="false"] {
+.pipeline__decisions-content[aria-hidden="false"] {
   grid-template-rows: 1fr;
 }
 
-.portfolio-card__decisions-content-inner {
+.pipeline__decisions-content-inner {
   overflow: hidden;
 }
 
-.portfolio-card__decisions-list {
+.pipeline__decisions-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.portfolio-card__decisions-list li {
+.pipeline__decisions-list li {
   position: relative;
   padding-left: var(--space-4);
   font-size: var(--text-xs);
@@ -4803,7 +4638,7 @@ body {
   margin-bottom: var(--space-2);
 }
 
-.portfolio-card__decisions-list li::before {
+.pipeline__decisions-list li::before {
   content: "";
   position: absolute;
   left: 4px;
@@ -4814,32 +4649,9 @@ body {
   border-radius: 2px;
 }
 
-.portfolio-card__decision-agent {
+.pipeline__decision-agent {
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
-}
-
-/* --- Responsive: Mobile card layout --- */
-
-@media (max-width: 639px) {
-  .portfolio-card__header {
-    flex-wrap: wrap;
-  }
-
-  .portfolio-card__info {
-    flex-basis: calc(100% - 32px);
-  }
-
-  .portfolio-card__meta {
-    flex-basis: 100%;
-    padding-top: var(--space-2);
-  }
-
-  .portfolio-card__chevron {
-    position: absolute;
-    right: var(--space-5);
-    top: var(--space-6);
-  }
 }
 
 /* --- Reduced Motion --- */
@@ -4847,7 +4659,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .tool-card,
   .project-card,
-  .portfolio-card,
   .agent-card,
   .meeting-card {
     transition: none;
@@ -4857,17 +4668,15 @@ body {
     transition: none;
   }
 
-  .project-card__chevron,
-  .portfolio-card__chevron {
+  .project-card__chevron {
     transition: none;
   }
 
-  .portfolio-card__details,
-  .portfolio-card__decisions-content {
+  .pipeline__decisions-content {
     transition: none;
   }
 
-  .portfolio-card__decisions-toggle-chevron {
+  .pipeline__decisions-toggle-chevron {
     transition: none;
   }
 

@@ -38,6 +38,195 @@
         "Conditional pipeline display — project cards and detail views only show pipeline elements (avatars, stats, task list, contributors, decisions) when pipeline.tasks is non-empty. New/planned projects stay clean and uncluttered.",
         "Stats row moves to Projects section — the aggregate stats currently at the top of Portfolio move to the top of the unified Projects section, computed from merged pipeline data across all projects."
       ]
+    },
+    {
+      "title": "Define technical approach for project consolidation",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Designed Zod schema extensions: PipelineTaskSchema, PipelineSchema, added slug (nullable, default null) and pipeline (default { tasks: [] }) to ProjectSchema with full backward compatibility via Zod defaults",
+        "Designed slug generation: toSlug() utility converts name to kebab-case, auto-generated on project creation, optional override via CreateProjectSchema, immutable after creation",
+        "Designed merge-on-read logic: mergeTasksPipeline() in store layer reads data/tasks/{slug}.json when slug is set, external file takes precedence over embedded pipeline.tasks, graceful no-op on missing files",
+        "Designed list endpoint changes: computePipelineStats() precomputes taskCount, fileCount, decisionCount, agents[] per project — list endpoint strips full pipeline.tasks and sends flat stats for card rendering",
+        "Designed detail endpoint: GET /api/projects/:id returns full pipeline.tasks array for the detail view pipeline section — no stripping",
+        "Designed migration script algorithm: scripts/migrate-projects.mjs matches by filename then by name, adds slug to existing projects, creates new project entries for tasks-only files, idempotent, logs summary",
+        "Mapped current data landscape: 4 slug-named projects (direct match), 5 UUID-named projects (match by name or skip), 10+ tasks-only files (create new project entries)",
+        "Defined frontend merge strategy: ~250-300 lines of pipeline rendering from portfolio.js moves into projects.js as prefixed functions, data fetching replaced by API calls, portfolio.js deleted",
+        "Defined CSS consolidation plan: task-item classes kept as-is, portfolio-card detail classes renamed to pipeline__ prefix, portfolio-card header classes deleted (replaced by project-card), stats classes renamed to projects__ prefix",
+        "Specified HTML changes: remove portfolio section, remove portfolio nav link, remove portfolio.js script tag, add projects__stats container",
+        "Defined two-phase implementation order: Jonah (schema, slug, merge-on-read, stats endpoint, migration) then Alice (HTML, stats row, card avatars, detail pipeline section, event handlers, CSS, delete portfolio.js)",
+        "Identified and mitigated 6 risks: projects.js complexity (self-contained block), slug mismatches (graceful degradation), stats performance (precomputed server-side), visual density (conditional display), migration data loss (additive only), meeting flow breakage (slug auto-generated on create)",
+        "Resolved 3 open questions from requirements: precomputed stats (yes), slug auto-generation (yes, kebab-case with override), tasks file cleanup (no, kept as agent write target)"
+      ],
+      "filesChanged": [
+        "docs/project-consolidation-tech-approach.md"
+      ],
+      "decisions": [
+        "Merge-on-read in the store layer, not the route layer — mergeTasksPipeline() is called from getProject() and listProjects() so all consumers (current and future routes) get merged data automatically without duplicating logic",
+        "External tasks file takes full precedence over embedded pipeline.tasks — when both exist, the external file replaces embedded data entirely. This keeps the external file as the single source of truth for agent-written pipeline data and avoids complex diff/merge logic",
+        "Precomputed pipeline stats on the list endpoint — the list response includes flat numbers (taskCount, fileCount, decisionCount, agents[]) instead of the full tasks array. This keeps the list payload lean and avoids N*M iteration on the frontend for card rendering",
+        "Slugs are nullable and immutable — nullable so UUID-only projects don't need a slug, immutable so the link to data/tasks/{slug}.json stays stable even if the project is renamed. This prevents orphaned task file references",
+        "CSS rename to pipeline__ prefix over keeping portfolio-card__ — cleaner namespace that reflects the new domain concept. The task-item classes are already generic and stay as-is since they're used identically in the new context",
+        "Single file (projects.js) over splitting into projects.js + projects-pipeline.js — avoids module coordination complexity for v1. The pipeline rendering is a self-contained block with clear function boundaries. Can be split in a follow-up if the file becomes unwieldy"
+      ]
+    },
+    {
+      "title": "Design spec for unified project section",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Studied existing Portfolio UI: stats row (6 metric cards), portfolio-card (header with avatar cluster, badge, chevron), expanded detail (metrics row, task items with nested accordion, contributors summary, key decisions rollup with toggle)",
+        "Studied existing Projects UI: project-card (header-row with summary, meta, actions, chevron), detail view (goals/constraints/brief, dates, session controls, session log, session history, progress notes, data section)",
+        "Studied design tokens: color tokens (accent, status, text hierarchy, agent identity), typography scale (xs through 5xl), spacing scale (space-1 through space-24), radius (4px uniform), shadows (minimal)",
+        "Designed summary stats row: 6 metric cards (Projects, Completed, Agents, Tasks, Files, Decisions) placed between toolbar and project list, flex layout with responsive wrapping (2-per-row on mobile, full row on desktop), renamed classes from portfolio__ to projects__",
+        "Designed unified project card: existing project card as base, conditional avatar cluster (max 5 + overflow) and pipeline stat counts (tasks, files) layered in .project-card__meta when pipeline data exists, avatar cluster hidden on mobile (<640px)",
+        "Designed unified detail view section order: Goals/Constraints/Brief -> Dates -> Session controls -> Session log -> Session history -> Pipeline section (NEW, conditional) -> Progress notes -> Data section",
+        "Designed pipeline section: .pipeline__section wrapper with top border separator, 'Pipeline' label using .detail__label style, metrics row (tasks/files/decisions), task list using existing .task-item components, contributors summary, key decisions rollup collapsed by default",
+        "Specified task item interaction: independently expandable nested accordion (button with aria-expanded), three optional detail subsections (subtasks, files changed as pills, decisions), non-expandable tasks rendered as div not button",
+        "Specified decisions rollup interaction: toggle button (aria-expanded, collapsed by default), CSS grid expand/collapse animation (grid-template-rows 0fr/1fr), chevron rotation",
+        "Designed transition treatment: clean removal of portfolio nav link, section, script tag, CSS heading rule, section divider — no redirect notices, no 'portfolio moved' banners",
+        "Designed empty states: no pipeline section for projects without pipeline data (no placeholder, no empty message), decisions rollup hidden when zero decisions, contributors hidden when zero subtasks and files",
+        "Specified responsive behavior: stats row 2-per-row on mobile, avatar cluster hidden <640px, pipeline metrics wrap naturally, contributors flex-wrap, task items already mobile-friendly",
+        "Specified accessibility: aria-label on stats container, aria-expanded/aria-hidden on all toggles, focus-visible outlines, keyboard activation via Enter/Space, status indicators with aria-label, noted color contrast consideration for --color-text-tertiary",
+        "Created full CSS class mapping table: 4 stats classes (portfolio__ -> projects__), 3 avatar classes (portfolio-card__ -> project-card__), 18 pipeline detail classes (portfolio-card__ -> pipeline__), task-item classes unchanged, 17 classes to delete",
+        "Defined 2 new CSS classes: .pipeline__section (wrapper with top border separator) and .project-card__pipeline-stats (inline stat text on card header)",
+        "Wrote 9-step implementation checklist for Alice: HTML changes -> stats row -> card enhancements -> detail pipeline section -> pipeline rendering functions -> event handlers -> CSS rename/add/delete -> delete portfolio.js -> visual parity check"
+      ],
+      "filesChanged": [
+        "docs/project-consolidation-design-spec.md"
+      ],
+      "decisions": [
+        "Additive layering over redesign — the project card gains pipeline elements conditionally rather than being redesigned. Projects without pipeline data look exactly as they do today. This minimizes risk and preserves the existing visual language.",
+        "Conditional visibility over empty states — when pipeline data does not exist, the Pipeline section is simply absent. No 'No pipeline data' placeholders, no 'Pipeline will appear when...' hints. Clean absence is better than noisy emptiness.",
+        "Pipeline section placement between session history and progress notes — reflects the information hierarchy: live session content (most time-sensitive) at top, structured pipeline history (retrospective) in middle, freeform notes (running log) at bottom.",
+        "Avatar cluster hidden on mobile (<640px) — the card header already wraps to multiple lines on mobile, and stacked avatars compete with status badge and date for limited horizontal space. Pipeline stat counts (small text) remain visible.",
+        "Task count and file count on card header, decision count omitted — card headers should be scannable. Two numbers (tasks, files) give a sense of scale without cluttering. Decision count is a detail-view concern and appears in the pipeline metrics row.",
+        "No transition notice for portfolio removal — the consolidation is a simplification, not a removal of functionality. All data appears in the Projects section. No 'Portfolio has moved' banner needed — it would draw attention to the scaffolding rather than the result."
+      ]
+    },
+    {
+      "title": "Implement backend schema, merge-on-read, pipeline stats, and migration script",
+      "agent": "Jonah",
+      "role": "Back-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Added PipelineTaskStatus, PipelineTaskSchema, PipelineSchema Zod types to server/src/schemas/project.ts with defaults on subtasks, filesChanged, decisions arrays",
+        "Added slug field (nullable string, default null) and pipeline field (default { tasks: [] }) to ProjectSchema — fully backward compatible via Zod defaults, existing project JSON files parse without modification",
+        "Added optional slug field to CreateProjectSchema for caller override",
+        "Exported PipelineTask and Pipeline TypeScript types from schema file",
+        "Added toSlug() utility function to store layer: lowercases, trims, replaces non-alphanumeric with hyphens, strips leading/trailing hyphens, caps at 80 chars",
+        "Added TasksFileSchema (lightweight Zod schema) for parsing data/tasks/{slug}.json files during merge-on-read",
+        "Implemented mergeTasksPipeline() async function: reads data/tasks/{slug}.json when project has a slug, replaces pipeline.tasks with external file's tasks array when non-empty, graceful no-op on missing files or parse errors",
+        "Updated createProject() to accept optional slug parameter, auto-generate from name via toSlug() when omitted, and include slug and pipeline fields in the created project object",
+        "Updated getProject() to call mergeTasksPipeline() after Zod parse — all consumers get merged pipeline data automatically",
+        "Updated listProjects() to call mergeTasksPipeline() for each project during iteration",
+        "Added computePipelineStats() helper to routes layer: precomputes taskCount, fileCount, decisionCount, and unique agents[] from pipeline.tasks array",
+        "Updated GET /api/projects list endpoint to strip full pipeline.tasks array and include precomputed pipeline stats (taskCount, fileCount, decisionCount, agents) for lean list payloads",
+        "Verified GET /api/projects/:id detail endpoint returns full pipeline.tasks array via getProject() — no stripping needed, merge-on-read handles it",
+        "Updated server/src/migrate.ts legacy migration to include slug: null and pipeline: { tasks: [] } fields for type consistency",
+        "Created scripts/migrate-projects.mjs: reads data/tasks/index.json, matches slugs to existing projects by filename then by name (case-insensitive), adds slug field to matched projects, creates new project entries for orphaned task files with sensible defaults",
+        "Migration script is idempotent (checks for existing slug before overwriting) and additive-only (never deletes files or removes fields)",
+        "Migration script logs detailed summary: updated count, matched-by-name count, created count, skipped count",
+        "Verified TypeScript compiles cleanly with npx tsc --noEmit — zero errors"
+      ],
+      "filesChanged": [
+        "server/src/schemas/project.ts",
+        "server/src/store/projects.ts",
+        "server/src/routes/projects.ts",
+        "server/src/migrate.ts",
+        "scripts/migrate-projects.mjs",
+        "data/tasks/project-consolidation.json"
+      ],
+      "decisions": [
+        "Exported toSlug() from the store layer — the migration script duplicates the algorithm (since it is a plain .mjs file that cannot import TypeScript), but the canonical implementation lives in the store for server-side use. Keeping the two in sync is low-risk since the algorithm is trivial and stable.",
+        "Used slug as project ID for newly created legacy entries in migration (e.g., id: 'ost-recommendation-redesign') instead of generating random UUIDs — more readable, and these are the legacy slug-ID projects that previously existed only in the tasks system. The merge-on-read uses the slug field for file lookup, not the id, so this is purely cosmetic.",
+        "TasksFileSchema uses z.string().optional().default() for description and status fields — task files in the wild have inconsistent shapes, and lenient parsing prevents migration failures on edge cases while still getting the data we need.",
+        "Pipeline stats computation happens in the route layer (computePipelineStats in routes/projects.ts) rather than the store layer — the store returns full Project objects with merged pipeline data, and the route decides what to strip for the list response. This keeps the store clean and the route in control of its payload shape."
+      ]
+    },
+    {
+      "title": "Implement frontend consolidation — merge portfolio into unified projects section",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Removed portfolio section (<section class='portfolio'>) from index.html including stats container, list container, and noscript fallback",
+        "Removed portfolio nav link (<a href='#portfolio'>) from navigation bar",
+        "Removed portfolio.js script tag from index.html",
+        "Added projects__stats container (#projects-stats) between toolbar and project list in the projects section",
+        "Implemented computePipelineStats() function that handles both precomputed flat stats (taskCount, fileCount, decisionCount, agents[]) from the list endpoint and full tasks array fallback",
+        "Implemented renderPipelineStatsRow() that renders 6 metric cards (Projects, Completed, Agents, Tasks, Files, Decisions) into the #projects-stats container, called after every renderList()",
+        "Updated renderCard() to include conditional avatar cluster (max 5 + overflow pill) and pipeline stat counts (tasks, files) in .project-card__meta when pipeline.taskCount > 0",
+        "Added pipelineGetAgents(), pipelineGetTaskCount(), pipelineGetFileCount() helper functions that handle both flat stats and full tasks array shapes from the API",
+        "Implemented renderPipelineSection() that renders the full pipeline block: 'Pipeline' label, metrics row, task list, contributors summary, and key decisions rollup",
+        "Implemented renderPipelineTaskItem() and renderPipelineTaskDetails() — ported from portfolio.js with pipeline- prefix, identical task-item markup using existing .task-item CSS classes",
+        "Implemented renderPipelineContributors() — renders contributor cards sorted by subtask count, hidden when all contributors have zero subtasks and zero files",
+        "Implemented renderPipelineDecisions() — renders collapsed-by-default key decisions rollup with toggle button, aria-expanded/aria-hidden states",
+        "Inserted pipeline section in renderDetailView() between session history container and progress notes, conditionally rendered only when pipeline.tasks is non-empty",
+        "Added delegated click handler for .pipeline__decisions-toggle — toggles aria-expanded and content visibility",
+        "Added delegated click handler for .pipeline__section .task-item__header — independently expandable nested accordion for pipeline task items",
+        "Updated mergeProjectSummary() to include pipeline field when merging list summary with full detail data",
+        "Renamed all portfolio CSS classes per Robert's mapping: portfolio__stats -> projects__stats, portfolio-card__avatar -> project-card__avatar, portfolio-card__metrics/contributors/decisions -> pipeline__*",
+        "Added new .pipeline__section CSS class (top border separator, padding) and .project-card__pipeline-stats class (xs text, tertiary color, nowrap)",
+        "Added .project-card__avatars, .project-card__avatar, .project-card__avatar-overflow CSS classes for card header avatar cluster with mobile hide (<640px)",
+        "Deleted 17 unused portfolio section/card CSS classes (.portfolio, .portfolio__list, .portfolio-card, .portfolio-card__header, etc.)",
+        "Removed #portfolio-heading::before from eyebrow labels rule and .portfolio from section dividers border-top rule",
+        "Updated reduced-motion media query: removed portfolio-card references, added pipeline__decisions-content and pipeline__decisions-toggle-chevron",
+        "Deleted js/portfolio.js after verifying no remaining references in HTML, JS, or CSS files"
+      ],
+      "filesChanged": [
+        "index.html",
+        "js/projects.js",
+        "css/styles.css",
+        "data/tasks/project-consolidation.json"
+      ],
+      "decisions": [
+        "Dual-format pipeline data handling — computePipelineStats and card helpers check for both flat precomputed stats (taskCount, fileCount, agents[]) and full tasks array. This lets the frontend work correctly whether the backend returns precomputed stats on the list endpoint or full pipeline data on the detail endpoint, and degrades gracefully if the backend merge-on-read isn't deployed yet.",
+        "Pipeline event handlers scoped to .pipeline__section — the task-item expand/collapse handler for pipeline tasks uses .pipeline__section .task-item__header as the selector to avoid collision with any future task-item usage outside the pipeline section. The decisions toggle uses the unique .pipeline__decisions-toggle class.",
+        "Self-contained pipeline rendering block — all pipeline functions are grouped in a clearly commented block (lines ~486-790) with pipeline- or renderPipeline- prefixes. They share no mutable state with session rendering, note rendering, or modal logic. This makes a future split into a separate file straightforward.",
+        "Stats row renders for any project count > 0, including when all pipeline values are 0 — matches Robert's spec that the stats row is visible whenever projects exist, even if no projects have pipeline data yet. The values simply read '0 Tasks' etc."
+      ]
+    },
+    {
+      "title": "Design review of project consolidation implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Verified stats row: 6 metrics (Projects, Completed, Agents, Tasks, Files, Decisions) in correct order, rendered into #projects-stats container with aria-label='Project summary statistics', hidden when zero projects, visible with correct classes (projects__stat, projects__stat-value, projects__stat-label)",
+        "Verified stats row CSS: flex wrap layout, gap var(--space-4), margin-bottom var(--space-6), stat cards with border/radius/background/padding matching spec, value 2xl bold primary line-height 1, label xs medium tertiary uppercase with letter-spacing 0.05em",
+        "Verified stats row responsive: mobile (<640px) min-width calc(50% - var(--space-4)) for 2-per-row layout, desktop all 6 in one row",
+        "Verified project card avatar cluster: conditional on pipeline.taskCount > 0, max 5 avatars with overflow pill (+N), correct classes (project-card__avatars, project-card__avatar, project-card__avatar-overflow), 24x24px circular with 2px white border, -6px negative margin stacking, first-child margin-left 0",
+        "Verified avatar overflow pill: 24x24px circle, background neutral-200, color text-secondary, font-size 10px, semibold weight, white border matching avatars",
+        "Verified avatar cluster hidden on mobile: @media (max-width: 639px) .project-card__avatars display: none",
+        "Verified pipeline stat counts on card: conditional on hasPipeline, shows 'N tasks  N files' format in .project-card__pipeline-stats span, placed in .project-card__meta between avatars and running indicator/badge, CSS is text-xs tertiary nowrap",
+        "Verified detail view section order: Goals/Constraints/Brief -> Dates -> Action area -> Session log container -> Session history container -> Pipeline section (conditional) -> Progress notes -> Data section — matches spec exactly",
+        "Verified pipeline section conditional rendering: only renders when project.pipeline && project.pipeline.tasks && project.pipeline.tasks.length > 0, no empty state message, no placeholder",
+        "Verified pipeline section wrapper: .pipeline__section with padding-top var(--space-5), margin-top var(--space-5), border-top 1px solid var(--color-border) — matches spec",
+        "Verified pipeline section header: 'Pipeline' label using .detail__label class (same style as 'Progress Notes' label) — matches spec",
+        "Verified pipeline metrics row: 3 metrics (tasks, files, decisions) with correct class hierarchy (pipeline__metrics, pipeline__metric, pipeline__metric-value, pipeline__metric-label), CSS flex layout with gap var(--space-6), bottom border separator",
+        "Verified task items: renderPipelineTaskItem uses existing .task-item classes, expandable items use button with aria-expanded, non-expandable use div, status dot with aria-label, chevron only on expandable items",
+        "Verified task item details: renderPipelineTaskDetails renders subtasks (ul), files changed (pills with task-item__file-pill), decisions (ul with square bullets), all wrapped in task-item__details with aria-hidden and CSS grid expand/collapse",
+        "Verified contributors summary: sorted by subtask count descending, hidden when all contributors have zero subtasks and zero files, correct pipeline__contributor classes with 20x20px avatar, name (xs medium primary), summary (xs tertiary), top border separator",
+        "Verified key decisions rollup: collapsed by default (aria-expanded='false', content aria-hidden='true'), toggle button with count in text ('Key Decisions (N)'), chevron rotation via CSS transform, CSS grid expand/collapse, focus-visible outline 2px accent, correct pipeline__decisions classes throughout",
+        "Verified reduced motion: pipeline__decisions-content and pipeline__decisions-toggle-chevron both have transition: none in @media (prefers-reduced-motion: reduce) block",
+        "Verified event delegation: pipeline decisions toggle handler toggles aria-expanded and sibling content aria-hidden, pipeline task item handler scoped to .pipeline__section .task-item__header for independent nested accordion",
+        "Verified transition treatment: portfolio section completely removed from index.html, portfolio nav link removed, portfolio.js script tag removed, portfolio.js file deleted, no redirect notices or transition banners",
+        "Verified CSS cleanup: zero occurrences of 'portfolio' in styles.css, #portfolio-heading::before removed from eyebrow rule, .portfolio removed from section dividers, all 17 deleted classes confirmed absent",
+        "Verified backend contract: computePipelineStats in routes/projects.ts returns taskCount, fileCount, decisionCount, agents[] — frontend computePipelineStats and card helpers handle both this flat format and full tasks array, mergeProjectSummary includes pipeline field",
+        "Verified schema: PipelineTaskSchema with title, agent, role, status (completed/in-progress/pending/skipped), subtasks[], filesChanged[], decisions[] with defaults, Pipeline wraps tasks array, ProjectSchema includes slug (nullable) and pipeline (default empty)"
+      ],
+      "filesChanged": [
+        "data/tasks/project-consolidation.json"
+      ],
+      "decisions": [
+        "PASS verdict — implementation matches design spec across all 10 review criteria. Stats row, project card enhancements, detail view pipeline section, CSS class mapping, portfolio removal, empty states, accessibility, responsive behavior, and reduced motion are all correctly implemented.",
+        "Minor observation: task-item subtask bullet color is var(--color-neutral-400) at 4x4px rather than the var(--color-accent) at 6x6px described in spec section 4. However, this is the existing behavior from portfolio.js and the spec explicitly states 'No visual changes to the task item itself' and lists all task-item classes as 'Unchanged (Reused As-Is)'. The implementation correctly preserves visual parity with the original portfolio rendering.",
+        "Minor observation: task-item__details transition (grid-template-rows 0.25s ease) is not included in the reduced-motion block. The spec states 'Already covered by existing reduced-motion rules' but it actually is not. This is a pre-existing gap inherited from the original portfolio code, not a regression introduced by this implementation. Recommend addressing as a follow-up accessibility fix across all grid-based expand/collapse transitions.",
+        "Minor observation: task-item__role color uses var(--color-accent) rather than var(--color-text-tertiary) as described in spec section 4. This is again the existing behavior from the original portfolio code — the task-item classes were preserved as-is per the spec's 'Unchanged' directive, maintaining exact visual parity."
+      ]
     }
   ]
 }

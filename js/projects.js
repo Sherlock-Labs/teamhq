@@ -293,9 +293,11 @@
           '<p class="projects__empty-text">No projects yet.</p>' +
           '<p class="projects__empty-hint">Click "New Project" to get started.</p>' +
         '</div>';
+      renderPipelineStatsRow([]);
       return;
     }
     listContainer.innerHTML = projects.map(renderCard).join('');
+    renderPipelineStatsRow(projects);
 
     // Re-expand if a card was expanded
     if (expandedId) {
@@ -316,6 +318,35 @@
     var statusLabel = formatStatus(project.status);
     var dateStr = formatDate(project);
 
+    // Pipeline data for card enhancements
+    var pl = project.pipeline;
+    var taskCount = pipelineGetTaskCount(pl);
+    var hasPipeline = taskCount > 0;
+
+    // Avatar cluster (max 5 + overflow)
+    var avatarsHTML = '';
+    if (hasPipeline) {
+      var agents = pipelineGetAgents(pl);
+      var maxAvatars = 5;
+      var shown = agents.slice(0, maxAvatars);
+      var overflow = agents.length - maxAvatars;
+
+      shown.forEach(function (name) {
+        avatarsHTML += '<img class="project-card__avatar" src="img/avatars/' + name + '.svg" alt="" width="24" height="24">';
+      });
+      if (overflow > 0) {
+        avatarsHTML += '<span class="project-card__avatar-overflow">+' + overflow + '</span>';
+      }
+      avatarsHTML = '<div class="project-card__avatars">' + avatarsHTML + '</div>';
+    }
+
+    // Pipeline stat counts
+    var pipelineStatsHTML = '';
+    if (hasPipeline) {
+      var fileCount = pipelineGetFileCount(pl);
+      pipelineStatsHTML = '<span class="project-card__pipeline-stats">' + taskCount + ' tasks  ' + fileCount + ' files</span>';
+    }
+
     return (
       '<article class="project-card" data-project-id="' + escapeAttr(project.id) + '">' +
         '<div class="project-card__header-row">' +
@@ -325,6 +356,8 @@
               '<p class="project-card__desc">' + escapeHTML(project.description || '') + '</p>' +
             '</div>' +
             '<div class="project-card__meta">' +
+              avatarsHTML +
+              pipelineStatsHTML +
               (project.activeSessionId ? '<span class="project-card__running-indicator" title="Session running"></span>' : '') +
               '<span class="project-card__badge" data-status="' + escapeAttr(project.status) + '">' + statusLabel + '</span>' +
               '<span class="project-card__date">' + escapeHTML(dateStr) + '</span>' +
@@ -410,6 +443,11 @@
     // Session history placeholder (populated async)
     html += '<div class="session-history-container" data-project-id="' + escapeAttr(id) + '"></div>';
 
+    // Pipeline section (conditional — only when pipeline tasks exist)
+    if (project.pipeline && project.pipeline.tasks && project.pipeline.tasks.length > 0) {
+      html += renderPipelineSection(project.pipeline.tasks);
+    }
+
     // Progress notes
     if (project.status === 'in-progress' || project.status === 'completed') {
       var readonlyClass = project.status === 'completed' ? ' detail__notes--readonly' : '';
@@ -443,6 +481,357 @@
     // Render spreadsheet data section (after Progress Notes)
     renderDataSection(id, inner);
   }
+
+  // ===================================================================
+  // Pipeline Rendering (ported from portfolio.js)
+  // ===================================================================
+
+  // --- Pipeline Stats Row ---
+
+  function computePipelineStats(projectList) {
+    var totalProjects = projectList.length;
+    var completedProjects = 0;
+    var agentsSet = {};
+    var totalTasks = 0;
+    var totalFiles = 0;
+    var totalDecisions = 0;
+
+    projectList.forEach(function (p) {
+      if (p.status === 'completed') completedProjects++;
+      var pl = p.pipeline;
+      if (!pl) return;
+      // List endpoint returns flat stats: taskCount, fileCount, decisionCount, agents[]
+      if (typeof pl.taskCount === 'number') {
+        totalTasks += pl.taskCount;
+        totalFiles += pl.fileCount || 0;
+        totalDecisions += pl.decisionCount || 0;
+        if (pl.agents) {
+          pl.agents.forEach(function (a) { agentsSet[a.toLowerCase()] = true; });
+        }
+      } else if (pl.tasks && pl.tasks.length > 0) {
+        // Fallback: full tasks array (e.g. from detail cache)
+        pl.tasks.forEach(function (t) {
+          totalTasks++;
+          agentsSet[t.agent.toLowerCase()] = true;
+          if (t.filesChanged) totalFiles += t.filesChanged.length;
+          if (t.decisions) totalDecisions += t.decisions.length;
+        });
+      }
+    });
+
+    return {
+      totalProjects: totalProjects,
+      completedProjects: completedProjects,
+      uniqueAgents: Object.keys(agentsSet).length,
+      totalTasks: totalTasks,
+      totalFiles: totalFiles,
+      totalDecisions: totalDecisions
+    };
+  }
+
+  function renderPipelineStatsRow(projectList) {
+    var statsContainer = document.getElementById('projects-stats');
+    if (!statsContainer) return;
+
+    if (projectList.length === 0) {
+      statsContainer.innerHTML = '';
+      return;
+    }
+
+    var stats = computePipelineStats(projectList);
+    var items = [
+      { value: stats.totalProjects, label: 'Projects' },
+      { value: stats.completedProjects, label: 'Completed' },
+      { value: stats.uniqueAgents, label: 'Agents' },
+      { value: stats.totalTasks, label: 'Tasks' },
+      { value: stats.totalFiles, label: 'Files' },
+      { value: stats.totalDecisions, label: 'Decisions' }
+    ];
+
+    statsContainer.innerHTML = items.map(function (item) {
+      return (
+        '<div class="projects__stat">' +
+          '<div class="projects__stat-value">' + item.value + '</div>' +
+          '<div class="projects__stat-label">' + item.label + '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  // --- Pipeline Card Helpers ---
+
+  function pipelineGetAgents(pipeline) {
+    if (!pipeline) return [];
+    // List endpoint: agents is a flat array
+    if (pipeline.agents) return pipeline.agents;
+    // Full tasks array fallback
+    if (!pipeline.tasks) return [];
+    var seen = {};
+    var agents = [];
+    pipeline.tasks.forEach(function (t) {
+      var key = t.agent.toLowerCase();
+      if (!seen[key]) {
+        seen[key] = true;
+        agents.push(key);
+      }
+    });
+    return agents;
+  }
+
+  function pipelineGetTaskCount(pipeline) {
+    if (!pipeline) return 0;
+    if (typeof pipeline.taskCount === 'number') return pipeline.taskCount;
+    return pipeline.tasks ? pipeline.tasks.length : 0;
+  }
+
+  function pipelineGetFileCount(pipeline) {
+    if (!pipeline) return 0;
+    if (typeof pipeline.fileCount === 'number') return pipeline.fileCount;
+    if (!pipeline.tasks) return 0;
+    var count = 0;
+    pipeline.tasks.forEach(function (t) {
+      if (t.filesChanged) count += t.filesChanged.length;
+    });
+    return count;
+  }
+
+  // --- Pipeline Detail Rendering ---
+
+  function pipelineGetContributors(tasks) {
+    var map = {};
+    if (!tasks) return [];
+    tasks.forEach(function (t) {
+      var key = t.agent.toLowerCase();
+      if (!map[key]) {
+        map[key] = { name: t.agent, subtasks: 0, files: 0 };
+      }
+      if (t.subtasks) map[key].subtasks += t.subtasks.length;
+      if (t.filesChanged) map[key].files += t.filesChanged.length;
+    });
+    var contributors = Object.keys(map).map(function (k) { return map[k]; });
+    contributors.sort(function (a, b) { return b.subtasks - a.subtasks; });
+    return contributors;
+  }
+
+  function pipelineGetAllDecisions(tasks) {
+    var decisions = [];
+    if (!tasks) return decisions;
+    tasks.forEach(function (t) {
+      if (t.decisions && t.decisions.length > 0) {
+        t.decisions.forEach(function (d) {
+          decisions.push({ agent: t.agent, text: d });
+        });
+      }
+    });
+    return decisions;
+  }
+
+  function pipelineHasDetails(task) {
+    return (task.subtasks && task.subtasks.length > 0) ||
+           (task.filesChanged && task.filesChanged.length > 0) ||
+           (task.decisions && task.decisions.length > 0);
+  }
+
+  function pipelineFormatStatus(status) {
+    switch (status) {
+      case 'completed': return 'Completed';
+      case 'in-progress': return 'In Progress';
+      case 'planned': return 'Planned';
+      case 'blocked': return 'Blocked';
+      case 'skipped': return 'Skipped';
+      case 'pending': return 'Pending';
+      default: return status;
+    }
+  }
+
+  function renderPipelineTaskItem(task) {
+    var agentKey = task.agent.toLowerCase();
+    var expandable = pipelineHasDetails(task);
+    var detailsHTML = expandable ? renderPipelineTaskDetails(task) : '';
+    var chevronHTML = expandable
+      ? '<span class="task-item__chevron" aria-hidden="true"></span>'
+      : '';
+
+    var headerTag = expandable ? 'button' : 'div';
+    var ariaAttrs = expandable ? ' aria-expanded="false" type="button"' : '';
+    var expandableClass = expandable ? ' task-item--expandable' : '';
+
+    return (
+      '<div class="task-item' + expandableClass + '">' +
+        '<' + headerTag + ' class="task-item__header"' + ariaAttrs + '>' +
+          '<div class="task-item__avatar" aria-hidden="true">' +
+            '<img src="img/avatars/' + agentKey + '.svg" alt="" width="32" height="32" style="width:100%;height:100%;border-radius:50%;">' +
+          '</div>' +
+          '<div class="task-item__content">' +
+            '<div class="task-item__agent-line">' +
+              '<span class="task-item__agent">' + escapeHTML(task.agent) + '</span>' +
+              '<span class="task-item__role">' + escapeHTML(task.role) + '</span>' +
+            '</div>' +
+            '<p class="task-item__title">' + escapeHTML(task.title) + '</p>' +
+          '</div>' +
+          '<span class="task-item__status" data-status="' + task.status + '" aria-label="' + pipelineFormatStatus(task.status) + '"></span>' +
+          chevronHTML +
+        '</' + headerTag + '>' +
+        detailsHTML +
+      '</div>'
+    );
+  }
+
+  function renderPipelineTaskDetails(task) {
+    var sections = [];
+
+    if (task.subtasks && task.subtasks.length > 0) {
+      var items = task.subtasks.map(function (s) {
+        return '<li>' + escapeHTML(s) + '</li>';
+      }).join('');
+      sections.push(
+        '<div class="task-item__subtasks">' +
+          '<ul>' + items + '</ul>' +
+        '</div>'
+      );
+    }
+
+    if (task.filesChanged && task.filesChanged.length > 0) {
+      var pills = task.filesChanged.map(function (f) {
+        return '<span class="task-item__file-pill">' + escapeHTML(f) + '</span>';
+      }).join('');
+      sections.push(
+        '<div class="task-item__files">' +
+          '<span class="task-item__detail-label">Files changed</span>' +
+          '<div class="task-item__file-list">' + pills + '</div>' +
+        '</div>'
+      );
+    }
+
+    if (task.decisions && task.decisions.length > 0) {
+      var decItems = task.decisions.map(function (d) {
+        return '<li>' + escapeHTML(d) + '</li>';
+      }).join('');
+      sections.push(
+        '<div class="task-item__decisions">' +
+          '<span class="task-item__detail-label">Decisions</span>' +
+          '<ul>' + decItems + '</ul>' +
+        '</div>'
+      );
+    }
+
+    return (
+      '<div class="task-item__details" aria-hidden="true">' +
+        '<div class="task-item__details-inner">' +
+          sections.join('') +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderPipelineContributors(tasks) {
+    var contributors = pipelineGetContributors(tasks);
+    if (contributors.length === 0) return '';
+
+    // Hide contributors if all have zero subtasks and zero files
+    var hasAnyContent = false;
+    for (var i = 0; i < contributors.length; i++) {
+      if (contributors[i].subtasks > 0 || contributors[i].files > 0) {
+        hasAnyContent = true;
+        break;
+      }
+    }
+    if (!hasAnyContent) return '';
+
+    var items = contributors.map(function (c) {
+      var key = c.name.toLowerCase();
+      var summary = c.subtasks + ' subtask' + (c.subtasks !== 1 ? 's' : '') +
+                    ', ' + c.files + ' file' + (c.files !== 1 ? 's' : '');
+      return (
+        '<div class="pipeline__contributor">' +
+          '<img class="pipeline__contributor-avatar" src="img/avatars/' + key + '.svg" alt="" width="20" height="20">' +
+          '<span class="pipeline__contributor-name">' + escapeHTML(c.name) + '</span>' +
+          '<span class="pipeline__contributor-summary">' + summary + '</span>' +
+        '</div>'
+      );
+    }).join('');
+
+    return (
+      '<div class="pipeline__contributors">' +
+        '<span class="task-item__detail-label">Contributors</span>' +
+        '<div class="pipeline__contributors-list">' + items + '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderPipelineDecisions(tasks) {
+    var allDecisions = pipelineGetAllDecisions(tasks);
+    if (allDecisions.length === 0) return '';
+
+    var items = allDecisions.map(function (d) {
+      return (
+        '<li>' +
+          '<strong class="pipeline__decision-agent">' + escapeHTML(d.agent) + '</strong> — ' +
+          escapeHTML(d.text) +
+        '</li>'
+      );
+    }).join('');
+
+    return (
+      '<div class="pipeline__decisions-rollup">' +
+        '<button class="pipeline__decisions-toggle" type="button" aria-expanded="false">' +
+          '<span class="pipeline__decisions-toggle-text">Key Decisions (' + allDecisions.length + ')</span>' +
+          '<span class="pipeline__decisions-toggle-chevron" aria-hidden="true"></span>' +
+        '</button>' +
+        '<div class="pipeline__decisions-content" aria-hidden="true">' +
+          '<div class="pipeline__decisions-content-inner">' +
+            '<ul class="pipeline__decisions-list">' + items + '</ul>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderPipelineSection(pipelineTasks) {
+    if (!pipelineTasks || pipelineTasks.length === 0) return '';
+
+    var taskCount = pipelineTasks.length;
+    var fileCount = 0;
+    var decisionCount = 0;
+    pipelineTasks.forEach(function (t) {
+      if (t.filesChanged) fileCount += t.filesChanged.length;
+      if (t.decisions) decisionCount += t.decisions.length;
+    });
+
+    var metricsHTML =
+      '<div class="pipeline__metrics">' +
+        '<div class="pipeline__metric">' +
+          '<span class="pipeline__metric-value">' + taskCount + '</span>' +
+          '<span class="pipeline__metric-label">tasks</span>' +
+        '</div>' +
+        '<div class="pipeline__metric">' +
+          '<span class="pipeline__metric-value">' + fileCount + '</span>' +
+          '<span class="pipeline__metric-label">files</span>' +
+        '</div>' +
+        '<div class="pipeline__metric">' +
+          '<span class="pipeline__metric-value">' + decisionCount + '</span>' +
+          '<span class="pipeline__metric-label">decisions</span>' +
+        '</div>' +
+      '</div>';
+
+    var tasksHTML = pipelineTasks.map(renderPipelineTaskItem).join('');
+    var contributorsHTML = renderPipelineContributors(pipelineTasks);
+    var decisionsHTML = renderPipelineDecisions(pipelineTasks);
+
+    return (
+      '<div class="pipeline__section">' +
+        '<span class="detail__label">Pipeline</span>' +
+        metricsHTML +
+        '<div class="pipeline__task-list">' + tasksHTML + '</div>' +
+        contributorsHTML +
+        decisionsHTML +
+      '</div>'
+    );
+  }
+
+  // ===================================================================
+  // End Pipeline Rendering
+  // ===================================================================
 
   // --- Spreadsheet Data Section ---
 
@@ -2039,6 +2428,7 @@
     summary.constraints = full.constraints;
     summary.brief = full.brief;
     summary.activeSessionId = full.activeSessionId || null;
+    if (full.pipeline) summary.pipeline = full.pipeline;
     return summary;
   }
 
@@ -2703,6 +3093,31 @@
         var projectId = card ? card.getAttribute('data-project-id') : activeSessionProjectId;
         updateDeliverablesPanel(projectId);
       }
+      return;
+    }
+
+    // Pipeline decisions toggle
+    var pipelineDecToggle = e.target.closest('.pipeline__decisions-toggle');
+    if (pipelineDecToggle) {
+      var isExpanded = pipelineDecToggle.getAttribute('aria-expanded') === 'true';
+      pipelineDecToggle.setAttribute('aria-expanded', String(!isExpanded));
+      var content = pipelineDecToggle.nextElementSibling;
+      if (content) {
+        content.setAttribute('aria-hidden', String(isExpanded));
+      }
+      return;
+    }
+
+    // Pipeline task item expand/collapse (nested accordion, independent)
+    var pipelineTaskHeader = e.target.closest('.pipeline__section .task-item__header');
+    if (pipelineTaskHeader && pipelineTaskHeader.hasAttribute('aria-expanded')) {
+      var taskItem = pipelineTaskHeader.closest('.task-item');
+      var taskDetails = taskItem.querySelector('.task-item__details');
+      if (!taskDetails) return;
+
+      var isTaskExpanded = pipelineTaskHeader.getAttribute('aria-expanded') === 'true';
+      pipelineTaskHeader.setAttribute('aria-expanded', String(!isTaskExpanded));
+      taskDetails.setAttribute('aria-hidden', String(isTaskExpanded));
       return;
     }
 

@@ -10,26 +10,51 @@ import {
   deleteNote,
 } from "../store/projects.js";
 import { CreateProjectSchema, UpdateProjectSchema, CreateNoteSchema } from "../schemas/project.js";
+import type { Pipeline } from "../schemas/project.js";
 import { generateKickoffPrompt } from "../kickoff.js";
 import { ZodError } from "zod";
+import { formatZodError } from "./utils.js";
 
 const router = Router();
 
-function formatZodError(err: ZodError) {
-  return err.issues.map((issue) => ({
-    field: issue.path.join("."),
-    message: issue.message,
-  }));
+// --- Pipeline stats helper ---
+
+function computePipelineStats(pipeline: Pipeline): {
+  taskCount: number;
+  fileCount: number;
+  decisionCount: number;
+  agents: string[];
+} {
+  const agentSet = new Set<string>();
+  let fileCount = 0;
+  let decisionCount = 0;
+
+  for (const task of pipeline.tasks) {
+    agentSet.add(task.agent.toLowerCase());
+    fileCount += task.filesChanged.length;
+    decisionCount += task.decisions.length;
+  }
+
+  return {
+    taskCount: pipeline.tasks.length,
+    fileCount,
+    decisionCount,
+    agents: Array.from(agentSet),
+  };
 }
 
-// List all projects (strip notes and kickoffPrompt for lean payload)
+// List all projects (strip notes, kickoffPrompt, and full pipeline.tasks for lean payload)
 router.get("/projects", async (_req, res) => {
   try {
     const projects = await listProjects();
-    const summaries = projects.map(({ notes, kickoffPrompt, activeSessionId, ...rest }) => ({
-      ...rest,
-      activeSessionId,
-    }));
+    const summaries = projects.map(({ notes, kickoffPrompt, pipeline, ...rest }) => {
+      // Precompute pipeline stats for list view
+      const pipelineStats = computePipelineStats(pipeline);
+      return {
+        ...rest,
+        pipeline: pipelineStats,
+      };
+    });
     res.json({ projects: summaries });
   } catch (err) {
     console.error("Error listing projects:", err);
