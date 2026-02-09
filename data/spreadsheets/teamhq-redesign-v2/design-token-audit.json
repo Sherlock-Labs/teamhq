@@ -1,0 +1,28 @@
+{
+  "id": "design-token-audit",
+  "projectId": "teamhq-redesign-v2",
+  "name": "Design Token Audit",
+  "description": "Audit of design token usage across the redesign.",
+  "createdAt": "2026-02-09T15:00:00.000Z",
+  "updatedAt": "2026-02-09T15:00:00.000Z",
+  "createdBy": "yuki",
+  "columns": [
+    { "key": "token", "label": "Token", "type": "text" },
+    { "key": "category", "label": "Category", "type": "badge" },
+    { "key": "usages", "label": "Usages", "type": "number" },
+    { "key": "files", "label": "Files", "type": "number" },
+    { "key": "status", "label": "Status", "type": "badge" }
+  ],
+  "rows": [
+    { "token": "--color-accent", "category": "info", "usages": 47, "files": 6, "status": "high" },
+    { "token": "--color-bg-primary", "category": "info", "usages": 32, "files": 5, "status": "high" },
+    { "token": "--color-text-primary", "category": "info", "usages": 28, "files": 5, "status": "high" },
+    { "token": "--color-border", "category": "info", "usages": 24, "files": 4, "status": "medium" },
+    { "token": "--font-family", "category": "info", "usages": 12, "files": 3, "status": "medium" },
+    { "token": "--space-4", "category": "info", "usages": 38, "files": 6, "status": "high" },
+    { "token": "--radius-sm", "category": "info", "usages": 18, "files": 4, "status": "medium" },
+    { "token": "--color-accent-light", "category": "info", "usages": 9, "files": 3, "status": "low" },
+    { "token": "--shadow-lg", "category": "warning", "usages": 3, "files": 2, "status": "low" },
+    { "token": "--color-rose-500", "category": "warning", "usages": 0, "files": 0, "status": "excluded" }
+  ]
+}

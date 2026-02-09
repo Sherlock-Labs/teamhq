@@ -253,6 +253,52 @@
     readerView.style.display = '';
   }
 
+  // --- Spreadsheet Directive Processing ---
+
+  function processSpreadsheetDirectives(contentEl) {
+    if (!contentEl) return;
+    if (typeof TeamHQSpreadsheet === 'undefined' || typeof agGrid === 'undefined') return;
+
+    // Find HTML comments matching <!-- spreadsheet: path/to/file.json -->
+    var walker = document.createTreeWalker(contentEl, NodeFilter.SHOW_COMMENT);
+    var directives = [];
+    var node;
+    while (node = walker.nextNode()) {
+      var match = node.textContent.trim().match(/^spreadsheet:\s*(.+)$/);
+      if (match) {
+        directives.push({ node: node, path: match[1].trim() });
+      }
+    }
+
+    directives.forEach(function (directive) {
+      var placeholder = document.createElement('div');
+      placeholder.className = 'docs-spreadsheet-embed';
+      placeholder.innerHTML = '<p class="thq-spreadsheet-loading">Loading spreadsheet...</p>';
+      directive.node.parentNode.replaceChild(placeholder, directive.node);
+
+      fetch('data/spreadsheets/' + directive.path)
+        .then(function (res) {
+          if (!res.ok) throw new Error('Not found');
+          return res.json();
+        })
+        .then(function (data) {
+          placeholder.innerHTML = '';
+
+          // Header
+          var header = document.createElement('div');
+          header.className = 'thq-spreadsheet-header thq-spreadsheet-header--inline';
+          header.innerHTML =
+            '<h5 class="thq-spreadsheet-header__name">' + escapeHTML(data.name) + '</h5>';
+          placeholder.appendChild(header);
+
+          new TeamHQSpreadsheet(placeholder, data);
+        })
+        .catch(function () {
+          placeholder.innerHTML = '<p class="docs-spreadsheet-embed__error" role="alert">Spreadsheet not found</p>';
+        });
+    });
+  }
+
   // --- Reading View ---
 
   function openDoc(docData) {
@@ -263,6 +309,7 @@
       .then(function (markdown) {
         var html = marked.parse(markdown);
         readerView.innerHTML = renderReadingView(docData, html);
+        processSpreadsheetDirectives(readerView.querySelector('.docs-reader__content'));
         window.scrollTo(0, 0);
       })
       .catch(function () {

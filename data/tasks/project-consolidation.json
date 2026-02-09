@@ -1,0 +1,43 @@
+{
+  "id": "project-consolidation",
+  "name": "Project Consolidation",
+  "description": "Merge the separate Projects and Portfolio tracking systems into a single unified project section — combining active project management (sessions, notes, briefs) with pipeline history (agent tasks, decisions, files changed).",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scoped requirements for project consolidation",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Analyzed Projects system: data/projects/*.json with UUID IDs, Express API (CRUD + sessions + notes), Zod schemas, ~1200-line projects.js with SSE streaming, session history, pipeline indicator, file deliverables tracking",
+        "Analyzed Portfolio system: data/tasks/*.json with slug IDs, static JSON (no API), ~490-line portfolio.js with stats computation, expandable cards, task breakdown, contributors, decisions rollup",
+        "Identified 10 projects that exist in both systems (ost-tool, teamhq-redesign, task-history, etc.) with different IDs and data structures",
+        "Identified projects that exist only in Projects (UUID-based: PDF editor, CEO Input Test, Podcast Show Notes, revenue model spreadsheet, etc.)",
+        "Identified projects that exist only in Portfolio (slug-based: no exclusive ones found — all portfolio entries have corresponding project entries or will after migration)",
+        "Documented both data schemas side-by-side with 15 dimension comparison table",
+        "Designed unified data model: extend ProjectSchema with pipeline object (tasks array) and optional slug field",
+        "Designed merge-on-read strategy: agents continue writing to data/tasks/{slug}.json, server merges on GET — avoids changing any agent profiles",
+        "Defined 8 requirements (R1-R8) covering data model, agent write path, unified section, card design, detail view, stats, migration, and backward compatibility",
+        "Designed unified UI layout: single Projects section with conditional pipeline display based on data availability",
+        "Specified migration script approach: scripts/migrate-projects.mjs that links existing projects to their tasks files via slug field",
+        "Identified 4 risks: projects.js complexity growth, slug matching edge cases, stats computation performance, visual density",
+        "Defined implementation order: Andrei (arch) -> Robert (design) -> Jonah (BE) -> Alice (FE) -> Robert (review) -> Enzo (QA)",
+        "Listed 3 open questions for arch/design: precomputed stats, slug auto-generation, tasks file cleanup"
+      ],
+      "filesChanged": [
+        "docs/project-consolidation-requirements.md",
+        "data/tasks/project-consolidation.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Merge-on-read over single-file-per-project — agents continue writing to data/tasks/{slug}.json independently, server merges pipeline data into the project response. This avoids changing any agent profiles and prevents write collisions between concurrent agents.",
+        "Pipeline as nested object, not flat — the unified schema wraps tasks in a pipeline object rather than putting tasks at the top level. This keeps the project management fields (notes, sessions, brief) clearly separated from the pipeline history fields.",
+        "Remove Portfolio section entirely — instead of keeping two sections with cross-links, collapse into a single Projects section. Simpler mental model, one place to look.",
+        "Slug field for matching — projects get an optional slug field that maps to the tasks file. Auto-generated from name on creation, but manually settable. This is the bridge between the UUID-based project system and the slug-based agent task writing.",
+        "Conditional pipeline display — project cards and detail views only show pipeline elements (avatars, stats, task list, contributors, decisions) when pipeline.tasks is non-empty. New/planned projects stay clean and uncluttered.",
+        "Stats row moves to Projects section — the aggregate stats currently at the top of Portfolio move to the top of the unified Projects section, computed from merged pipeline data across all projects."
+      ]
+    }
+  ]
+}

@@ -439,6 +439,95 @@
     }
 
     inner.innerHTML = html;
+
+    // Render spreadsheet data section (after Progress Notes)
+    renderDataSection(id, inner);
+  }
+
+  // --- Spreadsheet Data Section ---
+
+  var _spreadsheetInstances = {}; // projectId -> [TeamHQSpreadsheet]
+
+  function renderDataSection(projectId, containerEl) {
+    // Clean up previous instances for this project
+    if (_spreadsheetInstances[projectId]) {
+      for (var k = 0; k < _spreadsheetInstances[projectId].length; k++) {
+        _spreadsheetInstances[projectId][k].destroy();
+      }
+    }
+    _spreadsheetInstances[projectId] = [];
+
+    // Guard: if TeamHQSpreadsheet is not available, skip
+    if (typeof TeamHQSpreadsheet === 'undefined' || typeof agGrid === 'undefined') return;
+
+    fetch('data/spreadsheets/index.json')
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(function (index) {
+        if (!index || !index[projectId] || index[projectId].length === 0) return;
+
+        var files = index[projectId];
+        var sectionEl = document.createElement('div');
+        sectionEl.className = 'detail__section detail__data-section';
+        sectionEl.innerHTML = '<h4 class="detail__label">Data</h4>';
+        containerEl.appendChild(sectionEl);
+
+        files.forEach(function (meta) {
+          var filename = meta.file || meta;
+          fetch('data/spreadsheets/' + projectId + '/' + filename)
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              var wrapper = document.createElement('div');
+              wrapper.className = 'detail__spreadsheet';
+
+              // Header: name + density toggle
+              var density = TeamHQSpreadsheet.getSavedDensity();
+              var header = document.createElement('div');
+              header.className = 'thq-spreadsheet-header';
+              header.innerHTML =
+                '<div class="thq-spreadsheet-header__info">' +
+                  '<h5 class="thq-spreadsheet-header__name">' + escapeHTML(data.name) + '</h5>' +
+                  (data.description ? '<p class="thq-spreadsheet-header__desc">' + escapeHTML(data.description) + '</p>' : '') +
+                '</div>' +
+                '<div class="thq-spreadsheet-header__controls" role="group" aria-label="Table density">' +
+                  '<button class="thq-density-toggle' + (density === 'compact' ? ' thq-density-toggle--active' : '') + '"' +
+                    ' type="button" data-density="compact" aria-pressed="' + (density === 'compact') + '">Compact</button>' +
+                  '<button class="thq-density-toggle' + (density === 'comfortable' ? ' thq-density-toggle--active' : '') + '"' +
+                    ' type="button" data-density="comfortable" aria-pressed="' + (density === 'comfortable') + '">Comfortable</button>' +
+                '</div>';
+              wrapper.appendChild(header);
+
+              // Grid container
+              var gridContainer = document.createElement('div');
+              wrapper.appendChild(gridContainer);
+              sectionEl.appendChild(wrapper);
+
+              var table = new TeamHQSpreadsheet(gridContainer, data);
+              _spreadsheetInstances[projectId] = _spreadsheetInstances[projectId] || [];
+              _spreadsheetInstances[projectId].push(table);
+
+              // Density toggle wiring
+              header.addEventListener('click', function (e) {
+                var btn = e.target.closest('.thq-density-toggle');
+                if (!btn) return;
+                var newDensity = btn.getAttribute('data-density');
+                table.setDensity(newDensity);
+
+                // Update button states within this header
+                var toggles = header.querySelectorAll('.thq-density-toggle');
+                for (var i = 0; i < toggles.length; i++) {
+                  var isActive = toggles[i].getAttribute('data-density') === newDensity;
+                  toggles[i].classList.toggle('thq-density-toggle--active', isActive);
+                  toggles[i].setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                }
+              });
+            })
+            .catch(function () { /* silently skip failed loads */ });
+        });
+      })
+      .catch(function () { /* no index file — no data section */ });
   }
 
   function renderDetailField(label, value, placeholder) {

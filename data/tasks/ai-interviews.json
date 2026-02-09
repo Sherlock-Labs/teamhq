@@ -1,0 +1,153 @@
+{
+  "id": "ai-interviews",
+  "name": "AI-Powered Interviews",
+  "description": "Add AI-powered video/audio interview capabilities to TeamHQ — real-time conversations with an AI interviewer that get recorded, transcribed, and fed into the existing meeting system.",
+  "status": "requirements-complete",
+  "tasks": [
+    {
+      "title": "Gemini Live API technical evaluation for AI-powered interviews",
+      "agent": "Marco",
+      "role": "Technical Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Evaluated Gemini Live API as alternative to ElevenLabs and Vapi — CEO-requested follow-up to earlier tech research",
+        "Researched WebSocket-based real-time audio: direct browser-to-API connection, 16kHz PCM input / 24kHz output, 25 tokens/sec, bidirectional streaming",
+        "Evaluated Gemini 2.5 Flash Native Audio model: single-model architecture (no STT+LLM+TTS pipeline), native emotional understanding from raw audio, affective dialogue capabilities",
+        "Analyzed pricing: ~$0.025/min + $0.005/session setup = ~$0.76 per 30-min interview vs $3.00 ElevenLabs vs $4.00-10.00 Vapi — 4-6x cheaper than all alternatives",
+        "Confirmed free tier availability for development: 10 RPM, 250 RPD on Gemini 2.5 Flash Developer API",
+        "Assessed vanilla JS compatibility: vanilla JS demo (gemini-2-live-api-demo) has zero dependencies, uses WebSocket + Web Audio API, perfect fit for TeamHQ's no-framework frontend",
+        "Evaluated authentication model: ephemeral tokens for production (1-min validity to connect, 30-min session), API key for development — Express backend generates tokens, frontend connects directly",
+        "Researched transcript extraction: built-in input + output transcription via setup config, real-time text chunks, speaker-separated by design (user vs model streams), no multi-format export (raw text only)",
+        "Compared knowledge base capabilities: 128k token context window vs ElevenLabs' 5-item limit, system instructions + send_client_content + context caching + function calling for dynamic context",
+        "Assessed voice quality: 30 HD voices in 24 languages, good but not ElevenLabs-tier, no custom voice cloning, limited prosody tuning — sufficient for functional CEO interviews",
+        "Benchmarked latency: ~320ms p50, ~780ms p95 first token — competitive with alternatives but occasional 7-15s spikes reported by developers",
+        "Documented session management: 15-min limit without compression, 10-min connection lifetime, context window compression + session resumption for unlimited duration, resumption tokens valid 2hr (24hr on Vertex AI)",
+        "Evaluated concurrency: 50 connections Tier 1, up to 1,000 Tier 2 — more than sufficient for TeamHQ",
+        "Confirmed GA status: Live API graduated from preview to GA on both Developer API and Vertex AI in early 2026",
+        "Assessed VAD and interruption handling: configurable prefix_padding_ms, silence_duration_ms, disable auto-VAD option, interruption cancels ongoing generation",
+        "Evaluated function calling: sync + async modes during conversation, enables mid-interview context retrieval and real-time logging",
+        "Mapped integration architecture: Express backend for ephemeral tokens + post-processing, browser connects directly to Gemini WebSocket, transcript assembled client-side and sent to backend on completion",
+        "Estimated development effort: 4-5 days (vs 1 day ElevenLabs, 2-3 days Vapi) — additional time for WebSocket management, Web Audio API, session management",
+        "Identified key limitations: no audio recording storage, no multi-format transcript export, no custom voice cloning, session management complexity, latency spikes, no embeddable widget, Google deprecation risk",
+        "Produced updated comparison matrix across Gemini, ElevenLabs, Vapi, and Retell covering 17 evaluation criteria",
+        "Proposed three integration options: (A) Gemini as primary platform, (B) ElevenLabs for fast v1 then migrate, (C) Gemini brain + ElevenLabs voice hybrid"
+      ],
+      "filesChanged": [
+        "docs/ai-interviews-gemini-evaluation.md",
+        "data/tasks/ai-interviews.json"
+      ],
+      "decisions": [
+        "Recommend Gemini Live API as primary platform for v1 — 4-6x cost advantage ($0.76/session vs $3.00-10.00), 128k context window, vanilla JS native compatibility, single-model architecture",
+        "Gemini replaces both Vapi (my earlier recommendation) and ElevenLabs (Suki/Thomas recommendation) as the top pick based on pricing breakthrough and GA stability",
+        "Voice quality tradeoff is acceptable: Gemini is good but not ElevenLabs-tier — for functional CEO interviews, naturalness gap is tolerable given the cost savings",
+        "Development effort tradeoff is justified: 4-5 days vs 1 day (ElevenLabs) is warranted by 4-6x lower operating costs and 25x larger context capacity",
+        "Session management is the biggest integration complexity — requires implementing reconnection + context compression that managed platforms handle invisibly",
+        "Fallback strategy: if voice quality becomes a user complaint, Option C (Gemini brain + ElevenLabs voice via their Gemini 2.5 Flash integration) provides a hybrid path without architecture changes",
+        "Developer API sufficient for v1 — Vertex AI is the upgrade path for enterprise SLAs and data residency if needed later",
+        "Audio recording storage is optional for v1 — transcript-only is acceptable, audio capture can be added client-side later"
+      ]
+    },
+    {
+      "title": "Scope requirements for AI-powered audio interviews",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read and synthesized Suki's market research (recommends ElevenLabs) and Marco's tech research (recommends Vapi)",
+        "Resolved researcher disagreement: chose ElevenLabs based on CEO's widget embed requirement — single-line HTML tag vs React SDK in a vanilla JS codebase",
+        "Documented platform choice rationale with comparison table: cost ($0.10/min vs $0.12-0.30/min), widget embed (HTML tag vs React SDK), voice quality, transcript formats, dev effort (1 day vs 2-3 days)",
+        "Defined integration approach: interviews are a new MeetingType, reusing existing data/meetings/ storage, MeetingSchema, and meetings list UI",
+        "Specified schema changes: add 'interview' to MeetingType enum, add optional recordingUrl and interviewConfig fields",
+        "Designed user flow: Interview button in toolbar -> configure topic/context -> start widget inline -> speak with AI -> webhook delivers transcript -> Claude post-processing -> saved as meeting",
+        "Defined transcript mapping: ElevenLabs role:agent/user maps to speaker/role fields in TranscriptEntrySchema",
+        "Specified two new API endpoints: POST /api/interviews/start and POST /api/webhooks/elevenlabs",
+        "Drafted system prompt structure for ElevenLabs agent with dynamic topic/context injection",
+        "Defined webhook flow: HMAC verification, conversation ID matching, transcript transformation, Claude post-processing for summary/takeaways/decisions/action items",
+        "Wrote 6 acceptance criteria covering: start interview, AI behavior, transcript capture, meeting record, error handling, guards",
+        "Defined implementation order: Arch+Design (parallel) -> API contract alignment -> Implementation (FE+BE parallel) -> Design review -> QA gate",
+        "Scoped 12 items as explicitly out of scope: scheduling, templates, dynamic KB, live transcription, audio playback, analytics, multiple agents, mobile, multi-participant, voice selection, filtering, video",
+        "Identified 3 open questions for Andrei: widget auth model, webhook retry behavior, conversation ID timing"
+      ],
+      "filesChanged": [
+        "docs/ai-interviews-requirements.md",
+        "data/tasks/ai-interviews.json"
+      ],
+      "decisions": [
+        "Platform choice: ElevenLabs over Vapi — widget embed requirement is the deciding factor; ElevenLabs provides a web component that works in vanilla JS, Vapi requires React",
+        "Integration model: interviews are meetings (new MeetingType), not a separate system — reuses storage, schema, list UI, and detail view",
+        "UI approach: inline panel in meetings section (same pattern as custom meeting creation), not a modal or separate page",
+        "v1 scope: start-now only, single agent, web-only, 1:1 CEO+AI, static knowledge base — all other features deferred",
+        "Post-processing: reuse existing runClaude infrastructure and MeetingOutputJsonSchema for transcript analysis",
+        "Cost model: $0.10/min with estimated $20-80/month at 3-5 interviews/week — ElevenLabs Starter plan ($5/mo) sufficient for development"
+      ]
+    },
+    {
+      "title": "Technical research on conversational AI platforms for interview integration",
+      "agent": "Marco",
+      "role": "Technical Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Evaluated 6 platforms: Vapi.ai, Retell.ai, ElevenLabs, Tavus.ai, Bland.ai, Daily.co + Pipecat",
+        "Assessed each platform on: API docs quality, WebRTC/browser support, webhook support, transcript output format, knowledge base injection, latency, auth model, self-hosted vs cloud",
+        "Analyzed existing TeamHQ meeting system: Express backend, JSON file storage in data/meetings/, MeetingSchema with transcript array, structured output via Claude CLI",
+        "Mapped integration architecture: browser WebRTC call -> Vapi cloud -> webhook to Express -> transform to Meeting format -> save to data/meetings/",
+        "Eliminated Bland.ai — telephony only, no browser/WebRTC support, incompatible with web app use case",
+        "Evaluated build-vs-buy spectrum: Full DIY (Daily+Pipecat, 2-3 weeks), API platform (Vapi/Retell, 2-3 days), embed widget (ElevenLabs, 1 day), full product (Tavus, 3-5 days)",
+        "Identified minimum viable integration: embed Vapi Web SDK, add webhook endpoint, transform transcript to Meeting schema, save as new meeting type",
+        "Identified schema changes needed: add 'interview' to MeetingType enum, add optional recordingUrl field, add optional interviewConfig field",
+        "Documented that interviews can reuse existing Meeting schema — transcript, summary, decisions, actionItems all map directly",
+        "Produced comparison matrix across all 6 platforms covering 14 evaluation criteria"
+      ],
+      "filesChanged": [
+        "docs/ai-interviews-tech-research.md"
+      ],
+      "decisions": [
+        "Recommend Vapi.ai for v1 — best balance of developer experience, React SDK, webhook architecture, knowledge base injection, and cost predictability",
+        "Retell.ai is the backup choice if Vapi pricing becomes an issue (no platform fee, potentially cheaper at scale)",
+        "Daily.co + Pipecat is the upgrade path if we outgrow API platforms or need video/full control",
+        "Tavus.ai only if video becomes a hard requirement — currently overkill and most expensive",
+        "ElevenLabs fastest to prototype but least developer control and opaque credit-based pricing",
+        "Interviews should be a new MeetingType, not a separate system — reuses existing storage, schema, and UI patterns",
+        "No calendar integration for v1 — just a Start Interview button, consistent with current meeting UX",
+        "Estimated 2-3 days dev effort for MVP with Vapi integration"
+      ]
+    },
+    {
+      "title": "Market research on AI video/audio interview and conversation tools",
+      "agent": "Suki",
+      "role": "Product Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Researched Tavus.io CVI platform — pricing ($59-397/mo, $0.32-0.37/min overage), Persona API with system_prompt + context, AI Interviewer starter kit, sub-1s latency, WebRTC React SDK, transcript + video recording on paid tiers",
+        "Researched HeyGen LiveAvatar — pricing ($99-330/mo API plans, ~$0.20-0.33/min), Streaming Avatar SDK, credit-based billing separate from main product, limited transcript support for live sessions",
+        "Researched Synthesia Video Agents — enterprise-only for interactive, $18-89/mo for async-only plans, not viable for self-serve interview use case",
+        "Researched ElevenLabs Conversational AI — pricing ($0.10/min after Jan 2026 cut, LLM costs absorbed), widget embed, knowledge base (files/URLs/text), multi-format transcript export (TXT/PDF/DOCX/JSON/SRT/VTT), 31 languages",
+        "Researched Retell AI — pricing ($0.07-0.08/min base + LLM, ~$0.13-0.31/min total), Conversation Flow builder for structured interviews, custom LLM via WebSocket (Claude supported), PII auto-redaction, JSON-structured transcripts, React Web SDK",
+        "Researched Vapi.ai — pricing ($0.05/min platform + $0.08-0.28/min dependencies, $500-1000/mo plans), modular architecture, complex multi-provider billing, not recommended for low-volume use",
+        "Researched Bland.ai — pricing ($0.09-0.11/min, $299-499/mo plans), phone-only architecture (no web/browser calls), not suitable for in-app interview experience",
+        "Researched AI-moderated research platforms (Outset, Strella, Maze) — purpose-built for user research at scale, enterprise pricing, not embeddable",
+        "Analyzed voice AI vs video AI tradeoffs — cost (2-4x difference), complexity (WebRTC vs widget), latency (300-1000ms), uncanny valley risk, bandwidth requirements",
+        "Mapped use cases to recommended tools: CEO strategy interviews (ElevenLabs/Retell), pulse checks (ElevenLabs widget), user research (Outset/Tavus), team retros (ElevenLabs/Retell)",
+        "Built competitive comparison matrix across 12 dimensions for all 7 tools plus Outset",
+        "Wrote top-3 recommendation: ElevenLabs (best overall), Tavus (best video), Retell (best structured flows)",
+        "Recommended ElevenLabs as primary choice — fastest to prototype, cheapest to operate ($3/30-min session), best voice quality, widget embed for quick integration, multi-format transcript export"
+      ],
+      "filesChanged": [
+        "docs/ai-interviews-market-research.md",
+        "data/tasks/ai-interviews.json"
+      ],
+      "decisions": [
+        "Recommended ElevenLabs as primary tool — best combination of cost ($0.10/min), voice quality, developer experience, and transcript output for TeamHQ's interview use case",
+        "Recommended audio-only over video for v1 — video adds 2-4x cost and WebRTC complexity for marginal benefit in internal CEO interviews",
+        "Disagrees with Marco's Vapi recommendation — Vapi's $500/mo minimum plans and multi-provider billing complexity are overkill for low-volume interview use; ElevenLabs is simpler and cheaper",
+        "Excluded Synthesia — interactive features enterprise-gated, no self-serve option",
+        "Excluded Bland.ai — phone-only architecture (agrees with Marco's assessment)",
+        "Excluded Vapi for v1 — complex billing, up to 5 separate invoices, $500/mo entry point, true costs $0.13-0.33/min vs ElevenLabs $0.10/min",
+        "Flagged Tavus as best video option if visual presence needed later — has explicit AI Interviewer starter kit and sub-1s latency",
+        "Flagged Outset as separate evaluation for external user research at scale — different product category from embeddable interview tools",
+        "Noted ElevenLabs LLM cost absorption risk — currently free but may be passed through in future, increasing per-minute costs",
+        "Key finding: ElevenLabs cut conversational AI pricing by ~50% in January 2026, changing the competitive landscape significantly since Marco's evaluation"
+      ]
+    }
+  ]
+}

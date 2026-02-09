@@ -9,8 +9,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
+  <!-- AG Grid Community — CSS (structural + Quartz theme) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-grid.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-theme-quartz.css">
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/spreadsheet.css">
 </head>
 <body>
 
@@ -34,6 +38,7 @@
         <a href="#portfolio" class="nav__link">Portfolio</a>
         <a href="#meetings" class="nav__link">Meetings</a>
         <a href="docs.html" class="nav__link">Docs</a>
+        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
         <a href="#roster" class="nav__link">Team</a>
         <a href="#how" class="nav__link">How It Works</a>
       </div>
@@ -487,6 +492,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+  <!-- AG Grid Community — JS (UMD bundle) -->
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js"></script>
+  <script src="js/spreadsheet.js" defer></script>
   <script src="js/projects.js" defer></script>
   <script src="js/portfolio.js" defer></script>
   <script src="js/meetings.js" defer></script>

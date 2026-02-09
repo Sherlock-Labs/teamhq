@@ -1,0 +1,31 @@
+{
+  "id": "revenue-model-2026",
+  "projectId": "sherlock-pdf",
+  "name": "Revenue Model \u2014 2026 Projections",
+  "description": "Monthly recurring revenue projections for SherlockPDF across three pricing tiers.",
+  "createdAt": "2026-02-09T15:00:00.000Z",
+  "updatedAt": "2026-02-09T15:00:00.000Z",
+  "createdBy": "yuki",
+  "columns": [
+    { "key": "month", "label": "Month", "type": "text" },
+    { "key": "starter", "label": "Starter", "type": "currency", "prefix": "$" },
+    { "key": "pro", "label": "Pro", "type": "currency", "prefix": "$" },
+    { "key": "team", "label": "Team", "type": "currency", "prefix": "$" },
+    { "key": "total", "label": "Total MRR", "type": "currency", "prefix": "$" },
+    { "key": "growth", "label": "Growth", "type": "percent" }
+  ],
+  "rows": [
+    { "month": "Jan 2026", "starter": 2400, "pro": 5900, "team": 8900, "total": 17200, "growth": null },
+    { "month": "Feb 2026", "starter": 2800, "pro": 6500, "team": 9800, "total": 19100, "growth": 11.0 },
+    { "month": "Mar 2026", "starter": 3200, "pro": 7200, "team": 10800, "total": 21200, "growth": 11.0 },
+    { "month": "Apr 2026", "starter": 3700, "pro": 8000, "team": 11900, "total": 23600, "growth": 11.3 },
+    { "month": "May 2026", "starter": 4200, "pro": 8900, "team": 13100, "total": 26200, "growth": 11.0 },
+    { "month": "Jun 2026", "starter": 4800, "pro": 9900, "team": 14400, "total": 29100, "growth": 11.1 },
+    { "month": "Jul 2026", "starter": 5500, "pro": 11000, "team": 15800, "total": 32300, "growth": 11.0 },
+    { "month": "Aug 2026", "starter": 6200, "pro": 12200, "team": 17400, "total": 35800, "growth": 10.8 },
+    { "month": "Sep 2026", "starter": 7000, "pro": 13500, "team": 19100, "total": 39600, "growth": 10.6 },
+    { "month": "Oct 2026", "starter": 7900, "pro": 14900, "team": 20900, "total": 43700, "growth": 10.4 },
+    { "month": "Nov 2026", "starter": 8800, "pro": 16400, "team": 22800, "total": 48000, "growth": 9.8 },
+    { "month": "Dec 2026", "starter": 9800, "pro": 18000, "team": 24900, "total": 52700, "growth": 9.8 }
+  ]
+}

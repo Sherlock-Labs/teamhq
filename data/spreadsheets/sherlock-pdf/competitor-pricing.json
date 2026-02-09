@@ -1,0 +1,28 @@
+{
+  "id": "competitor-pricing",
+  "projectId": "sherlock-pdf",
+  "name": "Competitor Pricing Comparison",
+  "description": "Feature and pricing comparison across PDF tool competitors.",
+  "createdAt": "2026-02-09T15:00:00.000Z",
+  "updatedAt": "2026-02-09T15:00:00.000Z",
+  "createdBy": "suki",
+  "columns": [
+    { "key": "product", "label": "Product", "type": "text" },
+    { "key": "priceFree", "label": "Free Tier", "type": "badge" },
+    { "key": "priceStarter", "label": "Starter", "type": "currency", "prefix": "$" },
+    { "key": "pricePro", "label": "Pro", "type": "currency", "prefix": "$" },
+    { "key": "merge", "label": "Merge", "type": "badge" },
+    { "key": "split", "label": "Split", "type": "badge" },
+    { "key": "ocr", "label": "OCR", "type": "badge" }
+  ],
+  "rows": [
+    { "product": "SherlockPDF", "priceFree": "yes", "priceStarter": 9, "pricePro": 29, "merge": "yes", "split": "yes", "ocr": "no" },
+    { "product": "Smallpdf", "priceFree": "no", "priceStarter": 12, "pricePro": 18, "merge": "yes", "split": "yes", "ocr": "yes" },
+    { "product": "iLovePDF", "priceFree": "yes", "priceStarter": 7, "pricePro": 15, "merge": "yes", "split": "yes", "ocr": "yes" },
+    { "product": "PDF24", "priceFree": "yes", "priceStarter": null, "pricePro": null, "merge": "yes", "split": "yes", "ocr": "no" },
+    { "product": "Adobe Acrobat", "priceFree": "no", "priceStarter": 15, "pricePro": 23, "merge": "yes", "split": "yes", "ocr": "yes" },
+    { "product": "Sejda", "priceFree": "yes", "priceStarter": 8, "pricePro": 20, "merge": "yes", "split": "yes", "ocr": "no" },
+    { "product": "PDFtk", "priceFree": "yes", "priceStarter": null, "pricePro": null, "merge": "yes", "split": "yes", "ocr": "no" },
+    { "product": "Nitro", "priceFree": "no", "priceStarter": 14, "pricePro": 24, "merge": "yes", "split": "yes", "ocr": "yes" }
+  ]
+}

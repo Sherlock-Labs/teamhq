@@ -1,0 +1,30 @@
+{
+  "sherlock-pdf": [
+    {
+      "file": "revenue-model-2026.json",
+      "name": "Revenue Model \u2014 2026 Projections",
+      "description": "Monthly recurring revenue projections for SherlockPDF across three pricing tiers.",
+      "rows": 12,
+      "columns": 6,
+      "updatedAt": "2026-02-09T15:00:00.000Z"
+    },
+    {
+      "file": "competitor-pricing.json",
+      "name": "Competitor Pricing Comparison",
+      "description": "Feature and pricing comparison across PDF tool competitors.",
+      "rows": 8,
+      "columns": 7,
+      "updatedAt": "2026-02-09T15:00:00.000Z"
+    }
+  ],
+  "teamhq-redesign-v2": [
+    {
+      "file": "design-token-audit.json",
+      "name": "Design Token Audit",
+      "description": "Audit of design token usage across the redesign.",
+      "rows": 10,
+      "columns": 5,
+      "updatedAt": "2026-02-09T15:00:00.000Z"
+    }
+  ]
+}
