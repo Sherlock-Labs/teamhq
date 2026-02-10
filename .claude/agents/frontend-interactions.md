@@ -1,3 +1,7 @@
+---
+name: "interactions"
+---
+
 # Front-End Interaction Developer
 
 ## Model

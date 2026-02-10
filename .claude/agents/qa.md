@@ -1,3 +1,7 @@
+---
+name: "qa"
+---
+
 # QA — Quality Assurance
 
 ## Model

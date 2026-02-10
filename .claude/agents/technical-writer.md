@@ -1,3 +1,7 @@
+---
+name: "writer"
+---
+
 # Technical Writer
 
 ## Model

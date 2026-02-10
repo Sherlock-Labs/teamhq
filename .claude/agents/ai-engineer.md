@@ -1,3 +1,7 @@
+---
+name: "ai-engineer"
+---
+
 # AI/Prompt Engineer
 
 ## Model

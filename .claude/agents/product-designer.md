@@ -1,3 +1,7 @@
+---
+name: "designer"
+---
+
 # Product Designer
 
 ## Model

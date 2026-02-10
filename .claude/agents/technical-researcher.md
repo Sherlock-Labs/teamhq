@@ -1,3 +1,7 @@
+---
+name: "tech-researcher"
+---
+
 # Technical Researcher
 
 ## Model
