@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools — TeamHQ</title>
+  <meta name="description" content="Products and utilities built by the team.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="container nav__inner">
+      <div class="nav__brand">
+        <a href="index.html" class="nav__logo-link">
+          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+        </a>
+      </div>
+      <div class="nav__links">
+        <a href="tools.html" class="nav__link nav__link--active" aria-current="page">Tools</a>
+        <a href="projects.html" class="nav__link">Projects</a>
+        <a href="meetings.html" class="nav__link">Meetings</a>
+        <a href="interviews.html" class="nav__link">Interviews</a>
+        <a href="docs.html" class="nav__link">Docs</a>
+        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
+        <a href="team.html" class="nav__link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- Tools -->
+    <section class="tools" id="tools" aria-labelledby="tools-heading">
+      <div class="container">
+        <h2 id="tools-heading" class="section-title">Tools</h2>
+        <p class="section-subtitle">What we've built.</p>
+
+        <div class="tools__grid">
+          <article class="tool-card">
+            <div class="tool-card__header">
+              <h3 class="tool-card__name">OST Tool</h3>
+              <span class="tool-card__badge tool-card__badge--live">Live</span>
+            </div>
+            <p class="tool-card__desc">Generate Opportunity Solution Trees with AI to explore product opportunities, debate solutions, and get recommendations.</p>
+            <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" class="tool-card__launch">
+              Launch
+              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card__header">
+              <h3 class="tool-card__name">PDF Splitter</h3>
+              <span class="tool-card__badge tool-card__badge--live">Live</span>
+            </div>
+            <p class="tool-card__desc">Split multi-page PDFs into individual pages. Download pages one at a time or all at once as a ZIP. Runs entirely in your browser.</p>
+            <a href="pdf-splitter/index.html" class="tool-card__launch">
+              Launch
+              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card__header">
+              <h3 class="tool-card__name">PDF Combiner</h3>
+              <span class="tool-card__badge tool-card__badge--live">Live</span>
+            </div>
+            <p class="tool-card__desc">Combine multiple images and PDFs into a single document. Drag to reorder, then download. Runs entirely in your browser.</p>
+            <a href="pdf-combiner/index.html" class="tool-card__launch">
+              Launch
+              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
+      <p class="footer__attribution">Built with Claude Code</p>
+    </div>
+  </footer>
+
+</body>
+</html>

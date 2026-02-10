@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — TeamHQ</title>
+  <meta name="description" content="Create and manage product builds.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="container nav__inner">
+      <div class="nav__brand">
+        <a href="index.html" class="nav__logo-link">
+          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+        </a>
+      </div>
+      <div class="nav__links">
+        <a href="tools.html" class="nav__link">Tools</a>
+        <a href="projects.html" class="nav__link nav__link--active" aria-current="page">Projects</a>
+        <a href="meetings.html" class="nav__link">Meetings</a>
+        <a href="interviews.html" class="nav__link">Interviews</a>
+        <a href="docs.html" class="nav__link">Docs</a>
+        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
+        <a href="team.html" class="nav__link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- Projects -->
+    <section class="projects" id="projects" aria-labelledby="projects-heading">
+      <div class="container">
+        <h2 id="projects-heading" class="section-title">Projects</h2>
+        <div class="projects__toolbar">
+          <p class="projects__subtitle">Create and manage projects.</p>
+          <button class="projects__new-btn" type="button">+ New Project</button>
+        </div>
+        <div class="projects__stats" id="projects-stats" aria-label="Project summary statistics"></div>
+        <div id="projects-list">
+          <noscript>
+            <p class="projects__noscript">Enable JavaScript to manage projects.</p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal: Create/Edit Project -->
+    <div class="modal-overlay" id="project-modal-overlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+        <div class="modal__header">
+          <h3 class="modal__title" id="modal-title">New Project</h3>
+          <button class="modal__close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <form class="modal__form" id="project-form" novalidate>
+          <!-- Simple mode fields -->
+          <div class="modal__field">
+            <label class="modal__label" for="project-name">Project Name <span class="modal__required">*</span></label>
+            <input class="modal__input" type="text" id="project-name" name="name"
+                   placeholder="e.g. User Authentication" required autocomplete="off">
+            <p class="modal__error" aria-live="polite"></p>
+          </div>
+          <div class="modal__field">
+            <label class="modal__label" for="project-brief">Describe your project</label>
+            <textarea class="modal__textarea modal__textarea--brief" id="project-brief" name="brief"
+                      placeholder="What do you want built? Include as much detail as you'd like — goals, constraints, context. The team will figure out the rest." rows="6"></textarea>
+          </div>
+
+          <!-- Advanced toggle -->
+          <button class="modal__advanced-toggle" type="button" id="advanced-toggle">
+            <span class="modal__advanced-chevron" aria-hidden="true"></span>
+            <span class="modal__advanced-label">Advanced options</span>
+          </button>
+
+          <!-- Advanced fields (hidden by default) -->
+          <div class="modal__advanced" id="advanced-fields" aria-hidden="true">
+            <div class="modal__advanced-inner">
+              <div class="modal__field">
+                <label class="modal__label" for="project-description">Description</label>
+                <textarea class="modal__textarea" id="project-description" name="description"
+                          placeholder="Short summary for the project card" rows="2"></textarea>
+              </div>
+              <div class="modal__field">
+                <label class="modal__label" for="project-goals">Goals</label>
+                <textarea class="modal__textarea" id="project-goals" name="goals"
+                          placeholder="What does success look like?" rows="2"></textarea>
+              </div>
+              <div class="modal__field">
+                <label class="modal__label" for="project-constraints">Constraints</label>
+                <textarea class="modal__textarea" id="project-constraints" name="constraints"
+                          placeholder="Any boundaries or limitations?" rows="2"></textarea>
+              </div>
+              <div class="modal__field">
+                <label class="modal__label" for="project-status">Status</label>
+                <select class="modal__select" id="project-status" name="status">
+                  <option value="planned">Planned</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal__actions">
+            <button class="modal__cancel" type="button">Cancel</button>
+            <button class="modal__submit" type="submit">Create Project</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Delete Confirmation -->
+    <div class="modal-overlay" id="delete-modal-overlay" aria-hidden="true">
+      <div class="modal modal--confirm" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-desc" aria-modal="true">
+        <div class="modal__header">
+          <h3 class="modal__title" id="confirm-title">Delete Project</h3>
+          <button class="modal__close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal__body">
+          <p class="modal__confirm-text" id="confirm-desc">
+            Are you sure you want to delete <strong id="delete-project-name"></strong>? This action cannot be undone.
+          </p>
+        </div>
+        <div class="modal__actions">
+          <button class="modal__cancel" type="button">Cancel</button>
+          <button class="modal__delete" type="button">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Kickoff Prompt -->
+    <div class="modal-overlay" id="kickoff-modal-overlay" aria-hidden="true">
+      <div class="modal modal--kickoff" role="dialog" aria-labelledby="kickoff-title" aria-modal="true">
+        <div class="modal__header">
+          <h3 class="modal__title" id="kickoff-title">Kickoff Prompt</h3>
+          <button class="modal__close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <div class="kickoff__body">
+          <div class="kickoff__prompt-area">
+            <pre class="kickoff__prompt"><code id="kickoff-prompt-text"></code></pre>
+          </div>
+          <div class="kickoff__actions">
+            <button class="kickoff__copy-btn" type="button">Copy to Clipboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
+      <p class="footer__attribution">Built with Claude Code</p>
+    </div>
+  </footer>
+
+  <script src="js/projects.js" defer></script>
+</body>
+</html>

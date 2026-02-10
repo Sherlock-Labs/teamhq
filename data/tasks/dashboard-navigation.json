@@ -2,6 +2,87 @@
   "id": "dashboard-navigation",
   "name": "Dashboard Navigation — Dedicated Screens",
   "description": "Move Projects, Tools, Meetings, Spreadsheets, Docs, and Team from sections on a single scrolling page to their own dedicated screens/routes. Each section becomes a first-class page with its own URL, improving navigation and reducing the single-page scroll depth.",
-  "status": "backlog",
-  "tasks": []
+  "status": "in-progress",
+  "tasks": [
+    {
+      "agent": "pm",
+      "name": "Thomas",
+      "status": "complete",
+      "summary": "Wrote requirements doc: 4 new dedicated pages (projects, tools, meetings, team), index becomes hub page, nav updates, acceptance criteria",
+      "filesChanged": [
+        "docs/dashboard-navigation-requirements.md",
+        "data/tasks/dashboard-navigation.json"
+      ],
+      "decisions": [
+        "Meetings, Projects, Tools, Team get dedicated pages; Docs and Spreadsheets already done",
+        "Separate HTML files (not client-side routing) following existing spreadsheets.html/docs.html pattern",
+        "index.html becomes hub with hero + nav cards + How It Works; all section content and JS removed",
+        "How It Works removed from nav (stays on landing page as secondary content)",
+        "styles.css loaded on all pages for v1; CSS splitting deferred to future improvement"
+      ]
+    },
+    {
+      "agent": "arch",
+      "name": "Andrei",
+      "status": "complete",
+      "summary": "Wrote tech approach: copy-paste nav per page, extract sections to 4 new HTML files, hub card grid on index.html, no backend changes, no new dependencies",
+      "filesChanged": [
+        "docs/dashboard-navigation-tech-approach.md",
+        "data/tasks/dashboard-navigation.json"
+      ],
+      "decisions": [
+        "Copy-paste nav across all pages (proven pattern, acceptable for 7 files)",
+        "Standardize docs.html active link from <span> to <a> with aria-current for consistency",
+        "AG Grid CSS/JS only loaded on docs.html and spreadsheets.html (removed from index.html after split)",
+        "Hub card grid uses CSS Grid with auto-fill minmax(280px, 1fr), styles added to existing styles.css",
+        "No CSS splitting — all section pages load full styles.css (file is small, R4 explicitly defers this)",
+        "All JS modules already have null guards — no changes needed for safety on wrong-page loads"
+      ]
+    },
+    {
+      "agent": "designer",
+      "name": "Robert",
+      "status": "complete",
+      "summary": "Wrote design spec: hub card grid mirrors tool-card pattern (border, padding, radius, hover), 6 cards with name+desc (no icons, no counts), dedicated pages use existing section-title and container patterns, nav active state with aria-current, no page transitions for v1",
+      "filesChanged": [
+        "docs/dashboard-navigation-design-spec.md",
+        "data/tasks/dashboard-navigation.json"
+      ],
+      "decisions": [
+        "Hub cards follow tool-card visual pattern exactly (border, radius, padding, hover border-color)",
+        "No icons or item counts on hub cards — keeps index.html fully static with zero JS",
+        "Explicit breakpoints (2-col at 640px, 3-col at 1024px) instead of auto-fill to match tools grid behavior",
+        "No back-to-hub affordance needed — logo already links home per web convention",
+        "Dedicated pages keep <h2> with .section-title (same HTML as extracted sections, no semantic change)",
+        "No page transitions for v1 — standard browser navigation"
+      ]
+    },
+    {
+      "agent": "fe",
+      "name": "Alice",
+      "status": "complete",
+      "summary": "Created 5 new dedicated pages (tools.html, projects.html, meetings.html, interviews.html, team.html), transformed index.html into hub page with nav card grid, updated nav on all 7 pages (including docs.html and spreadsheets.html), added hub CSS to styles.css, split interviews from meetings into its own page",
+      "filesChanged": [
+        "tools.html",
+        "projects.html",
+        "meetings.html",
+        "interviews.html",
+        "team.html",
+        "index.html",
+        "docs.html",
+        "spreadsheets.html",
+        "css/styles.css",
+        "data/tasks/dashboard-navigation.json"
+      ],
+      "decisions": [
+        "Interviews is a separate page from meetings — interview button, config panel, and active panel live on interviews.html only",
+        "Meetings page excludes interview button from toolbar — only charter, weekly, and custom meeting buttons",
+        "audio-worklet-processor.js loaded programmatically by gemini-client.js via AudioWorklet.addModule(), no script tag needed",
+        "Cross-module CustomEvents between interview.js and meetings.js are harmless on separate pages — listeners simply never fire",
+        "docs.html active link changed from <span> to <a> with aria-current='page' for consistency",
+        "index.html has zero JS — fully static hub page with hero, 7 nav cards, and How It Works",
+        "AG Grid CSS/JS removed from index.html (only needed on docs.html and spreadsheets.html)"
+      ]
+    }
+  ]
 }

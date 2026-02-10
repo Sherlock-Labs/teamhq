@@ -9,12 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
-  <!-- AG Grid Community — CSS (structural + Quartz theme) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-grid.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-theme-quartz.css">
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/spreadsheet.css">
 </head>
 <body>
 
@@ -33,13 +29,13 @@
         </a>
       </div>
       <div class="nav__links">
-        <a href="#tools" class="nav__link">Tools</a>
-        <a href="#projects" class="nav__link">Projects</a>
-        <a href="#meetings" class="nav__link">Meetings</a>
+        <a href="tools.html" class="nav__link">Tools</a>
+        <a href="projects.html" class="nav__link">Projects</a>
+        <a href="meetings.html" class="nav__link">Meetings</a>
+        <a href="interviews.html" class="nav__link">Interviews</a>
         <a href="docs.html" class="nav__link">Docs</a>
         <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
-        <a href="#roster" class="nav__link">Team</a>
-        <a href="#how" class="nav__link">How It Works</a>
+        <a href="team.html" class="nav__link">Team</a>
       </div>
     </div>
   </nav>
@@ -55,407 +51,40 @@
 
   <main>
 
-    <!-- Tools -->
-    <section class="tools" id="tools" aria-labelledby="tools-heading">
+    <!-- Hub Navigation Grid -->
+    <section class="hub" aria-labelledby="hub-heading">
       <div class="container">
-        <h2 id="tools-heading" class="section-title">Tools</h2>
-        <p class="section-subtitle">What we've built.</p>
-
-        <div class="tools__grid">
-          <article class="tool-card">
-            <div class="tool-card__header">
-              <h3 class="tool-card__name">OST Tool</h3>
-              <span class="tool-card__badge tool-card__badge--live">Live</span>
-            </div>
-            <p class="tool-card__desc">Generate Opportunity Solution Trees with AI to explore product opportunities, debate solutions, and get recommendations.</p>
-            <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" class="tool-card__launch">
-              Launch
-              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
-            </a>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card__header">
-              <h3 class="tool-card__name">PDF Splitter</h3>
-              <span class="tool-card__badge tool-card__badge--live">Live</span>
-            </div>
-            <p class="tool-card__desc">Split multi-page PDFs into individual pages. Download pages one at a time or all at once as a ZIP. Runs entirely in your browser.</p>
-            <a href="pdf-splitter/index.html" class="tool-card__launch">
-              Launch
-              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
-            </a>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card__header">
-              <h3 class="tool-card__name">PDF Combiner</h3>
-              <span class="tool-card__badge tool-card__badge--live">Live</span>
-            </div>
-            <p class="tool-card__desc">Combine multiple images and PDFs into a single document. Drag to reorder, then download. Runs entirely in your browser.</p>
-            <a href="pdf-combiner/index.html" class="tool-card__launch">
-              Launch
-              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
-            </a>
-          </article>
+        <h2 id="hub-heading" class="section-title">Explore</h2>
+        <div class="hub__grid">
+          <a href="tools.html" class="hub__card">
+            <h3 class="hub__card-name">Tools</h3>
+            <p class="hub__card-desc">Products and utilities built by the team.</p>
+          </a>
+          <a href="projects.html" class="hub__card">
+            <h3 class="hub__card-name">Projects</h3>
+            <p class="hub__card-desc">Create and manage product builds.</p>
+          </a>
+          <a href="meetings.html" class="hub__card">
+            <h3 class="hub__card-name">Meetings</h3>
+            <p class="hub__card-desc">Simulated round-table discussions with the full team.</p>
+          </a>
+          <a href="interviews.html" class="hub__card">
+            <h3 class="hub__card-name">Interviews</h3>
+            <p class="hub__card-desc">AI-powered audio interviews on any topic.</p>
+          </a>
+          <a href="docs.html" class="hub__card">
+            <h3 class="hub__card-name">Docs</h3>
+            <p class="hub__card-desc">Project documentation and architecture records.</p>
+          </a>
+          <a href="spreadsheets.html" class="hub__card">
+            <h3 class="hub__card-name">Spreadsheets</h3>
+            <p class="hub__card-desc">Tabular data across all projects.</p>
+          </a>
+          <a href="team.html" class="hub__card">
+            <h3 class="hub__card-name">Team</h3>
+            <p class="hub__card-desc">Meet the seventeen-agent AI team.</p>
+          </a>
         </div>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section class="projects" id="projects" aria-labelledby="projects-heading">
-      <div class="container">
-        <h2 id="projects-heading" class="section-title">Projects</h2>
-        <div class="projects__toolbar">
-          <p class="projects__subtitle">Create and manage projects.</p>
-          <button class="projects__new-btn" type="button">+ New Project</button>
-        </div>
-        <div class="projects__stats" id="projects-stats" aria-label="Project summary statistics"></div>
-        <div id="projects-list">
-          <noscript>
-            <p class="projects__noscript">Enable JavaScript to manage projects.</p>
-          </noscript>
-        </div>
-      </div>
-    </section>
-
-    <!-- Modal: Create/Edit Project -->
-    <div class="modal-overlay" id="project-modal-overlay" aria-hidden="true">
-      <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
-        <div class="modal__header">
-          <h3 class="modal__title" id="modal-title">New Project</h3>
-          <button class="modal__close" type="button" aria-label="Close">&times;</button>
-        </div>
-        <form class="modal__form" id="project-form" novalidate>
-          <!-- Simple mode fields -->
-          <div class="modal__field">
-            <label class="modal__label" for="project-name">Project Name <span class="modal__required">*</span></label>
-            <input class="modal__input" type="text" id="project-name" name="name"
-                   placeholder="e.g. User Authentication" required autocomplete="off">
-            <p class="modal__error" aria-live="polite"></p>
-          </div>
-          <div class="modal__field">
-            <label class="modal__label" for="project-brief">Describe your project</label>
-            <textarea class="modal__textarea modal__textarea--brief" id="project-brief" name="brief"
-                      placeholder="What do you want built? Include as much detail as you'd like — goals, constraints, context. The team will figure out the rest." rows="6"></textarea>
-          </div>
-
-          <!-- Advanced toggle -->
-          <button class="modal__advanced-toggle" type="button" id="advanced-toggle">
-            <span class="modal__advanced-chevron" aria-hidden="true"></span>
-            <span class="modal__advanced-label">Advanced options</span>
-          </button>
-
-          <!-- Advanced fields (hidden by default) -->
-          <div class="modal__advanced" id="advanced-fields" aria-hidden="true">
-            <div class="modal__advanced-inner">
-              <div class="modal__field">
-                <label class="modal__label" for="project-description">Description</label>
-                <textarea class="modal__textarea" id="project-description" name="description"
-                          placeholder="Short summary for the project card" rows="2"></textarea>
-              </div>
-              <div class="modal__field">
-                <label class="modal__label" for="project-goals">Goals</label>
-                <textarea class="modal__textarea" id="project-goals" name="goals"
-                          placeholder="What does success look like?" rows="2"></textarea>
-              </div>
-              <div class="modal__field">
-                <label class="modal__label" for="project-constraints">Constraints</label>
-                <textarea class="modal__textarea" id="project-constraints" name="constraints"
-                          placeholder="Any boundaries or limitations?" rows="2"></textarea>
-              </div>
-              <div class="modal__field">
-                <label class="modal__label" for="project-status">Status</label>
-                <select class="modal__select" id="project-status" name="status">
-                  <option value="planned">Planned</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal__actions">
-            <button class="modal__cancel" type="button">Cancel</button>
-            <button class="modal__submit" type="submit">Create Project</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal: Delete Confirmation -->
-    <div class="modal-overlay" id="delete-modal-overlay" aria-hidden="true">
-      <div class="modal modal--confirm" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-desc" aria-modal="true">
-        <div class="modal__header">
-          <h3 class="modal__title" id="confirm-title">Delete Project</h3>
-          <button class="modal__close" type="button" aria-label="Close">&times;</button>
-        </div>
-        <div class="modal__body">
-          <p class="modal__confirm-text" id="confirm-desc">
-            Are you sure you want to delete <strong id="delete-project-name"></strong>? This action cannot be undone.
-          </p>
-        </div>
-        <div class="modal__actions">
-          <button class="modal__cancel" type="button">Cancel</button>
-          <button class="modal__delete" type="button">Delete</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal: Kickoff Prompt -->
-    <div class="modal-overlay" id="kickoff-modal-overlay" aria-hidden="true">
-      <div class="modal modal--kickoff" role="dialog" aria-labelledby="kickoff-title" aria-modal="true">
-        <div class="modal__header">
-          <h3 class="modal__title" id="kickoff-title">Kickoff Prompt</h3>
-          <button class="modal__close" type="button" aria-label="Close">&times;</button>
-        </div>
-        <div class="kickoff__body">
-          <div class="kickoff__prompt-area">
-            <pre class="kickoff__prompt"><code id="kickoff-prompt-text"></code></pre>
-          </div>
-          <div class="kickoff__actions">
-            <button class="kickoff__copy-btn" type="button">Copy to Clipboard</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Meetings -->
-    <section class="meetings" id="meetings" aria-labelledby="meetings-heading">
-      <div class="container">
-        <h2 id="meetings-heading" class="section-title">Team Meetings</h2>
-        <div class="meetings__toolbar">
-          <p class="meetings__subtitle">Simulated round-table discussions with the full team.</p>
-          <div class="meetings__buttons">
-            <button class="meetings__run-btn meetings__run-btn--charter" type="button" id="meeting-charter-btn">Run Charter</button>
-            <button class="meetings__run-btn meetings__run-btn--weekly" type="button" id="meeting-weekly-btn" disabled>Run Weekly</button>
-            <button class="meetings__run-btn meetings__run-btn--custom" type="button" id="meeting-custom-btn">New Meeting</button>
-            <button class="meetings__run-btn meetings__run-btn--interview" type="button" id="interview-btn">Interview</button>
-          </div>
-        </div>
-
-        <!-- Interview Configuration Panel -->
-        <div class="interview-config" id="interview-config" aria-hidden="true">
-          <div class="interview-config__inner">
-            <div class="interview-config__content">
-              <div class="interview-config__field">
-                <label class="interview-config__label" for="interview-topic">Topic <span class="interview-config__required">*</span></label>
-                <input class="interview-config__input" type="text" id="interview-topic"
-                       placeholder="e.g. Q1 strategy review, Product roadmap priorities"
-                       aria-required="true" aria-describedby="interview-topic-error" autocomplete="off">
-                <p class="interview-config__error" id="interview-topic-error" role="alert" aria-live="polite"></p>
-              </div>
-              <div class="interview-config__field">
-                <label class="interview-config__label" for="interview-context">Additional context <span class="interview-config__optional">(optional)</span></label>
-                <textarea class="interview-config__textarea" id="interview-context" rows="3"
-                          placeholder="Any specific questions, background, or areas to focus on..."></textarea>
-              </div>
-              <div class="interview-config__actions">
-                <button class="meetings__run-btn meetings__run-btn--interview" type="button" id="interview-start-btn" disabled>Start Interview</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Interview Active/Processing/Error Panel -->
-        <div class="interview-panel" id="interview-panel" aria-hidden="true"></div>
-
-        <!-- Screen reader announcements for interview state changes -->
-        <div class="sr-only" id="interview-sr-announce" aria-live="assertive"></div>
-
-        <!-- Custom Meeting Creation Form -->
-        <div class="meetings__create-form" id="meetings-create-form" aria-hidden="true">
-          <div class="meetings__create-form-inner">
-            <div class="meetings__create-form-content">
-              <div class="meetings__create-form-header">
-                <label class="meetings__create-form-label">Select Participants (2-6)</label>
-                <span class="meetings__create-form-count" id="participant-count" role="status" aria-live="polite">0 selected <span class="meetings__create-form-count-hint">(min 2)</span></span>
-              </div>
-              <div class="meetings__participant-grid" id="participant-grid" role="group" aria-label="Select meeting participants">
-                <!-- Populated by JS -->
-              </div>
-              <div class="meetings__create-form-field">
-                <label class="meetings__create-form-label" for="meeting-instructions">What should they discuss?</label>
-                <textarea class="meetings__create-form-textarea" id="meeting-instructions" placeholder="What should they discuss?" rows="3"></textarea>
-              </div>
-              <div class="meetings__create-form-actions">
-                <button class="meetings__run-btn meetings__run-btn--custom meetings__start-btn" type="button" id="meeting-start-btn" disabled>Start Meeting</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="meetings-list">
-          <noscript>
-            <p class="meetings__noscript">Enable JavaScript to view meetings.</p>
-          </noscript>
-        </div>
-      </div>
-    </section>
-
-    <!-- Team Roster -->
-    <section class="roster" id="roster" aria-labelledby="roster-heading">
-      <div class="container">
-        <h2 id="roster-heading" class="section-title">Meet the Team</h2>
-        <p class="section-subtitle">Seventeen specialized agents that research, scope, design, build, test, and ship.</p>
-
-        <ul class="roster__grid" role="list">
-
-          <li role="listitem" data-agent="thomas">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/thomas.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Thomas</h3>
-              <p class="agent-card__role">Product Manager</p>
-              <p class="agent-card__desc">Translates the CEO's vision into concrete, prioritized work and keeps the team focused on what actually matters.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="robert">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/robert.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Robert</h3>
-              <p class="agent-card__role">Product Designer</p>
-              <p class="agent-card__desc">Turns requirements into clear, usable designs. Every decision starts with who is using it and what they need.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="andrei">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/andrei.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Andrei</h3>
-              <p class="agent-card__role">Technical Architect</p>
-              <p class="agent-card__desc">Defines how the pieces fit together, makes tech stack decisions, and guides the team toward simple, proven approaches.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="alice">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/alice.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Alice</h3>
-              <p class="agent-card__role">Front-End Developer</p>
-              <p class="agent-card__desc">Builds the user interface with a craftsperson's eye for responsiveness, accessibility, and pixel-perfect polish.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="jonah">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/jonah.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Jonah</h3>
-              <p class="agent-card__role">Back-End Developer</p>
-              <p class="agent-card__desc">Designs APIs, data models, and server-side logic with a focus on reliability, security, and graceful failure handling.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="enzo">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/enzo.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Enzo</h3>
-              <p class="agent-card__role">QA Engineer</p>
-              <p class="agent-card__desc">The team's constructive skeptic. Tests what users actually do, not just the happy path, so the team ships with confidence.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="priya">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/priya.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Priya</h3>
-              <p class="agent-card__role">Product Marketer</p>
-              <p class="agent-card__desc">Turns technical complexity into language that makes people care. Writes tight copy, hates jargon, and thinks in headlines.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="suki">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/suki.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Suki</h3>
-              <p class="agent-card__role">Market Researcher</p>
-              <p class="agent-card__desc">Digs through competitors, market trends, and user patterns until she finds the insight that changes the conversation.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="marco">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/marco.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Marco</h3>
-              <p class="agent-card__role">Technical Researcher</p>
-              <p class="agent-card__desc">The team's deep reader. Evaluates libraries, reads API docs, and finds the gotchas before they become expensive mistakes.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="nadia">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nadia.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Nadia</h3>
-              <p class="agent-card__role">Technical Writer</p>
-              <p class="agent-card__desc">Believes that if a feature is not documented, it does not exist. Writes for the reader who has never seen the product before.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="yuki">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/yuki.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Yuki</h3>
-              <p class="agent-card__role">Data Analyst</p>
-              <p class="agent-card__desc">Speaks in numbers. Notices patterns in project data, identifies bottlenecks, and delivers the statistic that settles the debate.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="kai">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/kai.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Kai</h3>
-              <p class="agent-card__role">AI/Prompt Engineer</p>
-              <p class="agent-card__desc">The team's AI whisperer. Designs prompts like a programmer designs functions, with clear inputs, expected outputs, and edge case handling.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="zara">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/zara.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Zara</h3>
-              <p class="agent-card__role">Mobile Developer</p>
-              <p class="agent-card__desc">Lives and breathes React Native. Makes cross-platform apps feel truly native with buttery performance and platform-perfect conventions.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="leo">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/leo.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Leo</h3>
-              <p class="agent-card__role">Mobile Developer</p>
-              <p class="agent-card__desc">The person who makes apps feel alive. Obsesses over animations, gestures, and micro-interactions that make users say "this feels good."</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="nina">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nina.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Nina</h3>
-              <p class="agent-card__role">FE Interactions</p>
-              <p class="agent-card__desc">Sees motion as communication. Every transition, hover state, and animation tells the user something, and she makes sure it tells them the right thing.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="soren">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/soren.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Soren</h3>
-              <p class="agent-card__role">FE Responsive</p>
-              <p class="agent-card__desc">Thinks in breakpoints and fluid scales. Sees every design as a system of constraints that needs to work from 320px to 2560px without a single layout hack.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="amara">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/amara.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Amara</h3>
-              <p class="agent-card__role">FE Accessibility</p>
-              <p class="agent-card__desc">The team's accessibility conscience. Finds the solution that ships, not the one that lives in a spec document. Catches what automated tools miss.</p>
-            </article>
-          </li>
-
-        </ul>
-
-        <div id="recent-output"></div>
       </div>
     </section>
 
@@ -505,14 +134,5 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
-  <!-- AG Grid Community — JS (UMD bundle) -->
-  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js"></script>
-  <script src="js/spreadsheet.js" defer></script>
-  <script src="js/projects.js" defer></script>
-  <script src="js/meetings.js" defer></script>
-  <script src="js/gemini-client.js" defer></script>
-  <script src="js/interview.js" defer></script>
-  <script src="js/roster.js" defer></script>
 </body>
 </html>

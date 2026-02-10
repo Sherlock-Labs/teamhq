@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meetings — TeamHQ</title>
+  <meta name="description" content="Simulated round-table discussions with the full team.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="container nav__inner">
+      <div class="nav__brand">
+        <a href="index.html" class="nav__logo-link">
+          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+        </a>
+      </div>
+      <div class="nav__links">
+        <a href="tools.html" class="nav__link">Tools</a>
+        <a href="projects.html" class="nav__link">Projects</a>
+        <a href="meetings.html" class="nav__link nav__link--active" aria-current="page">Meetings</a>
+        <a href="interviews.html" class="nav__link">Interviews</a>
+        <a href="docs.html" class="nav__link">Docs</a>
+        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
+        <a href="team.html" class="nav__link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- Meetings -->
+    <section class="meetings" id="meetings" aria-labelledby="meetings-heading">
+      <div class="container">
+        <h2 id="meetings-heading" class="section-title">Team Meetings</h2>
+        <div class="meetings__toolbar">
+          <p class="meetings__subtitle">Simulated round-table discussions with the full team.</p>
+          <div class="meetings__buttons">
+            <button class="meetings__run-btn meetings__run-btn--charter" type="button" id="meeting-charter-btn">Run Charter</button>
+            <button class="meetings__run-btn meetings__run-btn--weekly" type="button" id="meeting-weekly-btn" disabled>Run Weekly</button>
+            <button class="meetings__run-btn meetings__run-btn--custom" type="button" id="meeting-custom-btn">New Meeting</button>
+          </div>
+        </div>
+
+        <!-- Custom Meeting Creation Form -->
+        <div class="meetings__create-form" id="meetings-create-form" aria-hidden="true">
+          <div class="meetings__create-form-inner">
+            <div class="meetings__create-form-content">
+              <div class="meetings__create-form-header">
+                <label class="meetings__create-form-label">Select Participants (2-6)</label>
+                <span class="meetings__create-form-count" id="participant-count" role="status" aria-live="polite">0 selected <span class="meetings__create-form-count-hint">(min 2)</span></span>
+              </div>
+              <div class="meetings__participant-grid" id="participant-grid" role="group" aria-label="Select meeting participants">
+                <!-- Populated by JS -->
+              </div>
+              <div class="meetings__create-form-field">
+                <label class="meetings__create-form-label" for="meeting-instructions">What should they discuss?</label>
+                <textarea class="meetings__create-form-textarea" id="meeting-instructions" placeholder="What should they discuss?" rows="3"></textarea>
+              </div>
+              <div class="meetings__create-form-actions">
+                <button class="meetings__run-btn meetings__run-btn--custom meetings__start-btn" type="button" id="meeting-start-btn" disabled>Start Meeting</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="meetings-list">
+          <noscript>
+            <p class="meetings__noscript">Enable JavaScript to view meetings.</p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
+      <p class="footer__attribution">Built with Claude Code</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+  <script src="js/meetings.js" defer></script>
+</body>
+</html>

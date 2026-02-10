@@ -20,6 +20,7 @@ Reusable reference docs for the TeamHQ agent team. Agents read these when perfor
 | [React Native & Expo](development/react-native-expo.md) | Zara, Leo, Andrei | Expo project structure, EAS workflows, SDK conventions |
 | [Mobile Component Patterns](development/mobile-component-patterns.md) | Zara, Leo, Robert | RN styling, platform code, lists, state management |
 | [Mobile Animations](development/mobile-animations.md) | Leo, Zara, Robert | Reanimated, Gesture Handler, spring configs, scroll animations |
+| [SaaS Stack](development/saas-stack.md) | Andrei, Jonah, Alice, Howard, all | Railway, Clerk, Stripe, PostHog, Loops — integration patterns, env vars, MCP usage |
 
 ## Writing
 
