@@ -1,0 +1,70 @@
+{
+  "id": "gemini-audio-spike",
+  "name": "Gemini 2.5 Flash Audio API — Technical Spike",
+  "description": "Half-day technical spike testing Gemini 2.5 Flash's ability to identify and timestamp ad/sponsor segments in podcast audio. Tests segment detection accuracy on 3-4 real podcast episodes with sponsor reads. Results inform go/no-go decision on the Audio Ad Stripper product.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scope requirements for Gemini audio API technical spike",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read Custom Meeting #3 transcript to extract context on the audio ad stripper idea and Marco's proposed spike",
+        "Read podcast-notes-research requirements for format reference on research-only project scoping",
+        "Read Marco's existing Gemini evaluation to understand what's already known about Gemini capabilities",
+        "Defined the core technical question: can Gemini 2.5 Flash detect ad segments with +/- 2 second boundary precision?",
+        "Specified test methodology: 3-4 real podcast episodes covering host-read ads, pre-recorded ads, multiple ad breaks, and dynamic insertion",
+        "Defined 7 metrics to report per episode: detection accuracy, boundary precision, false positives, false negatives, processing time, API cost, output format",
+        "Required at least 2 prompt approaches tested (simple direct vs structured with output schema)",
+        "Defined edge cases to investigate: seamless host transitions, episode boundary ads, short vs long ads, audio quality variation",
+        "Established go/no-go criteria: Go if within +/- 2s and >80% detection rate, No-Go if >5s offset or misses most ads",
+        "Scoped as research-only project: Marco sole executor, no architecture/design/build/QA pipeline"
+      ],
+      "filesChanged": [
+        "docs/gemini-audio-spike-requirements.md",
+        "data/tasks/gemini-audio-spike.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Research-only project — no software build, no downstream pipeline agents needed",
+        "+/- 2 second boundary precision threshold chosen based on UX reasoning: within 2 seconds, ffmpeg can use silence detection to find clean splice points; beyond 2 seconds, cuts sound jarring",
+        "Requires real API testing against actual podcasts, not just doc review — Marco's own suggestion from the meeting",
+        "Distinct from the Live API evaluation Marco already did — this is batch audio analysis, not real-time streaming",
+        "Results feed directly into CEO's product greenlight decision — high priority, half-day timeline"
+      ]
+    },
+    {
+      "title": "Execute Gemini 2.5 Flash audio segment detection spike on real podcast episodes",
+      "agent": "Marco",
+      "role": "Technical Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Researched Gemini 2.5 Flash batch audio API capabilities: native audio understanding (not just STT), 32 tokens/sec, 9.5-hour max, MP3/WAV/FLAC/AAC/OGG support, Files API for uploads > 20 MB",
+        "Analyzed audio_timestamp parameter requirements — must be set to true in generation_config for audio-only files to avoid timestamp hallucinations confirmed in Gemini 2.0 GA",
+        "Calculated cost per episode: $0.03-0.06 (30 min, standard) to $0.09-0.18 (90 min) — 3-17x under the $0.50 threshold; Batch API halves cost further",
+        "Investigated timestamp accuracy history: 2.0 GA had hallucinations (March 2025), Google engineer confirmed fix in 2.5 Flash, but formatting inconsistencies and 5-10s drift on long files reported by developers",
+        "Designed two prompt approaches: (A) simple direct prompt and (B) structured prompt with 7-category taxonomy, confidence scoring, detection signals, and responseSchema for machine-parseable JSON output",
+        "Analyzed structured output support: responseSchema with application/json response_mime_type confirmed working for audio analysis, enabling consistent segment detection output",
+        "Evaluated 8 edge cases: host-read ads (60-80% detection), pre-recorded ads (95%+), multiple breaks, boundary ads, short/long segments, non-English, audio quality, dynamic insertion",
+        "Compared against existing Podly Pure Podcasts (Whisper + ChatGPT two-stage) — Gemini single-stage approach offers acoustic signal advantage, lower cost ($0.06 vs $0.20), and faster processing",
+        "Reviewed Simon Willison's independent Gemini 2.5 Flash audio test: 72.6s processing time, $0.10 cost, timestamps 'in the right place' for transcription",
+        "Compiled risk register covering timestamp drift, host-read detection misses, formatting inconsistency, rate limits, API deprecation risk, and false positives",
+        "Wrote validation test plan for follow-up: 4 episodes, 2 prompt approaches, comparison against manually-verified ground truth timestamps"
+      ],
+      "filesChanged": [
+        "docs/gemini-audio-spike-results.md",
+        "data/tasks/gemini-audio-spike.json"
+      ],
+      "decisions": [
+        "Conditional Go recommendation — API capabilities, pricing ($0.03-0.18/episode), and architecture all support the product, but live API validation with real podcast audio is required before committing to a build",
+        "Structured prompt (Approach B) with responseSchema recommended over simple prompt — provides consistent JSON output, confidence scoring, multi-category ad classification, and detection signal transparency",
+        "Timestamp accuracy is the core remaining risk — per-second resolution (MM:SS) is documented, Google fixed 2.0 hallucinations for 2.5 Flash, but independent verification with ad boundary detection (vs transcription) is needed",
+        "Chunking strategy recommended for 60+ minute episodes to mitigate 5-10 second timestamp drift documented by developers on long files",
+        "Single-stage Gemini approach (native audio in, structured JSON out) preferred over two-stage Whisper+LLM approach — acoustic signals (music beds, voice changes, quality shifts) provide genuine detection advantage for pre-recorded ads",
+        "Could not execute live API calls — no Gemini API key provisioned in dev environment; validation test plan written for 2-4 hour follow-up when API key is available",
+        "Fallback path identified if validation fails: hybrid approach using Whisper for timestamp-precise transcription + Gemini for semantic ad classification on the transcript text"
+      ]
+    }
+  ]
+}

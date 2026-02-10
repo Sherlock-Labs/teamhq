@@ -742,6 +742,36 @@
         "Vertical centering via display:flex + align-items:center on .ag-cell preferred over line-height matching — more robust for multi-element cells like badges"
       ],
       "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Implemented table design polish — all 12 CSS changes from Robert's brief",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "completed",
+      "subtasks": [
+        "1. Fixed font inheritance — added explicit font-family: var(--font-family) to .ag-cell and .ag-cell-value so Geist cascades past AG Grid internals",
+        "2. Fixed vertical centering — added display:flex + align-items:center to .ag-cell and .ag-cell-wrapper with height:100%",
+        "3. Fixed right-aligned header alignment — overrode AG Grid's flex-direction:row-reverse with flex-direction:row + justify-content:flex-end on .ag-right-aligned-header .ag-header-cell-label",
+        "4. Switched numeric cells from Geist Mono to Geist + tabular-nums lining-nums with -0.01em letter-spacing — dashboard feel vs spreadsheet feel",
+        "5. Refined header typography — weight 600→500, color secondary→tertiary-accessible (#767676), letter-spacing 0.05→0.06em",
+        "6. Increased row height 40→44px comfortable, kept header at 40px, horizontal padding 12→16px. Updated CSS variables, density overrides, and JS constructor/setDensity()",
+        "7. Strengthened header border — 1px→1.5px, color border-strong→neutral-400 (#a3a3a3)",
+        "8. Softened row dividers — var(--color-border) to rgba(0,0,0,0.06)",
+        "9. Added font-weight medium to numeric cells for subtle data emphasis",
+        "10. Lightened null cell treatment — tertiary-accessible→neutral-300 (#d4d4d4), added font-weight:normal",
+        "11. Changed row hover from green tint to neutral rgba(0,0,0,0.02), updated sticky column hover to match",
+        "12. Removed last-row bottom border via .ag-row-last { border-bottom: none }"
+      ],
+      "filesChanged": [
+        "css/spreadsheet.css",
+        "js/spreadsheet.js"
+      ],
+      "decisions": [
+        "Used display:flex centering approach (preferred by Robert) over line-height matching — more robust for multi-element cells like badges",
+        "Added .ag-cell-wrapper centering as belt-and-suspenders for AG Grid v34 internal wrappers",
+        "Kept thq-cell--mono class name for now — CSS selector unchanged, semantic rename to thq-cell--numeric deferred to avoid breaking existing data"
+      ],
+      "completedAt": "2026-02-09"
     }
   ]
 }
