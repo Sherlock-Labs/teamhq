@@ -118,6 +118,7 @@ Each step produces a doc in `docs/` that the next person reads. Don't skip steps
 - **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively. These planning docs live in TeamHQ even when the product code is in a separate repo.
 - **Work logging**: Every agent updates `data/tasks/{project-id}.json` with subtasks, filesChanged, and decisions when they finish. Each project has its own JSON file to avoid write collisions between concurrent pipelines. Add new project IDs to `data/tasks/index.json`. (See agent profiles for instructions.)
 - **Landing page**: Plain HTML/CSS/vanilla JS — no frameworks. Light theme with royal jaguar green accent.
+- **SaaS stack**: Railway (hosting + Postgres), Clerk (auth), Stripe (payments), PostHog (analytics), Loops (email). See `skills/development/saas-stack.md` for full integration guide, env vars, and MCP usage. All agents building SaaS products should read this skill first.
 - **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `ost-tool/` for reference pattern — future tools should be separate repos)
 - **Architecture Decision Records**: Cross-project technical decisions are documented in `docs/adrs/`. See `docs/adrs/README.md` for the index.
 - **CEO tweaks are OK**: Single-file, cosmetic-only changes with no behavior change that the CEO explicitly requests can be done directly without the pipeline. If it affects design tokens, give Robert a heads-up.
@@ -163,6 +164,24 @@ Persistent team knowledge is stored in a vector-enabled SQLite database via the 
 **Relation types:** `uses`, `built_by`, `decided_in`, `replaced_by`, `related_to`, `depends_on`
 
 **Storage:** Local SQLite at `data/memory/team-memory.db` (gitignored, local per machine). Can be upgraded to remote Turso instance for shared access.
+
+## SaaS Stack MCP Servers
+
+In addition to memory and puppeteer, the following MCP servers are configured for the SaaS product stack:
+
+| MCP | Package | Auth | Used by |
+|-----|---------|------|---------|
+| `stripe` | `@stripe/mcp` | `STRIPE_SECRET_KEY` env var | Howard, Jonah |
+| `railway` | `@railway/mcp-server` | Railway CLI (must be installed + authenticated) | Andrei, Jonah, all |
+| `posthog` | Remote SSE (`mcp.posthog.com`) | Browser login on first use | Yuki, Kai, all |
+| `clerk` | Remote MCP (`mcp.clerk.com`) | Browser login on first use | Jonah, Alice |
+
+**Prerequisites:**
+- Railway CLI installed and authenticated (`npm install -g @railway/cli && railway login`)
+- `STRIPE_SECRET_KEY` set in your environment (use test mode key for development)
+- PostHog and Clerk MCPs authenticate via browser on first connection
+
+See `skills/development/saas-stack.md` for full integration patterns, env var reference, and service connection map.
 
 ## Skills Repository
 

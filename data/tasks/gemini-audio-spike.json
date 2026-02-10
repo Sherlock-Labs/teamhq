@@ -2,7 +2,7 @@
   "id": "gemini-audio-spike",
   "name": "Gemini 2.5 Flash Audio API — Technical Spike",
   "description": "Half-day technical spike testing Gemini 2.5 Flash's ability to identify and timestamp ad/sponsor segments in podcast audio. Tests segment detection accuracy on 3-4 real podcast episodes with sponsor reads. Results inform go/no-go decision on the Audio Ad Stripper product.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Scope requirements for Gemini audio API technical spike",
@@ -64,6 +64,41 @@
         "Single-stage Gemini approach (native audio in, structured JSON out) preferred over two-stage Whisper+LLM approach — acoustic signals (music beds, voice changes, quality shifts) provide genuine detection advantage for pre-recorded ads",
         "Could not execute live API calls — no Gemini API key provisioned in dev environment; validation test plan written for 2-4 hour follow-up when API key is available",
         "Fallback path identified if validation fails: hybrid approach using Whisper for timestamp-precise transcription + Gemini for semantic ad classification on the transcript text"
+      ]
+    },
+    {
+      "title": "Execute live API validation test against real podcast episodes",
+      "agent": "Marco",
+      "role": "Technical Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Downloaded 3 podcast episodes from public RSS feeds: Lex Fridman #489 (host-read ads, 20 min trimmed), Planet Money (NPR pre-recorded + dynamic insertion ads, 37 min), ATP #677 (multiple host-read sponsor breaks, 45 min trimmed)",
+        "Wrote Node.js validation script (validate.mjs) using Gemini REST API with Files API for uploads > 20 MB and inline base64 for smaller files",
+        "Discovered audioTimestamp parameter is NOT supported on the public Gemini Developer API — returns INVALID_ARGUMENT; timestamps work via prompt instructions alone",
+        "Ran Prompt A (simple) against all 3 episodes: 82% detection rate but systematic 20-minute timestamp offset on 2 of 3 episodes (ATP and Planet Money)",
+        "Ran Prompt B (structured with responseSchema) against all 3 episodes: 100% detection rate, all timestamps accurate within +/- 1-3 seconds",
+        "Verified ground truth via clip extraction: used ffmpeg to extract 10-15s audio clips at detected boundaries, then used Gemini to identify clip content, confirming Prompt B timestamps and disproving Prompt A timestamps",
+        "Confirmed Prompt A has systematic ~20-minute timestamp offset for ads occurring after the 10-minute mark — Prompt B does not exhibit this issue due to responseSchema anchoring temporal awareness",
+        "Verified ad type classification accuracy: model correctly distinguished host_read_ad, pre_recorded_ad, dynamic_insertion_ad, and self_promotion across all episodes",
+        "Computed costs: $0.05-0.09 per episode (standard API), $0.025-0.045 (batch API) — 6-10x under $0.50 threshold",
+        "Measured processing times: 32-50 seconds per episode (well under 3-minute threshold)",
+        "Documented Planet Money episode has 3 ad breaks: pre-roll (00:00-00:15), mid-roll cluster (07:02-07:58, 3 ads), mid-roll (26:41-27:11), and 3 post-outro dynamic ads (35:51-36:55)",
+        "Appended Section 12 (Validation Results) to docs/gemini-audio-spike-results.md with per-episode tables, prompt comparison, cost analysis, raw JSON examples, and final GO recommendation"
+      ],
+      "filesChanged": [
+        "docs/gemini-audio-spike-results.md",
+        "data/tasks/gemini-audio-spike.json",
+        "tmp/gemini-validation/validate.mjs",
+        "tmp/gemini-validation/results.json"
+      ],
+      "decisions": [
+        "GO recommendation — all go/no-go criteria met with significant margin: boundary precision +/- 1-3s (threshold +/- 2-5s), detection rate 100% (threshold >80%), false positive rate 0% (threshold <10%), cost $0.05-0.09 (threshold <$0.50), processing time 32-50s (threshold <180s)",
+        "Prompt B (structured with responseSchema) is MANDATORY for production — Prompt A has a systematic timestamp offset bug that makes it unsuitable",
+        "audioTimestamp parameter is NOT needed on the public API — timestamps work from prompt instructions alone; this contradicts the Vertex AI documentation and should be noted for Andrei",
+        "responseSchema appears to anchor the model's temporal awareness, preventing the timestamp drift that occurs with unstructured output — this is a significant finding for prompt engineering",
+        "Confidence calibration is poor (all scores 0.98-1.0) — the model doesn't produce useful borderline scores; a user review UX should not rely solely on confidence thresholds",
+        "Self-promotion vs paid ad distinction works well — valuable for product UX (don't strip charity plugs or guest promotions)",
+        "No non-English or extremely blended host-read ads tested — these remain open questions for v2 but do not block the v1 product decision"
       ]
     }
   ]
