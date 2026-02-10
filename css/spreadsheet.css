@@ -15,7 +15,7 @@
   --ag-background-color: var(--color-bg-primary);
   --ag-header-background-color: var(--color-bg-secondary);
   --ag-odd-row-background-color: var(--color-bg-primary);
-  --ag-row-hover-color: var(--color-accent-light);
+  --ag-row-hover-color: rgba(0, 0, 0, 0.02);
 
   /* Text Colors */
   --ag-foreground-color: var(--color-text-primary);
@@ -24,7 +24,7 @@
 
   /* Border Treatment (Notion-style: horizontal only) */
   --ag-border-color: var(--color-border);
-  --ag-row-border-color: var(--color-border);
+  --ag-row-border-color: rgba(0, 0, 0, 0.06);
   --ag-header-column-separator-color: transparent;
   --ag-column-border: none;
   --ag-borders: none;
@@ -33,8 +33,8 @@
 
   /* Spacing */
   --ag-grid-size: 4px;
-  --ag-cell-horizontal-padding: var(--space-3);
-  --ag-row-height: 40px;
+  --ag-cell-horizontal-padding: var(--space-4);
+  --ag-row-height: 44px;
   --ag-header-height: 40px;
 
   /* Sort Icon */
@@ -45,22 +45,47 @@
   --ag-border-radius: 0;
 }
 
+/* --- 1b. Font Inheritance Fix --- */
+
+.ag-theme-quartz .ag-cell,
+.ag-theme-quartz .ag-cell-value {
+  font-family: var(--font-family);
+}
+
+/* --- 1c. Cell Vertical Centering --- */
+
+.ag-theme-quartz .ag-cell {
+  line-height: 44px;
+  top: 0;
+}
+
+.ag-theme-quartz .ag-cell-wrapper {
+  line-height: 44px;
+}
+
 /* --- 2. Header Text Styling --- */
 
 .ag-theme-quartz .ag-header-cell-text {
   font-family: var(--font-family);
   font-size: var(--text-xs);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-secondary);
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary-accessible);
   line-height: 1;
+}
+
+/* --- 2b. Right-Aligned Header Fix --- */
+
+.ag-theme-quartz .ag-right-aligned-header .ag-header-cell-label {
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 /* --- 3. Header Bottom Border --- */
 
 .ag-theme-quartz .ag-header-row {
-  border-bottom: 1px solid var(--color-border-strong);
+  border-bottom: 1.5px solid var(--color-neutral-400);
 }
 
 /* --- 4. Sort Indicator Colors --- */
@@ -115,17 +140,27 @@
   transition: background-color 120ms ease;
 }
 
-/* --- 7. Monospace Cell Class --- */
+/* --- 6b. Last Row Border Removal --- */
+
+.ag-theme-quartz .ag-row-last {
+  border-bottom: none;
+}
+
+/* --- 7. Numeric Cell Class --- */
 
 .ag-theme-quartz .thq-cell--mono {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-family);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.01em;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
 }
 
 /* --- 8. Null Cell Class --- */
 
 .ag-theme-quartz .thq-cell--null {
-  color: var(--color-text-tertiary-accessible); /* #767676 — 4.5:1 on white, AA-safe */
+  color: var(--color-neutral-300);
+  font-weight: var(--font-weight-normal);
 }
 
 /* --- 9. Date Cell Class --- */
@@ -186,11 +221,16 @@
   --ag-cell-horizontal-padding: var(--space-2);
 }
 
+.thq-density--compact.ag-theme-quartz .ag-cell,
+.thq-density--compact.ag-theme-quartz .ag-cell-wrapper {
+  line-height: 32px;
+}
+
 .thq-density--comfortable.ag-theme-quartz {
-  --ag-row-height: 40px;
+  --ag-row-height: 44px;
   --ag-header-height: 40px;
   --ag-font-size: var(--text-sm);
-  --ag-cell-horizontal-padding: var(--space-3);
+  --ag-cell-horizontal-padding: var(--space-4);
 }
 
 /* --- 12. Density Toggle Button Styles --- */
@@ -284,7 +324,7 @@
 
 /* Row hover on sticky column */
 .thq-spreadsheet .ag-row-hover .ag-cell:first-child {
-  background: var(--color-accent-light);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 /* --- 13b. Touch Momentum Scrolling & Smooth Scroll --- */
