@@ -104,13 +104,14 @@ The team has shipped 5+ projects. This order works:
 1. **Suki + Marco** research the landscape (if applicable) → `docs/{project}-research.md`
 2. **Thomas (PM)** scopes requirements → `docs/{project}-requirements.md`
 3. **Andrei (Arch)** defines tech approach; **Kai** advises on AI parts → `docs/{project}-tech-approach.md`
-4. **Robert (Designer)** writes design spec → `docs/{project}-design-spec.md`
-5. **Alice (FE) + Jonah (BE) + Zara & Leo (Mobile)** align on API contracts, then implement in parallel (blocked by steps 2-4)
-6. **Robert (Designer)** reviews implementation against design spec — lightweight visual check before QA
-7. **Enzo (QA)** gives pass/fail verdict — this is a release gate; failures block shipping (blocked by steps 5-6)
-8. **Priya** writes messaging/copy → `docs/{project}-messaging.md`
-9. **Nadia** writes documentation → user guides, README updates
-10. **Yuki** runs retrospective analysis → `docs/{project}-retrospective.md`
+4. **Early QA notification** (conditional) — if the tech approach classifies any file as **Restructure**, notify Enzo with the file names and QA impact notes so he can begin regression test planning. This is non-blocking; steps 5-6 proceed in parallel.
+5. **Robert (Designer)** writes design spec → `docs/{project}-design-spec.md`
+6. **Alice (FE) + Jonah (BE) + Zara & Leo (Mobile)** align on API contracts, then implement in parallel (blocked by steps 2-5)
+7. **Robert (Designer)** reviews implementation against design spec — lightweight visual check before QA
+8. **Enzo (QA)** gives pass/fail verdict — this is a release gate; failures block shipping (blocked by steps 6-7). If he received an early notification in step 4, he arrives with pre-planned regression cases.
+9. **Priya** writes messaging/copy → `docs/{project}-messaging.md`
+10. **Nadia** writes documentation → user guides, README updates
+11. **Yuki** runs retrospective analysis → `docs/{project}-retrospective.md`
 
 Each step produces a doc in `docs/` that the next person reads. Don't skip steps — Andrei needs Thomas's scope to define the tech approach, Robert needs both to design within constraints, and the developers need all three to implement correctly.
 

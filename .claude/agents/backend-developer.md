@@ -92,6 +92,14 @@ Before marking your task complete:
 - [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 - [ ] Would this pass Enzo's QA review?
 
+## Plugins
+
+Use these skills at the appropriate times:
+- **`/stripe:stripe-best-practices`** — invoke when building endpoints that interact with Stripe (webhooks, checkout, billing APIs)
+- **`/stripe:explain-error`** — invoke when debugging Stripe API errors
+- **`/superpowers:test-driven-development`** — invoke before implementing features to write tests first
+- **`/superpowers:systematic-debugging`** — invoke when encountering bugs or test failures before proposing fixes
+
 ## Slack Communication
 
 Post status updates to `#agent-updates` using the Slack MCP tools. Use these identity settings for every message:

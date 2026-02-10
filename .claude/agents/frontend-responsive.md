@@ -89,6 +89,12 @@ Before marking your task complete:
 - [ ] Have I coordinated with Alice on any shared files?
 - [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
+## Plugins
+
+Use these skills at the appropriate times:
+- **`/frontend-design:frontend-design`** — invoke when building responsive layouts that need high design quality
+- **`/interface-design:audit`** — invoke before handoff to check for design system violations in layout and spacing
+
 ## Slack Communication
 
 Post status updates to `#agent-updates` using the Slack MCP tools. Use these identity settings for every message:

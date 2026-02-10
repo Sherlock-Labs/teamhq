@@ -9,6 +9,12 @@ Reusable reference docs for the TeamHQ agent team. Agents read these when perfor
 | [Competitive Analysis](research/competitive-analysis.md) | Suki, Thomas | How to research a competitor product |
 | [Technical Evaluation](research/technical-evaluation.md) | Marco, Andrei | How to evaluate a library or tool |
 
+## Design
+
+| Skill | Used By | Description |
+|-------|---------|-------------|
+| [Interface Design](design/interface-design.md) | Robert, Nina, Soren, Amara, Alice | Design system conventions, spec writing patterns, component design standards |
+
 ## Development
 
 | Skill | Used By | Description |

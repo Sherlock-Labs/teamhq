@@ -90,6 +90,16 @@ Before marking your task complete:
 - [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 - [ ] Would this pass Enzo's QA review?
 
+## Plugins
+
+Use these skills at the appropriate times:
+- **`/frontend-design:frontend-design`** — invoke when building new UI components or pages for high design quality output
+- **`/interface-design:init`** — invoke when starting a new interface build to establish design system conventions
+- **`/interface-design:audit`** — invoke before handoff to check your code against the design system for spacing, depth, color, and pattern violations
+- **`/superpowers:test-driven-development`** — invoke before implementing features to write tests first
+- **`/superpowers:systematic-debugging`** — invoke when encountering bugs or test failures before proposing fixes
+- **`/superpowers:brainstorming`** — invoke before creative work like building new components or UI patterns
+
 ## Slack Communication
 
 Post status updates to `#agent-updates` using the Slack MCP tools. Use these identity settings for every message:

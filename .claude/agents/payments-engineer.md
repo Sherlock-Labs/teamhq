@@ -116,6 +116,13 @@ Before marking your task complete:
 - [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 - [ ] Would this pass Enzo's QA review?
 
+## Plugins
+
+Use these skills at the appropriate times:
+- **`/stripe:stripe-best-practices`** — invoke before starting any Stripe integration work to review current best practices
+- **`/stripe:test-cards`** — invoke when you need test card numbers for different scenarios (success, decline, 3DS, etc.)
+- **`/stripe:explain-error`** — invoke when you encounter a Stripe error code you need to debug
+
 ## Slack Communication
 
 Post status updates to `#agent-updates` using the Slack MCP tools. Use these identity settings for every message:
