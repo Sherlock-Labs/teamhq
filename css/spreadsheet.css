@@ -65,6 +65,10 @@
 
 /* --- 2. Header Text Styling --- */
 
+.ag-theme-quartz .ag-header-cell-label {
+  justify-content: flex-start;
+}
+
 .ag-theme-quartz .ag-header-cell-text {
   font-family: var(--font-family);
   font-size: var(--text-xs);

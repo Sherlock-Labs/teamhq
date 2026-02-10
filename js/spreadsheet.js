@@ -203,15 +203,24 @@
     this.data = data;
     this.density = options.density || TeamHQSpreadsheet.getSavedDensity();
 
-    // Build AG Grid config
-    var columnDefs = data.columns.map(convertColumn);
+    // Build AG Grid config — first column gets more flex weight
+    var columnDefs = data.columns.map(function (col, i) {
+      var def = convertColumn(col);
+      if (i === 0) def.flex = 2;
+      return def;
+    });
     var gridOptions = {
       columnDefs: columnDefs,
       rowData: data.rows,
       defaultColDef: {
         sortable: true,
         resizable: false,
-        suppressMovable: true
+        suppressMovable: true,
+        flex: 1
+      },
+      autoSizeStrategy: {
+        type: 'fitGridWidth',
+        defaultMinWidth: 80
       },
       domLayout: options.height ? 'normal' : 'autoHeight',
       suppressHorizontalScroll: false,
@@ -219,7 +228,7 @@
       animateRows: false,
       rowSelection: undefined,
       headerHeight: this.density === 'compact' ? 32 : 40,
-      rowHeight: this.density === 'compact' ? 32 : 40,
+      rowHeight: this.density === 'compact' ? 32 : 44,
       suppressCellFocus: false,
       enableCellTextSelection: true,
       overlayNoRowsTemplate: '<span class="thq-no-rows">No data available</span>'
@@ -313,7 +322,7 @@
     if (prefersReducedMotion) {
       self.gridEl.className = 'thq-spreadsheet ag-theme-quartz thq-density--' + density;
       self.gridApi.updateGridOptions({
-        rowHeight: density === 'compact' ? 32 : 40,
+        rowHeight: density === 'compact' ? 32 : 44,
         headerHeight: density === 'compact' ? 32 : 40
       });
     } else {
@@ -322,7 +331,7 @@
       setTimeout(function () {
         self.gridEl.className = 'thq-spreadsheet ag-theme-quartz thq-density--' + density;
         self.gridApi.updateGridOptions({
-          rowHeight: density === 'compact' ? 32 : 40,
+          rowHeight: density === 'compact' ? 32 : 44,
           headerHeight: density === 'compact' ? 32 : 40
         });
         requestAnimationFrame(function () {

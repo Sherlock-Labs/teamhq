@@ -92,8 +92,49 @@ click → "[data-density='compact']"
 screenshot → name: "grid-compact"
 ```
 
-### 5. Compare Against Design Spec
+### 5. Data Integrity Verification (CRITICAL)
+
+**Before checking any visual/design properties, always verify that content is actually rendering.** This is the #1 failure mode — CSS changes can silently hide data while layout looks "correct."
+
+#### a. Visual Content Check
+After every CSS change, take a screenshot and confirm:
+- [ ] **All columns show data** (not just the first column)
+- [ ] **All rows show data** (not just headers)
+- [ ] **Numeric values are visible** (not blank, not "--" when real data exists)
+- [ ] **Text content is readable** (not clipped, not white-on-white, not zero-height)
+
+#### b. DOM vs. Render Verification
+Use `puppeteer_evaluate` to cross-check that what's in the DOM is actually visible:
+```js
+// Verify cell content matches visual output
+(() => {
+  const cells = document.querySelectorAll('.ag-cell');
+  const issues = [];
+  cells.forEach(c => {
+    const rect = c.getBoundingClientRect();
+    const text = c.textContent.trim();
+    const style = window.getComputedStyle(c);
+    if (text && rect.height < 5) issues.push(`Cell "${text}" has height ${rect.height}px`);
+    if (text && parseFloat(style.top) > parseFloat(style.height))
+      issues.push(`Cell "${text}" top:${style.top} exceeds row height:${style.height}`);
+    if (text && style.color === style.backgroundColor)
+      issues.push(`Cell "${text}" text color matches background`);
+  });
+  return issues.length ? issues : 'All cells rendering correctly';
+})()
+```
+
+#### c. Before/After Comparison
+When reviewing CSS changes, **always compare the same page before and after**:
+1. Screenshot the page before applying changes
+2. Apply the CSS changes
+3. Hard-reload (bust cache: append `?v=timestamp` to stylesheet URLs)
+4. Screenshot the same page after
+5. Confirm all data that was visible before is still visible after
+
+### 6. Compare Against Design Spec
 When reviewing screenshots, check:
+- [ ] **Data is present and readable** (check this FIRST, before anything else)
 - [ ] Color tokens match (backgrounds, borders, text)
 - [ ] Typography hierarchy correct (size, weight, spacing)
 - [ ] Spacing consistent with design token scale
@@ -101,35 +142,61 @@ When reviewing screenshots, check:
 - [ ] Responsive layout adapts correctly at breakpoints
 - [ ] No horizontal overflow or layout breaking
 - [ ] Empty states render correctly
+- [ ] Column widths are proportional to content (no oversized empty columns)
+
+## AG Grid Gotchas
+
+CSS overrides on AG Grid are high-risk. These have caused production regressions:
+
+| Override | Risk | What Breaks |
+|----------|------|-------------|
+| `display: flex` on `.ag-cell` | **CRITICAL** | AG Grid cells use `position: absolute`. Adding flex breaks the absolute layout — cells stack or collapse. |
+| `position: sticky` on `.ag-cell:first-child` | **HIGH** | Makes the first cell flow-positioned. Sibling absolute cells with `top: auto` resolve their static position *after* the sticky cell, pushing them off-screen. **Fix:** always pair with `top: 0` on all `.ag-cell`. |
+| `overflow: hidden` on `.ag-row` or viewport | **HIGH** | Can clip absolute-positioned cells that extend beyond expected bounds. |
+| `line-height` on `.ag-cell` without `top: 0` | **MEDIUM** | Changes the static position calculation for absolute cells in the same row. |
+| `font-family` on `.ag-cell` only | **LOW** | Must also target `.ag-cell-value` or content inherits from AG Grid's default. |
+
+**Golden rule:** After ANY AG Grid CSS change, run the DOM vs. Render verification script (Section 5b) to confirm cells are still visible.
 
 ## Common Checks by Role
 
+### ALL ROLES — Mandatory First Check
+Before doing any role-specific checks:
+- [ ] **Take a screenshot and confirm all data cells have visible content**
+- [ ] Run DOM vs. Render verification (Section 5b) if the change touches CSS
+
 ### Robert (Design Review)
+- Data is present and readable in all columns (check FIRST)
 - Overall visual fidelity to design spec
 - Color and typography consistency
-- Layout proportions and spacing
+- Layout proportions and spacing — columns sized proportionally to content
 - Empty states and edge cases
 
 ### Nina (Interactions)
+- Data still renders after triggering interactive states
 - Hover states on interactive elements
 - Transition smoothness (use evaluate to trigger)
 - Focus ring appearance and color
-- Animation timing
+- Animation timing — density toggle doesn't hide data during transition
 
 ### Soren (Responsive)
+- Data visible at ALL breakpoints, not just desktop
 - Screenshots at all 4 breakpoints
 - Touch target sizing on mobile
 - Content reflow and stacking behavior
-- No horizontal scroll on narrow viewports
+- No horizontal scroll on narrow viewports (unless table overflows naturally)
 
 ### Amara (Accessibility)
+- Data visible with all accessibility features enabled
 - Focus ring visibility and contrast
 - Color contrast verification (evaluate getComputedStyle)
 - ARIA state changes visible in DOM
 - Reduced motion behavior
 
 ### Enzo (QA)
+- **Data integrity: all cells that should have data DO have visible data** (smoke test FIRST)
 - Full page at each breakpoint
 - All interactive states (hover, active, focus, disabled)
 - Error states rendered correctly
 - Loading/skeleton states
+- Before/after comparison when reviewing CSS changes
