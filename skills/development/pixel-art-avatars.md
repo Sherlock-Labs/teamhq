@@ -48,6 +48,11 @@ All avatars are 16x16 pixel SVGs with `shape-rendering="crispEdges"` to prevent 
 | Nadia | `#A06080` (mauve) | `#1C1016` (dark) | `#F5D5C0` |
 | Yuki | `#4A8CC0` (steel blue) | `#0A0A12` (black) | `#F5E0C8` |
 | Kai | `#7ACC40` (lime) | `#2A1E14` (dark) | `#D8A87A` |
+| Howard | `#8B5CF6` (violet) | `#3D2B1F` (dark brown) | `#C68642` |
+| Ravi | `#6B21A8` (deep purple) | `#1C1008` (dark) | `#C68642` |
+| Derek | `#4F46E5` (indigo) | `#1C1410` (dark) | `#D4A574` |
+| Milo | `#166534` (dark green) | `#8B7355` (light brown) | `#F0C8A0` |
+| Sam | `#D97706` (amber) | `#8B4513` (reddish brown) | `#E8C8A0` |
 
 ## Conventions
 

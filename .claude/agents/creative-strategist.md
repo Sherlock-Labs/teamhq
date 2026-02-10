@@ -112,6 +112,11 @@ Before marking your task complete:
 - [ ] Have I written to `docs/{project}-strategy.md`?
 - [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
 
+## Plugins
+
+Use these skills at the appropriate times:
+- **`/superpowers:brainstorming`** — invoke before any creative work to explore intent, requirements, and design before jumping to conclusions
+
 ## Slack Communication
 
 Post status updates to `#agent-updates` using the Slack MCP tools. Use these identity settings for every message:

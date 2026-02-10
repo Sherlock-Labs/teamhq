@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Hair (short, wavy, dark) -->
+  <rect x="4" y="1" width="8" height="1" fill="#1C1410"/>
+  <rect x="3" y="2" width="10" height="1" fill="#1C1410"/>
+  <rect x="3" y="3" width="10" height="1" fill="#1C1410"/>
+  <rect x="3" y="3" width="1" height="1" fill="#1C1410"/>
+  <!-- Face -->
+  <rect x="4" y="4" width="8" height="1" fill="#D4A574"/>
+  <rect x="3" y="5" width="10" height="1" fill="#D4A574"/>
+  <rect x="3" y="6" width="10" height="1" fill="#D4A574"/>
+  <rect x="3" y="7" width="10" height="1" fill="#D4A574"/>
+  <rect x="4" y="8" width="8" height="1" fill="#D4A574"/>
+  <rect x="4" y="9" width="8" height="1" fill="#D4A574"/>
+  <rect x="5" y="10" width="6" height="1" fill="#D4A574"/>
+  <!-- Eyes -->
+  <rect x="5" y="6" width="1" height="1" fill="#1C1410"/>
+  <rect x="10" y="6" width="1" height="1" fill="#1C1410"/>
+  <!-- Smile -->
+  <rect x="6" y="9" width="4" height="1" fill="#B8875A"/>
+  <!-- Stubble -->
+  <rect x="4" y="8" width="1" height="1" fill="#C09868"/>
+  <rect x="11" y="8" width="1" height="1" fill="#C09868"/>
+  <!-- Neck -->
+  <rect x="6" y="11" width="4" height="1" fill="#D4A574"/>
+  <!-- Shirt (indigo - integrations/glue vibes) -->
+  <rect x="2" y="12" width="12" height="4" fill="#4F46E5"/>
+  <!-- V-neck -->
+  <rect x="7" y="12" width="1" height="1" fill="#D4A574"/>
+  <rect x="8" y="12" width="1" height="1" fill="#D4A574"/>
+  <rect x="7" y="13" width="2" height="1" fill="#3730A3"/>
+</svg>

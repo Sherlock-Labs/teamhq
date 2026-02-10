@@ -61,6 +61,9 @@ This is the team's north star. Every decision — scoping, architecture, design,
 | `frontend-accessibility` | Amara | Front-end specialist in accessibility, WCAG compliance, keyboard navigation, and screen readers. | Opus |
 | `payments-engineer` | Howard | Builds payment flows, billing logic, and Stripe integrations. Expert in subscriptions, webhooks, and PCI compliance. | Opus |
 | `creative-strategist` | Ravi | Creative business strategist. Generates product ideas, spots non-obvious opportunities, and challenges assumptions. Thinks across disciplines. | Opus |
+| `backend-integrations` | Derek | Wires up third-party services (Clerk, Stripe, Loops, R2). Webhooks, OAuth, API syncs, and data flow between systems. | Opus |
+| `backend-devops` | Milo | CI/CD, Railway config, database migrations, monitoring. Keeps the pipeline green and deploys boring. | Opus |
+| `backend-developer-2` | Sam | Jonah's counterpart. Picks up backend work in parallel — APIs, data models, server logic. Follows Jonah's patterns. | Opus |
 
 ## How the Team Operates
 
@@ -133,7 +136,7 @@ Agents are spawned via the Task tool with `team_name` and the agent's file name:
 
 ```
 subagent_type: "general-purpose"
-name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments", "strategist")
+name: "pm" (or "fe", "be", "be-2", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments", "strategist", "integrations", "devops")
 model: "opus" (all agents use Opus)
 ```
 

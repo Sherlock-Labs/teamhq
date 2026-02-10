@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Hair (buzz cut, light brown) -->
+  <rect x="4" y="1" width="8" height="1" fill="#8B7355"/>
+  <rect x="3" y="2" width="10" height="1" fill="#8B7355"/>
+  <rect x="3" y="3" width="10" height="1" fill="#8B7355"/>
+  <!-- Face -->
+  <rect x="4" y="4" width="8" height="1" fill="#F0C8A0"/>
+  <rect x="3" y="5" width="10" height="1" fill="#F0C8A0"/>
+  <rect x="3" y="6" width="10" height="1" fill="#F0C8A0"/>
+  <rect x="3" y="7" width="10" height="1" fill="#F0C8A0"/>
+  <rect x="4" y="8" width="8" height="1" fill="#F0C8A0"/>
+  <rect x="4" y="9" width="8" height="1" fill="#F0C8A0"/>
+  <rect x="5" y="10" width="6" height="1" fill="#F0C8A0"/>
+  <!-- Eyes -->
+  <rect x="5" y="6" width="1" height="1" fill="#2A2018"/>
+  <rect x="10" y="6" width="1" height="1" fill="#2A2018"/>
+  <!-- Glasses -->
+  <rect x="4" y="5" width="3" height="3" fill="none" stroke="#4A4A4A" stroke-width="0.6"/>
+  <rect x="9" y="5" width="3" height="3" fill="none" stroke="#4A4A4A" stroke-width="0.6"/>
+  <rect x="7" y="6" width="2" height="0.6" fill="#4A4A4A"/>
+  <!-- Smile -->
+  <rect x="6" y="9" width="4" height="1" fill="#D4A880"/>
+  <!-- Neck -->
+  <rect x="6" y="11" width="4" height="1" fill="#F0C8A0"/>
+  <!-- Shirt (dark green - devops/infra vibes) -->
+  <rect x="2" y="12" width="12" height="4" fill="#166534"/>
+  <!-- Collar (hoodie-style) -->
+  <rect x="5" y="12" width="6" height="1" fill="#14532D"/>
+</svg>
