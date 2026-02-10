@@ -45,6 +45,7 @@
     'Soren': { role: 'Responsive Specialist', avatar: 'img/avatars/soren.svg', color: agentColor('soren') },
     'Amara': { role: 'Accessibility Specialist', avatar: 'img/avatars/amara.svg', color: agentColor('amara') },
     'Howard': { role: 'Payments Engineer', avatar: 'img/avatars/howard.svg', color: agentColor('howard') },
+    'Ravi': { role: 'Creative Strategist', avatar: 'img/avatars/ravi.svg', color: agentColor('ravi') },
   };
 
   // Agent roster for participant selection (key matches backend agent keys)
@@ -67,6 +68,7 @@
     { key: 'frontend-responsive', name: 'Soren', role: 'Responsive' },
     { key: 'frontend-accessibility', name: 'Amara', role: 'A11y' },
     { key: 'payments-engineer', name: 'Howard', role: 'Payments' },
+    { key: 'creative-strategist', name: 'Ravi', role: 'Strategist' },
   ];
 
   // Map agent keys to display names (for participant avatars on cards)

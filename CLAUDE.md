@@ -35,6 +35,7 @@ This is the team's north star. Every decision — scoping, architecture, design,
 - **Priya (Marketer)** writes copy that matches the product: clear, sharp, no fluff. If the product idea fits in one sentence, the marketing should too.
 - **Nadia (Writer)** keeps docs concise and useful. Document what someone needs to get started, not everything that exists. Short docs that people read beat comprehensive docs that no one does.
 - **Yuki (Analyst)** focuses retrospectives on what actually moves the needle. Surface the one or two insights that change how we work next time, not a full data dump.
+- **Ravi (Strategist)** generates ideas that are genuinely different, not incremental. Thinks about business models and distribution, not just features. Would rather propose something provocatively wrong than safely boring.
 - **Everyone** pushes back on scope creep and asks: "Does this need to be in v1?"
 
 ## The Team
@@ -59,6 +60,7 @@ This is the team's north star. Every decision — scoping, architecture, design,
 | `frontend-responsive` | Soren | Front-end specialist in responsive layouts, CSS Grid/Flexbox, fluid typography, and breakpoints. | Opus |
 | `frontend-accessibility` | Amara | Front-end specialist in accessibility, WCAG compliance, keyboard navigation, and screen readers. | Opus |
 | `payments-engineer` | Howard | Builds payment flows, billing logic, and Stripe integrations. Expert in subscriptions, webhooks, and PCI compliance. | Opus |
+| `creative-strategist` | Ravi | Creative business strategist. Generates product ideas, spots non-obvious opportunities, and challenges assumptions. Thinks across disciplines. | Opus |
 
 ## How the Team Operates
 
@@ -130,7 +132,7 @@ Agents are spawned via the Task tool with `team_name` and the agent's file name:
 
 ```
 subagent_type: "general-purpose"
-name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments")
+name: "pm" (or "fe", "be", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments", "strategist")
 model: "opus" (all agents use Opus)
 ```
 

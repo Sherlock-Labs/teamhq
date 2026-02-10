@@ -20,6 +20,7 @@ const AGENT_DISPLAY_NAMES: Record<string, { name: string; role: string }> = {
   "frontend-responsive": { name: "Soren", role: "Responsive Specialist" },
   "frontend-accessibility": { name: "Amara", role: "Accessibility Specialist" },
   "payments-engineer": { name: "Howard", role: "Payments Engineer" },
+  "creative-strategist": { name: "Ravi", role: "Creative Strategist" },
 };
 
 /**

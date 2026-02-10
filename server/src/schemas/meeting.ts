@@ -11,7 +11,7 @@ export const VALID_AGENT_KEYS = new Set([
   "technical-writer", "data-analyst", "ai-engineer",
   "mobile-developer-1", "mobile-developer-2",
   "frontend-interactions", "frontend-responsive", "frontend-accessibility",
-  "payments-engineer",
+  "payments-engineer", "creative-strategist",
 ]);
 
 export const MeetingStatus = z.enum(["running", "completed", "failed"]);
