@@ -17,6 +17,8 @@
 </head>
 <body>
 
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
   <!-- Navigation -->
   <nav class="nav" aria-label="Main navigation">
     <div class="container nav__inner">
@@ -30,19 +32,19 @@
         <a href="index.html#projects" class="nav__link">Projects</a>
         <a href="index.html#meetings" class="nav__link">Meetings</a>
         <a href="docs.html" class="nav__link">Docs</a>
-        <span class="nav__link nav__link--active">Spreadsheets</span>
+        <a href="spreadsheets.html" class="nav__link nav__link--active" aria-current="page">Spreadsheets</a>
         <a href="index.html#roster" class="nav__link">Team</a>
         <a href="index.html#how" class="nav__link">How It Works</a>
       </div>
     </div>
   </nav>
 
-  <main class="spreadsheets-page">
+  <main class="spreadsheets-page" id="main-content">
     <div class="container">
       <!-- Page Header -->
       <div class="spreadsheets-header">
         <h1 class="spreadsheets-header__title">Spreadsheets</h1>
-        <p class="spreadsheets-header__stats" id="spreadsheets-stats"></p>
+        <p class="spreadsheets-header__stats" id="spreadsheets-stats" aria-live="polite"></p>
       </div>
 
       <!-- List View (shown by default) -->

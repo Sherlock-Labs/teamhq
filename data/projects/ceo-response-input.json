@@ -1,0 +1,19 @@
+{
+  "id": "ceo-response-input",
+  "slug": "ceo-response-input",
+  "name": "CEO Response Input",
+  "description": "Add a message input to the session viewer so the CEO can respond to agent questions directly from the web UI during a running session.",
+  "status": "completed",
+  "createdAt": "2026-02-10T01:03:36.498Z",
+  "updatedAt": "2026-02-10T01:03:36.498Z",
+  "completedAt": "2026-02-10T01:03:36.498Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

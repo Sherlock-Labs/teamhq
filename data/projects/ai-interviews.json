@@ -1,0 +1,19 @@
+{
+  "id": "ai-interviews",
+  "slug": "ai-interviews",
+  "name": "AI-Powered Interviews",
+  "description": "Add AI-powered video/audio interview capabilities to TeamHQ — real-time conversations with an AI interviewer that get recorded, transcribed, and fed into the existing meeting system.",
+  "status": "in-progress",
+  "createdAt": "2026-02-10T01:03:36.499Z",
+  "updatedAt": "2026-02-10T01:03:36.499Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

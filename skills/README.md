@@ -36,6 +36,7 @@ Reusable reference docs for the TeamHQ agent team. Agents read these when perfor
 | [Project Kickoff](workflow/project-kickoff.md) | Thomas, all | PM to QA pipeline checklist |
 | [Code Review](workflow/code-review.md) | Enzo, Alice, Jonah | Review checklist |
 | [QA Test Plan](workflow/qa-test-plan.md) | Enzo | Standard test plan template |
+| [Visual Testing](workflow/visual-testing.md) | Robert, Nina, Soren, Amara, Enzo, Alice | Puppeteer MCP screenshot workflow for visual QA |
 | [Acceptance Criteria](workflow/acceptance-criteria.md) | Thomas, Robert, Alice, Jonah, Enzo, Nina | Interaction states checklist for AC |
 
 ## AI

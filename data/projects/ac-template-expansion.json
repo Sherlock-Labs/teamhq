@@ -1,0 +1,19 @@
+{
+  "id": "ac-template-expansion",
+  "slug": "ac-template-expansion",
+  "name": "Acceptance Criteria Template Expansion",
+  "description": "Expand acceptance criteria template to systematically cover interaction edge cases (async operations, disabled states, error recovery, loading states, empty states, form state, optimistic updates, timeout handling) in addition to core user flows.",
+  "status": "completed",
+  "createdAt": "2026-02-10T01:03:36.498Z",
+  "updatedAt": "2026-02-10T01:03:36.498Z",
+  "completedAt": "2026-02-10T01:03:36.498Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

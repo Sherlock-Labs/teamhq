@@ -134,6 +134,7 @@
       headerName: col.label,
       sortable: true,
       resizable: false,
+      minWidth: 80,
       cellClassRules: {
         'thq-cell--null': function (params) { return params.value == null; }
       }
@@ -145,6 +146,7 @@
         def.valueFormatter = numberFormatter;
         def.comparator = numericComparator;
         def.cellClass = 'thq-cell--mono';
+        def.minWidth = 80;
         break;
 
       case 'currency':
@@ -152,6 +154,7 @@
         def.valueFormatter = currencyFormatter(col.prefix || '$');
         def.comparator = numericComparator;
         def.cellClass = 'thq-cell--mono';
+        def.minWidth = 100;
         break;
 
       case 'percent':
@@ -159,22 +162,26 @@
         def.valueFormatter = percentFormatter;
         def.comparator = numericComparator;
         def.cellClass = 'thq-cell--mono';
+        def.minWidth = 80;
         break;
 
       case 'date':
         def.valueFormatter = dateFormatter;
         def.comparator = dateComparator;
         def.cellClass = 'thq-cell--date';
+        def.minWidth = 110;
         break;
 
       case 'badge':
         def.cellRenderer = badgeCellRenderer;
         def.comparator = textComparator;
+        def.minWidth = 90;
         break;
 
       case 'text':
       default:
         def.comparator = textComparator;
+        def.minWidth = 100;
         break;
     }
 
@@ -213,7 +220,7 @@
       rowSelection: undefined,
       headerHeight: this.density === 'compact' ? 32 : 40,
       rowHeight: this.density === 'compact' ? 32 : 40,
-      suppressCellFocus: true,
+      suppressCellFocus: false,
       enableCellTextSelection: true,
       overlayNoRowsTemplate: '<span class="thq-no-rows">No data available</span>'
     };
@@ -233,6 +240,9 @@
 
     // Create the AG Grid instance
     this.gridApi = agGrid.createGrid(gridEl, gridOptions);
+
+    // Add accessible name to the grid
+    this.gridEl.setAttribute('aria-label', data.name || 'Data table');
 
     // Scroll tracking for sticky column shadow and scroll-hint
     this._onScroll = this._handleScroll.bind(this);
@@ -297,11 +307,35 @@
 
   TeamHQSpreadsheet.prototype.setDensity = function (density) {
     this.density = density;
-    this.gridEl.className = 'thq-spreadsheet ag-theme-quartz thq-density--' + density;
-    this.gridApi.updateGridOptions({
-      rowHeight: density === 'compact' ? 32 : 40,
-      headerHeight: density === 'compact' ? 32 : 40
-    });
+    var self = this;
+    var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      self.gridEl.className = 'thq-spreadsheet ag-theme-quartz thq-density--' + density;
+      self.gridApi.updateGridOptions({
+        rowHeight: density === 'compact' ? 32 : 40,
+        headerHeight: density === 'compact' ? 32 : 40
+      });
+    } else {
+      this.gridEl.style.transition = 'opacity 120ms ease-out';
+      this.gridEl.style.opacity = '0.3';
+      setTimeout(function () {
+        self.gridEl.className = 'thq-spreadsheet ag-theme-quartz thq-density--' + density;
+        self.gridApi.updateGridOptions({
+          rowHeight: density === 'compact' ? 32 : 40,
+          headerHeight: density === 'compact' ? 32 : 40
+        });
+        requestAnimationFrame(function () {
+          self.gridEl.style.opacity = '1';
+          self.gridEl.style.transition = 'opacity 180ms ease-in';
+          setTimeout(function () {
+            self.gridEl.style.transition = '';
+            self.gridEl.style.opacity = '';
+          }, 200);
+        });
+      }, 130);
+    }
+
     TeamHQSpreadsheet.saveDensity(density);
   };
 

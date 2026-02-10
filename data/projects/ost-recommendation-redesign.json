@@ -1,0 +1,19 @@
+{
+  "id": "ost-recommendation-redesign",
+  "slug": "ost-recommendation-redesign",
+  "name": "OST Recommendation Page Redesign",
+  "description": "Redesigned the OST tool recommendation page to reduce color overload, add expandable debater reasoning, and improve information hierarchy.",
+  "status": "completed",
+  "createdAt": "2026-02-10T01:03:36.496Z",
+  "updatedAt": "2026-02-10T01:03:36.496Z",
+  "completedAt": "2026-02-10T01:03:36.496Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

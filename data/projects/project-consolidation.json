@@ -1,0 +1,19 @@
+{
+  "id": "project-consolidation",
+  "slug": "project-consolidation",
+  "name": "Project Consolidation",
+  "description": "Merge the separate Projects and Portfolio tracking systems into a single unified project section — combining active project management (sessions, notes, briefs) with pipeline history (agent tasks, decisions, files changed).",
+  "status": "in-progress",
+  "createdAt": "2026-02-10T01:03:36.499Z",
+  "updatedAt": "2026-02-10T01:03:36.499Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

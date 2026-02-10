@@ -2,7 +2,7 @@
   "id": "embedded-spreadsheet",
   "name": "Embedded Spreadsheet Component",
   "description": "A read-only, sortable table component for viewing structured data (revenue models, competitive analyses, metrics) natively within TeamHQ project views and doc pages.",
-  "status": "in-progress",
+  "status": "completed",
   "tasks": [
     {
       "title": "Scoped requirements for embedded spreadsheet component",
@@ -359,6 +359,387 @@
         "Security posture is solid — escapeHTML/escapeAttr used consistently, textContent for badge rendering, no path traversal vectors",
         "Accessibility implementation matches spec — aria-pressed, role=group, aria-label, role=alert, keyboard-accessible buttons, reduced motion handling",
         "No blocking bugs found. Three non-blocking observations documented (defer/blocking mix, overlayNoRowsTemplate pattern, missing overflow:hidden on wrapper)"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Micro-interaction audit of AG Grid spreadsheet implementation",
+      "agent": "Nina",
+      "role": "Front-End Interactions Specialist",
+      "status": "completed",
+      "subtasks": [
+        "Audited all hover states: row hover (good, 120ms ease), header hover (P2 — missing transition, snaps on/off), group card hover (P3 — border jump to zinc-700 is harsh), list item hover (good), back button hover (good), density toggle hover (good)",
+        "Audited all transitions: density toggle grid animation (P1 — rows snap with no crossfade when switching compact/comfortable), view transitions list-to-reader (P2 — instant display:none swap with no fade), accordion expand/collapse (good, CSS grid trick), scroll shadow fade (good, 200ms ease)",
+        "Audited cell selection: suppressCellFocus removes AG Grid default blue focus ring (correct for read-only) but leaves keyboard navigation with no visual indicator (P2 — flag for Amara's a11y review)",
+        "Audited scroll behavior: sticky column shadow (good), scroll-hint gradient (good), horizontal scroll (P3 — no scroll-behavior:smooth for programmatic scrolls)",
+        "Audited density toggle: button animations good (150ms ease on color/bg/border), grid content snaps (P1 — needs crossfade wrapper, proposed 120ms fade-out + 180ms fade-in solution)",
+        "Audited loading states: pulse animation well-calibrated (1.5s, 0.4-1.0 opacity), skeleton cards lack stagger (P2 — add 0.2s animation-delay on second card), loading-to-grid swap is instant (P2 — needs fade-in on rendered content)",
+        "Audited badge pills: correctly have no hover states (static data display), no entrance animation on sort (P3 — intentional per animateRows:false decision)",
+        "Audited back button: color transition good, arrow has no hover nudge (P2 — needs translateX(-2px) to match tool-card launch arrow pattern established in styles.css)",
+        "Audited sort indicator: icon color correctly uses accent green, but icon appears/disappears without transition (P2 — proposed 150ms fade-in + translateY entrance animation)",
+        "Audited AG Grid default overrides: blue focus ring leaks on grid wrapper (P1 — needs .ag-root-wrapper focus-visible override to match TeamHQ green accent), header cells lack cursor:pointer (P2 — all columns are sortable), no tooltip issues, no menu icon issues",
+        "Identified dead CSS: transition on .spreadsheet-group__chevron parent is redundant since the ::before pseudo-element has its own transition (P3)",
+        "Identified missing group header hover: .spreadsheet-group__header has cursor:pointer but no hover background, unlike every other clickable row in TeamHQ (P2)",
+        "Cataloged 14 total issues: 2 P1 (blue focus ring, density snap), 8 P2 (header transition, view transition, cell focus, skeleton stagger, loading fade, back arrow, sort icon, header cursor, group hover), 4 P3 (dead CSS, scroll smooth, badge sort, group card border)",
+        "Provided specific CSS/JS fix code for all 14 issues with exact selectors, durations, and prefers-reduced-motion handling",
+        "Estimated ~2 hours total effort for all P1+P2 fixes, recommended fix order starting with CSS-only changes"
+      ],
+      "filesChanged": [
+        "docs/spreadsheet-interactions-audit.md"
+      ],
+      "decisions": [
+        "Recommended crossfade (opacity 0.3 -> 1.0) for density toggle instead of attempting to animate AG Grid row heights — AG Grid sets inline pixel heights that CSS transitions cannot control",
+        "Recommended opacity crossfade for list-to-reader view transition instead of slide/transform — simpler to implement, less risk of layout shift, consistent with how loading states already fade",
+        "Deferred animateRows decision to Robert — Andrei and Robert intentionally set animateRows:false for snappy sorts, not overriding without design approval",
+        "Flagged suppressCellFocus as an accessibility concern for Amara's review rather than making a unilateral change — product decision on whether keyboard cell navigation is expected in a read-only viewer",
+        "Proposed fix order: CSS-only fixes first (7 items, can ship in one commit), then JS interaction improvements (3 items), then accessibility-gated change (1 item after Amara's input)"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Responsive layout audit of AG Grid spreadsheet implementation",
+      "agent": "Soren",
+      "role": "Front-End Responsive Specialist",
+      "status": "completed",
+      "subtasks": [
+        "Audited grid container sizing: wrapper correctly uses width:100%/max-width:100% within .container (1120px max), no parent overflow — PASS with one minor note on missing overflow-x:clip from spec",
+        "Audited horizontal scrolling: scroll-hint shadow works correctly (JS toggle on scroll position + ResizeObserver), but missing -webkit-overflow-scrolling:touch for older iOS momentum scroll (P2), and no visual scroll affordance for touch users (P2)",
+        "Audited column sizing: no minWidth defined on any column type in convertColumn() — columns collapse to unusable widths on narrow screens (P1), especially 7-column spreadsheets at 320px where columns reach ~46px. Sticky first column has no width constraints, can consume excessive viewport width (P2)",
+        "Audited breakpoint behavior: only two breakpoints defined (max-width:767px mobile, min-width:1024px desktop) — no tablet-specific treatment for 768-1023px range (P2). Reader meta row wraps awkwardly at 768-900px due to flex space-between without flex-wrap (P2)",
+        "Audited list view responsiveness: spreadsheet-item metadata does not stack on narrow screens unlike docs page equivalent which uses flex-wrap+order at 639px (P2). Group header padding (space-5) not responsive — visually heavy on small screens (P3). Accordion expand/collapse works at all widths — PASS",
+        "Audited reader view header: back button touch target is ~21px tall with padding:0, well below 44px minimum (P1). Reader title scales correctly from text-xl to text-lg at 767px. Mobile meta row stacking works correctly",
+        "Audited typography scaling: cell text sizing via density system works well (text-sm comfortable, text-xs compact, mobile forces compact). Page title lacks fluid scaling — hard jump from text-2xl to text-3xl at 1024px (P3). Header cells consistent at text-xs across all densities — PASS",
+        "Audited touch targets: density toggle buttons at ~20px height well below 44px minimum (P1). Group headers meet minimum (~54px). List items meet minimum (~45-63px). AG Grid header height 32px in compact mode is below minimum but acceptable given full-width column touch area (P3 informational)",
+        "Audited embedded spreadsheets: docs-embedded spreadsheet over-constrained by 90ch max-width on docs-reader__content — 7-column table has only ~103px per column at 1440px while 360px whitespace unused per side (P2). Project detail embed works correctly at full panel width. Inline embed header padding not responsive (P3)",
+        "Assessed container queries vs media queries: all responsive overrides use viewport media queries, which work for standalone page but do not respond to container width in docs embed (90ch) or project detail panel. Container queries recommended for v2 to make component truly context-aware (P3)",
+        "Cataloged 16 total issues: 3 P1 (column minWidth, back button touch target, density toggle touch target), 7 P2 (webkit-overflow-scrolling, touch scroll affordance, tablet breakpoint gap, meta row wrapping, list item stacking, sticky column constraints, docs embed width), 6 P3 (fluid title, group padding, embed header padding, overflow-x:clip, container queries, header touch targets)",
+        "Provided specific CSS and JS fix code for all 16 issues with exact selectors and property values",
+        "Recommended fix priority order: P1s first (accessibility violations and data legibility), then P2s (layout polish), then P3s (refinements and v2 architectural improvements)"
+      ],
+      "filesChanged": [
+        "docs/spreadsheet-responsive-audit.md"
+      ],
+      "decisions": [
+        "P1: Column minWidth is the most impactful fix — without minimum widths, columns collapse to illegible widths on narrow screens. Recommended minWidth by type: text 100px, number/currency/percent 90px, date 110px, badge 80px, baseline 80px",
+        "P1: Back button and density toggle touch targets are accessibility violations — back button needs min-height:44px with padding, toggle buttons need @media(pointer:coarse) expansion to 44px",
+        "P2: Reader meta row should use flex-wrap:wrap instead of relying on hard breakpoint at 767px — allows natural wrapping at any intermediate width",
+        "P2: Docs-embedded spreadsheets should break out of 90ch content width on desktop — recommended negative margin approach or moving embed insertion outside .docs-reader__content in JS",
+        "P3: Container queries are the right architectural direction for v2 — spreadsheet component renders in 3 different container contexts (standalone, project detail, docs embed) that have very different available widths at the same viewport size",
+        "Deferred fluid typography to P3 — clamp() for page title would eliminate the hard 1024px breakpoint jump but is cosmetic, not functional"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Accessibility audit of embedded spreadsheet component",
+      "agent": "Amara",
+      "role": "Front-End Accessibility Specialist",
+      "status": "completed",
+      "subtasks": [
+        "Identified critical P1 issue: suppressCellFocus:true in AG Grid config disables all cell-level keyboard navigation (arrow keys, Tab into grid, Home/End) — contradicts design spec Section 10b which requires full keyboard nav",
+        "Identified P1 issue: no skip-to-content link on spreadsheets.html — keyboard users must Tab through 7 nav links to reach content (site-wide issue, particularly impactful on data-heavy pages)",
+        "Identified P1 issue: accordion group headers lack aria-controls attribute and body panels lack id attributes — screen readers cannot associate the toggle button with the content it controls",
+        "Identified P2 color contrast failure: badge --muted text (#999999 on #fafafa) at 2.8:1 fails 4.5:1 AA threshold — recommend using --color-text-secondary (#666666) for 5.7:1",
+        "Identified P2 color contrast failure: badge --warning text (#ca8a04 on tinted background) at ~3.9:1 fails 4.5:1 AA threshold — recommend #a16207 (amber-700) for ~5.5:1",
+        "Identified P2 color contrast failure: density toggle inactive text (#999999 on white) at 2.8:1 fails 4.5:1 AA — recommend --color-text-secondary (#666666) for 5.9:1",
+        "Identified P2 color contrast issue: null cell '--' text (#999999 on white) at 2.8:1 — judgment call on decorative vs informational; recommended darkening to #767676 minimum",
+        "Identified P2 color contrast failure: multiple elements using --color-text-tertiary for informational text (item descriptions, metadata, group counts, reader meta, back button) all at 2.8:1",
+        "Identified P3 focus management gap: no focus move when switching between list and reader views — focus stays on hidden elements after view transition",
+        "Identified P3 issue: loading states lack role='status' or aria-live for screen reader announcement",
+        "Identified P3 issue: accordion expand/collapse CSS transitions and hover transitions not covered by prefers-reduced-motion media query",
+        "Identified P3 issue: index fetch error message lacks role='alert' (unlike reader view error which has it correctly)",
+        "Identified P3 issue: AG Grid instances have no accessible name (aria-label) — screen readers announce just 'grid' without context",
+        "Verified correct patterns: button elements for all interactive controls, aria-expanded/aria-hidden on accordions, aria-pressed on density toggles, role='group' with aria-label on toggle container, role='alert' on reader error, focus-visible outlines, aria-hidden on decorative icons, reduced-motion covering AG Grid and loading animations, proper HTML document structure, heading hierarchy, XSS-safe rendering",
+        "Confirmed Nina's flag about suppressCellFocus: agreed it's a P1 accessibility violation, provided fix with custom focus ring CSS matching the theme",
+        "Rendered verdicts on Robert's 4 flagged contrast items: warning badge FAILS, muted badge FAILS, toggle inactive FAILS, null cell borderline (recommend fix)"
+      ],
+      "filesChanged": [
+        "docs/spreadsheet-accessibility-audit.md"
+      ],
+      "decisions": [
+        "suppressCellFocus:true must be removed — it was likely added to avoid AG Grid's default blue focus ring clashing with the theme, but the correct fix is a custom CSS focus ring (2px solid accent, outline-offset -2px) not disabling keyboard nav entirely",
+        "Badge --muted text should use --color-text-secondary (#666666) instead of --color-text-tertiary (#999999) — badge values like 'no'/'false'/'excluded' carry semantic meaning and must pass 4.5:1 contrast",
+        "Badge --warning text should use #a16207 (darker amber) — the current #ca8a04 on its tinted background only achieves ~3.9:1, below the 4.5:1 AA threshold",
+        "Null cell '--' text classified as informational (not decorative) — it communicates 'no data' which users need to distinguish from zero-value cells, so recommend darkening to at least #767676",
+        "Tertiary text color (#999999) should only be used for truly decorative/supplementary content — informational text like descriptions, metadata, and interactive button labels need --color-text-secondary minimum for AA compliance",
+        "Skip-to-content link is a site-wide gap — recommend adding to shared.css and all page templates, not just spreadsheets",
+        "Focus management on view transitions is a best practice improvement — move focus to back button when entering reader view, move focus to page heading when returning to list"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Implemented all P1/P2/P3 fixes from interactions, responsive, and accessibility audits",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "P1: Removed suppressCellFocus:true from AG Grid config — re-enables full keyboard navigation (arrow keys, Tab, Home/End) per design spec Section 10b and WCAG 2.1.1",
+        "P1: Added custom accent-green focus ring CSS for AG Grid cells (.ag-cell-focus), header cells (:focus-visible), and grid wrapper (:focus-visible) — replaces default blue ring with 2px solid var(--color-accent)",
+        "P1: Added column minWidth per type in convertColumn(): text=100, number=80, currency=100, percent=80, date=110, badge=90, baseline=80 — prevents columns collapsing to illegible widths on narrow screens",
+        "P1: Fixed back button touch target — changed from padding:0 (21px height) to min-height:44px with padding and inline-flex, added negative margin-left for visual alignment",
+        "P1: Fixed density toggle touch target — added @media(pointer:coarse) rule expanding to min-height:44px with increased padding for touch devices",
+        "P1: Implemented density toggle crossfade animation — fade grid to opacity:0.3 over 120ms, apply changes, fade back to 1 over 180ms; skips animation when prefers-reduced-motion is active",
+        "P1: Added AG Grid wrapper focus ring override — .ag-root-wrapper:focus gets outline:none, :focus-visible gets 2px solid accent with offset:2px, matching TeamHQ global pattern",
+        "P1: Added skip-to-content link on spreadsheets.html — <a href='#main-content'> as first focusable element, id='main-content' on <main>, skip-link CSS added to shared.css (site-wide reusable)",
+        "P1: Added aria-controls and id to accordion groups — button gets aria-controls pointing to body id 'spreadsheet-group-body-{projectId}', body gets matching id attribute",
+        "P2: Added --color-text-tertiary-accessible token (#767676, 4.5:1 on white) to tokens.css — new token for informational text that needs AA compliance without changing existing tertiary token",
+        "P2: Fixed badge --warning contrast — changed from var(--color-status-warning) (#ca8a04, ~3.9:1) to #a16207 (amber-700, ~5.5:1 on tinted background)",
+        "P2: Fixed badge --muted contrast — changed from var(--color-text-tertiary) (#999999, 2.8:1) to var(--color-text-secondary) (#666666, 5.7:1 on #fafafa)",
+        "P2: Fixed density toggle inactive contrast — changed from var(--color-text-tertiary) to var(--color-text-secondary), hover state elevated to text-primary",
+        "P2: Fixed null cell '--' contrast — changed from var(--color-text-tertiary) to var(--color-text-tertiary-accessible) (#767676, 4.5:1 AA minimum)",
+        "P2: Fixed informational text contrast — upgraded .spreadsheet-item__desc, .spreadsheet-item__meta, .spreadsheet-group__count, .spreadsheets-reader__meta, and .spreadsheets-reader__back from tertiary to secondary color",
+        "P2: Added header hover transition — .ag-header-cell gets transition:background-color 0.15s ease (was instant snap on/off)",
+        "P2: Added cursor:pointer to sortable headers — all columns are sortable, pointer cursor matches other clickable elements",
+        "P2: Added sort icon entrance animation — 150ms ease-out fade-in with 2px translateY slide, disabled in prefers-reduced-motion",
+        "P2: Added skeleton loading stagger — .thq-skeleton--group:nth-child(2) gets animation-delay:0.2s for premium loading feel",
+        "P2: Added grid load fade-in — after renderReaderView, opacity fades from 0 to 1 over 200ms ease-in, respects prefers-reduced-motion",
+        "P2: Added list-to-reader view crossfade — 150ms opacity fade-out on exiting view, 150ms fade-in on entering view, with prefers-reduced-motion bypass for instant swap",
+        "P2: Added -webkit-overflow-scrolling:touch to AG Grid viewports for older iOS momentum scrolling",
+        "P2: Added flex-wrap:wrap and gap:space-3 to .spreadsheets-reader__meta-row for graceful wrapping at intermediate widths",
+        "P2: Added tablet breakpoint (768-1023px) — reduces header name to text-sm and reader title to text-lg",
+        "P2: Added group header hover background — .spreadsheet-group__header:hover gets background:var(--color-bg-secondary)",
+        "P2: Added back button arrow hover nudge — wrapped arrow in <span class='spreadsheets-reader__back-arrow' aria-hidden='true'>, translateX(-2px) on hover matching tool-card pattern",
+        "P2: Added role='status' and aria-live='polite' to loading state message for screen reader announcement",
+        "P3: Removed dead transition on .spreadsheet-group__chevron parent — only ::before pseudo-element needs the transition",
+        "P3: Added scroll-behavior:smooth to AG Grid viewports for programmatic/keyboard scrolls, disabled in prefers-reduced-motion",
+        "P3: Expanded reduced-motion coverage — added .ag-header-cell, .spreadsheet-group, .spreadsheet-group__body, .spreadsheet-group__chevron/::before, .spreadsheet-item, .spreadsheets-reader__back, .spreadsheets-reader__back-arrow, sort icon animation, and scroll-behavior:auto",
+        "P3: Changed active nav link from <span> to <a> with aria-current='page' for screen reader link list navigation",
+        "P3: Added role='alert' to index fetch error message and role='status' to empty list state",
+        "P3: Added aria-label with spreadsheet name to grid element for screen reader context",
+        "P3: Added aria-live='polite' to stats element for dynamic content announcement",
+        "P3: Added focus management — focus moves to back button when entering reader view, moves to page heading when returning to list view"
+      ],
+      "filesChanged": [
+        "css/spreadsheet.css",
+        "js/spreadsheet.js",
+        "js/spreadsheets.js",
+        "spreadsheets.html",
+        "css/tokens.css",
+        "css/shared.css"
+      ],
+      "decisions": [
+        "Added new --color-text-tertiary-accessible token (#767676) rather than changing existing --color-text-tertiary (#999999) — tertiary is used across the site for decorative/low-priority text, changing it would affect many unrelated components. The new token provides a 4.5:1 AA-safe alternative for informational text that needs to be readable",
+        "Used var(--color-text-secondary) (#666666) for most informational text upgrades rather than the new tertiary-accessible token — secondary provides better contrast (5.7-5.9:1) and the visual hierarchy adjustment is subtle enough to not flatten the design",
+        "Reserved --color-text-tertiary-accessible specifically for the null cell '--' where the lightest possible AA-passing color is desirable to keep the decorative/informational distinction visible",
+        "Crossfade approach for density toggle (opacity 0.3 -> 1.0) rather than attempting row height animation — AG Grid sets inline pixel heights on row DOM elements that CSS transitions cannot control",
+        "Opacity crossfade for view transitions rather than slide/transform — simpler, less risk of layout shift, consistent with how loading states fade",
+        "Back button arrow wrapped in aria-hidden span — removes left-arrow character from accessible name, screen readers now announce just 'Back to list' instead of 'left arrow Back to list'",
+        "Focus management on view transitions — back button receives focus on reader enter (most useful 'escape hatch'), page heading receives focus on list return (provides orientation context)"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Accessibility re-review after Alice's P1/P2/P3 fixes",
+      "agent": "Amara",
+      "role": "Front-End Accessibility Specialist",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Re-verified Issue 1.1 (P1): suppressCellFocus now set to false at js/spreadsheet.js:223 — PASS. Custom focus ring CSS added at css/spreadsheet.css:90-99 (.ag-cell-focus 2px solid accent, .ag-header-cell:focus-visible 2px solid accent). AG Grid wrapper focus override at lines 81-88 (outline:none on :focus, 2px solid accent on :focus-visible). Keyboard navigation fully restored.",
+        "Re-verified Issue 1.2 (P1): Skip-to-content link added as first focusable element in spreadsheets.html:20 (<a href='#main-content' class='skip-link'>Skip to content</a>). Main element has id='main-content' at line 42. Skip-link CSS in shared.css:38-54 (visually hidden at top:-100%, slides to top:space-2 on focus, accent background, white text, z-index 200) — PASS.",
+        "Re-verified Issue 2.2 (P1): Accordion groups now have aria-controls and matching id. In js/spreadsheets.js:98, bodyId is constructed as 'spreadsheet-group-body-{projectId}'. Button at line 107 has aria-controls pointing to bodyId. Body div at line 112 has matching id attribute — PASS.",
+        "Re-verified Issue 5.1 (P2): Badge --muted at css/spreadsheet.css:172 now uses color: var(--color-text-secondary) (#666666) on background var(--color-bg-secondary) (#fafafa). Contrast ratio: ~5.7:1. Comment confirms 'passes AA' — PASS.",
+        "Re-verified Issue 5.2 (P2): Badge --warning at css/spreadsheet.css:157 now uses color: #a16207 (amber-700) on background rgba(202,138,4,0.1). Contrast ratio: ~5.5:1 on the effective tinted background. Comment confirms 'passes AA' — PASS.",
+        "Re-verified Issue 5.3 (P2): Density toggle at css/spreadsheet.css:205 now uses color: var(--color-text-secondary) (#666666) on transparent/white background. Contrast ratio: ~5.9:1. Hover state at line 224 elevated to var(--color-text-primary) — PASS.",
+        "Re-verified Issue 5.4 (P2): Null cell '--' at css/spreadsheet.css:128 now uses color: var(--color-text-tertiary-accessible) (#767676). New token defined in tokens.css:155 as '#767676' with comment '4.5:1 on white — AA-safe for informational text'. Contrast ratio: ~4.54:1, passes AA minimum — PASS.",
+        "Re-verified Issue 5.5 (P2): Informational text elements all upgraded from tertiary to secondary color. spreadsheet-item__desc at line 620: var(--color-text-secondary) — PASS. spreadsheet-item__meta at line 631: var(--color-text-secondary) — PASS. spreadsheet-group__count at line 530: var(--color-text-secondary) — PASS. spreadsheets-reader__meta at line 697: var(--color-text-secondary) — PASS. spreadsheets-reader__back at line 648: var(--color-text-secondary) — PASS.",
+        "Re-verified Issue 3.1 (P3): Focus management implemented. When entering reader view, js/spreadsheets.js:241-242 moves focus to back button after content renders. When returning to list, js/spreadsheets.js:182-186 sets tabindex=-1 on heading and focuses it — PASS.",
+        "Re-verified Issue 2.3 (P3): Loading state at js/spreadsheets.js:216 now includes role='status' and aria-live='polite' on the loading message — PASS.",
+        "Re-verified Issue 6.1/6.2 (P3): Reduced motion media query at css/spreadsheet.css:762-794 now covers: spreadsheet-group, spreadsheet-group__body, spreadsheet-group__chevron, spreadsheet-group__chevron::before, spreadsheet-item, spreadsheets-reader__back, spreadsheets-reader__back-arrow, sort icon animations, and scroll-behavior:auto — PASS.",
+        "Re-verified Issue 7.1 (P3): Index fetch error at js/spreadsheets.js:445 now has role='alert'. Empty list state at line 74 has role='status' — PASS.",
+        "Re-verified Issue 8.2 (P3): Grid accessible name added at js/spreadsheet.js:245: this.gridEl.setAttribute('aria-label', data.name || 'Data table') — PASS.",
+        "Re-verified Issue 2.4 (P3): Stats element in spreadsheets.html:47 now has aria-live='polite' for dynamic content announcement — PASS.",
+        "Re-verified Issue 1.4 (P3): Active nav link at spreadsheets.html:35 changed from <span> to <a href='spreadsheets.html'> with aria-current='page' attribute — PASS.",
+        "Re-verified Issue 4.3 (P3): Back button arrow at js/spreadsheets.js:257 wrapped in <span class='spreadsheets-reader__back-arrow' aria-hidden='true'> — screen readers announce 'Back to list' without 'left arrow' prefix — PASS."
+      ],
+      "filesChanged": [
+        "data/tasks/embedded-spreadsheet.json"
+      ],
+      "decisions": [
+        "PASS verdict — all 15 original accessibility issues (3 P1, 5 P2, 7 P3) have been correctly fixed",
+        "New --color-text-tertiary-accessible token (#767676) is a sound approach — preserves existing tertiary (#999) for decorative use while providing an AA-safe alternative for informational content",
+        "suppressCellFocus:false combined with custom focus ring CSS is the correct solution — restores full AG Grid keyboard navigation while maintaining visual consistency with the theme",
+        "Skip-to-content link in shared.css is site-wide reusable — good architectural choice that benefits all pages, not just spreadsheets",
+        "Focus management implementation follows best practices — back button focus on reader entry provides escape hatch, heading focus on list return provides orientation"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Interactions re-review after Alice's P1/P2/P3 fixes",
+      "agent": "Nina",
+      "role": "Front-End Interactions Specialist",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Re-verified Issue 10a (P1): AG Grid focus ring override — .ag-root-wrapper:focus gets outline:none, :focus-visible gets 2px solid accent with offset:2px. Cell focus (.ag-cell-focus) and header focus (:focus-visible) also themed with accent green. All in css/spreadsheet.css:81-99 — PASS",
+        "Re-verified Issue 2a (P1): Density toggle crossfade — js/spreadsheet.js:308-340 fades grid to opacity:0.3 (120ms ease-out), applies changes after 130ms, fades back to 1 (180ms ease-in), cleanup at 200ms. prefers-reduced-motion check at line 311 skips animation — PASS",
+        "Re-verified Issue 1b (P2): Header hover transition — css/spreadsheet.css:103-106 adds transition:background-color 0.15s ease to .ag-header-cell, matching TeamHQ standard. Included in prefers-reduced-motion block at line 764 — PASS",
+        "Re-verified Issue 2b (P2): View transition crossfade — js/spreadsheets.js:154-211 implements 150ms opacity crossfade in both showListView() and showReaderView(). Reduced-motion bypass for instant swap — PASS",
+        "Re-verified Issue 3a (P2): Cell focus keyboard indicator — suppressCellFocus changed to false at js/spreadsheet.js:223. Custom accent focus ring at css/spreadsheet.css:90-94 — PASS",
+        "Re-verified Issue 6b (P2): Skeleton loading stagger — css/spreadsheet.css:418-420 adds animation-delay:0.2s on .thq-skeleton--group:nth-child(2) — PASS",
+        "Re-verified Issue 6c (P2): Loading-to-grid fade-in — js/spreadsheets.js:225-238 fades reader content from opacity 0 to 1 over 200ms ease-in after renderReaderView, with prefers-reduced-motion check — PASS",
+        "Re-verified Issue 8a (P2): Back button arrow hover nudge — arrow wrapped in <span class='spreadsheets-reader__back-arrow' aria-hidden='true'> at js/spreadsheets.js:257. CSS at spreadsheet.css:658-669 adds inline-block + transition:transform 0.15s ease, translateX(-2px) on hover. Reduced-motion at line 775 — PASS",
+        "Re-verified Issue 9a (P2): Sort icon entrance animation — css/spreadsheet.css:68-77 adds thq-sort-icon-in keyframe (150ms ease-out, opacity 0->1, translateY 2px->0). Disabled in prefers-reduced-motion at lines 785-788 — PASS",
+        "Re-verified Issue 9c (P2): Header cursor:pointer — css/spreadsheet.css:105 adds cursor:pointer to .ag-header-cell alongside the transition fix — PASS",
+        "Re-verified Issue 9d (P2): Group header hover background — css/spreadsheet.css:518-520 adds .spreadsheet-group__header:hover with background:var(--color-bg-secondary) — PASS",
+        "Re-verified Issue 2c (P3): Dead chevron parent transition removed — css/spreadsheet.css:535-539 has only width/height/display on .spreadsheet-group__chevron, no transition. Transition correctly on ::before at line 549 only — PASS",
+        "Re-verified Issue 4c (P3): Scroll-behavior smooth — css/spreadsheet.css:292-296 adds scroll-behavior:smooth to AG Grid viewports. Disabled in prefers-reduced-motion at lines 790-793 with scroll-behavior:auto — PASS",
+        "Re-verified Issue 7b (P3): Badge sort row animation — animateRows remains false at js/spreadsheet.js:219, correctly preserving Robert/Andrei design decision — PASS"
+      ],
+      "filesChanged": [
+        "data/tasks/embedded-spreadsheet.json"
+      ],
+      "decisions": [
+        "PASS verdict — all 14 original interaction issues (2 P1, 8 P2, 4 P3) have been correctly fixed or intentionally preserved",
+        "All fixes include proper prefers-reduced-motion handling — transitions disabled, animations stopped, scroll-behavior set to auto",
+        "Crossfade approach for density toggle (opacity 0.3->1.0 with 120ms/180ms timing) feels well-calibrated — fast enough to not feel sluggish, slow enough to mask the AG Grid row height snap",
+        "View transition timing (150ms out, 150ms in) matches the established pattern across TeamHQ — consistent feel",
+        "Sort icon entrance animation (150ms with 2px translateY) adds polish without being distracting — appropriate for the only interactive grid feature"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Responsive re-review after Alice's P1/P2/P3 fixes",
+      "agent": "Soren",
+      "role": "Front-End Responsive Specialist",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Re-verified Issue 3a (P1): Column minWidth now defined per type in convertColumn() at js/spreadsheet.js:131-188 — baseline 80px, text 100px, number 80px, currency 100px, percent 80px, date 110px, badge 90px. Prevents columns collapsing below readable widths on narrow screens — PASS",
+        "Re-verified Issue 6a (P1): Back button at css/spreadsheet.css:641-656 now has display:inline-flex, align-items:center, min-height:44px, padding:space-2/space-3, negative margin-left for visual alignment. Touch target meets WCAG 2.5.5 and Apple/Google HIG 44px minimum — PASS",
+        "Re-verified Issue 8a (P1): Density toggle at css/spreadsheet.css:242-247 now has @media(pointer:coarse) rule with min-height:44px and padding:space-2/space-4. Targets touch devices specifically — PASS",
+        "Re-verified Issue 2a (P2): -webkit-overflow-scrolling:touch added at css/spreadsheet.css:292-296 on AG Grid viewports. Also added scroll-behavior:smooth. Reduced motion resets scroll-behavior at lines 790-793 — PASS",
+        "Re-verified Issue 2c (P2): No scroll pulse animation added, but right-edge scroll-hint gradient shadow (lines 300-322) provides sufficient scroll affordance — PASS (acceptable)",
+        "Re-verified Issue 4a (P2): Tablet breakpoint at css/spreadsheet.css:744-752 reduces header name to text-sm and reader title to text-lg at 768-1023px — PASS",
+        "Re-verified Issue 4b (P2): Meta row at css/spreadsheet.css:686-693 now has flex-wrap:wrap and gap:space-3 for graceful wrapping at intermediate widths — PASS",
+        "Re-verified Issue 5a (P2): List item metadata stacking NOT implemented. .spreadsheet-item still uses flex with no flex-wrap. At 320-375px, meta column compresses info column excessively — FAIL",
+        "Re-verified Issue 3b (P2): Sticky first column still has no width constraints. No maxWidth or special first-column treatment in convertColumn() — FAIL",
+        "Re-verified Issue 9a (P2): Docs-embedded spreadsheet still constrained by 90ch max-width. No breakout rules or negative margins added — FAIL",
+        "Re-verified Issue 1b (P3): overflow-x:clip still omitted from wrapper. Intentionally omitted per Robert's design review — PASS (accepted deviation)",
+        "Re-verified Issue 7b (P3): Page title still uses hard font-size step. No clamp() implementation — FAIL (P3, not blocking)",
+        "Re-verified Issue 5c (P3): Group header padding still fixed at space-5 at all screen sizes — FAIL (P3, not blocking)",
+        "Re-verified Issue 9c (P3): Inline embed header padding still fixed. No responsive reduction — FAIL (P3, not blocking)",
+        "Re-verified Issue 10a (P3): Container queries correctly deferred to v2 — PASS",
+        "Re-verified Issue 8c (P3): AG Grid compact header 32px informational, no change needed — PASS"
+      ],
+      "filesChanged": [
+        "data/tasks/embedded-spreadsheet.json"
+      ],
+      "decisions": [
+        "PASS verdict — all 3 P1 issues (column minWidth, back button touch target, density toggle touch target) are correctly resolved",
+        "4 of 7 P2 issues resolved. 3 P2s remain (list item stacking, sticky column constraints, docs embed width) — real but not blocking",
+        "3 of 6 P3 issues pass. 3 P3s remain (fluid title, group padding, embed padding) — polish items for future pass",
+        "Remaining P2 fixes for next polish pass: flex-wrap on .spreadsheet-item at 639px, maxWidth on first column on mobile, negative margin breakout for docs-embedded spreadsheets"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Design review of Alice's P1/P2/P3 audit fixes (post-specialist re-review)",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Verified suppressCellFocus:false at js/spreadsheet.js:223. Custom focus ring CSS at css/spreadsheet.css:81-99 uses 2px solid var(--color-accent) on wrapper:focus-visible, cell-focus, and header:focus-visible — accent green ring is cohesive, no blue AG Grid default leaks through — PASS",
+        "Verified column minWidth per type in convertColumn() at js/spreadsheet.js:131-188: text=100, number=80, currency=100, percent=80, date=110, badge=90, baseline=80 — well-calibrated to content width, prevents column collapse — PASS",
+        "Verified back button touch target at css/spreadsheet.css:641-656: inline-flex, min-height:44px, padding space-2/space-3, negative margin-left for visual alignment. Density toggle at lines 242-247: @media(pointer:coarse) min-height:44px — both meet 44px minimum — PASS",
+        "Verified density toggle crossfade at js/spreadsheet.js:308-340: opacity 1->0.3 (120ms ease-out), grid changes at 130ms, opacity 0.3->1 (180ms ease-in). Asymmetric timing feels natural. prefers-reduced-motion check skips animation — PASS",
+        "Verified view transition fades at js/spreadsheets.js:154-211: symmetrical 150ms opacity crossfade for list-to-reader and reader-to-list, consistent with TeamHQ timing. Reduced-motion falls back to instant display swap — PASS",
+        "Verified --color-text-tertiary-accessible token (#767676) at css/tokens.css:155 with clear comment. Used specifically for null cell '--' at css/spreadsheet.css:128 — correct scoping, sound architectural decision to add new token rather than change existing tertiary — PASS",
+        "Verified badge --warning at css/spreadsheet.css:157 uses #a16207 (~5.5:1). Badge --muted at line 172 uses var(--color-text-secondary) (5.7:1 on #fafafa). Both pass AA. Visual distinction between badge variants preserved — PASS",
+        "Verified skip-to-content at spreadsheets.html:20 as first focusable element. CSS in shared.css:38-54 with visually hidden positioning, slides to top on focus, accent green background — site-wide reusable — PASS",
+        "Verified aria-controls at js/spreadsheets.js:98-112: bodyId constructed from projectId, button has aria-controls, body div has matching id — PASS",
+        "Verified focus management at js/spreadsheets.js:241-242 (reader: focus back button) and lines 182-186 (list: tabindex=-1 on heading, focus) — follows WCAG best practices — PASS",
+        "Verified header hover transition (0.15s ease) and cursor:pointer at css/spreadsheet.css:103-106. Sort icon animation at lines 68-77: 150ms ease-out, opacity+translateY. Both covered by reduced-motion block — PASS",
+        "Verified skeleton stagger at css/spreadsheet.css:418-420 (0.2s delay on 2nd card). Grid load fade-in at js/spreadsheets.js:225-238 (200ms ease-in with reduced-motion check) — PASS",
+        "Verified density toggle inactive color upgraded to secondary (#666) at css/spreadsheet.css:205 with hover elevated to text-primary at line 224 — AA-compliant, justified deviation from spec",
+        "Verified informational text upgrades: item descriptions, metadata, group counts, reader meta, back button all use var(--color-text-secondary) — hierarchy preserved while meeting AA contrast",
+        "Verified additional ARIA: role=status on loading, role=alert on index error, aria-label on grid, aria-live=polite on stats, aria-current=page on active nav link",
+        "Verified tablet breakpoint (768-1023px) at css/spreadsheet.css:744-752 with appropriate type size reductions",
+        "Verified meta row flex-wrap at css/spreadsheet.css:686-693 for graceful wrapping at intermediate widths",
+        "Confirmed Soren's 3 remaining P2s (list item stacking, sticky column constraints, docs embed width) and 3 P3s (fluid title, group padding, embed padding) are non-blocking — appropriate for future polish pass"
+      ],
+      "filesChanged": [
+        "data/tasks/embedded-spreadsheet.json"
+      ],
+      "decisions": [
+        "PASS verdict — all 12 key changes from the three specialist audits are correctly implemented with no design drift",
+        "Density toggle inactive color change from spec (tertiary to secondary) is a justified deviation per Amara's contrast fix — accepted",
+        "List item hover accent-light instead of white-rgb spec value is more cohesive — accepted (consistent with first design review)",
+        "Soren's remaining P2s and P3s are real but non-blocking — ship without them, address in future polish pass",
+        "All fixes maintain visual consistency with original design spec while resolving accessibility and interaction deficiencies"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Final QA validation of P1/P2/P3 audit fixes (post-specialist re-reviews + design review)",
+      "agent": "Enzo",
+      "role": "QA",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Verified keyboard navigation: suppressCellFocus:false at js/spreadsheet.js:223, custom focus ring CSS at css/spreadsheet.css:81-99 (wrapper, cell, header all themed with 2px solid accent) — PASS",
+        "Verified column minWidth per type in convertColumn() at js/spreadsheet.js:131-188: text=100, number=80, currency=100, percent=80, date=110, badge=90, baseline=80 — prevents collapse on narrow viewports — PASS",
+        "Verified touch targets: back button min-height:44px with padding at css/spreadsheet.css:641-656, density toggle @media(pointer:coarse) min-height:44px at css/spreadsheet.css:242-247 — both meet WCAG 2.5.5 minimum — PASS",
+        "Verified density toggle crossfade: js/spreadsheet.js:308-340 fades to 0.3 (120ms ease-out), applies changes at 130ms, fades to 1 (180ms ease-in), cleanup at 200ms. prefers-reduced-motion check at line 311 bypasses animation — PASS",
+        "Verified view transition fades: js/spreadsheets.js:154-211 symmetrical 150ms opacity crossfade for list/reader, grid load fade-in at lines 225-238 (200ms ease-in), all with reduced-motion bypass — PASS",
+        "Verified WCAG AA color contrast: badge warning #a16207 (~5.5:1) at css/spreadsheet.css:157, badge muted text-secondary (#666, 5.7:1) at line 172, null cell tertiary-accessible (#767676, 4.5:1) at line 128, toggle inactive text-secondary (#666, 5.9:1) at line 205 — all pass AA threshold — PASS",
+        "Verified new --color-text-tertiary-accessible token (#767676) at css/tokens.css:159 with AA comment — sound architectural decision preserving existing tertiary for decorative use — PASS",
+        "Verified skip-to-content: <a href='#main-content' class='skip-link'> at spreadsheets.html:20, main id='main-content' at line 42, CSS in shared.css:38-54 (visually hidden, slides on focus, z-index 200) — PASS",
+        "Verified aria-controls/id: bodyId constructed at js/spreadsheets.js:98, button aria-controls at line 107, body id at line 112 — association correct — PASS",
+        "Verified focus management: back button focused on reader entry at js/spreadsheets.js:241-242, heading focused with tabindex=-1 on list return at lines 182-186 — PASS",
+        "Verified comprehensive reduced-motion: css/spreadsheet.css:762-793 covers all transitions (row, header, toggle, wrapper shadows, sticky shadows, group, chevron, items, back button, back arrow), animations (loading, skeleton, sort icons), and scroll-behavior:auto. JS crossfade checks at js/spreadsheet.js:311 and js/spreadsheets.js:152,228 — PASS",
+        "Verified sort icon animation at css/spreadsheet.css:68-77 (150ms ease-out, opacity+translateY), header hover transition at lines 103-106 (0.15s ease + cursor:pointer), header hover background at lines 108-110 — PASS",
+        "Verified skeleton stagger at css/spreadsheet.css:418-420 (nth-child(2) animation-delay 0.2s), grid load fade-in at js/spreadsheets.js:225-238 (200ms ease-in with reduced-motion check) — PASS",
+        "Verified security: escapeHTML/escapeAttr used consistently in js/spreadsheets.js, badge renderer uses textContent (XSS-safe), no innerHTML with unescaped data — PASS",
+        "Verified script load order: AG Grid blocking (spreadsheets.html:74), spreadsheet.js defer (line 75), spreadsheets.js defer (line 76) — correct cascade — PASS",
+        "Verified CSS load order: tokens.css -> ag-grid.css -> ag-theme-quartz.css -> shared.css -> spreadsheet.css — correct override cascade — PASS",
+        "Verified additional ARIA: aria-current='page' on nav (spreadsheets.html:35), aria-live='polite' on stats (line 47), role='status' on loading (js/spreadsheets.js:216), role='alert' on errors (line 445), aria-label on grid (js/spreadsheet.js:245), aria-hidden on back arrow (js/spreadsheets.js:257) — PASS",
+        "Confirmed Soren's 3 remaining P2s (list item stacking, sticky column constraints, docs embed width) and 3 P3s (fluid title, group padding, embed padding) are non-blocking — accepted by Robert's design review as future polish items"
+      ],
+      "filesChanged": [
+        "data/tasks/embedded-spreadsheet.json"
+      ],
+      "decisions": [
+        "PASS verdict — all 12 key audit fixes correctly implemented with no blocking bugs",
+        "All three specialist re-reviews passed (Nina, Soren, Amara). Robert's design review passed. No regressions from original QA pass",
+        "Color contrast fixes are sound: new tertiary-accessible token for null cells, secondary for informational text, hardcoded #a16207 for badge warning — all pass WCAG AA 4.5:1 minimum",
+        "Crossfade animations well-calibrated: density toggle 120ms/180ms asymmetric, view transitions 150ms symmetric, grid load 200ms — all respect prefers-reduced-motion",
+        "Security posture maintained: escapeHTML/escapeAttr consistent, textContent for badge rendering, no new injection vectors introduced",
+        "Soren's remaining P2/P3 items are real but non-blocking — appropriate for a future polish pass, not a release blocker"
+      ],
+      "completedAt": "2026-02-09"
+    },
+    {
+      "title": "Design brief — table visual polish for best-in-class data table quality",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Inspected live render at /spreadsheets.html via Puppeteer — captured screenshots and computed styles to identify root causes of CEO complaints",
+        "Identified critical bug: AG Grid font inheritance broken — cells show Helvetica Neue instead of Geist due to specificity issue with --ag-font-family not cascading to .ag-cell elements",
+        "Identified critical bug: vertical centering broken — cells are display:inline-block with height:39px and line-height:22px, no flex centering, content sits at top",
+        "Identified critical bug: right-aligned header misalignment — AG Grid uses flex-direction:row-reverse which doesn't produce clean visual right-alignment matching the data",
+        "Identified design issue: Geist Mono for all numeric values creates 'spreadsheet' feel — premium dashboards (Stripe, Vercel) use proportional font + tabular-nums instead",
+        "Identified design issue: header typography too loud — uppercase + semibold (600) + secondary color (#666) dominates the data instead of guiding the eye",
+        "Identified design issue: 40px row height with 12px padding and 22px line-height leaves hollow cells with top-aligned content",
+        "Researched Stripe, Vercel, Linear table patterns — common thread: proportional font with tabular-nums, vertically centered content, subordinate headers, generous padding, minimal borders",
+        "Studied A List Apart 'Web Typography: Tables' — confirmed right-align numbers, tabular lining figures, match header alignment to data, minimize visual furniture",
+        "Wrote 12 specific CSS changes with exact selectors, property values, and token references — zero ambiguity for Alice",
+        "Prioritized changes into 4 tiers: Critical (font fix, vertical centering, alignment, tabular figures), High (header refinement, row height), Medium (border hierarchy, numeric weight), Low (null cells, hover tint, last row border)",
+        "Specified testing checklist: all 3 seed spreadsheets, both density modes, mobile breakpoint"
+      ],
+      "filesChanged": [
+        "docs/spreadsheet-table-polish-design-brief.md"
+      ],
+      "decisions": [
+        "Switch from Geist Mono to Geist + font-variant-numeric: tabular-nums lining-nums for numeric cells — tabular-nums provides identical digit widths for vertical alignment (the reason monospace was originally chosen) while proportional letterforms create a dashboard vs spreadsheet feel",
+        "Header weight from semibold (600) to medium (500), color from secondary (#666) to tertiary-accessible (#767676) — headers should guide, not dominate; data is the star",
+        "Row height from 40px to 44px, header stays at 40px — data rows taller than header subordinates the header visually (Stripe pattern)",
+        "Row hover from green tint to neutral 2% black tint — green implies clickability, neutral aids row tracking without interaction promise in a read-only table",
+        "Header border from 1px border-strong to 1.5px neutral-400 — stronger separator between header and body creates clear hierarchy",
+        "Row dividers softened to rgba(0,0,0,0.06) — data should organize through alignment, not visible rules",
+        "Null cell color from #767676 to neutral-300 (#d4d4d4) — em-dash placeholder is decorative, not informational; should recede",
+        "Vertical centering via display:flex + align-items:center on .ag-cell preferred over line-height matching — more robust for multi-element cells like badges"
       ],
       "completedAt": "2026-02-09"
     }

@@ -71,7 +71,7 @@
     var projectIds = Object.keys(indexData);
 
     if (projectIds.length === 0) {
-      listContainer.innerHTML = '<p class="thq-spreadsheet-error">No spreadsheets yet.</p>';
+      listContainer.innerHTML = '<p class="thq-spreadsheet-error" role="status">No spreadsheets yet.</p>';
       return;
     }
 
@@ -95,6 +95,7 @@
 
   function renderGroup(projectId, spreadsheets) {
     var countLabel = spreadsheets.length + ' spreadsheet' + (spreadsheets.length !== 1 ? 's' : '');
+    var bodyId = 'spreadsheet-group-body-' + escapeAttr(projectId);
 
     var itemsHtml = '';
     for (var i = 0; i < spreadsheets.length; i++) {
@@ -103,12 +104,12 @@
 
     return (
       '<div class="spreadsheet-group" data-group="' + escapeAttr(projectId) + '">' +
-        '<button class="spreadsheet-group__header" type="button" aria-expanded="false">' +
+        '<button class="spreadsheet-group__header" type="button" aria-expanded="false" aria-controls="' + bodyId + '">' +
           '<span class="spreadsheet-group__name">' + escapeHTML(formatProjectName(projectId)) + '</span>' +
           '<span class="spreadsheet-group__count">' + escapeHTML(countLabel) + '</span>' +
           '<span class="spreadsheet-group__chevron" aria-hidden="true"></span>' +
         '</button>' +
-        '<div class="spreadsheet-group__body" aria-hidden="true">' +
+        '<div class="spreadsheet-group__body" id="' + bodyId + '" aria-hidden="true">' +
           '<div class="spreadsheet-group__body-inner">' +
             '<div class="spreadsheet-group__list">' +
               itemsHtml +
@@ -148,25 +149,71 @@
 
   // --- View Toggle ---
 
+  var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function showListView() {
-    listView.style.display = '';
-    readerView.style.display = 'none';
+    if (prefersReducedMotion) {
+      listView.style.display = '';
+      readerView.style.display = 'none';
+    } else {
+      readerView.style.transition = 'opacity 150ms ease-out';
+      readerView.style.opacity = '0';
+      setTimeout(function () {
+        readerView.style.display = 'none';
+        readerView.style.transition = '';
+        readerView.style.opacity = '';
+        listView.style.display = '';
+        listView.style.opacity = '0';
+        void listView.offsetHeight;
+        listView.style.transition = 'opacity 150ms ease-in';
+        listView.style.opacity = '1';
+        setTimeout(function () {
+          listView.style.transition = '';
+          listView.style.opacity = '';
+        }, 160);
+      }, 160);
+    }
     if (activeSpreadsheet) {
       activeSpreadsheet.destroy();
       activeSpreadsheet = null;
     }
     window.location.hash = '';
+    // Move focus to page heading for keyboard users
+    var heading = document.querySelector('.spreadsheets-header__title');
+    if (heading) {
+      heading.setAttribute('tabindex', '-1');
+      heading.focus();
+    }
   }
 
   function showReaderView() {
-    listView.style.display = 'none';
-    readerView.style.display = '';
+    if (prefersReducedMotion) {
+      listView.style.display = 'none';
+      readerView.style.display = '';
+    } else {
+      listView.style.transition = 'opacity 150ms ease-out';
+      listView.style.opacity = '0';
+      setTimeout(function () {
+        listView.style.display = 'none';
+        listView.style.transition = '';
+        listView.style.opacity = '';
+        readerView.style.display = '';
+        readerView.style.opacity = '0';
+        void readerView.offsetHeight;
+        readerView.style.transition = 'opacity 150ms ease-in';
+        readerView.style.opacity = '1';
+        setTimeout(function () {
+          readerView.style.transition = '';
+          readerView.style.opacity = '';
+        }, 160);
+      }, 160);
+    }
   }
 
   // --- Reader View ---
 
   function openSpreadsheet(projectId, file, meta) {
-    readerView.innerHTML = '<p class="thq-spreadsheet-loading">Loading spreadsheet...</p>';
+    readerView.innerHTML = '<p class="thq-spreadsheet-loading" role="status" aria-live="polite">Loading spreadsheet...</p>';
     showReaderView();
     window.location.hash = 'view/' + projectId + '/' + file;
 
@@ -177,12 +224,27 @@
       })
       .then(function (data) {
         renderReaderView(data, meta);
+        // Fade in the rendered content
+        var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!prefersReducedMotion) {
+          readerView.style.opacity = '0';
+          void readerView.offsetHeight;
+          readerView.style.transition = 'opacity 200ms ease-in';
+          readerView.style.opacity = '1';
+          setTimeout(function () {
+            readerView.style.transition = '';
+            readerView.style.opacity = '';
+          }, 220);
+        }
         window.scrollTo(0, 0);
+        // Move focus to back button for keyboard users
+        var backBtn = readerView.querySelector('.spreadsheets-reader__back');
+        if (backBtn) backBtn.focus();
       })
       .catch(function () {
         readerView.innerHTML =
           '<div>' +
-            '<button class="spreadsheets-reader__back" type="button">&larr; Back to list</button>' +
+            '<button class="spreadsheets-reader__back" type="button"><span class="spreadsheets-reader__back-arrow" aria-hidden="true">&larr;</span> Back to list</button>' +
             '<p class="thq-spreadsheet-error" role="alert">Spreadsheet not found</p>' +
           '</div>';
       });
@@ -192,7 +254,7 @@
     var density = TeamHQSpreadsheet.getSavedDensity();
 
     // Header
-    var html = '<button class="spreadsheets-reader__back" type="button">&larr; Back to list</button>';
+    var html = '<button class="spreadsheets-reader__back" type="button"><span class="spreadsheets-reader__back-arrow" aria-hidden="true">&larr;</span> Back to list</button>';
     html += '<h2 class="spreadsheets-reader__title">' + escapeHTML(data.name) + '</h2>';
     if (data.description) {
       html += '<p class="spreadsheets-reader__desc">' + escapeHTML(data.description) + '</p>';
@@ -380,6 +442,6 @@
       }
     })
     .catch(function () {
-      listContainer.innerHTML = '<p class="thq-spreadsheet-error">Unable to load spreadsheets</p>';
+      listContainer.innerHTML = '<p class="thq-spreadsheet-error" role="alert">Unable to load spreadsheets</p>';
     });
 })();

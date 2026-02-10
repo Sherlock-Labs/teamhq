@@ -257,7 +257,11 @@
       var badgeLabel = 'Charter';
       if (runningMeetingType === 'weekly') badgeLabel = 'Weekly';
       else if (runningMeetingType === 'custom') badgeLabel = 'Custom';
+      else if (runningMeetingType === 'interview') badgeLabel = 'Interview';
       else if (runningMeetingType === 'running') { badgeLabel = 'Meeting'; badgeType = 'charter'; }
+
+      var runningDotStyle = runningMeetingType === 'interview' ? ' style="background: var(--color-amber-600);"' : '';
+      var runningText = runningMeetingType === 'interview' ? 'Interview in progress...' : 'Meeting in progress...';
 
       html +=
         '<div class="meeting-card meeting-card--running">' +
@@ -267,8 +271,8 @@
                 escapeHTML(badgeLabel) +
               '</span>' +
               '<span class="meeting-card__running-text">' +
-                '<span class="meeting-card__running-dot"></span>' +
-                'Meeting in progress...' +
+                '<span class="meeting-card__running-dot"' + runningDotStyle + '></span>' +
+                escapeHTML(runningText) +
               '</span>' +
             '</div>' +
           '</div>' +
@@ -301,15 +305,21 @@
     var typeBadge = 'Charter';
     if (meeting.type === 'weekly') typeBadge = 'Weekly';
     else if (meeting.type === 'custom') typeBadge = 'Custom';
+    else if (meeting.type === 'interview') typeBadge = 'Interview';
 
     var statusBadge = '';
     if (meeting.status === 'failed') {
       statusBadge = '<span class="meeting-card__status meeting-card__status--failed">Failed</span>';
     }
 
-    // Build participant avatars for custom meetings
+    // Build participant display
     var participantsHtml = '';
-    if (meeting.type === 'custom' && meeting.participants && meeting.participants.length > 0) {
+    if (meeting.type === 'interview') {
+      participantsHtml =
+        '<div class="meeting-card__participants">' +
+          '<span class="meeting-card__participant-names">CEO + AI Interviewer</span>' +
+        '</div>';
+    } else if (meeting.type === 'custom' && meeting.participants && meeting.participants.length > 0) {
       var avatarsHtml = '';
       var namesArr = [];
       for (var i = 0; i < meeting.participants.length; i++) {
@@ -343,6 +353,9 @@
           '</div>' +
           '<div class="meeting-card__summary">' +
             '<p class="meeting-card__summary-text">' + escapeHTML(meeting.summary || 'No summary available.') + '</p>' +
+            (meeting.interviewConfig && meeting.interviewConfig.topic
+              ? '<p class="meeting-card__topic">Topic: ' + escapeHTML(meeting.interviewConfig.topic) + '</p>'
+              : '') +
             participantsHtml +
           '</div>' +
           '<div class="meeting-card__info">' +
@@ -466,23 +479,33 @@
     inner.innerHTML = html;
   }
 
+  // Special speaker colors for interview participants
+  var INTERVIEW_SPEAKERS = {
+    'CEO': { role: 'CEO', color: 'var(--color-text-primary)' },
+    'AI Interviewer': { role: 'Interviewer', color: 'var(--color-amber-600)' },
+  };
+
   function renderTranscriptEntry(entry) {
-    var agent = AGENTS[entry.speaker] || { role: entry.role || '', avatar: '', color: agentColor('default') };
-    var avatarHtml = agent.avatar
+    var agent = AGENTS[entry.speaker];
+    var interviewSpeaker = !agent ? INTERVIEW_SPEAKERS[entry.speaker] : null;
+    var color = agent ? agent.color : (interviewSpeaker ? interviewSpeaker.color : agentColor('default'));
+    var role = agent ? agent.role : (interviewSpeaker ? interviewSpeaker.role : (entry.role || ''));
+
+    var avatarHtml = agent && agent.avatar
       ? '<img src="' + escapeAttr(agent.avatar) + '" alt="" width="28" height="28">'
       : '<span>' + escapeHTML(entry.speaker.charAt(0)) + '</span>';
 
     return (
       '<div class="meeting-transcript__entry">' +
-        '<div class="meeting-transcript__avatar" style="border-color: ' + agent.color + '">' +
+        '<div class="meeting-transcript__avatar" style="border-color: ' + color + '">' +
           avatarHtml +
         '</div>' +
         '<div class="meeting-transcript__content">' +
           '<div class="meeting-transcript__meta">' +
-            '<span class="meeting-transcript__speaker" style="color: ' + agent.color + '">' +
+            '<span class="meeting-transcript__speaker" style="color: ' + color + '">' +
               escapeHTML(entry.speaker) +
             '</span>' +
-            '<span class="meeting-transcript__role">' + escapeHTML(agent.role || entry.role) + '</span>' +
+            '<span class="meeting-transcript__role">' + escapeHTML(role) + '</span>' +
           '</div>' +
           '<p class="meeting-transcript__text">' + escapeHTML(entry.text) + '</p>' +
         '</div>' +
@@ -547,13 +570,16 @@
       return m.type === 'charter' && m.status === 'completed';
     });
 
+    var interviewRunning = document.body.getAttribute('data-interview-running') === 'true';
+    var anyRunning = !!runningMeetingType || interviewRunning;
+
     if (charterBtn) {
-      charterBtn.disabled = !!runningMeetingType;
+      charterBtn.disabled = anyRunning;
       charterBtn.textContent = runningMeetingType === 'charter' ? 'Running...' : 'Run Charter';
     }
 
     if (weeklyBtn) {
-      weeklyBtn.disabled = !hasCharter || !!runningMeetingType;
+      weeklyBtn.disabled = !hasCharter || anyRunning;
       weeklyBtn.textContent = runningMeetingType === 'weekly' ? 'Running...' : 'Run Weekly';
       if (!hasCharter) {
         weeklyBtn.title = 'Run a charter meeting first';
@@ -563,7 +589,7 @@
     }
 
     if (customBtn) {
-      if (runningMeetingType) {
+      if (anyRunning) {
         customBtn.disabled = true;
         if (runningMeetingType === 'custom') {
           customBtn.textContent = 'Running...';
@@ -577,7 +603,7 @@
     }
 
     // Close create form when a meeting starts
-    if (runningMeetingType && createFormOpen) {
+    if (anyRunning && createFormOpen) {
       createFormOpen = false;
       if (createForm) {
         createForm.setAttribute('aria-hidden', 'true');
@@ -588,12 +614,22 @@
     updateCreateFormValidation();
   }
 
+  // --- Cross-module guard: notify interview.js when a meeting is running ---
+
+  function notifyMeetingState() {
+    document.body.setAttribute('data-meeting-running', runningMeetingType ? 'true' : 'false');
+    document.dispatchEvent(new CustomEvent('meeting:stateChange', { detail: { running: !!runningMeetingType } }));
+  }
+
   // --- Run Meeting ---
 
   function handleRun(type) {
     if (runningMeetingType) return;
+    // Also check if an interview is running
+    if (document.body.getAttribute('data-interview-running') === 'true') return;
 
     runningMeetingType = type;
+    notifyMeetingState();
     renderList();
 
     apiRun(type)
@@ -606,6 +642,7 @@
       })
       .catch(function (err) {
         runningMeetingType = null;
+        notifyMeetingState();
         renderList();
         var msg = (err && err.error) || 'Failed to start meeting';
         showToast(msg, true);
@@ -614,6 +651,7 @@
 
   function handleCustomRun() {
     if (runningMeetingType) return;
+    if (document.body.getAttribute('data-interview-running') === 'true') return;
 
     var participants = getSelectedKeys();
     var instructions = instructionsTextarea ? instructionsTextarea.value.trim() : '';
@@ -628,6 +666,7 @@
     }
 
     runningMeetingType = 'custom';
+    notifyMeetingState();
     createFormOpen = false;
     if (createForm) createForm.setAttribute('aria-hidden', 'true');
     renderList();
@@ -640,6 +679,7 @@
       })
       .catch(function (err) {
         runningMeetingType = null;
+        notifyMeetingState();
         renderList();
         var msg = (err && err.error) || 'Failed to start meeting';
         showToast(msg, true);
@@ -660,6 +700,7 @@
           var hasRunning = meetings.some(function (m) { return m.status === 'running'; });
           if (!hasRunning && wasRunning) {
             runningMeetingType = null;
+            notifyMeetingState();
             stopPolling();
             showToast('Meeting completed!');
           }
@@ -852,6 +893,41 @@
     return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  // --- Cross-module: listen for interview completion to refresh list ---
+
+  document.addEventListener('interview-complete', function () {
+    detailCache = {};
+    apiGet()
+      .then(function (data) {
+        meetings = data;
+        var hasRunning = meetings.some(function (m) { return m.status === 'running'; });
+        if (hasRunning) {
+          runningMeetingType = 'running';
+          notifyMeetingState();
+          startPolling();
+        } else {
+          runningMeetingType = null;
+          notifyMeetingState();
+        }
+        renderList();
+        // Auto-expand the newest meeting (first in the list)
+        if (meetings.length > 0) {
+          expandCard(meetings[0].id);
+        }
+      })
+      .catch(function () { /* ignore */ });
+  });
+
+  // --- Cross-module: listen for interview state to disable buttons ---
+
+  document.addEventListener('interview:stateChange', function (e) {
+    if (e.detail && e.detail.running) {
+      updateButtons();
+    } else {
+      updateButtons();
+    }
+  });
+
   // --- Init ---
 
   // Render participant grid
@@ -865,6 +941,7 @@
       var hasRunning = meetings.some(function (m) { return m.status === 'running'; });
       if (hasRunning) {
         runningMeetingType = 'running';
+        notifyMeetingState();
         startPolling();
       }
 

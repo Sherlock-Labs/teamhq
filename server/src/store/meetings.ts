@@ -18,6 +18,7 @@ export async function createMeeting(
   type: MeetingType,
   participants?: string[],
   instructions?: string | null,
+  interviewConfig?: import("../schemas/meeting.js").InterviewConfig | null,
 ): Promise<Meeting> {
   await ensureDir();
   const count = await getMeetingCount();
@@ -41,6 +42,7 @@ export async function createMeeting(
     nextMeetingTopics: [],
     participants: participants || [],
     instructions: instructions || null,
+    interviewConfig: interviewConfig || null,
   };
   await writeFile(meetingPath(meeting.id), JSON.stringify(meeting, null, 2));
   return meeting;

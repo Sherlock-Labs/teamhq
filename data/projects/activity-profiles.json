@@ -1,0 +1,19 @@
+{
+  "id": "activity-profiles",
+  "slug": "activity-profiles",
+  "name": "Team Activity Profiles & Recent Output",
+  "description": "Added clickable agent cards that expand inline profile panels with GitHub-style daily activity grids and project contribution lists, plus a Recent Output section showing the last 3 completed projects.",
+  "status": "completed",
+  "createdAt": "2025-02-01T00:00:00.000Z",
+  "updatedAt": "2025-02-01T00:00:00.000Z",
+  "completedAt": "2025-02-01T00:00:00.000Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

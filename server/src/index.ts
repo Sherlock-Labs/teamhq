@@ -1,8 +1,10 @@
 import express from "express";
+import path from "path";
 import { WebSocketServer } from "ws";
 import projectRoutes from "./routes/projects.js";
 import sessionRoutes from "./routes/sessions.js";
 import meetingRoutes from "./routes/meetings.js";
+import interviewRoutes from "./routes/interviews.js";
 import docRoutes from "./routes/docs.js";
 import voiceRoutes from "./routes/voice.js";
 import { migrateFromTasksJson } from "./migrate.js";
@@ -16,9 +18,14 @@ const PORT = 3002;
 
 app.use(express.json());
 
+// Serve static frontend files from project root
+const projectRoot = path.resolve(import.meta.dirname, "../..");
+app.use(express.static(projectRoot));
+
 app.use("/api", projectRoutes);
 app.use("/api/projects/:id/sessions", sessionRoutes);
 app.use("/api", meetingRoutes);
+app.use("/api", interviewRoutes);
 app.use("/api", docRoutes);
 app.use("/api", voiceRoutes);
 

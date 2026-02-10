@@ -1,0 +1,7 @@
+{
+  "id": "dashboard-navigation",
+  "name": "Dashboard Navigation — Dedicated Screens",
+  "description": "Move Projects, Tools, Meetings, Spreadsheets, Docs, and Team from sections on a single scrolling page to their own dedicated screens/routes. Each section becomes a first-class page with its own URL, improving navigation and reducing the single-page scroll depth.",
+  "status": "backlog",
+  "tasks": []
+}

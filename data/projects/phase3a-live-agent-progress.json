@@ -1,0 +1,19 @@
+{
+  "id": "phase3a-live-agent-progress",
+  "slug": "phase3a-live-agent-progress",
+  "name": "Phase 3a: Live Agent Progress",
+  "description": "Replace the copy-paste kickoff with a Run button that executes agent sessions server-side, streaming a live activity log to the browser.",
+  "status": "completed",
+  "createdAt": "2026-02-10T01:03:36.497Z",
+  "updatedAt": "2026-02-10T01:03:36.497Z",
+  "completedAt": "2026-02-10T01:03:36.497Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

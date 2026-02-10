@@ -1,0 +1,19 @@
+{
+  "id": "revenue-model",
+  "slug": "revenue-model",
+  "name": "Revenue Model Spreadsheet",
+  "description": "Build a structured revenue model covering all three brainstormed product ideas (Audio Ad Stripper, Smart PDF Redactor, Podcast Show Notes Generator) with API costs, pricing tiers, break-even analysis, and 30/60/90 day revenue projections.",
+  "status": "completed",
+  "createdAt": "2026-02-10T01:03:36.498Z",
+  "updatedAt": "2026-02-10T01:03:36.498Z",
+  "completedAt": "2026-02-10T01:03:36.498Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

@@ -227,6 +227,57 @@
         "Minor observation: task-item__details transition (grid-template-rows 0.25s ease) is not included in the reduced-motion block. The spec states 'Already covered by existing reduced-motion rules' but it actually is not. This is a pre-existing gap inherited from the original portfolio code, not a regression introduced by this implementation. Recommend addressing as a follow-up accessibility fix across all grid-based expand/collapse transitions.",
         "Minor observation: task-item__role color uses var(--color-accent) rather than var(--color-text-tertiary) as described in spec section 4. This is again the existing behavior from the original portfolio code — the task-item classes were preserved as-is per the spec's 'Unchanged' directive, maintaining exact visual parity."
       ]
+    },
+    {
+      "title": "QA validation of project consolidation feature",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Verified schema changes: PipelineTaskSchema with title/agent/role/status/subtasks/filesChanged/decisions fields, PipelineSchema wrapping tasks array, slug (nullable, default null) and pipeline (default { tasks: [] }) added to ProjectSchema — all with correct Zod defaults for backward compatibility",
+        "Verified PipelineTaskStatus enum includes all 4 values: completed, in-progress, pending, skipped",
+        "Verified CreateProjectSchema accepts optional slug field for caller override",
+        "Verified existing project JSON files without slug/pipeline fields parse correctly through Zod defaults — confirmed by loading all 10 pre-migration project files",
+        "Verified toSlug() utility: lowercases, trims, replaces non-alphanumeric with hyphens, strips leading/trailing hyphens, caps at 80 chars — tested with project creation API",
+        "Verified merge-on-read logic: mergeTasksPipeline() in store layer correctly reads data/tasks/{slug}.json when slug is set, replaces pipeline.tasks with external file tasks when non-empty, returns project unchanged when slug is null or file is missing",
+        "Verified merge-on-read is called from both getProject() and listProjects() — all consumers get merged data automatically",
+        "Verified list endpoint (GET /api/projects): strips full pipeline.tasks array, returns precomputed stats (taskCount, fileCount, decisionCount, agents[]) — confirmed no project in list response contains full tasks array",
+        "Verified detail endpoint (GET /api/projects/:id): returns full pipeline.tasks array with merged data — confirmed ost-tool returns 4 tasks after migration",
+        "Verified computePipelineStats() correctly deduplicates agents by lowercase name, sums fileCount from filesChanged arrays, sums decisionCount from decisions arrays",
+        "Verified project creation auto-generates slug via toSlug() — created 'Test Project Slug Generation', got slug 'test-project-slug-generation', then cleaned up",
+        "Verified migration script (scripts/migrate-projects.mjs): run against actual data, updated 4 slug-named projects, matched 1 by name (podcast-notes-research), created 14 new project entries for tasks-only files, total 19 processed",
+        "Verified migration script idempotency: second run skipped all 19 entries with 'already has slug set' messages, zero updates/creates",
+        "Verified migration script creates correct project structure for new entries: id=slug, name/description/status from tasks file, completedAt derived from completedDate, sensible defaults for goals/constraints/brief/notes/kickoffPrompt/activeSessionId/pipeline",
+        "Verified post-migration list endpoint: 24 projects total, 18 with pipeline data, correct taskCount/fileCount/decisionCount/agents for each",
+        "Verified HTML: portfolio section completely removed, portfolio nav link removed, portfolio.js script tag removed, projects__stats container present with correct aria-label",
+        "Verified no remaining 'portfolio' references in index.html, css/styles.css, or any .html files — only one comment reference in js/projects.js ('ported from portfolio.js')",
+        "Verified js/portfolio.js is deleted and does not exist on disk",
+        "Verified stats row rendering: 6 metrics in correct order (Projects, Completed, Agents, Tasks, Files, Decisions), hidden when zero projects, uses correct CSS classes (projects__stat, projects__stat-value, projects__stat-label)",
+        "Verified project card avatar cluster: conditional on pipeline.taskCount > 0, max 5 avatars + overflow pill, correct CSS classes, hidden on mobile (<640px via display: none), 24x24px with 2px white border and -6px negative margin stacking",
+        "Verified pipeline stat counts on card: shows 'N tasks  N files' in .project-card__pipeline-stats, conditional on hasPipeline",
+        "Verified detail view section order: Goals/Constraints/Brief -> Dates -> Action area -> Session log -> Session history -> Pipeline (conditional) -> Progress notes -> Data section",
+        "Verified pipeline section conditional: only renders when pipeline.tasks.length > 0, no empty placeholder, no 'No pipeline data' message",
+        "Verified pipeline section structure: .pipeline__section wrapper, 'Pipeline' label (.detail__label), metrics row (3 metrics), task list, contributors, decisions rollup",
+        "Verified pipeline task items use existing .task-item classes, expandable items use button with aria-expanded, non-expandable use div, status dot with aria-label",
+        "Verified pipeline contributors: sorted by subtask count descending, hidden when all have zero subtasks and files",
+        "Verified key decisions rollup: collapsed by default (aria-expanded=false), toggle button with count, correct pipeline__decisions classes",
+        "Verified event delegation: pipeline decisions toggle correctly toggles aria-expanded and content aria-hidden, pipeline task item expand/collapse scoped to .pipeline__section .task-item__header",
+        "Verified CSS: all pipeline__ classes present (section, metrics, metric, metric-value, metric-label, task-list, contributors, contributor, contributor-avatar, contributor-name, contributor-summary, decisions-rollup, decisions-toggle, decisions-content, decisions-list, decision-agent), project-card__avatars, project-card__avatar, project-card__avatar-overflow, project-card__pipeline-stats, projects__stats, projects__stat, projects__stat-value, projects__stat-label",
+        "Verified reduced-motion: pipeline__decisions-content and pipeline__decisions-toggle-chevron both have transition: none in prefers-reduced-motion block",
+        "Verified mergeProjectSummary() includes pipeline field when merging list summary with full detail data",
+        "Verified frontend dual-format handling: computePipelineStats and card helpers work with both flat stats (from list endpoint) and full tasks array (from detail endpoint)",
+        "Verified TypeScript compiles cleanly: npx tsc --noEmit — zero errors",
+        "Verified backward compatibility: data/tasks/ directory and index.json untouched, no agent profile changes needed, meeting 'Start as Project' flow auto-generates slug on creation"
+      ],
+      "filesChanged": [
+        "data/tasks/project-consolidation.json"
+      ],
+      "decisions": [
+        "PASS verdict — all 12 QA criteria pass. Schema backward compatibility, merge-on-read logic, pipeline stats computation, list endpoint stripping, detail endpoint full data, stats row rendering, card avatars and pipeline stats, detail view pipeline section, CSS consolidation, migration script correctness and idempotency, accessibility attributes, and error handling all verified through code review and live API testing.",
+        "Minor observation (non-blocking): All store functions that call getProject() (updateProject, startProject, setActiveSession, clearActiveSession, addNote, deleteNote) will write merged pipeline data back to the project file on disk. This means the project file accumulates a copy of the pipeline data over time. Not a functional bug — merge-on-read always overwrites with the external file — but the project JSON on disk will grow. Recommend a follow-up to separate the read path (merge) from the write path (skip merge) if this becomes a concern.",
+        "Minor observation (non-blocking, pre-existing): task-item__details grid transition (grid-template-rows 0.25s ease) is not covered by the reduced-motion block. This is inherited from the original portfolio code, not a regression. Recommend addressing as a global accessibility fix.",
+        "Migration script must be run before the feature is usable — existing projects have slug=null and won't show pipeline data until the migration sets their slug fields. The script was tested and works correctly (4 updated, 1 matched by name, 14 created, idempotent on re-run)."
+      ]
     }
   ]
 }

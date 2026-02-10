@@ -1,0 +1,19 @@
+{
+  "id": "embedded-spreadsheet",
+  "slug": "embedded-spreadsheet",
+  "name": "Embedded Spreadsheet Component",
+  "description": "A read-only, sortable table component for viewing structured data (revenue models, competitive analyses, metrics) natively within TeamHQ project views and doc pages.",
+  "status": "in-progress",
+  "createdAt": "2026-02-10T01:03:36.499Z",
+  "updatedAt": "2026-02-10T01:03:36.499Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

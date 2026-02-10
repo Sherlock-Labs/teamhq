@@ -1,0 +1,19 @@
+{
+  "id": "teamhq-mobile-app",
+  "slug": "teamhq-mobile-app",
+  "name": "TeamHQ Mobile App",
+  "description": "Voice-first mobile companion app for the CEO. Speak a project into existence, monitor team progress, and manage projects from the phone.",
+  "status": "completed",
+  "createdAt": "2026-02-10T01:03:36.497Z",
+  "updatedAt": "2026-02-10T01:03:36.497Z",
+  "completedAt": "2026-02-10T01:03:36.497Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

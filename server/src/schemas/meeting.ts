@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const MeetingType = z.enum(["charter", "weekly", "custom"]);
+export const MeetingType = z.enum(["charter", "weekly", "custom", "interview"]);
 export type MeetingType = z.infer<typeof MeetingType>;
 
 /** All valid agent keys — used for participant validation on custom meetings */
@@ -41,6 +41,16 @@ export const ActionItemSchema = z.object({
 
 export type ActionItem = z.infer<typeof ActionItemSchema>;
 
+export const InterviewConfigSchema = z.object({
+  topic: z.string(),
+  context: z.string().optional(),
+  voiceName: z.string().optional(),
+  durationSeconds: z.number().optional(),
+  geminiSessionId: z.string().optional(),
+});
+
+export type InterviewConfig = z.infer<typeof InterviewConfigSchema>;
+
 export const MeetingSchema = z.object({
   id: z.string(),
   type: MeetingType,
@@ -60,6 +70,7 @@ export const MeetingSchema = z.object({
   nextMeetingTopics: z.array(z.string()).default([]),
   participants: z.array(z.string()).default([]),
   instructions: z.string().nullable().default(null),
+  interviewConfig: InterviewConfigSchema.nullable().default(null),
 });
 
 export type Meeting = z.infer<typeof MeetingSchema>;
@@ -80,6 +91,30 @@ export const RunMeetingSchema = z.object({
 );
 
 export type RunMeetingInput = z.infer<typeof RunMeetingSchema>;
+
+/** Validation schema for POST /api/interviews/start */
+export const StartInterviewSchema = z.object({
+  topic: z.string().min(1, "Topic is required"),
+  context: z.string().optional(),
+});
+
+export type StartInterviewInput = z.infer<typeof StartInterviewSchema>;
+
+/** Validation schema for POST /api/interviews/:id/complete */
+export const CompleteInterviewSchema = z.object({
+  transcript: z.array(TranscriptEntrySchema).min(1, "Transcript must not be empty"),
+  durationSeconds: z.number().positive(),
+});
+
+export type CompleteInterviewInput = z.infer<typeof CompleteInterviewSchema>;
+
+/** Validation schema for POST /api/interviews/:id/fail */
+export const FailInterviewSchema = z.object({
+  error: z.string().min(1, "Error message is required"),
+  partialTranscript: z.array(TranscriptEntrySchema).optional(),
+});
+
+export type FailInterviewInput = z.infer<typeof FailInterviewSchema>;
 
 /**
  * JSON Schema for the structured output from claude --json-schema.

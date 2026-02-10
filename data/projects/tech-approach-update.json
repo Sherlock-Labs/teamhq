@@ -1,0 +1,19 @@
+{
+  "id": "tech-approach-update",
+  "slug": "tech-approach-update",
+  "name": "Tech Approach Update — Change Impact Classification",
+  "description": "Update tech approach writing practice to explicitly flag files requiring significant restructuring versus simple extension, with a note on downstream impact for QA test planning. Originated from Custom Meeting #4 action item.",
+  "status": "completed",
+  "createdAt": "2026-02-10T01:03:36.498Z",
+  "updatedAt": "2026-02-10T01:03:36.498Z",
+  "completedAt": "2026-02-10T01:03:36.498Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

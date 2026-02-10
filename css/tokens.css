@@ -70,6 +70,9 @@
   --color-cyan-400: #22d3ee;
   --color-purple-400: #c084fc;
   --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
   --color-pink-400: #f472b6;
 
   /* Agent Identity (additional raw tokens) */
@@ -115,6 +118,7 @@
   --color-indigo-400-rgb: 129, 140, 248;
   --color-purple-400-rgb: 192, 132, 252;
   --color-amber-400-rgb: 251, 191, 36;
+  --color-amber-600-rgb: 217, 119, 6;
   --color-rose-400-rgb: 251, 126, 149;
   --color-cyan-400-rgb: 34, 211, 238;
   --color-zinc-400-rgb: 161, 161, 170;
@@ -152,6 +156,7 @@
   --color-text-primary: #171717;
   --color-text-secondary: #666666;
   --color-text-tertiary: #999999;
+  --color-text-tertiary-accessible: #767676; /* 4.5:1 on white — AA-safe for informational text */
 
   /* Interactive */
   --color-accent: #006B3F;

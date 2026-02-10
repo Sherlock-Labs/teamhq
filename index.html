@@ -229,8 +229,38 @@
             <button class="meetings__run-btn meetings__run-btn--charter" type="button" id="meeting-charter-btn">Run Charter</button>
             <button class="meetings__run-btn meetings__run-btn--weekly" type="button" id="meeting-weekly-btn" disabled>Run Weekly</button>
             <button class="meetings__run-btn meetings__run-btn--custom" type="button" id="meeting-custom-btn">New Meeting</button>
+            <button class="meetings__run-btn meetings__run-btn--interview" type="button" id="interview-btn">Interview</button>
           </div>
         </div>
+
+        <!-- Interview Configuration Panel -->
+        <div class="interview-config" id="interview-config" aria-hidden="true">
+          <div class="interview-config__inner">
+            <div class="interview-config__content">
+              <div class="interview-config__field">
+                <label class="interview-config__label" for="interview-topic">Topic <span class="interview-config__required">*</span></label>
+                <input class="interview-config__input" type="text" id="interview-topic"
+                       placeholder="e.g. Q1 strategy review, Product roadmap priorities"
+                       aria-required="true" aria-describedby="interview-topic-error" autocomplete="off">
+                <p class="interview-config__error" id="interview-topic-error" role="alert" aria-live="polite"></p>
+              </div>
+              <div class="interview-config__field">
+                <label class="interview-config__label" for="interview-context">Additional context <span class="interview-config__optional">(optional)</span></label>
+                <textarea class="interview-config__textarea" id="interview-context" rows="3"
+                          placeholder="Any specific questions, background, or areas to focus on..."></textarea>
+              </div>
+              <div class="interview-config__actions">
+                <button class="meetings__run-btn meetings__run-btn--interview" type="button" id="interview-start-btn" disabled>Start Interview</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interview Active/Processing/Error Panel -->
+        <div class="interview-panel" id="interview-panel" aria-hidden="true"></div>
+
+        <!-- Screen reader announcements for interview state changes -->
+        <div class="sr-only" id="interview-sr-announce" aria-live="assertive"></div>
 
         <!-- Custom Meeting Creation Form -->
         <div class="meetings__create-form" id="meetings-create-form" aria-hidden="true">
@@ -481,6 +511,8 @@
   <script src="js/spreadsheet.js" defer></script>
   <script src="js/projects.js" defer></script>
   <script src="js/meetings.js" defer></script>
+  <script src="js/gemini-client.js" defer></script>
+  <script src="js/interview.js" defer></script>
   <script src="js/roster.js" defer></script>
 </body>
 </html>
