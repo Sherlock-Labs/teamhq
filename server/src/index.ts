@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
 import express from "express";
 import path from "path";
+
+dotenv.config({ path: path.resolve(import.meta.dirname, "../../.env") });
 import { WebSocketServer } from "ws";
 import projectRoutes from "./routes/projects.js";
 import sessionRoutes from "./routes/sessions.js";

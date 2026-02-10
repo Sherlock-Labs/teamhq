@@ -14,6 +14,7 @@
 | Product analytics | PostHog | < 1M events/mo |
 | Revenue metrics | Stripe dashboard | included |
 | Email (txn + marketing) | Loops | < 1K subs, 4K sends/mo |
+| File storage | Cloudflare R2 | 10 GB + 10M reads/mo |
 
 ## MCP Servers Available
 
@@ -52,14 +53,37 @@ All services have MCP servers configured in `.mcp.json`:
 
 ### Key Concepts
 - Drop-in `<SignIn />`, `<SignUp />`, `<UserProfile />` React components
-- `<OrganizationSwitcher />` for multi-tenant org management
 - Middleware-based auth for Next.js (`clerkMiddleware()`)
 - `auth()` and `currentUser()` server-side helpers
-- Webhook events for syncing user data to your DB
+- Webhook events for syncing user/org data to your DB
+
+### Organizations (Multi-Tenancy)
+This product uses **Clerk Organizations** for team-based access:
+- `<OrganizationSwitcher />` — lets users switch between teams
+- `<OrganizationProfile />` — team settings, member management, invites
+- `<CreateOrganization />` — team creation flow
+- **Roles**: default `admin` + `member`, custom roles available (up to 10)
+- **Role Sets**: gate available roles by pricing tier (e.g., Free = admin/member, Pro = custom roles)
+- **Permissions**: fine-grained access control via `has({ permission: 'org:posts:edit' })`
+- `auth().orgId` and `auth().orgRole` available server-side for data isolation
+- Enterprise SSO (SAML/OIDC) supported per-org for enterprise customers
+
+### Data Model
+```
+Clerk User (1) ──→ (many) Org Memberships ──→ (many) Clerk Organizations
+                                                        │
+                                                        ├── maps to Stripe Customer (1:1)
+                                                        └── maps to your DB team record (1:1)
+```
+- Every org gets a Stripe Customer — billing is per-team, not per-user
+- Your DB stores `clerkOrgId` + `stripeCustomerId` on the team record
+- Data isolation: always scope DB queries by `clerkOrgId`
 
 ### Integration Pattern
 ```
-User signs up via Clerk → Clerk webhook → your API creates local user record → link Clerk userId to your DB
+User signs up via Clerk → Clerk webhook (user.created) → create local user record
+User creates org via Clerk → Clerk webhook (organization.created) → create local team record + Stripe Customer
+User invites teammate → Clerk handles invite flow → webhook (organizationMembership.created) → sync to DB
 ```
 
 ### Environment Variables
@@ -84,9 +108,13 @@ User signs up via Clerk → Clerk webhook → your API creates local user record
 
 ### Integration Pattern
 ```
-Clerk user created → create Stripe Customer (store stripeCustomerId in your DB)
-→ Checkout Session for subscription → webhook confirms payment → activate plan
+Clerk org created → create Stripe Customer for the org (store stripeCustomerId on team record)
+→ Checkout Session for subscription (tied to org, not user)
+→ webhook confirms payment → activate plan for the org
 ```
+- Billing is per-org (team), not per-user
+- The org admin manages the subscription; members inherit the plan
+- Use Clerk `orgId` as the key to look up the Stripe Customer
 
 ### Webhook Events to Handle
 - `checkout.session.completed` — initial purchase
@@ -167,13 +195,61 @@ Stripe webhook (subscription started) → your API → Loops API (trigger onboar
 ### No MCP
 - Loops does not have an MCP server yet. Use the REST API directly.
 
+## Cloudflare R2 (File Storage)
+
+**Docs:** https://developers.cloudflare.com/r2/
+
+### Key Concepts
+- S3-compatible object storage — use `@aws-sdk/client-s3` to interact with it
+- **Zero egress fees** — reads are free, you only pay for storage + writes
+- No region configuration — stored on Cloudflare's global edge automatically
+- Free tier: 10 GB storage, 10M reads/mo, 1M writes/mo
+- $0.015/GB/mo after free tier
+
+### Usage Patterns
+- **User uploads** (avatars, team logos, attachments): generate presigned upload URLs server-side, upload directly from client to R2
+- **Private files**: use presigned download URLs with expiry for access control
+- **Public assets**: enable public access on a bucket for static assets (images, docs)
+- Scope uploads by org: use key prefixes like `{clerkOrgId}/{fileType}/{fileId}`
+
+### Integration Pattern
+```
+Client requests upload URL → your API generates presigned PUT URL (scoped to org)
+→ client uploads directly to R2 → store file metadata (key, size, type) in Postgres
+→ serve via presigned GET URL or Cloudflare CDN
+```
+
+### Environment Variables
+- `R2_ENDPOINT` — `https://<account-id>.r2.cloudflarestorage.com`
+- `R2_ACCESS_KEY_ID` — R2 API token access key
+- `R2_SECRET_ACCESS_KEY` — R2 API token secret
+- `R2_BUCKET_NAME` — your bucket name
+
+### S3 Client Setup
+```typescript
+import { S3Client } from '@aws-sdk/client-s3';
+
+const r2 = new S3Client({
+  region: 'auto',
+  endpoint: process.env.R2_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  },
+});
+```
+
+### No MCP
+- Cloudflare R2 does not have an MCP server. Use the S3-compatible SDK directly.
+
 ## Service Integration Map
 
 ```
                     ┌─────────┐
-                    │  Clerk  │ ← Auth (signup, login, orgs)
+                    │  Clerk  │ ← Auth (signup, login, orgs, teams)
                     └────┬────┘
-                         │ webhook: user.created
+                         │ webhooks: user.created, organization.created,
+                         │          organizationMembership.created
                          ▼
 ┌──────────┐      ┌─────────────┐      ┌─────────┐
 │ PostHog  │ ←──  │  Your App   │ ──→  │ Stripe  │
@@ -185,6 +261,13 @@ Stripe webhook (subscription started) → your API → Loops API (trigger onboar
                     │Postgres │        │  Loops  │
                     └─────────┘        │ (email) │
                                        └─────────┘
+                    ┌─────────────┐
+                    │Cloudflare R2│ ← File storage (avatars, uploads, attachments)
+                    └─────────────┘
+
+Data isolation: Clerk orgId → DB team record → scope all queries by team
+Billing: Clerk orgId → Stripe Customer → subscription is per-team
+File storage: scope R2 keys by orgId → {clerkOrgId}/{fileType}/{fileId}
 ```
 
 ## Environment Variables Summary
@@ -209,6 +292,12 @@ POSTHOG_API_KEY=phx_...
 
 # Loops
 LOOPS_API_KEY=...
+
+# Cloudflare R2
+R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=...
 
 # Database (auto-injected by Railway)
 DATABASE_URL=postgresql://...

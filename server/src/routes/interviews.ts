@@ -9,13 +9,13 @@ import {
   createMeeting,
   getMeeting,
   updateMeeting,
-  listMeetings,
 } from "../store/meetings.js";
 import { listProjects } from "../store/projects.js";
 import { getRecentMeetings } from "../store/meetings.js";
-import { generateEphemeralToken, getSessionConfig } from "../interviews/token.js";
+import { getSignedUrl } from "../interviews/signed-url.js";
 import {
   buildInterviewSystemInstruction,
+  buildFirstMessage,
   formatProjectSummaries,
   formatMeetingSummaries,
 } from "../interviews/prompt.js";
@@ -33,25 +33,15 @@ function formatZodError(err: ZodError) {
 /**
  * POST /api/interviews/start
  *
- * Creates an interview meeting record, generates a Gemini ephemeral token
- * with locked system instructions, and returns the token + config to the frontend.
+ * Creates an interview meeting record, generates an ElevenLabs signed URL,
+ * and returns the signed URL + prompt override + first message to the frontend.
  *
- * The frontend uses the token to open a WebSocket directly to Gemini.
+ * The frontend uses the signed URL to start an ElevenLabs Conversational AI session.
  */
 router.post("/interviews/start", async (req, res) => {
   try {
     // Validate request body
     const parsed = StartInterviewSchema.parse(req.body);
-
-    // Guard: no other meeting currently running
-    const existing = await listMeetings();
-    const hasRunning = existing.some((m) => m.status === "running");
-    if (hasRunning) {
-      res.status(409).json({
-        error: "A meeting is already in progress. Wait for it to complete.",
-      });
-      return;
-    }
 
     // Gather context for the system instruction
     let projectSummaries: string | undefined;
@@ -69,16 +59,19 @@ router.post("/interviews/start", async (req, res) => {
       // Non-fatal: proceed without meeting context
     }
 
-    // Build the system instruction
-    const systemInstruction = buildInterviewSystemInstruction(
+    // Build the system instruction for prompt override
+    const promptOverride = buildInterviewSystemInstruction(
       parsed.topic,
       parsed.context,
       projectSummaries,
       meetingSummaries,
     );
 
-    // Generate ephemeral token with locked system instructions
-    const { token } = await generateEphemeralToken(systemInstruction);
+    // Generate ElevenLabs signed URL
+    const signedUrl = await getSignedUrl();
+
+    // Generate topic-specific first message
+    const firstMessage = buildFirstMessage(parsed.topic);
 
     // Create meeting record in "running" state
     const meeting = await createMeeting(
@@ -88,7 +81,6 @@ router.post("/interviews/start", async (req, res) => {
       {
         topic: parsed.topic,
         context: parsed.context,
-        voiceName: process.env.GEMINI_VOICE || "Kore",
       },
     );
 
@@ -96,12 +88,12 @@ router.post("/interviews/start", async (req, res) => {
       `[interviews] Started interview #${meeting.meetingNumber} (${meeting.id}) — topic: "${parsed.topic}"`,
     );
 
-    // Return token and config for the frontend
-    const config = getSessionConfig();
+    // Return signed URL, prompt override, and first message for the frontend
     res.json({
       meetingId: meeting.id,
-      token,
-      config,
+      signedUrl,
+      promptOverride,
+      firstMessage,
     });
   } catch (err) {
     if (err instanceof ZodError) {

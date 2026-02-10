@@ -383,13 +383,9 @@
   function startVisualizer() {
     if (!client) return;
 
-    var micAnalyser = client.getMicAnalyser();
-    var playbackAnalyser = client.getPlaybackAnalyser();
     var visualizerEl = document.getElementById('interview-visualizer');
     if (!visualizerEl) return;
 
-    var micData = micAnalyser ? new Uint8Array(micAnalyser.frequencyBinCount) : null;
-    var playbackData = playbackAnalyser ? new Uint8Array(playbackAnalyser.frequencyBinCount) : null;
     var bars = visualizerEl.querySelectorAll('.interview-visualizer__bar');
     var aiSpeaking = false;
 
@@ -404,46 +400,57 @@
     function draw() {
       if (state !== 'active') return;
 
-      var data;
       var isActive = false;
 
-      if (aiSpeaking && playbackAnalyser && playbackData) {
-        playbackAnalyser.getByteFrequencyData(playbackData);
-        data = playbackData;
-        visualizerEl.classList.add('interview-visualizer--ai-speaking');
-        visualizerEl.classList.remove('interview-visualizer--idle');
-        isActive = true;
-      } else if (micAnalyser && micData) {
-        micAnalyser.getByteFrequencyData(micData);
-        data = micData;
-        visualizerEl.classList.remove('interview-visualizer--ai-speaking');
+      if (aiSpeaking) {
+        // AI speaking: use output volume with variation across bars
+        var volume = client.getOutputVolume();
+        isActive = volume > 0.01;
 
-        // Check if there's meaningful audio
-        var sum = 0;
-        for (var j = 0; j < data.length; j++) sum += data[j];
-        isActive = sum / data.length > 10;
-      }
-
-      if (isActive && data) {
-        visualizerEl.classList.remove('interview-visualizer--idle');
-        var step = Math.floor(data.length / bars.length);
-        for (var i = 0; i < bars.length; i++) {
-          var idx = i * step;
-          var val = data[idx] || 0;
-          var height = Math.max(4, Math.min(32, (val / 255) * 32));
-          bars[i].style.height = height + 'px';
-        }
-      } else if (!reducedMotion) {
-        visualizerEl.classList.add('interview-visualizer--idle');
-        // Reset bar heights for CSS idle animation
-        for (var i = 0; i < bars.length; i++) {
-          bars[i].style.height = '';
+        if (isActive) {
+          visualizerEl.classList.add('interview-visualizer--ai-speaking');
+          visualizerEl.classList.remove('interview-visualizer--idle');
+          for (var i = 0; i < bars.length; i++) {
+            var variation = 0.7 + Math.random() * 0.3;
+            var height = Math.max(4, Math.min(32, volume * 32 * variation));
+            bars[i].style.height = height + 'px';
+          }
         }
       } else {
-        // Reduced motion + idle: static bars
-        visualizerEl.classList.remove('interview-visualizer--idle');
-        for (var i = 0; i < bars.length; i++) {
-          bars[i].style.height = '4px';
+        // User speaking (or idle): use mic frequency data
+        var micData = client.getInputByteFrequencyData();
+        visualizerEl.classList.remove('interview-visualizer--ai-speaking');
+
+        if (micData) {
+          // Check if there's meaningful audio
+          var sum = 0;
+          for (var j = 0; j < micData.length; j++) sum += micData[j];
+          isActive = sum / micData.length > 10;
+
+          if (isActive) {
+            visualizerEl.classList.remove('interview-visualizer--idle');
+            var step = Math.floor(micData.length / bars.length);
+            for (var i = 0; i < bars.length; i++) {
+              var idx = i * step;
+              var val = micData[idx] || 0;
+              var height = Math.max(4, Math.min(32, (val / 255) * 32));
+              bars[i].style.height = height + 'px';
+            }
+          }
+        }
+      }
+
+      if (!isActive) {
+        if (!reducedMotion) {
+          visualizerEl.classList.add('interview-visualizer--idle');
+          for (var i = 0; i < bars.length; i++) {
+            bars[i].style.height = '';
+          }
+        } else {
+          visualizerEl.classList.remove('interview-visualizer--idle');
+          for (var i = 0; i < bars.length; i++) {
+            bars[i].style.height = '4px';
+          }
         }
       }
 
@@ -477,7 +484,7 @@
     setState('connecting');
     showConnectingState(topic);
 
-    // Call backend to create meeting and get ephemeral token
+    // Call backend to create meeting and get signed URL
     fetch(API_BASE + '/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -494,8 +501,8 @@
       .then(function (data) {
         meetingId = data.meetingId;
 
-        // Create Gemini client and connect
-        client = new window.GeminiLiveClient();
+        // Create ElevenLabs client and connect
+        client = new window.ElevenLabsClient();
 
         client.on('stateChange', function (clientState) {
           if (clientState === 'active' && state === 'connecting') {
@@ -507,12 +514,29 @@
         client.on('error', function (err) {
           if (err.type === 'connectionLost') {
             showConnectionLost(getElapsedText());
+            // Clean up server-side meeting record
+            if (meetingId) {
+              fetch(API_BASE + '/' + encodeURIComponent(meetingId) + '/fail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ error: err.message || 'Connection lost' }),
+              }).catch(function () {});
+            }
             return;
           }
           // For init errors (mic, connection), show error state
           stopTimer();
           stopVisualizer();
           setState('idle');
+
+          // Clean up server-side meeting record so it doesn't block future interviews
+          if (meetingId) {
+            fetch(API_BASE + '/' + encodeURIComponent(meetingId) + '/fail', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ error: err.message || 'Connection failed' }),
+            }).catch(function () {});
+          }
 
           var actionLabel = 'Try Again';
           var actionFn = function () {
@@ -532,22 +556,19 @@
         });
 
         client.connect({
-          token: data.token,
-          config: data.config,
+          signedUrl: data.signedUrl,
+          promptOverride: data.promptOverride,
+          firstMessage: data.firstMessage,
           meetingId: data.meetingId,
         });
       })
       .catch(function (err) {
         setState('idle');
         var msg = err.message || 'Unable to start interview';
-        if (msg.indexOf('already in progress') !== -1) {
-          showErrorState('Meeting in progress', 'Another meeting is in progress. Please wait for it to finish.', null, null);
-        } else {
-          showErrorState('Unable to start interview', msg, 'Try Again', function () {
-            closeConfigPanel();
-            openConfigPanel();
-          });
-        }
+        showErrorState('Unable to start interview', msg, 'Try Again', function () {
+          closeConfigPanel();
+          openConfigPanel();
+        });
       });
   }
 

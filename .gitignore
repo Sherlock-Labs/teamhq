@@ -5,6 +5,9 @@
 data/memory/*.db
 data/memory/*.db-*
 
+# Temp/scratch files
+tmp/
+
 # Node
 node_modules/
 

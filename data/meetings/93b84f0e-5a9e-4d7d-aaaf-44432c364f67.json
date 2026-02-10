@@ -1,0 +1,27 @@
+{
+  "id": "93b84f0e-5a9e-4d7d-aaaf-44432c364f67",
+  "type": "interview",
+  "status": "failed",
+  "meetingNumber": 18,
+  "scheduledAt": null,
+  "startedAt": "2026-02-10T04:14:08.557Z",
+  "completedAt": "2026-02-10T04:14:09.771Z",
+  "durationMs": null,
+  "error": "Override for field 'first_message' is not allowed by config.",
+  "summary": null,
+  "keyTakeaways": [],
+  "transcript": [],
+  "decisions": [],
+  "actionItems": [],
+  "mood": null,
+  "nextMeetingTopics": [],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "Q1",
+    "context": "OKRs"
+  }
+}

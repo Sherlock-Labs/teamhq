@@ -46,7 +46,7 @@ export const InterviewConfigSchema = z.object({
   context: z.string().optional(),
   voiceName: z.string().optional(),
   durationSeconds: z.number().optional(),
-  geminiSessionId: z.string().optional(),
+  elevenLabsConversationId: z.string().optional(),
 });
 
 export type InterviewConfig = z.infer<typeof InterviewConfigSchema>;

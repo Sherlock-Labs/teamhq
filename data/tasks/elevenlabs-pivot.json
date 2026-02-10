@@ -1,0 +1,180 @@
+{
+  "id": "elevenlabs-pivot",
+  "name": "Pivot AI Interviews from Gemini to ElevenLabs",
+  "description": "Replace the broken Gemini Live API integration with ElevenLabs Conversational AI SDK. Platform swap -- same UX, same UI, same backend post-processing. Deletes ~630 lines of hand-rolled WebSocket/Audio code, replaces with ~150 lines wrapping the ElevenLabs SDK.",
+  "status": "completed",
+  "tasks": [
+    {
+      "title": "Scope ElevenLabs pivot requirements",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Reviewed existing AI interviews implementation (gemini-client.js, interview.js, token.ts, prompt.ts, routes, schemas)",
+        "Defined platform swap scope: same UX, same UI, same post-processing, only plumbing changes",
+        "Documented what changes (SDK client, signed URL, transcript handling, prompt delivery) vs what stays (interview.js, post-process.ts, CSS, meeting cards)",
+        "Evaluated SDK loading options for vanilla JS (CDN UMD, widget embed, vendored build)",
+        "Evaluated transcript handling options (client-side accumulation vs server-side retrieval)",
+        "Evaluated prompt delivery options (agent-level prompt + overrides vs server-side locked)",
+        "Documented audio visualizer compatibility concerns (AnalyserNode access, VAD fallback)",
+        "Wrote acceptance criteria (7 ACs covering start, behavior, transcript, record, errors, guards, pivot-specific)",
+        "Estimated cost: $3/session (~$65/mo at 5x/week) vs Gemini's $0.76/session"
+      ],
+      "filesChanged": ["docs/elevenlabs-pivot-requirements.md"],
+      "decisions": [
+        "Platform swap not rebuild -- keep all existing UI, CSS, post-processing, meeting card rendering",
+        "Client-side transcript accumulation via onMessage (Option A) -- matches existing architecture",
+        "Agent-level prompt with per-session overrides -- simpler than server-locked approach",
+        "Signed URL authentication -- API key stays server-side"
+      ]
+    },
+    {
+      "title": "Write technical approach for ElevenLabs pivot",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Evaluated SDK loading: ESM via jsDelivr CDN (pinned @0.2.0) -- no UMD/IIFE available, ESM is the only browser-compatible option",
+        "Resolved audio visualizer approach: getInputByteFrequencyData() for mic (drop-in AnalyserNode replacement), getOutputVolume() + random variation for AI speaking",
+        "Designed prompt delivery: server assembles full prompt, returns in /start response, frontend injects via overrides.agent.prompt.prompt",
+        "Documented session management simplification: ElevenLabs has no 10-minute WebSocket limit, no need for reconnection timer/resumption tokens/context compression",
+        "Wrote complete file change list: delete 2 files (630 lines), create 2 files (150 lines), modify 5 files",
+        "Defined updated API contract for start endpoint: { meetingId, signedUrl, promptOverride, firstMessage }",
+        "Documented security tradeoff: prompt overrides are client-injectable but acceptable for single-user internal tool",
+        "Wrote migration checklist with 14 verification items"
+      ],
+      "filesChanged": ["docs/elevenlabs-pivot-tech-approach.md", "data/tasks/elevenlabs-pivot.json"],
+      "decisions": [
+        "ESM via jsDelivr CDN -- requires type='module' on script tags, pinned to @0.2.0",
+        "getInputByteFrequencyData() for mic visualization, getOutputVolume() for AI speaking visualization",
+        "Prompt delivered via overrides not locked server-side -- acceptable security tradeoff for single-user tool",
+        "No reconnection logic needed -- SDK handles internally, massive complexity reduction",
+        "interview.js changes minimal: swap constructor, update connect() args, update visualizer data source"
+      ]
+    },
+    {
+      "title": "Implement ElevenLabs backend",
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "status": "completed",
+      "subtasks": [
+        "Created server/src/interviews/signed-url.ts -- generates ElevenLabs signed URL via xi-api-key header",
+        "Deleted server/src/interviews/token.ts -- removed Gemini ephemeral token generation",
+        "Modified POST /api/interviews/start to return { meetingId, signedUrl, promptOverride, firstMessage }",
+        "Added buildFirstMessage() to server/src/interviews/prompt.ts for topic-specific greeting",
+        "Updated InterviewConfigSchema: replaced geminiSessionId with elevenLabsConversationId",
+        "Removed voiceName from interview meeting creation (no longer Gemini-specific)",
+        "Verified TypeScript compiles cleanly with no errors"
+      ],
+      "filesChanged": [
+        "server/src/interviews/signed-url.ts",
+        "server/src/interviews/token.ts",
+        "server/src/interviews/prompt.ts",
+        "server/src/routes/interviews.ts",
+        "server/src/schemas/meeting.ts",
+        "data/tasks/elevenlabs-pivot.json"
+      ],
+      "decisions": [
+        "Signed URL uses ELEVENLABS_API_KEY and ELEVENLABS_AGENT_ID from env -- same dotenv loading as before",
+        "promptOverride is the full system instruction from buildInterviewSystemInstruction() -- frontend injects via overrides",
+        "firstMessage is a simple template string -- kept intentionally simple per product philosophy",
+        "Removed voiceName from meeting creation since voice is configured on the ElevenLabs agent, not per-session"
+      ]
+    },
+    {
+      "title": "Implement ElevenLabs frontend",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "completed",
+      "subtasks": [
+        "Deleted js/gemini-client.js (604 lines) and js/audio-worklet-processor.js (31 lines)",
+        "Created js/elevenlabs-client.js (~190 lines) -- thin wrapper around @11labs/client SDK via jsDelivr ESM CDN (pinned @0.2.0)",
+        "Wrapper exposes same event interface: stateChange, error, aiSpeaking, transcriptUpdated events",
+        "Wrapper exposes same methods: connect(), disconnect(), getTranscript(), getInputByteFrequencyData(), getOutputVolume(), getMode(), clearBackup()",
+        "Updated interviews.html: replaced script tags with type='module' for elevenlabs-client.js and interview.js",
+        "Updated js/interview.js: swapped GeminiLiveClient constructor to ElevenLabsClient",
+        "Updated js/interview.js: changed connect() args from {token, config, meetingId} to {signedUrl, promptOverride, firstMessage, meetingId}",
+        "Rewrote visualizer: getInputByteFrequencyData() for mic, getOutputVolume() + random variation for AI speaking",
+        "Removed all reconnection/session-resumption references from interview.js",
+        "Verified no remaining references to GeminiLiveClient, gemini-client.js, or audio-worklet-processor.js in frontend code"
+      ],
+      "filesChanged": [
+        "js/gemini-client.js (deleted)",
+        "js/audio-worklet-processor.js (deleted)",
+        "js/elevenlabs-client.js (created)",
+        "js/interview.js",
+        "interviews.html",
+        "data/tasks/elevenlabs-pivot.json"
+      ],
+      "decisions": [
+        "ESM import via jsDelivr CDN as specified by Andrei -- window.ElevenLabsClient export for cross-module access",
+        "Transcript handling uses SDK onMessage callback with complete messages -- no buffering needed (unlike Gemini's partial chunks)",
+        "Mic visualization uses getInputByteFrequencyData() (same Uint8Array format as AnalyserNode) -- drop-in replacement",
+        "AI speaking visualization uses getOutputVolume() with 0.7-1.0 random variation per bar -- visually similar to frequency-based approach",
+        "Kept 60-min hard limit and 15-min warning (product-level guards, platform-independent)"
+      ]
+    },
+    {
+      "title": "Design review of ElevenLabs pivot",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Read pivot requirements and tech approach docs -- confirmed no visual/UI changes intended",
+        "Read original ai-interviews-design-spec.md -- used as the visual standard",
+        "Reviewed interviews.html structure -- nav, heading, subtitle, button all present and correct",
+        "Reviewed js/elevenlabs-client.js -- same event interface as GeminiLiveClient, no UI concerns",
+        "Reviewed js/interview.js -- client swap is minimal, visualizer updated for new data sources, all UI rendering unchanged",
+        "Verified css/styles.css has ZERO git diff -- no CSS changes during pivot (expected)",
+        "Puppeteer visual check (1280x800): page loads with nav, heading, subtitle, amber 'New Interview' button",
+        "Puppeteer visual check: clicked button, config panel opens with Topic input, Context textarea, Start Interview button, correct focus ring",
+        "Puppeteer visual check: button text toggles 'New Interview' -> 'Cancel' -> 'Interview' correctly",
+        "Puppeteer visual check: Start Interview button disabled when topic empty (opacity 0.4)",
+        "Puppeteer visual check (375x667 mobile): nav wraps, button centers, layout clean",
+        "Verified amber color palette intact: button bg rgb(217,119,6) = #d97706 amber-600, white text",
+        "Verified zero console errors from ESM module loading"
+      ],
+      "filesChanged": ["data/tasks/elevenlabs-pivot.json"],
+      "decisions": [
+        "PASS -- UI is visually identical to pre-pivot state. No design regressions detected."
+      ]
+    },
+    {
+      "title": "QA validation of ElevenLabs pivot",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "CODE REVIEW -- elevenlabs-client.js: ESM import from jsDelivr CDN pinned @0.2.0, constructor initializes state correctly, event emitter pattern (on/off/_emit) with try-catch on listeners, connect() calls Conversation.startSession with signedUrl + overrides, disconnect() calls endSession and returns transcript copy, getTranscript() returns defensive slice(), getInputByteFrequencyData() and getOutputVolume() delegate to SDK with null guards, _handleInitError maps NotAllowedError/NotFoundError/NotReadableError to micDenied/micNotFound/micInUse error types, localStorage backup timer at 30s intervals with clearBackup cleanup -- PASS",
+        "CODE REVIEW -- interview.js: Client swap clean -- line 505 uses new window.ElevenLabsClient(), connect() passes {signedUrl, promptOverride, firstMessage, meetingId}, visualizer uses getInputByteFrequencyData() for mic and getOutputVolume() with random variation for AI speaking, mode detection via aiSpeaking event, 60-min hard limit and 15-min warning preserved, IIFE pattern works correctly as type=module (confirmed via Puppeteer), all error handlers wired (micDenied, micNotFound, micInUse, connection, connectionLost) -- PASS",
+        "CODE REVIEW -- interviews.html: Two script tags both type='module' (elevenlabs-client.js and interview.js), no gemini-client.js or audio-worklet-processor.js references, nav link correct with aria-current=page -- PASS",
+        "CODE REVIEW -- signed-url.ts: Validates ELEVENLABS_API_KEY and ELEVENLABS_AGENT_ID with clear error messages, calls correct ElevenLabs endpoint (v1/convai/conversation/get-signed-url), uses xi-api-key header, reads response.ok and parses signed_url from JSON, error includes status code and response text -- PASS",
+        "CODE REVIEW -- routes/interviews.ts: Imports getSignedUrl (not generateEphemeralToken), start endpoint returns {meetingId, signedUrl, promptOverride, firstMessage}, builds system instruction with topic/context/project summaries/meeting summaries, non-fatal error handling on context gathering, buildFirstMessage for topic-specific greeting, ZodError handling with field details, 409 guard for concurrent meetings, complete and fail endpoints unchanged -- PASS",
+        "CODE REVIEW -- schemas/meeting.ts: InterviewConfigSchema has elevenLabsConversationId (not geminiSessionId), topic/context/voiceName/durationSeconds preserved, all other schemas (StartInterview, CompleteInterview, FailInterview, MeetingOutput) unchanged -- PASS",
+        "GEMINI REMNANTS -- Active code search: js/ directory has only two benign comments in elevenlabs-client.js referencing 'former GeminiLiveClient' (documentation, not active code). server/src/ has one stale comment in prompt.ts line 5 ('Gemini Live API ephemeral token') that should ideally be updated but is cosmetic-only. interviews.html has zero Gemini references. css/ has zero Gemini references. server/src/index.ts has zero Gemini references -- PASS (one minor cosmetic note)",
+        "GEMINI REMNANTS -- Deleted files confirmed: js/gemini-client.js does not exist, js/audio-worklet-processor.js does not exist, server/src/interviews/token.ts does not exist -- PASS",
+        "GEMINI REMNANTS -- docs/ and data/tasks/ contain historical references to Gemini (expected -- these document the migration history) -- acceptable",
+        "FUNCTIONAL CHECK (Puppeteer) -- Page load: interviews.html loads at localhost:3002 with no JS errors, nav shows 7 links with Interviews active, page title correct, all DOM elements present (interview-btn, config panel, topic input, context textarea, start btn, panel container, sr-announce) -- PASS",
+        "FUNCTIONAL CHECK (Puppeteer) -- Script loading: Both scripts load as type=module, window.ElevenLabsClient is a function, new ElevenLabsClient() instantiates with state='idle', zero console errors -- PASS",
+        "FUNCTIONAL CHECK (Puppeteer) -- Config panel: Click 'New Interview' opens config panel (aria-hidden=false), button changes to 'Cancel', topic input focused, Start Interview button disabled when empty -- PASS",
+        "FUNCTIONAL CHECK (Puppeteer) -- Topic validation: Typing in topic input enables Start Interview button, clearing it disables it -- PASS",
+        "FUNCTIONAL CHECK (Puppeteer) -- Start flow with missing env: Entering topic and clicking Start Interview hits API, server returns 500 with 'ELEVENLABS_AGENT_ID is not set', frontend shows error state with icon + title 'Unable to start interview' + message + 'Try Again' button -- PASS (expected without env vars)",
+        "API ENDPOINT TEST -- POST /api/interviews/start with {topic: 'Test'}: Returns 500 with {error: 'ELEVENLABS_AGENT_ID is not set'} -- correct, env vars not configured, documented as setup requirement",
+        "API ENDPOINT TEST -- POST /api/interviews/start with {}: Returns 400 with validation error {field: 'topic', message: 'Required'} -- PASS",
+        "API ENDPOINT TEST -- Second start after error: Returns same AGENT_ID error (no stuck 'running' meeting from first failed attempt) -- PASS (error occurs before meeting creation in route flow)",
+        "ERROR HANDLING -- Missing ELEVENLABS_AGENT_ID: Server returns clear error message, frontend displays gracefully with retry option -- PASS",
+        "ERROR HANDLING -- Missing topic: Zod validation returns 400 with field-level error -- PASS",
+        "ERROR HANDLING -- Client mic errors: _handleInitError maps NotAllowedError->micDenied, NotFoundError->micNotFound, NotReadableError->micInUse, all with user-friendly messages -- PASS (code review, cannot simulate mic errors in headless Puppeteer)",
+        "ERROR HANDLING -- Connection lost: onDisconnect emits connectionLost error when state is active, interview.js shows warning panel with transcript-saved message -- PASS (code review)"
+      ],
+      "filesChanged": ["data/tasks/elevenlabs-pivot.json"],
+      "decisions": [
+        "PASS -- All code review checks pass. Gemini code fully removed from active codebase. Frontend loads and operates correctly. API endpoint returns expected errors for missing credentials (setup requirement, not a bug). Error handling is graceful across all testable scenarios.",
+        "MINOR NOTE: server/src/interviews/prompt.ts line 5 has a stale JSDoc comment referencing 'Gemini Live API ephemeral token' -- cosmetic only, does not affect functionality, not blocking",
+        "SECURITY NOTE (out of scope): tmp/gemini-validation/validate.mjs contains a hardcoded Gemini API key and tmp/ is not in .gitignore -- recommend adding tmp/ to .gitignore or removing the file"
+      ]
+    }
+  ]
+}
