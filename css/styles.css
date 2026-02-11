@@ -39,23 +39,13 @@ body {
   position: relative;
 }
 
-/* --- Eyebrow Labels (removed for v2 redesign) --- */
-
-#tools-heading::before,
-#projects-heading::before,
-#meetings-heading::before,
-#roster-heading::before,
-#how-heading::before {
-  display: none;
-}
 
 /* --- Section Dividers --- */
 
 .tools,
 .projects,
 .meetings,
-.roster,
-.how-it-works {
+.roster {
   border-top: 1px solid var(--color-border);
 }
 
@@ -86,23 +76,34 @@ body {
 
 .hero {
   background: var(--color-bg-primary);
-  padding-top: var(--space-8);
-  padding-bottom: var(--space-8);
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-10);
   text-align: center;
 }
 
 .hero__badge {
-  display: none;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: rgba(var(--color-green-accent-rgb), 0.06);
+  border: 1px solid rgba(var(--color-green-accent-rgb), 0.12);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 9999px;
+  margin-bottom: var(--space-5);
 }
 
 .hero__headline {
   font-family: var(--font-heading);
   font-size: var(--text-3xl);
   font-weight: var(--font-weight-bold);
-  line-height: var(--leading-tight);
+  line-height: 1.15;
   color: var(--color-text-primary);
-  letter-spacing: -0.02em;
-  max-width: 720px;
+  letter-spacing: -0.025em;
+  max-width: 680px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: var(--space-4);
@@ -113,11 +114,11 @@ body {
 }
 
 .hero__subhead {
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: var(--font-weight-normal);
   line-height: var(--leading-relaxed);
   color: var(--color-text-secondary);
-  max-width: 640px;
+  max-width: 480px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 0;
@@ -125,17 +126,18 @@ body {
 
 @media (min-width: 1024px) {
   .hero {
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-8);
+    padding-top: var(--space-20);
+    padding-bottom: var(--space-12);
   }
 
   .hero__headline {
-    font-size: var(--text-4xl);
-    letter-spacing: -0.025em;
+    font-size: var(--text-5xl);
+    letter-spacing: -0.03em;
   }
 
   .hero__subhead {
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
+    max-width: 520px;
   }
 }
 
@@ -568,6 +570,26 @@ body {
   flex-shrink: 0;
   margin-top: 2px;
 }
+
+.task-item__avatar--group {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  background: none;
+  border-radius: 0;
+}
+
+.task-item__avatar-stacked {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+  position: absolute;
+}
+
+.task-item__avatar-stacked:nth-child(1) { top: 0; left: 0; z-index: 3; }
+.task-item__avatar-stacked:nth-child(2) { top: 4px; left: 8px; z-index: 2; }
+.task-item__avatar-stacked:nth-child(3) { top: 8px; left: 16px; z-index: 1; }
 
 .task-item__content {
   flex: 1;
@@ -1990,15 +2012,16 @@ body {
    =========================== */
 
 .how-it-works {
-  background: var(--color-bg-primary);
-  padding-top: var(--space-8);
-  padding-bottom: var(--space-8);
+  background: var(--color-bg-secondary);
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-10);
+  border-top: 1px solid var(--color-border);
 }
 
 @media (min-width: 1024px) {
   .how-it-works {
-    padding-top: var(--space-12);
-    padding-bottom: var(--space-12);
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
   }
 }
 
@@ -2021,18 +2044,18 @@ body {
 @media (min-width: 1024px) {
   .steps {
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-6);
+    gap: var(--space-8);
   }
 
   /* Connecting line on desktop */
   .steps::before {
     content: "";
     position: absolute;
-    top: 16px;
-    left: calc(12.5% + 16px);
-    right: calc(12.5% + 16px);
-    height: 2px;
-    background: #e5e5e5;
+    top: 20px;
+    left: calc(12.5% + 20px);
+    right: calc(12.5% + 20px);
+    height: 1px;
+    background: var(--color-border-strong);
     z-index: 0;
   }
 }
@@ -2044,20 +2067,27 @@ body {
 }
 
 .step__number {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--color-accent);
-  color: var(--color-white);
-  box-shadow: none;
+  background: var(--color-bg-card);
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  font-family: var(--font-mono);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-bold);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto var(--space-3);
+  margin: 0 auto var(--space-4);
   position: relative;
   z-index: 1;
+}
+
+/* Final step — filled to signal arrival */
+.step:last-child .step__number {
+  background: var(--color-accent);
+  color: var(--color-white);
 }
 
 .step__title {
@@ -2073,7 +2103,7 @@ body {
   line-height: var(--leading-relaxed);
   color: var(--color-text-secondary);
   text-align: center;
-  max-width: 240px;
+  max-width: 220px;
   margin: 0 auto;
 }
 
@@ -5160,14 +5190,14 @@ body {
 .hub {
   background: var(--color-bg-primary);
   padding-top: var(--space-8);
-  padding-bottom: var(--space-8);
+  padding-bottom: var(--space-10);
   border-top: 1px solid var(--color-border);
 }
 
 @media (min-width: 1024px) {
   .hub {
     padding-top: var(--space-12);
-    padding-bottom: var(--space-12);
+    padding-bottom: var(--space-16);
   }
 }
 
@@ -5185,22 +5215,24 @@ body {
 
 @media (min-width: 1024px) {
   .hub__grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
   }
 }
 
 .hub__card {
   display: block;
-  background: var(--color-bg-card);
+  background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   text-decoration: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .hub__card:hover {
   border-color: var(--color-accent);
+  background: var(--color-bg-card);
 }
 
 .hub__card:focus-visible {
@@ -5209,8 +5241,9 @@ body {
 }
 
 .hub__card-name {
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-semibold);
+  font-family: 'Chromatica', var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: 700;
   color: var(--color-text-primary);
   margin-bottom: var(--space-2);
 }
@@ -5220,4 +5253,10 @@ body {
   line-height: var(--leading-relaxed);
   color: var(--color-text-secondary);
   margin: 0;
+}
+
+/* Active/pressed state for hub cards */
+.hub__card:active {
+  background: var(--color-bg-primary);
+  border-color: var(--color-accent);
 }
