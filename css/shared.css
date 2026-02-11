@@ -7,17 +7,41 @@
 /* --- Custom Fonts --- */
 
 @font-face {
-  font-family: 'Chromatica';
-  src: url('../fonts/Chromatica-Bold.woff') format('woff');
+  font-family: 'Planar';
+  src: url('../fonts/GT-Planar-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Planar';
+  src: url('../fonts/GT-Planar-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Planar';
+  src: url('../fonts/GT-Planar-Bold-Trial.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Planar';
+  src: url('../fonts/GT-Planar-Bold-Trial.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Spoof';
-  src: url('../fonts/Spoof-Light.woff') format('woff');
-  font-weight: 300;
+  font-family: 'Chromatica';
+  src: url('../fonts/Chromatica-Bold.woff') format('woff');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
