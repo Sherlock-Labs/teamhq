@@ -1,0 +1,205 @@
+{
+  "projectId": "task-detail",
+  "projectName": "Task Detail View",
+  "status": "in-progress",
+  "currentPhase": "frontend",
+  "tasks": [
+    {
+      "id": "requirements",
+      "title": "Scope requirements for task detail side panel",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read existing task tracker implementation: tasks.html, js/tasks.js (670 lines), css/tasks.css (342 lines)",
+        "Read original task-tracker requirements and design spec to understand deferred items and existing patterns",
+        "Read task-tracker tech approach for save mechanism, composite row IDs, and cross-project save strategy",
+        "Read task-tracker project file for full shipped pipeline context (8 completed tasks including QA)",
+        "Read work-items data to confirm description and createdBy fields exist in schema but have no UI",
+        "Decided side panel over modal or page — maintains grid context, standard task tracker pattern (Linear/Asana)",
+        "Designed click behavior split: Project cell → navigate to project, ID/Title cells → open detail panel, editable cells → inline edit",
+        "Scoped description textarea as the headline feature — field exists in schema since task-tracker, stored but invisible until now",
+        "Decided no comments/activity log — requires new data model, deferred to separate project",
+        "Decided no new API endpoints — panel reads from client-side state, saves use existing debounced PUT",
+        "Added description textarea to New Task modal scope — if description is surfaced in panel, modal should set it at creation time",
+        "Wrote 5 user stories with acceptance criteria and interaction state checklists",
+        "Recommended lightweight pipeline: Andrei + Robert parallel → Alice → Robert review → Enzo"
+      ],
+      "filesChanged": [
+        "docs/task-detail-requirements.md",
+        "data/tasks/task-detail.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Side panel (not modal or page) — maintains grid context, follows Linear/Asana pattern, doesn't conflict with existing New Task modal",
+        "Click behavior split: Project cell navigates (existing), ID/Title cells open panel (new), editable cells inline-edit (existing) — preserves all existing behavior while adding detail view",
+        "No new API endpoints or schema changes — description and createdBy already exist from task-tracker project, panel reads from client state",
+        "No comments system — requires new data model (comments array, timestamps, author tracking), deferred to its own project",
+        "Description added to New Task modal — small scope addition since description is now visible in the panel, tasks should be creatable with context from day one",
+        "Lightweight pipeline: skip BE (no API changes), skip specialists (established panel pattern), Andrei and Robert can run in parallel"
+      ]
+    },
+    {
+      "id": "tech-approach",
+      "title": "Define technical approach for task detail side panel",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Read task-detail-requirements.md — 5 user stories, click behavior change spec, no-backend confirmation",
+        "Read task-tracker-tech-approach.md — understood existing composite row IDs, per-project debounced save, IIFE state pattern",
+        "Read js/tasks.js (668 lines) — mapped all state variables, grid options, onCellClicked handler, save logic, modal flow",
+        "Read css/tasks.css (342 lines) and tasks.html (185 lines) — understood page structure, z-index layering, responsive breakpoints",
+        "Designed panel state management: 4 new state vars (_panelOpen, _panelRowId, _panelEditOriginal, _panelEditField) integrated into existing IIFE",
+        "Designed click routing: rewrote onCellClicked from 1-branch to 3-branch (project→navigate, id/title→panel, editable→AG Grid)",
+        "Designed panel↔grid sync via rowNode.setDataValue() — zero new save code, reuses existing onCellValueChanged→scheduleTaskSave path",
+        "Designed Escape key priority chain: modal > cancel panel edit > close panel — extends existing keydown listener",
+        "Designed click-outside close with mousedown listener to avoid blur-vs-click race conditions",
+        "Specified static HTML panel shell (aside element) following existing modal pattern, with full DOM structure",
+        "Specified CSS approach: fixed positioning, z-index 200, slide animation via translateX + transition",
+        "Confirmed no backend changes needed — description/createdBy already in schema, save payload, and API response",
+        "Classified all 3 files as Extend — no existing code rewritten, no restructure risk"
+      ],
+      "filesChanged": [
+        "docs/task-detail-tech-approach.md",
+        "data/tasks/task-detail.json"
+      ],
+      "decisions": [
+        "Panel reads from AG Grid row data via getRowNode(), not from a separate data source — no additional fetch, no state duplication",
+        "Panel edits use rowNode.setDataValue() which triggers onCellValueChanged → scheduleTaskSave — zero new save logic needed",
+        "Static HTML shell in tasks.html (like the modal), not dynamically built in JS — keeps HTML out of JS, easier to review and maintain",
+        "Click routing via colDef.field check in onCellClicked, not separate cell renderers — simpler, one handler with 3 branches",
+        "Panel position: fixed (not absolute) — stays in place during scroll, avoids layout shifts, full-height below nav",
+        "z-index 200 for panel, below toast (300) and modal overlay — panel never blocks save feedback or modal interactions",
+        "Escape key cancel-edit uses _panelCancellingEdit flag to prevent blur handler from saving — clean separation of cancel vs save",
+        "Click-outside uses mousedown (not click) to fire before blur — avoids race condition with field save handlers",
+        "Description textarea in panel uses field-sizing:content for auto-grow, modal uses fixed rows=3 — matches different UX needs per context",
+        "All files classified as Extend — no restructure risk, no regression testing needed beyond the new feature"
+      ]
+    },
+    {
+      "id": "design-spec",
+      "title": "Design task detail side panel layout, fields, and animations",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Read task-detail-requirements.md — 5 user stories, click behavior change, panel width/responsive constraints",
+        "Read task-tracker-design-spec.md — understood existing visual patterns: filter bar, badge renderers, modal, page layout",
+        "Read interface-design.md skill doc — confirmed design system conventions, component patterns, quality checklist",
+        "Read tokens.css, styles.css modal section, shared.css, spreadsheet.css, tasks.css — full token and pattern inventory",
+        "Read tasks.html — understood current page structure, modal markup, grid container placement",
+        "Designed panel container: fixed position, 480px width, right-anchored, left border + subtle shadow, below sticky nav",
+        "Designed z-index stack: overlay (150) < panel (160) < modal (200) < toast (300) — panel never blocks modal or toast",
+        "Designed transparent overlay for click-to-close — no visible dimming, panel feels like side panel not modal",
+        "Designed editable title as heading/input toggle — displays as heading, click to edit, preserves visual hierarchy",
+        "Designed always-visible description textarea with auto-grow: min-height 80px, max-height 300px, resize: vertical",
+        "Designed metadata section as stacked key-value rows: 100px label column (uppercase, xs, accessible color) + flex value",
+        "Designed badge-over-select technique for Status/Priority — invisible native select on top of visible .thq-badge",
+        "Designed ghost-style text inputs for Owner/Phase — transparent border default, accent on focus, looks like plain text",
+        "Designed slide animation: translateX(100%) → 0, 200ms ease-out entrance / ease-in exit, GPU-composited",
+        "Designed task-to-task transition: no close-reopen, body content crossfade (100ms dim-and-restore)",
+        "Designed responsive: full-width at mobile (<640px), 480px at tablet+, tighter label width on mobile",
+        "Designed two-stage Escape: first cancels field edit, second closes panel — matches requirements exactly",
+        "Specified New Task modal description field: .modal__textarea--brief between Title and Status, 3 rows, no auto-grow",
+        "Specified accessibility: role=complementary, aria-label, no focus trap, keyboard tab order, contrast verified",
+        "Specified reduced motion: transition: none for panel slide, instant appear/disappear"
+      ],
+      "filesChanged": [
+        "docs/task-detail-design-spec.md",
+        "data/tasks/task-detail.json"
+      ],
+      "decisions": [
+        "No visible overlay dimming — transparent click target only. Panel is a side panel (Linear pattern), not a modal. Grid stays fully visible to the left.",
+        "Title as heading/input toggle rather than always-input — maintains visual hierarchy while being editable. Click-to-edit with hover border hint.",
+        "Badge-over-select for Status/Priority — preserves visual richness of colored badges while using simple native selects. Invisible select overlays visible badge.",
+        "Ghost-style text inputs for Owner/Phase — transparent border at rest looks like plain text, accent border on focus signals editability. Low visual noise.",
+        "No focus trap on panel — panels are supplementary UI, not blocking UI like modals. Users can Tab out of panel into grid.",
+        "Auto-grow description capped at 300px max-height — prevents textarea from consuming entire panel, forces internal scroll for very long descriptions.",
+        "z-index 160 for panel (not 200 like Andrei suggested) — keeps panel below modal overlay (200) so New Task modal can open on top of open panel.",
+        "100ms crossfade for task-to-task transitions rather than close-reopen slide — faster, less visual noise, signals content changed without heavy animation.",
+        "~190 lines of new CSS all in tasks.css — no new files, composes existing patterns (modal close button, badge renderers, input focus rings)."
+      ]
+    },
+    {
+      "id": "frontend",
+      "title": "Implement task detail side panel, click behavior changes, and description in New Task modal",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Read all 7 prerequisite files: requirements, tech approach, design spec, AG Grid patterns, tasks.js, tasks.css, tasks.html",
+        "Read existing modal styles, badge patterns, and design tokens to understand composition patterns",
+        "Discovered prior implementation pass had already built HTML panel shell, ~190 lines of CSS, and ~300 lines of panel JS",
+        "Audited existing implementation against requirements and design spec — identified 3 critical issues",
+        "Fixed overlay blocking task-to-task switching: replaced overlay click handler with document mousedown that allows grid clicks through",
+        "Fixed poor focus return in closePanel: changed from gridEl.focus() to ensureNodeVisible + setFocusedCell for specific row return",
+        "Removed overlay show/hide from openPanel/closePanel since overlay no longer used for click handling",
+        "Verified click routing: project cell → navigate, ID/title → panel, editable cells → AG Grid inline edit",
+        "Verified panel↔grid sync: panel edits use direct data mutation + refreshCells + scheduleTaskSave, grid edits reflected via updatePanelField",
+        "Verified all panel fields: title toggle, description auto-grow, badge-over-select for status/priority, ghost inputs for owner/phase, project link, created-by readonly"
+      ],
+      "filesChanged": [
+        "js/tasks.js",
+        "css/tasks.css",
+        "tasks.html",
+        "data/tasks/task-detail.json"
+      ],
+      "decisions": [
+        "Document mousedown instead of overlay click for close-outside — overlay intercepted all grid clicks, preventing task-to-task switching (US-TD-1 AC7). Mousedown on document skips panel-contained and grid-contained clicks.",
+        "Direct rowNode.data[field] mutation instead of setDataValue — avoids circular updates (panel edit → onCellValueChanged → updatePanelField). Manually call refreshCells + scheduleTaskSave instead.",
+        "Grid clicks don't close panel — allows task-to-task switching and inline editing while panel is open, matching Linear/Asana behavior per requirements.",
+        "Focus return uses AG Grid API (ensureNodeVisible + setFocusedCell) to return to specific previously-selected row, not just generic grid focus."
+      ]
+    },
+    {
+      "id": "design-review",
+      "title": "Design review of task detail panel implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "qa",
+      "title": "QA pass on task detail view",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Tested panel opens on ID cell click (RT-1) — panel slides in, shows correct task data, aria-live announces task ID",
+        "Tested panel opens on Title cell click (Export to PNG) — shows RT-19 data, all fields populated correctly",
+        "Tested Project cell still navigates to projects.html#roadmap-tool — no panel opened, correct existing behavior preserved",
+        "Tested editable cells (Status) trigger AG Grid inline editor, not the panel — single-click opened dropdown as expected",
+        "Tested Title editing: click heading transforms to input, type new text, blur saves to grid, grid cell syncs immediately",
+        "Tested Description textarea: correct placeholder, auto-grow on input, saves on blur, value persisted",
+        "Tested Status badge-over-select: changed Planned to In Progress, badge updated with correct variant class, grid synced",
+        "Tested Priority badge-over-select: changed Medium to High, badge updated to thq-badge--error, grid synced",
+        "Tested Owner ghost input: changed Alice to Bob, grid cell synced with new name",
+        "Tested Phase ghost input: changed v1.0 to v2.0, grid cell synced",
+        "Verified read-only fields: ID (SPAN), Project (A link to projects.html#slug), Created By (SPAN with --empty class for dash)",
+        "Tested X button close — panel closes, aria-hidden set to true",
+        "Tested Escape close (no field editing) — panel closes correctly",
+        "Tested overlay click-outside on non-grid areas (h1 heading) — panel closes",
+        "Tested two-stage Escape chain: typed SHOULD BE REVERTED in title, first Escape reverted to original, panel stayed open, second Escape closed panel",
+        "Tested task-to-task transition: opened RT-19, clicked RT-24 ID, panel updated to Link items (dependencies) without close/reopen",
+        "Tested New Task modal: Description textarea present between Title and Status, placeholder correct, optional, rows=3, textarea element",
+        "Tested responsive at 375px viewport: panel covers nearly full width, label width reduced to 80px, body padding reduced",
+        "Tested reverse sync (grid edit to panel): edited RT-24 Status in grid to in-progress, panel badge updated to In Progress with accent class",
+        "Identified BUG: overlay element (task-detail-overlay) never made visible — panelOverlay.classList.add/remove never called in JS. Click-outside uses document mousedown listener instead, which works for non-grid areas but not grid area clicks.",
+        "Identified minor BUG: modal__textarea--brief missing resize:none — design spec says no resize in modal, but computed value is resize:vertical"
+      ],
+      "filesChanged": [
+        "data/tasks/task-detail.json"
+      ],
+      "decisions": [
+        "PASS with 2 low-severity bugs noted. Core functionality works correctly across all 10 test areas.",
+        "Overlay bug (dead code): overlay HTML and CSS exist but are never activated by JS — Alice deliberately removed overlay toggling in favor of document mousedown handler. The overlay element is dead code. Not blocking because click-outside works via the mousedown listener for non-grid areas, and grid clicks correctly pass through to onCellClicked for task-to-task switching.",
+        "Modal textarea resize bug: cosmetic only, does not affect functionality. The modal stays compact either way since the textarea is 3 rows.",
+        "Accepted: grid area clicks don't close the panel — this is a deliberate design decision by Alice (matching Linear/Asana behavior) to allow task-to-task switching and inline editing while panel is open."
+      ]
+    }
+  ]
+}

@@ -17,6 +17,13 @@
   var _saveTimers = {}; // projectId → timeout id
   var _projectPrefixes = {}; // projectId → taskPrefix
 
+  // Panel state
+  var _panelOpen = false;
+  var _panelRowId = null;           // composite row ID (slug::id)
+  var _panelEditOriginal = null;    // original value when editing text field
+  var _panelEditField = null;       // field name being edited
+  var _panelCancellingEdit = false; // flag to suppress blur-save on Escape
+
   // --- DOM refs ---
   var gridEl = document.getElementById('tasks-grid');
   if (!gridEl) return; // bail if not on tasks page
@@ -42,9 +49,28 @@
   var modalForm = document.getElementById('task-form');
   var modalProjectSelect = document.getElementById('task-project');
   var modalTitleInput = document.getElementById('task-title');
+  var modalDescriptionInput = document.getElementById('task-description');
   var modalClose = modalOverlay.querySelector('.modal__close');
   var modalCancel = modalOverlay.querySelector('.modal__cancel');
   var modalSubmit = modalOverlay.querySelector('.modal__submit');
+
+  // Detail panel
+  var panelEl = document.getElementById('task-detail');
+  var panelOverlay = document.getElementById('task-detail-overlay');
+  var panelBody = document.getElementById('panel-body');
+  var panelIdEl = document.getElementById('panel-task-id');
+  var panelTitleDisplay = document.getElementById('panel-title-display');
+  var panelTitleInput = document.getElementById('panel-title-input');
+  var panelDescriptionEl = document.getElementById('panel-description');
+  var panelStatusSelect = document.getElementById('panel-status');
+  var panelStatusBadge = document.getElementById('panel-status-badge');
+  var panelPrioritySelect = document.getElementById('panel-priority');
+  var panelPriorityBadge = document.getElementById('panel-priority-badge');
+  var panelOwnerInput = document.getElementById('panel-owner');
+  var panelPhaseInput = document.getElementById('panel-phase');
+  var panelProjectLink = document.getElementById('panel-project-link');
+  var panelCreatedBy = document.getElementById('panel-created-by');
+  var panelCloseBtn = document.getElementById('panel-close');
 
   // =====================
   // Badge Cell Renderer
@@ -95,14 +121,14 @@
       headerName: 'ID',
       width: 90,
       editable: false,
-      cellStyle: { fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }
+      cellStyle: { fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', cursor: 'pointer' }
     },
     {
       field: 'title',
       headerName: 'Title',
       flex: 2,
       editable: false,
-      cellStyle: { color: 'var(--color-text-primary)' }
+      cellStyle: { color: 'var(--color-text-primary)', cursor: 'pointer' }
     },
     {
       field: 'status',
@@ -185,10 +211,29 @@
     },
     onCellValueChanged: function (event) {
       scheduleTaskSave(event.data.project.id);
+      // Reverse sync: if panel is showing this task, update the panel field
+      if (_panelOpen && _panelRowId === event.data.project.slug + '::' + event.data.id) {
+        updatePanelField(event.colDef.field, event.newValue);
+      }
     },
     onCellClicked: function (event) {
+      // Editable cells → AG Grid handles inline edit
       if (event.colDef && event.colDef.editable) return;
-      window.location = 'projects.html#' + event.data.project.slug;
+
+      var field = event.colDef ? event.colDef.field : null;
+
+      // ID or Title → open detail panel
+      if (field === 'id' || field === 'title') {
+        var compositeId = event.data.project.slug + '::' + event.data.id;
+        openPanel(compositeId);
+        return;
+      }
+
+      // Project → navigate to project page
+      if (field === 'project') {
+        window.location = 'projects.html#' + event.data.project.slug;
+        return;
+      }
     },
     initialState: {
       sort: {
@@ -522,7 +567,7 @@
     var newTask = {
       id: newId,
       title: title,
-      description: '',
+      description: modalDescriptionInput ? modalDescriptionInput.value : '',
       status: document.getElementById('task-status').value,
       priority: document.getElementById('task-priority').value,
       owner: document.getElementById('task-owner').value.trim(),
@@ -609,11 +654,326 @@
     if (e.target === modalOverlay) closeModal();
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && modalOverlay.getAttribute('aria-hidden') === 'false') {
+    if (e.key !== 'Escape') return;
+
+    // 1. Modal takes precedence
+    if (modalOverlay.getAttribute('aria-hidden') === 'false') {
       closeModal();
+      return;
+    }
+
+    // 2. If editing a panel field, cancel the edit
+    if (_panelOpen && _panelEditField) {
+      cancelPanelEdit();
+      return;
+    }
+
+    // 3. If panel is open, close it
+    if (_panelOpen) {
+      closePanel();
+      return;
     }
   });
   modalForm.addEventListener('submit', handleModalSubmit);
+
+  // =====================
+  // Detail Panel
+  // =====================
+
+  var STATUS_BADGE_MAP = { 'planned': 'muted', 'in-progress': 'accent', 'completed': 'success', 'deferred': 'warning' };
+  var PRIORITY_BADGE_MAP = { 'high': 'error', 'medium': 'warning', 'low': 'muted' };
+  var STATUS_LABELS = { 'planned': 'Planned', 'in-progress': 'In Progress', 'completed': 'Completed', 'deferred': 'Deferred' };
+  var PRIORITY_LABELS = { 'high': 'High', 'medium': 'Medium', 'low': 'Low' };
+
+  function openPanel(compositeRowId) {
+    if (!_gridApi) return;
+    var rowNode = _gridApi.getRowNode(compositeRowId);
+    if (!rowNode) return;
+
+    var wasOpen = _panelOpen;
+    var data = rowNode.data;
+
+    // If already open for a different task, do a crossfade transition
+    if (wasOpen && _panelRowId !== compositeRowId) {
+      panelBody.classList.add('task-detail__body--transitioning');
+      setTimeout(function () {
+        panelBody.classList.remove('task-detail__body--transitioning');
+      }, 120);
+    }
+
+    _panelRowId = compositeRowId;
+
+    // Populate fields
+    panelIdEl.textContent = data.id;
+    panelTitleDisplay.textContent = data.title;
+    panelTitleDisplay.style.display = '';
+    panelTitleInput.style.display = 'none';
+    panelDescriptionEl.value = data.description || '';
+    autoGrowTextarea(panelDescriptionEl);
+
+    panelStatusSelect.value = data.status || 'planned';
+    updateBadge(panelStatusBadge, data.status || 'planned', STATUS_BADGE_MAP, STATUS_LABELS);
+
+    panelPrioritySelect.value = data.priority || 'medium';
+    updateBadge(panelPriorityBadge, data.priority || 'medium', PRIORITY_BADGE_MAP, PRIORITY_LABELS);
+
+    panelOwnerInput.value = data.owner || '';
+    panelPhaseInput.value = data.phase || '';
+
+    panelProjectLink.textContent = data.project.name;
+    panelProjectLink.href = 'projects.html#' + data.project.slug;
+
+    var cb = data.createdBy || '';
+    panelCreatedBy.textContent = cb || '—';
+    panelCreatedBy.className = 'task-detail__readonly' + (cb ? '' : ' task-detail__readonly--empty');
+
+    // Show panel
+    if (!wasOpen) {
+      panelEl.setAttribute('aria-hidden', 'false');
+      panelEl.classList.add('task-detail--open');
+    }
+    _panelOpen = true;
+
+    // Announce to screen readers
+    var announcementEl = document.getElementById('panel-announcement');
+    if (announcementEl) announcementEl.textContent = 'Task ' + data.id + ' details';
+
+    // Focus close button on first open
+    if (!wasOpen) {
+      setTimeout(function () { panelCloseBtn.focus(); }, 50);
+    }
+  }
+
+  function closePanel() {
+    if (!_panelOpen) return;
+
+    // Cancel any in-progress edit
+    if (_panelEditField) {
+      _panelCancellingEdit = true;
+      var active = document.activeElement;
+      if (panelEl.contains(active)) active.blur();
+      _panelCancellingEdit = false;
+      _panelEditField = null;
+      _panelEditOriginal = null;
+    }
+
+    panelEl.classList.remove('task-detail--open');
+    panelEl.setAttribute('aria-hidden', 'true');
+
+    // Hide title input, show display
+    panelTitleDisplay.style.display = '';
+    panelTitleInput.style.display = 'none';
+
+    var prevRowId = _panelRowId;
+    _panelOpen = false;
+    _panelRowId = null;
+
+    // Return focus to the previously selected grid row
+    if (prevRowId && _gridApi) {
+      var rowNode = _gridApi.getRowNode(prevRowId);
+      if (rowNode && rowNode.rowIndex != null) {
+        _gridApi.ensureNodeVisible(rowNode);
+        _gridApi.setFocusedCell(rowNode.rowIndex, 'title');
+      } else {
+        gridEl.focus();
+      }
+    }
+  }
+
+  function updateBadge(badgeEl, value, badgeMap, labelMap) {
+    var variant = badgeMap[value] || 'muted';
+    badgeEl.className = 'thq-badge thq-badge--' + variant;
+    badgeEl.textContent = labelMap[value] || value;
+  }
+
+  function panelFieldChanged(field, newValue) {
+    if (!_panelRowId || !_gridApi) return;
+    var rowNode = _gridApi.getRowNode(_panelRowId);
+    if (!rowNode) return;
+
+    // Update row data directly and trigger save
+    rowNode.data[field] = newValue;
+    _gridApi.refreshCells({ rowNodes: [rowNode], columns: [field], force: true });
+    scheduleTaskSave(rowNode.data.project.id);
+  }
+
+  function updatePanelField(field, newValue) {
+    // Reverse sync: grid edit → update panel if showing that task
+    switch (field) {
+      case 'status':
+        panelStatusSelect.value = newValue || 'planned';
+        updateBadge(panelStatusBadge, newValue || 'planned', STATUS_BADGE_MAP, STATUS_LABELS);
+        break;
+      case 'priority':
+        panelPrioritySelect.value = newValue || 'medium';
+        updateBadge(panelPriorityBadge, newValue || 'medium', PRIORITY_BADGE_MAP, PRIORITY_LABELS);
+        break;
+      case 'owner':
+        panelOwnerInput.value = newValue || '';
+        break;
+      case 'phase':
+        panelPhaseInput.value = newValue || '';
+        break;
+      case 'title':
+        panelTitleDisplay.textContent = newValue || '';
+        break;
+    }
+  }
+
+  function cancelPanelEdit() {
+    if (!_panelEditField || _panelEditOriginal === null) return;
+
+    var field = _panelEditField;
+    _panelCancellingEdit = true;
+
+    if (field === 'title') {
+      panelTitleInput.value = _panelEditOriginal;
+      panelTitleInput.blur();
+    } else if (field === 'description') {
+      panelDescriptionEl.value = _panelEditOriginal;
+      panelDescriptionEl.blur();
+    } else if (field === 'owner') {
+      panelOwnerInput.value = _panelEditOriginal;
+      panelOwnerInput.blur();
+    } else if (field === 'phase') {
+      panelPhaseInput.value = _panelEditOriginal;
+      panelPhaseInput.blur();
+    }
+
+    _panelCancellingEdit = false;
+    _panelEditField = null;
+    _panelEditOriginal = null;
+  }
+
+  function autoGrowTextarea(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 300) + 'px';
+  }
+
+  // --- Title editing (click to toggle display/input) ---
+  panelTitleDisplay.addEventListener('click', function () {
+    _panelEditField = 'title';
+    _panelEditOriginal = panelTitleDisplay.textContent;
+    panelTitleInput.value = panelTitleDisplay.textContent;
+    panelTitleDisplay.style.display = 'none';
+    panelTitleInput.style.display = '';
+    panelTitleInput.focus();
+    panelTitleInput.select();
+  });
+
+  panelTitleInput.addEventListener('blur', function () {
+    if (_panelCancellingEdit) {
+      panelTitleDisplay.style.display = '';
+      panelTitleInput.style.display = 'none';
+      return;
+    }
+    var val = panelTitleInput.value.trim();
+    if (val && val !== _panelEditOriginal) {
+      panelTitleDisplay.textContent = val;
+      panelFieldChanged('title', val);
+    }
+    panelTitleDisplay.style.display = '';
+    panelTitleInput.style.display = 'none';
+    _panelEditField = null;
+    _panelEditOriginal = null;
+  });
+
+  panelTitleInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      panelTitleInput.blur();
+    }
+  });
+
+  // --- Description ---
+  panelDescriptionEl.addEventListener('focus', function () {
+    _panelEditField = 'description';
+    _panelEditOriginal = panelDescriptionEl.value;
+  });
+
+  panelDescriptionEl.addEventListener('blur', function () {
+    if (_panelCancellingEdit) {
+      _panelEditField = null;
+      _panelEditOriginal = null;
+      return;
+    }
+    var val = panelDescriptionEl.value;
+    if (val !== _panelEditOriginal) {
+      panelFieldChanged('description', val);
+    }
+    _panelEditField = null;
+    _panelEditOriginal = null;
+  });
+
+  panelDescriptionEl.addEventListener('input', function () {
+    autoGrowTextarea(panelDescriptionEl);
+  });
+
+  // --- Status select (badge-over-select) ---
+  panelStatusSelect.addEventListener('change', function () {
+    var val = panelStatusSelect.value;
+    updateBadge(panelStatusBadge, val, STATUS_BADGE_MAP, STATUS_LABELS);
+    panelFieldChanged('status', val);
+  });
+
+  // --- Priority select (badge-over-select) ---
+  panelPrioritySelect.addEventListener('change', function () {
+    var val = panelPrioritySelect.value;
+    updateBadge(panelPriorityBadge, val, PRIORITY_BADGE_MAP, PRIORITY_LABELS);
+    panelFieldChanged('priority', val);
+  });
+
+  // --- Owner input ---
+  panelOwnerInput.addEventListener('focus', function () {
+    _panelEditField = 'owner';
+    _panelEditOriginal = panelOwnerInput.value;
+  });
+
+  panelOwnerInput.addEventListener('blur', function () {
+    if (_panelCancellingEdit) {
+      _panelEditField = null;
+      _panelEditOriginal = null;
+      return;
+    }
+    var val = panelOwnerInput.value.trim();
+    if (val !== _panelEditOriginal) {
+      panelFieldChanged('owner', val);
+    }
+    _panelEditField = null;
+    _panelEditOriginal = null;
+  });
+
+  // --- Phase input ---
+  panelPhaseInput.addEventListener('focus', function () {
+    _panelEditField = 'phase';
+    _panelEditOriginal = panelPhaseInput.value;
+  });
+
+  panelPhaseInput.addEventListener('blur', function () {
+    if (_panelCancellingEdit) {
+      _panelEditField = null;
+      _panelEditOriginal = null;
+      return;
+    }
+    var val = panelPhaseInput.value.trim();
+    if (val !== _panelEditOriginal) {
+      panelFieldChanged('phase', val);
+    }
+    _panelEditField = null;
+    _panelEditOriginal = null;
+  });
+
+  // --- Close button ---
+  panelCloseBtn.addEventListener('click', closePanel);
+
+  // --- Click-outside close (mousedown to allow grid cell clicks to pass through) ---
+  document.addEventListener('mousedown', function (e) {
+    if (!_panelOpen) return;
+    if (panelEl.contains(e.target)) return;
+    // Grid clicks are handled by onCellClicked — don't close for those
+    if (gridEl.contains(e.target)) return;
+    closePanel();
+  });
 
   // =====================
   // Fetch & Initialize
