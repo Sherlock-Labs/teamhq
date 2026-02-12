@@ -6,10 +6,12 @@ export const WorkItemPriority = z.enum(["high", "medium", "low"]);
 export const WorkItemSchema = z.object({
   id: z.string().min(1),
   title: z.string().max(200).default(""),
+  description: z.string().default(""),
   status: WorkItemStatus.default("planned"),
   phase: z.string().default(""),
   owner: z.string().default(""),
   priority: WorkItemPriority.default("medium"),
+  createdBy: z.string().default(""),
 });
 
 export type WorkItem = z.infer<typeof WorkItemSchema>;

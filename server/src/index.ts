@@ -9,6 +9,7 @@ import sessionRoutes from "./routes/sessions.js";
 import meetingRoutes from "./routes/meetings.js";
 import interviewRoutes from "./routes/interviews.js";
 import docRoutes from "./routes/docs.js";
+import taskRoutes from "./routes/tasks.js";
 import voiceRoutes from "./routes/voice.js";
 import { migrateFromTasksJson } from "./migrate.js";
 import { recoverOrphanedSessions } from "./session/recovery.js";
@@ -30,6 +31,7 @@ app.use("/api/projects/:id/sessions", sessionRoutes);
 app.use("/api", meetingRoutes);
 app.use("/api", interviewRoutes);
 app.use("/api", docRoutes);
+app.use("/api", taskRoutes);
 app.use("/api", voiceRoutes);
 
 app.get("/health", (_req, res) => {

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks — TeamHQ</title>
+  <meta name="description" content="Track all work items across every project in one centralized view.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <!-- AG Grid Community — CSS (structural + Quartz theme) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-grid.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-theme-quartz.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/spreadsheet.css">
+  <link rel="stylesheet" href="css/tasks.css">
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="container nav__inner">
+      <div class="nav__brand">
+        <a href="index.html" class="nav__logo-link">
+          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+        </a>
+      </div>
+      <div class="nav__links">
+        <a href="tools.html" class="nav__link">Tools</a>
+        <a href="projects.html" class="nav__link">Projects</a>
+        <a href="tasks.html" class="nav__link nav__link--active" aria-current="page">Tasks</a>
+        <a href="meetings.html" class="nav__link">Meetings</a>
+        <a href="interviews.html" class="nav__link">Interviews</a>
+        <a href="docs.html" class="nav__link">Docs</a>
+        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
+        <a href="team.html" class="nav__link">Team</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="tasks-page" id="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="tasks-header">
+        <div class="tasks-header__title-row">
+          <h1 class="tasks-header__title">Tasks</h1>
+          <button class="tasks-header__new-btn" type="button" id="new-task-btn">+ New Task</button>
+        </div>
+        <p class="tasks-header__stats" id="tasks-stats" aria-live="polite"></p>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="tasks-filter-bar" id="tasks-filter-bar" style="display:none;">
+        <div class="tasks-filter-bar__filters">
+          <div class="tasks-filter-bar__field">
+            <select class="tasks-filter-bar__select" id="filter-project" aria-label="Filter by project">
+              <option value="">All Projects</option>
+            </select>
+          </div>
+          <div class="tasks-filter-bar__field">
+            <select class="tasks-filter-bar__select" id="filter-status" aria-label="Filter by status">
+              <option value="">All Statuses</option>
+              <option value="planned">Planned</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="deferred">Deferred</option>
+            </select>
+          </div>
+          <div class="tasks-filter-bar__field">
+            <select class="tasks-filter-bar__select" id="filter-priority" aria-label="Filter by priority">
+              <option value="">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="tasks-filter-bar__field">
+            <select class="tasks-filter-bar__select" id="filter-owner" aria-label="Filter by owner">
+              <option value="">All Owners</option>
+              <option value="__unassigned">Unassigned</option>
+            </select>
+          </div>
+          <div class="tasks-filter-bar__field tasks-filter-bar__field--search">
+            <input class="tasks-filter-bar__search" type="text" id="filter-search"
+                   placeholder="Search tasks..." aria-label="Search tasks by title">
+          </div>
+        </div>
+        <div class="tasks-filter-bar__actions">
+          <span class="tasks-filter-bar__badge" id="filter-badge" hidden></span>
+          <button class="tasks-filter-bar__clear" id="filter-clear" type="button" hidden>Clear</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="tasks-loading" id="tasks-loading">Loading tasks...</div>
+
+      <!-- Empty State -->
+      <div class="tasks-empty" id="tasks-empty" style="display:none;">
+        <p class="tasks-empty__text">No tasks tracked yet.</p>
+        <p class="tasks-empty__hint">Create work items on individual projects to see them here.</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="tasks-error" id="tasks-error" style="display:none;">
+        <p>Failed to load tasks. <a href="#" id="tasks-retry">Retry</a></p>
+      </div>
+
+      <!-- AG Grid Container -->
+      <div id="tasks-grid" class="ag-theme-quartz" style="display:none;"></div>
+    </div>
+  </main>
+
+  <!-- New Task Modal -->
+  <div class="modal-overlay" id="task-modal-overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-labelledby="task-modal-title" aria-modal="true">
+      <div class="modal__header">
+        <h3 class="modal__title" id="task-modal-title">New Task</h3>
+        <button class="modal__close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <form class="modal__form" id="task-form" novalidate>
+        <div class="modal__field">
+          <label class="modal__label" for="task-project">Project <span class="modal__required">*</span></label>
+          <select class="modal__select" id="task-project" name="project" required>
+            <option value="">Select a project...</option>
+          </select>
+          <p class="modal__error" aria-live="polite"></p>
+        </div>
+        <div class="modal__field">
+          <label class="modal__label" for="task-title">Title <span class="modal__required">*</span></label>
+          <input class="modal__input" type="text" id="task-title" name="title"
+                 placeholder="e.g. Add user profile page" required autocomplete="off">
+          <p class="modal__error" aria-live="polite"></p>
+        </div>
+        <div class="modal__field">
+          <label class="modal__label" for="task-status">Status</label>
+          <select class="modal__select" id="task-status" name="status">
+            <option value="planned" selected>Planned</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="deferred">Deferred</option>
+          </select>
+        </div>
+        <div class="modal__field">
+          <label class="modal__label" for="task-priority">Priority</label>
+          <select class="modal__select" id="task-priority" name="priority">
+            <option value="high">High</option>
+            <option value="medium" selected>Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div class="modal__field">
+          <label class="modal__label" for="task-owner">Owner</label>
+          <input class="modal__input" type="text" id="task-owner" name="owner"
+                 placeholder="e.g. Alice" autocomplete="off">
+        </div>
+        <div class="modal__field">
+          <label class="modal__label" for="task-phase">Phase</label>
+          <input class="modal__input" type="text" id="task-phase" name="phase"
+                 placeholder="e.g. v1.0" autocomplete="off">
+        </div>
+        <div class="modal__actions">
+          <button class="modal__cancel" type="button">Cancel</button>
+          <button class="modal__submit" type="submit">Create Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
+      <p class="footer__attribution">Built with Claude Code</p>
+    </div>
+  </footer>
+
+  <!-- AG Grid Community — JS (UMD bundle) -->
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js"></script>
+  <script src="js/tasks.js"></script>
+</body>
+</html>

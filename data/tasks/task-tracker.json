@@ -1,0 +1,342 @@
+{
+  "projectId": "task-tracker",
+  "projectName": "Centralized Task Tracker",
+  "status": "in-progress",
+  "currentPhase": "backend",
+  "tasks": [
+    {
+      "id": "requirements",
+      "title": "Scope requirements for centralized task tracker",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read existing work item tracker requirements to understand current per-project work items system (schema, API, AG Grid integration)",
+        "Read existing work item data files (roadmap-tool.json — 36 items across 3 phases) to understand real data shapes",
+        "Analyzed existing project data model (data/projects/*.json) and pipeline tracking (data/tasks/*.json) to understand namespace separation",
+        "Read projects.js to understand the per-project work items AG Grid rendering and save mechanism",
+        "Decided to EXTEND work items rather than create parallel system — one data source, two views (per-project + cross-project)",
+        "Extended work item schema with description and createdBy fields (backward-compatible defaults)",
+        "Designed cross-project API: GET /api/tasks reads all work-items files, resolves slugs to project names",
+        "Designed cross-project save: edits route back to per-project PUT endpoint (existing pattern, no new write path)",
+        "Wrote 6 user stories with acceptance criteria and interaction state checklists",
+        "Specified AG Grid column configuration and filter bar behavior",
+        "Scoped pipeline: Andrei → Robert+Jonah parallel → Alice → Robert review → Enzo",
+        "Decided new tasks.html page (not a tab on projects) — centralized tracker deserves first-class navigation"
+      ],
+      "filesChanged": [
+        "docs/task-tracker-requirements.md",
+        "data/tasks/task-tracker.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Extend work items rather than create parallel system — avoids two tracking systems, one data source (data/work-items/) serves both per-project and cross-project views",
+        "No new data directory — add optional fields to existing work item schema, backward-compatible with empty defaults",
+        "New tasks.html page with its own nav entry — centralized tracker is a first-class concept, not a tab on projects",
+        "Client-side filtering via AG Grid external filter API — total task count well under 1000, no need for server-side filtering",
+        "Title and ID read-only in cross-project view — identity fields should be edited in project context to prevent confusion",
+        "Cross-project save delegates to existing per-project PUT endpoint — no new write path, proven pattern",
+        "Skip specialists (Nina/Soren/Amara) — data table, not UI-heavy component",
+        "Skip Priya — internal tool, no marketing copy needed"
+      ]
+    },
+    {
+      "id": "tech-approach",
+      "title": "Define technical approach for task tracker",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Read Thomas's requirements doc (6 user stories, schema extension, API design, AG Grid config)",
+        "Read existing work item tech approach to understand the system being extended",
+        "Read existing Zod schema (workItem.ts), store functions (workItems.ts), and route handlers (projects.ts)",
+        "Read projects.js work items section (~650 lines) — badge renderers, grid config, save logic, lazy AG Grid loading",
+        "Analyzed project store (projects.ts) — listProjects, getProject, slug generation, merge-on-read pipeline pattern",
+        "Read all HTML pages to understand nav structure (7 links) and hub card grid (7 cards) on index.html",
+        "Decided slug-to-name resolution happens server-side — one API call returns everything, client stays simple",
+        "Designed composite row ID strategy (slug::id) to prevent AG Grid deduplication across projects with same item IDs",
+        "Designed per-project debounced save — independent timers so editing tasks from different projects don't interfere",
+        "Decided js/tasks.js gets its own file — lifecycle is too different from projects.js to share code, badge renderer duplication is ~15 lines",
+        "Decided new server/src/routes/tasks.ts route file — follows one-file-per-resource convention (projects.ts, meetings.ts, etc.)",
+        "Wrote full API contract with response shapes for Alice + Jonah alignment",
+        "Classified all files: 3 new, 11 extended, 0 restructured"
+      ],
+      "filesChanged": [
+        "docs/task-tracker-tech-approach.md",
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "Slug-to-project-name resolution server-side in GET /api/tasks — reads all projects, builds slug map, joins with work-items. Client gets flat array with project info attached.",
+        "New route file server/src/routes/tasks.ts — /api/tasks is a top-level resource, not nested under /projects. Follows existing one-file-per-resource convention.",
+        "js/tasks.js is its own file — per-project code in projects.js is coupled to detail view lifecycle (lazy-load, destroy on collapse). Tasks page has fundamentally different needs (eager load, filters, modal, cross-project save).",
+        "Composite getRowId: slug::id — prevents AG Grid deduplication when different projects have items with the same ID (e.g., both have US-1).",
+        "Per-project debounced save timers — editing a Roadmap Tool task shouldn't delay saving a Task Tracker task. Independent 500ms timers keyed by project UUID.",
+        "Added project.id to GET /api/tasks response — Thomas's spec showed slug+name, added UUID so client can construct PUT URLs without a separate lookup.",
+        "WorkItemSchema change classified as Modify (not Extend) — we're changing the shape of the type, but it's backward-compatible with defaults. Low risk."
+      ]
+    },
+    {
+      "id": "design-spec",
+      "title": "Design task tracker page layout, filter bar, and new task modal",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Read Thomas's requirements (6 user stories, AG Grid config, filter bar, new task modal, nav update)",
+        "Read Andrei's tech approach (API contract, composite row IDs, per-project debounced save, column defs)",
+        "Read interface-design skill doc to confirm design system tokens, component patterns, and quality checklist",
+        "Read css/tokens.css, css/shared.css, css/styles.css, css/spreadsheet.css for existing design tokens and AG Grid theming",
+        "Read projects.html and spreadsheets.html to understand existing page structure and nav patterns",
+        "Read index.html to understand hub card grid layout (currently 7 cards, 4-column desktop grid)",
+        "Read work-item-tracker design spec for badge renderer patterns and AG Grid styling reference",
+        "Read work-log design spec for format/style reference on recent specs",
+        "Defined page layout following spreadsheets-page pattern: header + filter bar + full-width AG Grid",
+        "Designed filter bar — 4 native <select> dropdowns + text search, 32px height, active-filter highlighting with accent border, badge counter, clear button",
+        "Specified AG Grid column config: Project (link renderer), ID, Title, Status (badge), Priority (badge), Owner (avatar+name), Phase",
+        "Designed New Task modal using existing modal-overlay/modal pattern from projects.html — 6 fields, validation on submit",
+        "Specified all interaction states: cell editing, save flash, save error toast, row hover, row click navigation",
+        "Defined loading (pulsing text), empty (centered message), and error (retry link) states",
+        "Specified nav update: Tasks between Projects and Meetings on all 9 pages, hub card after Projects",
+        "Covered responsive behavior: mobile stacks filter bar + header, compact grid density; tablet wraps naturally",
+        "Covered accessibility: keyboard nav, screen reader labels, WCAG AA contrast verification, focus management in modal",
+        "Included CSS file strategy estimate (~145 lines of new CSS) for Alice's implementation planning"
+      ],
+      "filesChanged": [
+        "docs/task-tracker-design-spec.md",
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "Filter bar uses native <select> elements — no custom dropdown components needed, better accessibility and keyboard support out of the box",
+        "Filter selects at 32px height with --text-xs — compact enough to not dominate the page above the grid, but still comfortable to click",
+        "Active filter indication via accent-colored border on the select — subtle but clear signal that a filter is narrowing results",
+        "Search input expands from 180px to 240px on focus — gives more room for typing without taking space at rest",
+        "New Task modal focuses on Title field (not Project dropdown) on open — typing the title is the primary action, Project selection is a supporting step",
+        "No separate css/tasks.css file needed — ~145 lines is small enough to add to spreadsheet.css or inline; Alice's call on file organization",
+        "Hub card goes after Projects in the grid — Tasks is conceptually the cross-project view of Projects, so they should be adjacent",
+        "Toast notification for save errors positioned bottom-right with red left border — follows the work-item-tracker error toast pattern"
+      ]
+    },
+    {
+      "id": "backend",
+      "title": "Build GET /api/tasks endpoint and extend work item schema",
+      "agent": "Jonah",
+      "role": "Back-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Read requirements doc, tech approach, existing Zod schema, store functions, route handlers, and project store",
+        "Read existing work-items data files to verify backward compatibility needs (roadmap-tool.json — 36 items without description/createdBy fields)",
+        "Extended WorkItemSchema in server/src/schemas/workItem.ts — added description (string, default '') and createdBy (string, default '') fields",
+        "Added readdir import to server/src/store/workItems.ts",
+        "Implemented getAllWorkItems() store function — reads all JSON files from data/work-items/, parses with Zod, returns array of {projectSlug, workItems}",
+        "Created server/src/routes/tasks.ts — GET /api/tasks endpoint that builds slug-to-project map from listProjects(), reads all work items, attaches project {id, slug, name} to each task",
+        "Mounted taskRoutes in server/src/index.ts at app.use('/api', taskRoutes)",
+        "Built TypeScript — clean compile, no errors",
+        "Tested GET /api/tasks with curl — 73 tasks returned across 2 projects, all fields present including description and createdBy with empty defaults",
+        "Verified response shape matches API contract: each task has id, title, description, status, phase, owner, priority, createdBy, and project {id, slug, name}",
+        "Verified backward compatibility — existing per-project GET endpoint still works, returns new fields with empty defaults for existing data",
+        "Verified orphaned work-items files are silently skipped (no project match = no tasks in response)"
+      ],
+      "filesChanged": [
+        "server/src/schemas/workItem.ts",
+        "server/src/store/workItems.ts",
+        "server/src/routes/tasks.ts",
+        "server/src/index.ts",
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "Followed Andrei's tech approach exactly — no deviations from the prescribed schema extension, store function, or route structure",
+        "getAllWorkItems skips non-JSON files and wraps individual file reads in try/catch — corrupt files are silently skipped rather than failing the entire request",
+        "Orphaned work-items files (slug not matching any project) are silently skipped in the route handler — no error, just excluded from response"
+      ]
+    },
+    {
+      "id": "frontend",
+      "title": "Build tasks.html page with AG Grid, filters, new task modal, and nav updates",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "subtasks": [
+        "Read all 4 spec docs (requirements, tech approach, design spec, AG Grid patterns) and 5 existing code files (projects.js, spreadsheets.html, projects.html, index.html, spreadsheet.css) for patterns",
+        "Created tasks.html following spreadsheets.html page template — full nav with Tasks active, AG Grid CDN CSS/JS in head/body, page structure with header + filter bar + grid container + modal",
+        "Created js/tasks.js as IIFE — fetches GET /api/tasks, creates AG Grid with 7 columns (Project link, ID, Title, Status badge, Priority badge, Owner avatar+name, Phase)",
+        "Implemented composite row IDs (slug::id) per Andrei's tech approach to prevent dedup across projects",
+        "Built filter bar with 4 dropdowns (Project, Status, Priority, Owner) + text search using AG Grid external filter API (isExternalFilterPresent + doesExternalFilterPass)",
+        "Implemented active filter badge count, clear button, and accent border on active select dropdowns",
+        "Built cross-project debounced save (500ms) with per-project timer map — on cell edit, rebuilds project's full work items array, sends PUT /api/projects/:id/work-items",
+        "Implemented save error handling with toast notification and single auto-retry after 2s",
+        "Built New Task modal using existing modal-overlay/modal pattern — 6 fields (Project, Title, Status, Priority, Owner, Phase), validation on submit, project dropdown populated from GET /api/projects",
+        "Implemented task creation: generates TT-{n+1} ID, sets createdBy to CEO, appends to project via PUT, updates grid with applyTransaction",
+        "Added row click navigation to projects.html#{slug} — only fires on non-editable cells",
+        "Created css/tasks.css (~230 lines) with filter bar, page layout, loading/empty/error states, toast, responsive overrides, and reduced motion",
+        "Updated navigation on all 9 HTML pages — added Tasks link between Projects and Meetings with proper active state on tasks.html",
+        "Added Tasks hub card to index.html navigation grid after Projects card",
+        "Replaced dead js/tasks.js (old pipeline task renderer with #tasks-list dependency that no HTML page referenced) with new task tracker code"
+      ],
+      "filesChanged": [
+        "tasks.html",
+        "js/tasks.js",
+        "css/tasks.css",
+        "index.html",
+        "tools.html",
+        "projects.html",
+        "meetings.html",
+        "interviews.html",
+        "docs.html",
+        "spreadsheets.html",
+        "team.html",
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "Created separate css/tasks.css rather than adding to spreadsheet.css — keeps task-specific styles isolated (filter bar, toast, states) and follows the pattern of page-specific CSS files",
+        "Replaced the dead js/tasks.js (pipeline task history renderer) rather than creating js/task-tracker.js — the old file targeted #tasks-list which no HTML page contained, so it was unused dead code",
+        "Duplicated badge renderers and status/priority comparators from projects.js (~15 lines each) per Andrei's explicit tech approach recommendation — sharing would require extracting a third module for minimal savings",
+        "Used AG Grid setGridOption('rowData') after createGrid rather than passing rowData in gridOptions — ensures grid is fully initialized before data assignment",
+        "Added priority comparator (high→medium→low) for the secondary sort to match Thomas's AC: status first, then priority",
+        "Loaded both css/styles.css and css/spreadsheet.css on tasks.html — styles.css for modal classes, spreadsheet.css for AG Grid theming"
+      ]
+    },
+    {
+      "id": "design-review",
+      "title": "Design review of task tracker implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Read design spec (docs/task-tracker-design-spec.md) as reference for all verification checks",
+        "Read interface-design skill doc for design system conventions and quality checklist",
+        "Verified tasks.html page structure matches spec: .tasks-page > .container > header + filter bar + grid + modal + footer",
+        "Verified page header: h1 'Tasks', '+ New Task' button, stats line with aria-live='polite' — all match spec",
+        "Verified filter bar: 4 native <select> dropdowns (Project, Status, Priority, Owner) + search input, 32px height, active-filter badge, clear button — exact match",
+        "Verified css/tasks.css filter bar styles match spec CSS block-for-block: appearance:none, chevron SVG, accent border on --active class, search focus expansion 180→240px",
+        "Verified AG Grid columns match spec: Project (link renderer), ID (medium weight, secondary color), Title (flex:2), Status (badge), Priority (badge), Owner (avatar+name), Phase — widths and editability correct",
+        "Verified badge renderers: STATUS_BADGE map (planned→muted, in-progress→accent, completed→success, deferred→warning) and PRIORITY_BADGE map (high→error, medium→warning, low→muted) match spec section 4 exactly",
+        "Verified grid options: domLayout autoHeight, rowHeight 44, headerHeight 40, singleClickEdit, composite getRowId (slug::id), custom status/priority comparators, initial sort model — all match spec",
+        "Verified New Task modal: existing modal-overlay/modal pattern, 6 fields (Project required, Title required, Status, Priority, Owner, Phase), validation on submit, 'Creating...' disabled state, error handling — matches spec",
+        "Verified modal focus management: opens with focus on Title input, closes return focus to New Task button, Escape closes, backdrop click closes — matches spec",
+        "Verified loading state: pulsing 'Loading tasks...' text with thq-pulse animation, empty state: centered 'No tasks tracked yet.' message, error state: 'Failed to load tasks. Retry' link — all match spec",
+        "Verified toast notification: fixed bottom-right, card bg, border with 3px left error border, shadow-lg, slide-up animation, 3s auto-dismiss — matches spec",
+        "Verified nav on all 9 pages: Tasks link between Projects and Meetings, active state on tasks.html with aria-current='page' — checked index, tools, projects, tasks, meetings, interviews, docs, spreadsheets, team",
+        "Verified hub card on index.html: Tasks card positioned after Projects with correct copy 'Track all work items across every project.' — matches spec",
+        "Verified responsive CSS: mobile stacks header and filter bar vertically, search goes full-width on focus, desktop title bumps to --text-3xl — matches spec",
+        "Verified reduced motion: transitions disabled on search, toast animation disabled, loading pulse disabled — matches spec",
+        "Verified accessibility: aria-label on all filter controls, aria-live on stats, aria-hidden/aria-modal/aria-labelledby on modal, skip-link present, focus-visible styles on all interactive elements",
+        "Visual verification via Playwright: page loads with 36 tasks from Roadmap Tool project, grid renders all columns with data, badges display, owner avatars present, stats show '36 tasks across 1 project'"
+      ],
+      "filesChanged": [
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "PASS — no P1 issues found, implementation is faithful to the design spec",
+        "Alice's decision to create separate css/tasks.css (~230 lines) rather than adding to spreadsheet.css is a good call — keeps task-specific styles isolated and follows the emerging pattern of page-specific CSS files",
+        "AG Grid theming console warning (error #239) is a pre-existing issue from the CDN CSS approach used on spreadsheets.html too — not introduced by this implementation, not a design concern"
+      ]
+    },
+    {
+      "id": "responsive-review",
+      "title": "Responsive layout review of task tracker page",
+      "agent": "Soren",
+      "role": "Frontend Responsive Specialist",
+      "status": "completed",
+      "subtasks": [
+        "Read design spec (docs/task-tracker-design-spec.md) section 11 responsive behavior, section 13 accessibility/touch targets",
+        "Read css/tasks.css — verified mobile media query at max-width:639px with filter bar stacking, title centering, button centering, search full-width",
+        "Read css/shared.css — verified nav flex-wrap handles 8 links, container padding scales 20px mobile → 32px tablet+",
+        "Read css/styles.css — verified hub__grid breakpoints: 1fr mobile → repeat(2,1fr) at 640px → repeat(4,1fr) at 1024px",
+        "Read css/spreadsheet.css — confirmed .thq-spreadsheet compact density rule at max-width:767px does NOT apply to tasks grid (no thq-spreadsheet class)",
+        "Tested at 1440x900 (desktop) via Playwright — all 7 columns visible, filter bar horizontal, nav 8 links on one row, hub 4x2 grid",
+        "Tested at 1024x768 (tablet landscape) — all columns visible, filter bar horizontal, no overflow",
+        "Tested at 768x1024 (tablet portrait) — columns tight but visible, filter bar wraps naturally",
+        "Tested at 375x812 (mobile) — filter bar stacks vertically, title centered, button centered, nav wraps to 2 rows, grid shows 3 of 7 columns",
+        "Tested at 320x568 (smallest mobile) — layout holds, title column truncated heavily, nav wraps cleanly",
+        "Tested New Task modal at 375px — nearly full-width with overlay padding, fields stacked, Cancel/Create buttons visible",
+        "Tested hub page (index.html) at 1440px — 4x2 grid with 8 cards including Tasks card, at 375px — single column stack",
+        "Verified no horizontal overflow on body at any viewport (no unwanted horizontal scrollbar)",
+        "Checked filter select heights against 44px touch target minimum — 32px is below threshold on mobile",
+        "Checked grid column clipping at mobile — 4 of 7 columns hidden with no scroll affordance"
+      ],
+      "filesChanged": [
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "PASS with 3 P2 notes — no P1 issues, nothing blocks ship",
+        "P2-1: Filter select touch targets are 32px on mobile (below 44px minimum). appearance:none prevents native OS touch target enlargement. Recommend adding min-height:44px at mobile breakpoint.",
+        "P2-2: No horizontal scroll affordance for grid on mobile — 4 of 7 columns clipped at 375px with no visual hint that scrolling reveals more data. Spreadsheet page has scroll-hint gradient; tasks grid does not.",
+        "P2-3: '+New Task' button height is ~36px (padding 8+8 + line-height 20), slightly below 44px touch minimum. Centered and prominent so easy to tap, but technically non-compliant.",
+        "Spec deviation (not an issue): Design spec called for compact grid density (32px rows) on mobile. Implementation keeps 44px rows. I recommend keeping 44px — 32px rows would violate touch target minimum and cause misclicks on the editable Status/Priority cells."
+      ]
+    },
+    {
+      "id": "interactions-review",
+      "title": "Interaction quality review of task tracker page",
+      "agent": "Nina",
+      "role": "Frontend Interactions Specialist",
+      "status": "completed",
+      "subtasks": [
+        "Read design spec section 12 (Animation & Transitions) and section 6 (Interaction States) for all animation/transition specifications",
+        "Read css/tasks.css — verified filter bar transitions (border-color 150ms, search width 200ms), toast entrance animation (200ms ease-out slide+fade), loading pulse (1.5s thq-pulse), clear button hover (color 150ms), project link hover (color 150ms), New Task button hover (background-color 150ms)",
+        "Read css/spreadsheet.css — verified row hover transition (120ms ease), header hover transition (150ms ease), sort icon animation (150ms ease-out), cell focus ring styles, badge pill styles",
+        "Read css/styles.css — verified modal open animation: overlay opacity 0→1 (200ms ease) + modal translateY(8px)→0 (200ms ease), modal close reverses via CSS transition, modal__close button hover transition (color+bg 150ms)",
+        "Read js/tasks.js — audited showToast() for entrance/exit animation handling, openModal/closeModal for focus management, filter event handlers for immediate-response feel",
+        "Tested page load via Playwright — grid renders with all data, loading pulse animation visible during fetch, transition to grid is clean",
+        "Tested row hover via Playwright — background color transition (120ms ease) visible at rgba(0,0,0,0.02), smooth onset and release",
+        "Tested New Task button hover — background darkens to --color-accent-active with 150ms transition, smooth",
+        "Tested modal open — overlay fades in, modal slides up from translateY(8px), title input receives focus after 50ms setTimeout, animation timing feels correct",
+        "Tested modal close — CSS transition reverses the open animation (overlay fades out, modal slides down), focus returns to New Task button",
+        "Tested modal validation — red border on invalid fields, error messages appear inline, no animation on error state (acceptable — instant feedback is appropriate for validation)",
+        "Tested filter interaction — selecting a value applies accent border with 150ms transition, badge and clear button appear instantly (no fade), grid re-filters instantly via AG Grid external filter API",
+        "Tested search input focus — width expands 180px→240px with 200ms ease transition, accent border + box-shadow ring appear, smooth and well-timed",
+        "Tested clear button — filters reset instantly, badge/clear button disappear instantly (no exit transition)",
+        "Tested column header sort — sort icon slides in with 150ms ease-out animation, accent color, feels crisp",
+        "Verified prefers-reduced-motion section in tasks.css: search transition, toast animation, loading pulse all disabled — modal transitions in styles.css NOT covered (shared concern)",
+        "Identified toast exit animation gap: showToast() uses .remove() after 3s setTimeout with no fade-out — entrance has slide+fade animation but exit is instant DOM removal"
+      ],
+      "filesChanged": [
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "PASS — 0 P1 issues, 5 P2 notes. Nothing blocks ship.",
+        "P2-1: Toast dismissal has no exit animation — design spec says 'fade out after 3s' but implementation uses instant .remove(). Should add opacity transition before removal.",
+        "P2-2: Filter badge and clear button appear/disappear instantly via hidden attribute toggle — would feel more polished with a quick 150ms opacity fade.",
+        "P2-3: Modal transitions (overlay fade, modal slide) not covered by prefers-reduced-motion — this is a shared concern across all pages using the modal pattern in styles.css, not tasks-specific.",
+        "P2-4: No cursor:pointer on AG Grid rows to indicate click-to-navigate behavior — Project column has its own cursor:pointer via .tasks__project-link, but ID and Title cells don't signal clickability.",
+        "P2-5: New Task button :hover and :active states are identical (both --color-accent-active) — matches spec exactly, but a subtle translateY(1px) or scale(0.98) on :active would add press feedback."
+      ]
+    },
+    {
+      "id": "qa",
+      "title": "QA pass on task tracker",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Read requirements (6 user stories with acceptance criteria), design spec, and tech approach docs",
+        "Read all implementation files: tasks.html, js/tasks.js, css/tasks.css, server/src/routes/tasks.ts, server/src/store/workItems.ts, server/src/schemas/workItem.ts, server/src/index.ts",
+        "Verified nav updates on all 9 HTML pages — Tasks link between Projects and Meetings, active state on tasks.html, hub card on index.html",
+        "API testing: curl GET /api/tasks — 36 tasks returned, response shape matches contract (id, title, description, status, phase, owner, priority, createdBy, project{id,slug,name}), backward-compatible defaults for description and createdBy (empty strings)",
+        "Playwright visual testing: page loads with h1 Tasks, grid renders 36 rows across 7 columns, stats shows '36 tasks across 1 project'",
+        "Filter bar testing: Status filter (planned) correctly filtered to 14 of 36 tasks, badge showed '1 filter', Clear button reset all filters, text search 'signup' filtered to 1 row",
+        "Default sort verified: planned tasks (rows 0-13) appear before completed tasks (rows 14-35), secondary sort by priority active (sort indicators 1 and 2 visible)",
+        "CRITICAL BUG FOUND (round 1): Inline editing broken — onRowClicked handler uses event.colDef which is undefined in AG Grid v34. Fix applied: changed to onCellClicked",
+        "RE-VERIFICATION (round 2): Inline editing confirmed working — clicked Status cell on US-19, dropdown editor opened with 4 options (planned/in-progress/completed/deferred), selected in-progress, value persisted to backend (verified via curl and raw JSON file)",
+        "RE-VERIFICATION (round 2): Cross-project save confirmed working — status change to in-progress persisted to data/work-items/roadmap-tool.json with description and createdBy defaults preserved",
+        "RE-VERIFICATION (round 2): Row click navigation only fires on non-editable cells — clicking editable Status cell opens editor (stays on page), clicking Title cell navigates to projects.html#roadmap-tool",
+        "New Task modal tested: all 6 fields present, validation works (Project required, Title required), Cancel/Close/Escape all close modal, focus management correct",
+        "Row click navigation tested: navigates to projects.html#roadmap-tool (correct URL), only fires on non-editable cells after fix",
+        "Navigation bar verified: 8 links present (Tools, Projects, Tasks, Meetings, Interviews, Docs, Spreadsheets, Team), Tasks has nav__link--active class",
+        "Responsive testing at 375px: filter bar stacks vertically, header stacks vertically, New Task button centered, grid scrolls horizontally",
+        "Empty state code review: showState() function correctly toggles loading/empty/error/grid states, empty state triggered when tasks array is empty",
+        "Code review: schema backward compatibility confirmed (Zod defaults), route error handling present (500 + console.error), composite row IDs (slug::id) prevent dedup"
+      ],
+      "filesChanged": [
+        "data/tasks/task-tracker.json"
+      ],
+      "decisions": [
+        "VERDICT: PASS (after P1 fix) — all 6 user stories verified, all acceptance criteria met",
+        "P1-BUG (FIXED): In js/tasks.js line 188, onRowClicked changed to onCellClicked. Re-verified: inline editing works, cross-project save persists, row navigation only fires on non-editable cells.",
+        "P2-NOTE (non-blocking): AG Grid theming warning #239 — page includes both ag-grid.css and uses ag-theme-quartz class. Pre-existing issue from CDN approach (same on spreadsheets.html). Not introduced by this change.",
+        "P2-NOTE (from Soren): Filter select touch targets are 32px on mobile (below 44px min). Recommend adding min-height:44px at mobile breakpoint in future polish pass.",
+        "P2-NOTE (from Nina): Toast dismissal has no exit animation. Design spec says 'fade out after 3s' but implementation uses instant .remove(). Non-blocking."
+      ]
+    }
+  ]
+}
