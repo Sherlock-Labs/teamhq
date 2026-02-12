@@ -1,294 +1,366 @@
 {
   "projectSlug": "roadmap-tool",
+  "taskPrefix": "RT",
   "workItems": [
     {
       "id": "RT-1",
       "title": "User signup and login",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Jonah",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-2",
       "title": "Team/workspace management",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Jonah",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-3",
       "title": "Create a roadmap",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-4",
       "title": "Roadmaps Homepage",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-5",
       "title": "Roadmap settings",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-6",
       "title": "Create and manage items",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-7",
       "title": "Item Card (detail panel)",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-8",
       "title": "Manage fields",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Jonah",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-9",
       "title": "Assign field values to items",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-10",
       "title": "Table View",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-11",
       "title": "Timeline View",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Nina",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-12",
       "title": "Milestones",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Nina",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-13",
       "title": "Swimlane View",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-14",
       "title": "Multiple views per roadmap",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-15",
       "title": "Filtering",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-16",
       "title": "Format Panel",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-17",
       "title": "Color palettes",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-18",
       "title": "Share roadmap with teammates",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Jonah",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-19",
       "title": "Export to PNG",
-      "status": "planned",
-      "phase": "v1.0",
+      "description": "Client-side PNG export via html-to-image. Export button in toolbar, captures full view content at 2x resolution. Scoped in v1.1 Sprint A.",
+      "status": "completed",
+      "phase": "v1.1-sprint-a",
       "owner": "Alice",
-      "priority": "medium"
+      "priority": "high",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-20",
       "title": "Share via URL",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Jonah",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": ""
     },
     {
       "id": "RT-21",
       "title": "Real-time collaborative editing",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Jonah",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-22",
       "title": "Real-time activity feed",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Jonah",
-      "priority": "low"
+      "priority": "low",
+      "createdBy": ""
     },
     {
       "id": "RT-23",
       "title": "Application shell and navigation",
+      "description": "",
       "status": "completed",
       "phase": "v1.0",
       "owner": "Alice",
-      "priority": "high"
+      "priority": "high",
+      "createdBy": ""
     },
     {
       "id": "RT-24",
       "title": "Link items (dependencies)",
+      "description": "Three link types (Blocking, Moves With, Relates To). Dependency lines on Timeline. Schema change required. Deferred to Sprint B.",
       "status": "planned",
-      "phase": "v1.1",
+      "phase": "v1.1-sprint-b",
       "owner": "",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-25",
       "title": "Drag items on Timeline",
-      "status": "planned",
-      "phase": "v1.1",
-      "owner": "",
-      "priority": "medium"
+      "description": "Horizontal drag (dates), vertical drag (restream), edge resize, snap-to-grid, ghost preview, single-level undo. Scoped in v1.1 Sprint A.",
+      "status": "completed",
+      "phase": "v1.1-sprint-a",
+      "owner": "Alice",
+      "priority": "high",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-26",
       "title": "Sub-items",
+      "description": "Nested items under parents. parentId on items table. Expand/collapse in Table, nested bars in Timeline, badge on Swimlane cards. Deferred to Sprint B.",
       "status": "planned",
-      "phase": "v1.1",
+      "phase": "v1.1-sprint-b",
       "owner": "",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-27",
       "title": "Key dates",
+      "description": "Named date markers within items (e.g., 'Design Complete: Mar 15'). Small markers on Timeline bars. Deferred to Sprint B.",
       "status": "planned",
-      "phase": "v1.1",
+      "phase": "v1.1-sprint-b",
       "owner": "",
-      "priority": "low"
+      "priority": "low",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-28",
       "title": "Comments and activity log",
+      "description": "Comment threads on items with @mentions and notifications. Full activity log with real-time push. Deferred to Sprint C.",
       "status": "planned",
-      "phase": "v1.1",
+      "phase": "v1.1-sprint-c",
       "owner": "",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-29",
       "title": "CSV import/export",
+      "description": "Import items from CSV with column-to-field mapping. Export all items to CSV. Deferred to Sprint C.",
       "status": "planned",
-      "phase": "v1.1",
+      "phase": "v1.1-sprint-c",
       "owner": "",
-      "priority": "low"
+      "priority": "medium",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-30",
       "title": "Presentation mode",
-      "status": "planned",
-      "phase": "v1.1",
-      "owner": "",
-      "priority": "low"
+      "description": "Fullscreen read-only view via browser Fullscreen API. Present button in toolbar, Escape to exit, hover view switcher. Scoped in v1.1 Sprint A.",
+      "status": "completed",
+      "phase": "v1.1-sprint-a",
+      "owner": "Alice",
+      "priority": "medium",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-31",
       "title": "Fiscal year settings",
+      "description": "Account-level fiscal year-end config. Timeline date headers adjust to show fiscal periods. Deferred to Sprint C.",
       "status": "planned",
-      "phase": "v1.1",
+      "phase": "v1.1-sprint-c",
       "owner": "",
-      "priority": "low"
+      "priority": "low",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-32",
       "title": "Portfolio roadmaps",
+      "description": "Roll up 2+ source roadmaps into a single bird's-eye view. Timeline or Swimlane visualization. Deferred to Sprint D (v2.0).",
       "status": "planned",
-      "phase": "v2.0",
+      "phase": "v2.0-sprint-d",
       "owner": "",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-33",
       "title": "Collections / folders",
+      "description": "Admin-created folders for organizing roadmaps. A roadmap can belong to multiple collections. Deferred to Sprint D (v2.0).",
       "status": "planned",
-      "phase": "v2.0",
+      "phase": "v2.0-sprint-d",
       "owner": "",
-      "priority": "low"
+      "priority": "low",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-34",
       "title": "Buckets (no-date mode)",
+      "description": "Fuzzy time buckets (Now/Next/Later) instead of exact dates. Critical for agile teams. Deferred to Sprint D (v2.0).",
       "status": "planned",
-      "phase": "v2.0",
+      "phase": "v2.0-sprint-d",
       "owner": "",
-      "priority": "medium"
+      "priority": "medium",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-35",
       "title": "Templates",
+      "description": "10+ roadmap templates to accelerate creation. Seed data + template picker on roadmap creation. Deferred to Sprint D (v2.0).",
       "status": "planned",
-      "phase": "v2.0",
+      "phase": "v2.0-sprint-d",
       "owner": "",
-      "priority": "low"
+      "priority": "low",
+      "createdBy": "Thomas"
     },
     {
       "id": "RT-36",
       "title": "Feedback and ideas module",
+      "description": "",
       "status": "planned",
       "phase": "v2.0",
       "owner": "",
-      "priority": "low"
+      "priority": "low",
+      "createdBy": ""
     }
-  ],
-  "taskPrefix": "RT"
+  ]
 }
