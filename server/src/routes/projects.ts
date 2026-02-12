@@ -192,8 +192,8 @@ router.get("/projects/:id/work-items", async (req, res) => {
       res.json({ workItems: [] });
       return;
     }
-    const workItems = await getWorkItems(project.slug);
-    res.json({ workItems });
+    const result = await getWorkItems(project.slug);
+    res.json({ workItems: result.workItems, taskPrefix: result.taskPrefix });
   } catch {
     res.status(404).json({ error: "Project not found" });
   }

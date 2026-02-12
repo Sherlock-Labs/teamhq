@@ -9,33 +9,44 @@ async function ensureDir(): Promise<void> {
   await mkdir(WORK_ITEMS_DIR, { recursive: true });
 }
 
-export async function getWorkItems(slug: string): Promise<WorkItem[]> {
+export async function getWorkItems(slug: string): Promise<{ workItems: WorkItem[]; taskPrefix: string }> {
   try {
     const raw = await readFile(join(WORK_ITEMS_DIR, `${slug}.json`), "utf-8");
     const parsed = WorkItemsFileSchema.parse(JSON.parse(raw));
-    return parsed.workItems;
+    return { workItems: parsed.workItems, taskPrefix: parsed.taskPrefix };
   } catch {
-    return []; // file doesn't exist yet — empty array
+    return { workItems: [], taskPrefix: "" };
   }
 }
 
-export async function putWorkItems(slug: string, workItems: WorkItem[]): Promise<WorkItem[]> {
+export async function putWorkItems(slug: string, workItems: WorkItem[], taskPrefix?: string): Promise<WorkItem[]> {
   await ensureDir();
-  const data = { projectSlug: slug, workItems };
+  // Preserve existing taskPrefix if not provided
+  let prefix = taskPrefix ?? "";
+  if (!taskPrefix) {
+    try {
+      const raw = await readFile(join(WORK_ITEMS_DIR, `${slug}.json`), "utf-8");
+      const existing = WorkItemsFileSchema.parse(JSON.parse(raw));
+      prefix = existing.taskPrefix;
+    } catch {
+      // no existing file
+    }
+  }
+  const data = { projectSlug: slug, taskPrefix: prefix, workItems };
   await writeFile(join(WORK_ITEMS_DIR, `${slug}.json`), JSON.stringify(data, null, 2));
   return workItems;
 }
 
-export async function getAllWorkItems(): Promise<Array<{ projectSlug: string; workItems: WorkItem[] }>> {
+export async function getAllWorkItems(): Promise<Array<{ projectSlug: string; taskPrefix: string; workItems: WorkItem[] }>> {
   await ensureDir();
   const files = await readdir(WORK_ITEMS_DIR);
-  const results: Array<{ projectSlug: string; workItems: WorkItem[] }> = [];
+  const results: Array<{ projectSlug: string; taskPrefix: string; workItems: WorkItem[] }> = [];
   for (const file of files) {
     if (!file.endsWith(".json")) continue;
     try {
       const raw = await readFile(join(WORK_ITEMS_DIR, file), "utf-8");
       const parsed = WorkItemsFileSchema.parse(JSON.parse(raw));
-      results.push({ projectSlug: parsed.projectSlug, workItems: parsed.workItems });
+      results.push({ projectSlug: parsed.projectSlug, taskPrefix: parsed.taskPrefix, workItems: parsed.workItems });
     } catch {
       // skip corrupt files
     }

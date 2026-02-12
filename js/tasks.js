@@ -15,6 +15,7 @@
   var _gridApi = null;
   var _allTasks = [];
   var _saveTimers = {}; // projectId → timeout id
+  var _projectPrefixes = {}; // projectId → taskPrefix
 
   // --- DOM refs ---
   var gridEl = document.getElementById('tasks-grid');
@@ -454,6 +455,7 @@
       opt.value = _modalProjects[i].id;
       opt.textContent = _modalProjects[i].name;
       opt.dataset.slug = _modalProjects[i].slug;
+      opt.dataset.taskprefix = _projectPrefixes[_modalProjects[i].id] || '';
       modalProjectSelect.appendChild(opt);
     }
   }
@@ -505,11 +507,17 @@
     var projectSlug = selectedOption.dataset.slug;
     var projectName = selectedOption.textContent;
 
-    var existingCount = 0;
+    var maxNum = 0;
+    var prefix = selectedOption.dataset.taskprefix || '';
     _gridApi.forEachNode(function (node) {
-      if (node.data.project.id === projectId) existingCount++;
+      if (node.data.project.id !== projectId) return;
+      var match = node.data.id && node.data.id.match(/(\d+)$/);
+      if (match) {
+        var n = parseInt(match[1], 10);
+        if (n > maxNum) maxNum = n;
+      }
     });
-    var newId = 'TT-' + (existingCount + 1);
+    var newId = (prefix || 'TT') + '-' + (maxNum + 1);
 
     var newTask = {
       id: newId,
@@ -523,7 +531,8 @@
       project: {
         id: projectId,
         slug: projectSlug,
-        name: projectName
+        name: projectName,
+        taskPrefix: prefix
       }
     };
 
@@ -619,6 +628,14 @@
       })
       .then(function (data) {
         _allTasks = data.tasks || [];
+
+        // Build project prefix map from task data
+        for (var i = 0; i < _allTasks.length; i++) {
+          var t = _allTasks[i];
+          if (t.project && t.project.taskPrefix) {
+            _projectPrefixes[t.project.id] = t.project.taskPrefix;
+          }
+        }
 
         if (_allTasks.length === 0) {
           showState('empty');

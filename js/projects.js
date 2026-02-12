@@ -858,6 +858,7 @@
 
   var _spreadsheetInstances = {}; // projectId -> [TeamHQSpreadsheet]
   var _workItemGrids = {};         // projectId -> agGrid API instance
+  var _workItemPrefixes = {};      // projectId -> taskPrefix string
 
   function renderDataSection(projectId, containerEl) {
     // Clean up previous instances for this project
@@ -3559,7 +3560,7 @@
     return wrapper;
   }
 
-  function wiGetNextId(api) {
+  function wiGetNextId(api, prefix) {
     var maxNum = 0;
     api.forEachNode(function (node) {
       var match = node.data.id && node.data.id.match(/(\d+)$/);
@@ -3568,7 +3569,8 @@
         if (n > maxNum) maxNum = n;
       }
     });
-    return 'WI-' + (maxNum + 1);
+    var pfx = prefix || 'WI';
+    return pfx + '-' + (maxNum + 1);
   }
 
   function wiScheduleSave(projectId) {
@@ -3709,7 +3711,7 @@
   function wiAddRow(projectId) {
     var api = _workItemGrids[projectId];
     if (!api) return;
-    var newId = wiGetNextId(api);
+    var newId = wiGetNextId(api, _workItemPrefixes[projectId]);
     var newItem = {
       id: newId,
       title: '',
@@ -4024,6 +4026,7 @@
       })
       .then(function (data) {
         var items = data.workItems || [];
+        _workItemPrefixes[projectId] = data.taskPrefix || '';
         if (items.length === 0) {
           wiShowEmptyState(projectId, slug, containerEl);
         } else {

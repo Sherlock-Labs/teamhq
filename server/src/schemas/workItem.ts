@@ -18,6 +18,7 @@ export type WorkItem = z.infer<typeof WorkItemSchema>;
 
 export const WorkItemsFileSchema = z.object({
   projectSlug: z.string(),
+  taskPrefix: z.string().default(""),
   workItems: z.array(WorkItemSchema).default([]),
 });
 
