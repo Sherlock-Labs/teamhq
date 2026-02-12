@@ -1,0 +1,19 @@
+{
+  "id": "a238efcb-fea9-48de-93cb-557f94303dff",
+  "slug": "bugs",
+  "name": "Bugs",
+  "description": "",
+  "status": "planned",
+  "createdAt": "2026-02-12T19:27:51.514Z",
+  "updatedAt": "2026-02-12T19:27:51.514Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "Bugs filed via the Bug Reporter widget.",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  }
+}

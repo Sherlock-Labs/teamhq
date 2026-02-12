@@ -1,0 +1,19 @@
+{
+  "id": "e84b6d5f-664a-4e7b-82dd-ab1e7b29c3fe",
+  "slug": "bug-reporter",
+  "name": "Bug Reporter",
+  "description": "",
+  "status": "in-progress",
+  "createdAt": "2026-02-12T17:20:55.462Z",
+  "updatedAt": "2026-02-12T18:05:17.569Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "Scope a 'quick bug reporter' feature: floating widget with screenshot capture, voice narration, AI transcription, and auto-filing to task tracker as a bug-type task.\n\nOwner: CEO\nPriority: high\nSource: Charter Meeting #12",
+  "notes": [],
+  "kickoffPrompt": "You have a new project to work on.\n\n## Project: Scope a 'quick bug reporter' feature: floating widget wit...\n\n**Brief:**\nScope a 'quick bug reporter' feature: floating widget with screenshot capture, voice narration, AI transcription, and auto-filing to task tracker as a bug-type task.\n\nOwner: CEO\nPriority: high\nSource: Charter Meeting #12\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
+  "activeSessionId": "7591099d-3763-424e-9083-334005013ba8",
+  "pipeline": {
+    "tasks": []
+  }
+}

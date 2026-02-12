@@ -166,6 +166,7 @@ Each step produces a doc in `docs/` that downstream agents read. Don't skip step
 - **Architecture Decision Records**: Cross-project technical decisions are documented in `docs/adrs/`. See `docs/adrs/README.md` for the index.
 - **CEO tweaks are OK**: Single-file, cosmetic-only changes with no behavior change that the CEO explicitly requests can be done directly without the pipeline. If it affects design tokens, give Robert a heads-up.
 - **Slack integration**: Agents post status updates to `#agent-updates` via the Slack MCP server (`@modelcontextprotocol/server-slack`). Each agent uses `chat:write.customize` to appear with their own name and pixel art avatar. See each agent's "Slack Communication" section for identity settings.
+- **Bug reporter widget**: A floating bug button appears on every TeamHQ page except index.html. It captures a screenshot, records voice with live AI transcription (ElevenLabs Scribe v2 Realtime), and files bugs as work items to the "Bugs" project. Open with the button or `Cmd/Ctrl+Shift+B`. Implementation: `js/bug-reporter.js` + `css/bug-reporter.css`. API: `GET /api/scribe-token`, `POST /api/bug-reports`. Screenshots stored in `data/bug-screenshots/`. See `docs/bug-reporter-user-guide.md` for usage.
 
 ## Spawning Agents
 

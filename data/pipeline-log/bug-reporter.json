@@ -2,7 +2,7 @@
   "projectId": "bug-reporter",
   "projectName": "Quick Bug Reporter",
   "status": "in-progress",
-  "currentPhase": "requirements",
+  "currentPhase": "qa-complete",
   "tasks": [
     {
       "id": "requirements",
@@ -47,100 +47,373 @@
       "title": "Define technical approach for bug reporter",
       "agent": "Andrei",
       "role": "Technical Architect",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read requirements doc, CLAUDE.md, and scanned existing codebase (WorkItem schema, routes, voice transcription, HTML pages, server index)",
+        "Searched team memory for relevant patterns — none found, this is the first audio/upload/screenshot project",
+        "Evaluated 4 transcription options: ElevenLabs STT API, client-side Web Speech API, OpenAI Whisper, and Voxtral realtime WebSocket",
+        "Chose ElevenLabs Scribe v2 REST API — ELEVENLABS_API_KEY already configured in .env, simple POST endpoint, no new dependencies or API keys",
+        "Evaluated screenshot capture options: html2canvas, getDisplayMedia, dom-to-image — chose html2canvas (de facto standard, 31k+ stars, well-documented)",
+        "Designed lazy-loading strategy for html2canvas — zero page load impact, CDN load only on first panel open",
+        "Chose multer with memory storage for multipart form parsing — only new npm dependency needed",
+        "Defined complete API contract for POST /api/bug-reports with field types, validation rules, and response format",
+        "Designed client-side state machine: CLOSED → OPEN → READY → RECORDING → TRANSCRIBING → READY → SUBMITTING → SUCCESS → CLOSED",
+        "Specified error handling strategy — only work item creation failure blocks submission, everything else degrades gracefully",
+        "Classified all files: 5 new, 11 modified (all Extend or Modify), 0 restructured — no early QA notification needed",
+        "Documented title auto-generation logic, screenshot save pattern, and transcription isolation pattern for swappability"
+      ],
+      "filesChanged": [
+        "docs/bug-reporter-tech-approach.md",
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "ElevenLabs Scribe v2 for transcription over Whisper/Web Speech API/Voxtral — API key already configured, simple REST endpoint, no new deps",
+        "Server-side transcription only (no client-side attempt) — single code path, API key stays server-side, simpler to debug",
+        "html2canvas for screenshots over getDisplayMedia/dom-to-image — boring standard, lazy-loaded from CDN to avoid page load impact",
+        "multer with memory storage for file uploads — files are small (<2MB), no temp file cleanup needed",
+        "Isolated transcription module (server/src/transcription/elevenlabs.ts) — single function, easy to swap providers later",
+        "Screenshots served via existing express.static middleware — no new route needed for viewing screenshots",
+        "Vanilla JS class pattern (BugReporter) matching existing ThqSpreadsheet pattern — consistent with codebase, no framework deps"
+      ]
     },
     {
       "id": "design-spec",
       "title": "Design bug reporter widget, panel, and recording UI",
       "agent": "Robert",
       "role": "Product Designer",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read requirements, tech approach, interface-design skill doc, tokens.css, shared.css, and existing design specs for pattern consistency",
+        "Designed floating trigger button: 44px dark circle, bottom-right fixed position, z-index 1000, bug SVG icon with hover/focus/active states",
+        "Designed panel as fixed popover (380px wide) anchored above the button with stronger shadow for visual separation from page content",
+        "Defined screenshot section: 16:10 aspect-ratio thumbnail, shimmer loading animation, click-to-enlarge modal overlay, retake action",
+        "Designed recording section with three states: idle (full-width record button), active (red dot + mono timer + CSS waveform bars + stop button), and review (re-record link)",
+        "Specified live transcription UX: textarea updates in real-time during recording, label changes to 'Description -- listening...' with pulsing red text, NO post-recording wait state",
+        "Designed submit footer: full-width accent-green button with disabled/submitting/error states, inline error message for failed submissions",
+        "Designed success toast: dark pill with green checkmark, 3s auto-dismiss, enter/exit animations",
+        "Defined complete state machine: CLOSED -> CAPTURING -> READY -> RECORDING -> READY -> SUBMITTING -> SUCCESS -> CLOSED (no TRANSCRIBING state)",
+        "Specified all animations with durations, easings, and prefers-reduced-motion fallbacks (13 animations total)",
+        "Defined ARIA structure: role=dialog, aria-expanded on trigger, aria-live status region for screen reader announcements of recording states",
+        "Documented keyboard navigation: Cmd+Shift+B toggle, Escape to close, tab order through interactive elements, focus management on open/close",
+        "Verified WCAG AA color contrast for all text/background combinations (7 element pairs checked)",
+        "Defined responsive behavior: desktop/tablet unchanged, small screens get full-width panel with tighter margins",
+        "Created widget-specific CSS custom properties (--bug-btn-size, --bug-panel-width, etc.) scoped to bug-reporter.css"
+      ],
+      "filesChanged": [
+        "docs/bug-reporter-design-spec.md",
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "Button-as-close-control: floating button swaps to X icon when panel is open, eliminating separate close button in panel header -- keeps header minimal",
+        "No outside-click-to-close: panel stays open unless explicitly dismissed via X or Escape -- prevents accidental closure during recording",
+        "Modal overlay for screenshot preview over in-place expansion -- screenshot needs scale to be useful, overlay gives room without distorting panel",
+        "Native textarea over contenteditable for live transcription -- contenteditable would allow styling partial vs committed text differently, but introduces cursor management complexity and a11y issues. Plain textarea with text appearing in real-time is compelling enough",
+        "CSS-only decorative waveform (5 staggered bars) over actual audio visualization -- simpler to implement, no AnalyserNode needed, communicates 'recording active' effectively",
+        "No backdrop/overlay behind panel -- lightweight popover feel, not modal. User can still see the page content (which is the bug context)",
+        "Recording indicator uses status-error red (#dc2626) consistently across dot, waveform, stop button, and label text -- single color for the recording state avoids confusion",
+        "Panel does not auto-close on successful submit -- closes panel first, then shows toast at the same position. Clean transition, no overlapping UI"
+      ]
     },
     {
       "id": "backend",
-      "title": "Build POST /api/bug-reports endpoint with transcription and screenshot storage",
+      "title": "Build GET /api/scribe-token and POST /api/bug-reports endpoints with screenshot storage",
       "agent": "Jonah",
       "role": "Backend Developer",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read requirements doc, tech approach doc, existing WorkItem schema, work items store, server index, and existing route patterns",
+        "Added 'type' (enum: task/bug/feature, default 'task') and 'metadata' (Record<string,string>, default {}) fields to WorkItemSchema -- backward-compatible with all existing work items",
+        "Created GET /api/scribe-token endpoint that generates single-use ElevenLabs tokens for client-side Scribe v2 Realtime WebSocket connections",
+        "Discovered tech approach had incorrect ElevenLabs token URL (/v1/tokens/single-use) -- corrected to /v1/single-use-token/realtime_scribe based on actual API docs",
+        "Created POST /api/bug-reports endpoint with Zod input validation, requiring pageUrl + projectSlug + at least one of description/screenshotDataUrl",
+        "Implemented screenshot saving: decodes base64 data URL, writes PNG to data/bug-screenshots/ with timestamped filenames, served via existing express.static middleware",
+        "Implemented title auto-generation: first ~60 chars of description at word boundary, fallback to 'Bug on [page] page'",
+        "Implemented work item ID generation: reads existing items, finds highest numeric suffix, increments",
+        "Added 5mb JSON body parser limit on bug-reports route for base64 screenshot data URLs",
+        "Registered bugReportRoutes in server/src/index.ts under /api prefix",
+        "Created data/bug-screenshots/ directory with .gitkeep for git tracking",
+        "Tested all endpoints via curl: scribe-token returns valid token (200), bug-reports creates work items correctly (200), validation rejects missing fields (400), backward compatibility confirmed (44 existing work items load correctly with new schema)"
+      ],
+      "filesChanged": [
+        "server/src/schemas/workItem.ts",
+        "server/src/routes/bugReports.ts",
+        "server/src/index.ts",
+        "data/bug-screenshots/.gitkeep",
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "Corrected ElevenLabs token endpoint URL from /v1/tokens/single-use to /v1/single-use-token/realtime_scribe -- the tech approach had the wrong URL (404), the actual API uses a path parameter pattern",
+        "No new npm dependencies needed -- JSON body (not multipart), Node built-in fetch for token endpoint, Node built-in fs/crypto for screenshots",
+        "Screenshot save failure is non-blocking -- log the error, skip the screenshotPath in metadata, but still create the work item",
+        "Work item creation failure is the only blocking error -- returns 500 to client for retry",
+        "Used route-specific JSON parser with 5mb limit instead of increasing the global limit -- prevents large payloads on other endpoints"
+      ]
     },
     {
       "id": "frontend",
       "title": "Implement floating bug reporter widget with screenshot, voice recording, and transcription UI",
       "agent": "Alice",
       "role": "Frontend Developer",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read all three spec docs (requirements, tech approach, design spec) and backend route implementation before writing any code",
+        "Created css/bug-reporter.css with all styles matching Robert's design spec — widget tokens, floating button with hover/focus/active/open states, tooltip, panel with open/close animations, screenshot section with shimmer/error/loaded states, preview overlay, recording section with idle/active/mic-denied states, waveform animation with staggered bars, description textarea, submit button states, spinner, success toast, responsive breakpoints (<640px), and prefers-reduced-motion overrides",
+        "Created js/bug-reporter.js as a self-contained vanilla JS IIFE with BugReporter class following ThqSpreadsheet pattern — inline SVG icons (bug, X, mic, stop, expand, check, alert, warning), el() helper for DOM construction, html2canvas lazy loader from CDN",
+        "Implemented full state machine: CLOSED -> CAPTURING -> READY -> RECORDING -> READY -> SUBMITTING -> SUCCESS -> CLOSED with correct transitions and guards",
+        "Implemented screenshot capture using html2canvas with panel hidden during capture, viewport-only JPEG at 0.7 quality to keep payload under 1MB, click-to-enlarge preview overlay with Escape to dismiss",
+        "Implemented voice recording flow: token fetch from GET /api/scribe-token, getUserMedia for microphone, ElevenLabs Scribe v2 Realtime WebSocket for live transcription, MediaRecorder with 250ms timeslice for audio chunks sent as base64 to WebSocket",
+        "Implemented live transcription display: committed_transcript text accumulates in textarea, partial_transcript shows interim text, label changes to 'Description — listening...' with pulsing red indicator during recording",
+        "Implemented graceful degradation: mic denied shows warning with guidance, WebSocket failure falls back to manual typing, MediaRecorder unsupported hides recording section entirely, 30-second hard cap with 5-second warning at 25s",
+        "Implemented submission with POST /api/bug-reports as JSON, timeout tracking (10s 'still submitting', 20s hard timeout), error display with retry, success toast with 3s auto-dismiss",
+        "Added bug-reporter.css link, #bug-reporter-root div, and bug-reporter.js script to all 8 HTML pages (projects, tools, meetings, interviews, docs, spreadsheets, team, tasks) — NOT index.html",
+        "Fixed global express.json body limit in server/src/index.ts from default 100KB to 5MB to allow screenshot data URLs to pass through",
+        "Fixed CSS specificity issue where tooltip was visible when panel was open — added explicit overrides for .bug-btn--open:hover and .bug-btn--open:focus-visible",
+        "Fixed preview overlay blocking clicks when hidden — added pointer-events: none on base, pointer-events: auto on visible state",
+        "Optimized screenshot from full-page PNG to viewport-only JPEG at 0.7 quality — reduced payload from 687KB to 57KB",
+        "Verified end-to-end flow via Playwright: open panel, capture screenshot, type description, submit, verify bug saved to data/work-items/bugs.json with correct metadata",
+        "Verified keyboard shortcut (Cmd+Shift+B) opens/closes panel and Escape closes panel with correct ARIA state updates",
+        "Verified widget renders on all 8 pages with correct page context ('on Projects', 'on Tools', 'on Team', etc.) and is absent from index.html"
+      ],
+      "filesChanged": [
+        "css/bug-reporter.css",
+        "js/bug-reporter.js",
+        "server/src/index.ts",
+        "projects.html",
+        "tools.html",
+        "meetings.html",
+        "interviews.html",
+        "docs.html",
+        "spreadsheets.html",
+        "team.html",
+        "tasks.html"
+      ],
+      "decisions": [
+        "Changed from full-page PNG screenshot to viewport-only JPEG at 0.7 quality — full-page captures of long pages like projects.html exceeded 5MB, viewport-only captures the user's actual view of the bug and keeps payload under 100KB",
+        "Increased global express.json limit from default 100KB to 5MB — Jonah's route-specific 5MB parser was being intercepted by the global parser's default limit before it could run. The route-specific limit is still the intended constraint but the global parser needs to let it through",
+        "Used IIFE with 'use strict' rather than ES module — matches existing codebase pattern (ThqSpreadsheet), no build step needed, works with defer attribute",
+        "Inline SVG icons rather than external icon files — keeps the widget fully self-contained with zero additional network requests",
+        "No TRANSCRIBING state in the state machine — per Robert's design spec, transcription happens live during RECORDING state, eliminating the post-recording wait state from Andrei's original tech approach",
+        "Submit enabled when screenshot is captured even without description text — a screenshot alone is a valid bug report per the requirements"
+      ]
     },
     {
       "id": "interactions-review",
       "title": "Review micro-interactions: recording states, panel open/close, toast confirmation",
       "agent": "Nina",
       "role": "Interactions Specialist",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read design spec Section 13 (Animation Specifications Summary) and compared all 13 animations against CSS and JS implementation",
+        "Verified panel open animation: 200ms ease-out opacity+translateY matches spec exactly via computed styles",
+        "Verified panel close animation: 150ms ease-in with --closing class, JS timeout at 150ms to clean up class matches spec",
+        "Verified button hover: background 150ms ease and box-shadow 150ms ease match spec, transform 200ms ease correctly handles the panel-open rotation",
+        "Verified button active scale(0.95) is instant and compounds correctly with rotate(45deg) when panel is open",
+        "Verified button icon rotate to X: 200ms ease rotation on .bug-btn--open, innerHTML swap to ICON_X is instant while rotation animates — correct per spec",
+        "Verified screenshot shimmer: 1.5s ease infinite loop with gradient sweep matches spec, reduced-motion disables animation and shows static bg",
+        "Verified recording dot pulse: 1.5s ease infinite, opacity 1->0.3->1 keyframes match spec exactly",
+        "Verified waveform bars: durations 0.8s/0.6s/0.9s/0.7s/0.85s with delays 0s/0.15s/0.3s/0.15s/0s match spec exactly, reduced-motion shows static bars at 10px (50% height)",
+        "Verified toast enter: 200ms ease-out opacity+translateY(8px->0) matches spec",
+        "Verified toast exit: 150ms ease-in opacity fade after 3000ms hold (TOAST_DURATION_MS constant), hiding class removes translate correctly",
+        "Verified submit spinner: 0.6s linear infinite rotation matches spec",
+        "Fixed missing 500ms tooltip hover delay — design spec requires tooltip to show after 500ms hover delay, was showing immediately with only 150ms fade. Added transition-delay: 500ms on hover/focus-visible states, 0ms on default state for instant dismissal",
+        "Fixed reduced-motion toast treatment — was using 0ms duration (instant appear/disappear) but spec says 'fade only, no translate'. Changed to preserve 200ms/150ms opacity transitions while keeping transform:none",
+        "Verified focus management timing: 200ms setTimeout for focus matches panel open animation duration",
+        "Verified all prefers-reduced-motion overrides: panel (instant), shimmer (static bg), rec-dot (no pulse), waveform bars (static 50% height), listening label (no pulse), toast (fade only), button (no transitions), preview overlay (instant)"
+      ],
+      "filesChanged": [
+        "css/bug-reporter.css"
+      ],
+      "decisions": [
+        "Added 500ms transition-delay on tooltip hover to match design spec's '500ms delay' requirement — the base state uses 0ms delay so tooltip disappears quickly when un-hovering, only the appearance is delayed",
+        "Changed reduced-motion toast from instant (0ms) to fade-only (200ms enter, 150ms exit) — the spec explicitly says 'fade only, no translate' for reduced motion, which means the opacity transition should remain while the translateY is removed. Instant appearance contradicts the spec's intention to preserve a gentle fade",
+        "Left panel reduced-motion as instant (0ms for both opacity and transform) — the spec says 'instant show/hide, no transform animation' which is defensibly interpreted as fully instant. Unlike the toast spec which explicitly says 'fade only', the panel spec says 'instant'",
+        "Did not add will-change to any animated elements — the animations are lightweight (opacity + transform only, all GPU-compositable) and will-change would create unnecessary composite layers for a small widget"
+      ]
     },
     {
       "id": "responsive-review",
       "title": "Review floating widget positioning and panel layout across breakpoints",
       "agent": "Soren",
       "role": "Responsive Specialist",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read design spec Section 8 (Responsive Behavior), full CSS implementation, JS implementation, and tokens.css before any testing",
+        "Tested at 1440x900 (desktop): panel 380px wide, fixed position bottom-right, no viewport overflow, button 44x44px meets touch target, max-height calc(100vh-120px)=780px correctly constrains panel",
+        "Tested at 1024x768 (desktop): panel 380px fits comfortably, no overflow, all positions correct",
+        "Tested at 768x1024 (tablet portrait): panel 380px, same as desktop per spec ('Same as desktop. No changes needed'), fits within viewport",
+        "Tested at 640x960 (breakpoint boundary): desktop styles still active (media query is max-width:639px), panel fits with 225px left margin, no overflow",
+        "Tested at 414x896 (iPhone Plus): small screen media query active, panel 382px (calc(100vw - 16px*2)), left:16px right:16px, button at bottom:16px right:16px, toast position adjusted, no overflow",
+        "Tested at 375x812 (iPhone standard): panel 343px, all internal elements (textarea, record button, submit button) fit within panel bounds, no clipping",
+        "Tested at 320x568 (smallest target): panel 288px, max-height 448px, panel scrollable (scrollHeight 621 > clientHeight 446), internal overflow-y:auto works correctly, submit button reachable via scroll",
+        "Tested at 420x800 (non-standard): small screen styles active, panel 388px, fits without issue",
+        "Verified screenshot preview overlay scales correctly at small widths: 90vw max-width, 80vh max-height, object-fit:contain prevents distortion",
+        "Verified no horizontal document overflow at any tested viewport (checked document.documentElement.scrollWidth vs viewport width at each size)",
+        "Fixed touch target: submit button from 40px to 44px on small screens (<640px) via min-height in media query",
+        "Fixed touch target: retake button from 38x14px to min-height 44px on small screens with flex alignment for vertical centering",
+        "Fixed touch target: screenshot error retry button to min-height 44px on small screens",
+        "Fixed touch target: re-record button to min-height 44px on small screens",
+        "Verified desktop layout unchanged after mobile touch target fixes -- media query correctly scoped to max-width:639px, submit remains 40px and retake remains 14px at 1440px"
+      ],
+      "filesChanged": [
+        "css/bug-reporter.css",
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "Increased submit button to 44px height on small screens only (<640px) -- design spec sets 40px globally, but on touch-input devices the 44px minimum is critical for usability. Desktop retains 40px per Robert's spec since mouse precision makes it adequate",
+        "Expanded retake, re-record, and error retry button touch areas to 44px min-height on mobile using min-height+flex instead of changing the element's visual size -- the text stays small and unobtrusive while the tappable area meets the minimum",
+        "Used max-width media query for small screen overrides to match Alice's existing pattern -- the design spec uses a '<640px' breakpoint which maps to max-width:639px. While I generally prefer min-width (mobile-first), consistency with the existing codebase takes priority here",
+        "Did not add any additional breakpoints beyond the existing 639px -- the 380px fixed-width panel works well from 640px up, and the fluid calc(100vw - 32px) works well from 639px down. No awkward in-between sizes were found"
+      ]
     },
     {
       "id": "a11y-review",
       "title": "Review keyboard navigation, screen reader support, and ARIA for recording states",
       "agent": "Amara",
       "role": "Accessibility Specialist",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read design spec accessibility section (Section 9), requirements, tech approach, and full JS/CSS implementation before making any changes",
+        "Audited ARIA structure: role=dialog, aria-expanded, aria-controls, aria-keyshortcuts, aria-label, aria-live status region -- all present and correct per design spec",
+        "Fixed floating button aria-label not updating when panel opens/closes -- was always 'Report a bug' even when showing X icon, now toggles to 'Close bug reporter' when open",
+        "Made screenshot thumbnail keyboard accessible -- added role='button', tabindex='0', aria-label='Enlarge screenshot preview', and keydown handler for Enter/Space activation",
+        "Added focus-visible outline styles for screenshot thumbnail, retake button, re-record button, and screenshot error retry button -- all four were missing visible focus indicators",
+        "Added focus trap for the panel dialog -- Tab now cycles through panel interactive elements plus the floating close button, preventing focus from escaping to the page behind",
+        "Fixed Escape key priority conflict -- two separate keydown handlers both fired on Escape, closing preview AND panel simultaneously. Consolidated into single handler with preview-first priority",
+        "Added focus management for screenshot preview overlay -- focus moves to close button on open, returns to triggering element on close. Added role='dialog' and aria-modal='true' on overlay",
+        "Added visually hidden close button in preview overlay that becomes visible on focus-visible -- keyboard users can Tab to it and see it appear with label 'Close preview'",
+        "Added focus management for recording state transitions -- focus moves to stop button when recording starts, moves to textarea when recording stops so user can review/edit transcription",
+        "Added aria-describedby on record button linking to hint text ('or type your description below') for screen reader context",
+        "Added role='alert' on error message div and mic-denied message div so screen readers announce them immediately when they appear",
+        "Verified all screen reader announcements via aria-live='polite' status region: panel opened, recording started, 5 seconds remaining, recording stopped, maximum duration reached, bug filed, submission error -- all correct per design spec",
+        "Verified WCAG AA color contrast ratios against token values: button icon (#fff on #171717 = 15.4:1), panel title (#171717 on #fff = 15.4:1), placeholder (#767676 on #fff = 4.5:1), submit (#fff on #006B3F = 7.1:1), toast (#fff on #171717 = 15.4:1) -- all pass AA",
+        "Verified prefers-reduced-motion overrides disable all decorative animations (shimmer, pulse, waveform, listening label, toast translate, button transitions, preview overlay)"
+      ],
+      "filesChanged": [
+        "js/bug-reporter.js",
+        "css/bug-reporter.css",
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "Used focus trap that includes the floating close button (outside the panel DOM) in the Tab cycle -- the button serves as the panel's close control when open, so it is logically part of the dialog interaction",
+        "Added a visually hidden close button inside the preview overlay rather than relying on backdrop-click alone -- ensures keyboard users can close the preview without Escape, and the button reveals itself on focus-visible for discoverability",
+        "Moved focus to stop button immediately when recording starts rather than leaving it on the (now-removed) record button -- prevents focus loss when the DOM rebuilds from idle to active recording state",
+        "Moved focus to textarea after recording stops rather than back to the record button -- the design intent is for the user to review/edit their transcription, so textarea is the logical next action",
+        "Consolidated two separate Escape keydown listeners into one with priority ordering (preview first, then panel) -- prevents the double-close bug where both preview and panel would close on a single Escape press",
+        "Did not add focus trap inside the preview overlay since it only contains one interactive element (the close button) -- pressing Tab on the close button naturally stays on it, and Escape provides the expected dismiss"
+      ]
     },
     {
       "id": "design-review",
       "title": "Design review of implementation against spec",
       "agent": "Robert",
       "role": "Product Designer",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read design spec (docs/bug-reporter-design-spec.md) sections 1-15 and CSS implementation (css/bug-reporter.css) line by line",
+        "Verified floating button via Playwright computed styles: 44x44px, #171717 bg, 1px #404040 border, 0 2px 8px rgba(0,0,0,0.15) shadow, fixed bottom:20px right:20px, z-index 1000 -- all match spec",
+        "Verified panel via computed styles: 380px width, bottom:76px (20+44+12), white bg, #e5e5e5 border, 4px radius, double-layer shadow, max-height calc(100vh-120px), overflow-y auto -- all match spec",
+        "Verified header: padding 16px 20px (space-4 space-5), flex-column, border-bottom 1px solid #e5e5e5, title 14px/600/#171717, page context 12px/#767676 -- all match spec",
+        "Verified screenshot thumbnail: 16/10 aspect ratio, 4px radius, 1px border, overflow hidden, cursor pointer, expand icon on hover -- all match spec",
+        "Verified recording section: record button 44px height full-width #171717, hint text 12px centered #767676 -- all match spec",
+        "Verified textarea: 80-160px min/max height, 12px padding, 1px #e5e5e5 border, 14px text, 1.5 line-height, vertical resize -- all match spec",
+        "Verified submit button: 40px height desktop, #006B3F accent bg, white text, 14px/500, proper disabled state -- all match spec",
+        "Verified footer: 16px 20px padding, flex-column, 12px gap, no border-top -- matches spec ('No top border')",
+        "Verified textarea label: 12px/500/#767676, uppercase, 0.05em letter-spacing, 8px margin-bottom -- all match spec",
+        "Verified tooltip: #171717 bg, white text, 12px/500, 4px 8px padding, 4px radius, nowrap, pointer-events none, 500ms delay on hover (Nina fix) -- all match spec",
+        "Verified tooltip shortcut text: #999 (text-tertiary) on #171717 bg gives ~6:1 contrast ratio -- acceptable, matches spec",
+        "Verified button open state: rotate(45deg) transform, icon swaps to X SVG, aria-label changes to 'Close bug reporter' (Amara fix) -- matches spec intent",
+        "Verified button close state: transform none, bug icon restored, aria-expanded false, aria-label 'Report a bug' -- correct state reset",
+        "Verified responsive at 375x812: panel 343px (375-32), left/right 16px, bottom 72px (16+44+12), submit 44px (mobile touch target), retake 44px min-height -- Soren's changes correctly scoped",
+        "Verified desktop layout unaffected by mobile overrides: submit 40px, retake 14px natural height at 1280px -- no regression from Soren's media queries",
+        "Verified reduced-motion CSS overrides: panel instant, shimmer static, rec-dot no pulse, waveform bars 10px static, toast fade-only (Nina fix), button no transitions, preview overlay instant -- comprehensive coverage",
+        "Verified widget present on team.html with page context 'on Team' -- correct cross-page behavior",
+        "Verified widget absent from index.html -- correct exclusion per spec",
+        "Verified preview overlay CSS: z-index 1001, rgba(0,0,0,0.7) backdrop, centered image 90vw/80vh, focus-visible close button (Amara fix) -- matches spec",
+        "Verified all 6 widget-specific CSS custom properties in :root match spec values -- --bug-btn-size, --bug-panel-width, --bug-panel-offset-bottom, --bug-panel-offset-right, --bug-panel-shadow, --bug-rec-color",
+        "No visual regressions found from specialist reviews (Nina, Soren, Amara) -- all changes are correctly scoped and consistent with design intent"
+      ],
+      "filesChanged": [
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "PASS -- no fixes needed. Implementation faithfully matches design spec across all elements, states, breakpoints, and reduced-motion behavior",
+        "Accepted Soren's mobile touch target adjustments (44px min-height on submit, retake, retry, re-record at <640px) -- these improve usability on touch devices without altering the desktop spec values",
+        "Accepted Nina's 500ms tooltip delay and reduced-motion toast fade -- both are correct interpretations of the design spec that were missed in Alice's initial implementation",
+        "Accepted Amara's focus-visible outlines on 4 elements, focus trap, and aria-label toggle -- these enhance accessibility without any visual impact on the default (non-keyboard) experience",
+        "Header uses flex-direction:column instead of spec's flex-row with justify-between -- correct interpretation since there is no close button in the header (spec says 'No explicit close button in the header'), so title and page context stack vertically"
+      ]
     },
     {
       "id": "qa",
       "title": "QA pass — validate all acceptance criteria, edge cases, browser compat",
       "agent": "Enzo",
       "role": "QA Engineer",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Verified US-1 floating button: 44x44px fixed position bottom-right at 20px, z-index 1000, #171717 bg, 1px #404040 border, bug SVG icon, correct ARIA (aria-expanded, aria-controls, aria-keyshortcuts, aria-label)",
+        "Verified US-1 panel open/close: click opens panel (380px, bottom 76px, opacity 1, visible), button swaps to X with rotate(45deg), aria-expanded toggles correctly, aria-label updates to 'Close bug reporter'",
+        "Verified US-1 keyboard shortcut: Cmd+Shift+B toggles panel open/close, Escape closes panel, Escape priority correct (preview first, then panel)",
+        "Verified US-1 auto-screenshot: html2canvas captures viewport on panel open, JPEG at 0.7 quality, displayed in 16:10 thumbnail with expand icon on hover",
+        "Verified US-2 recording UI structure: record button full-width 44px 'Record voice note', hint text 'or type your description below', re-record button hidden initially, waveform bars in active state",
+        "Verified US-3 scribe token endpoint returns valid ElevenLabs token (200 OK), WebSocket URL construction correct in code, textarea always editable for manual fallback",
+        "Verified US-4 submit creates work item: type 'bug', status 'planned', priority 'medium', createdBy 'Bug Reporter', auto-generated title (truncated at ~60 chars at word boundary), metadata with pageUrl/screenshotPath/timestamp/userAgent",
+        "Verified US-4 success flow: panel closes, toast 'Bug filed!' appears with green checkmark, auto-dismisses after 3 seconds",
+        "Verified US-4 error flow: simulated network failure, error message 'Failed to file bug. Try again.' displayed inline, submit reverts to 'File bug', user input preserved, retry succeeds",
+        "Verified US-5 screenshot preview: click thumbnail opens modal overlay (z-index 1001, dark backdrop), Escape closes preview without closing panel, retake re-captures screenshot",
+        "Verified widget present on all 8 pages (projects, tools, meetings, interviews, docs, spreadsheets, team, tasks) with correct page context labels, absent from index.html",
+        "Verified schema backward compatibility: old work items without type/metadata fields parse correctly with defaults (type: 'task', metadata: {}), 41 existing tasks load without errors",
+        "Verified API validation: empty submission returns 400, missing required fields returns 400, whitespace-only description treated as empty, description-only and screenshot-only submissions both work",
+        "Verified title auto-generation: long descriptions truncated at word boundary with '...' suffix, screenshot-only submissions get fallback title 'Bug on [page] page'",
+        "Verified sequential ID generation: BUG-1 through BUG-12 assigned correctly, no gaps or duplicates",
+        "Verified screenshot file storage: PNG files saved to data/bug-screenshots/ with timestamp-random filenames, served via express.static",
+        "Verified special characters: HTML tags, quotes, apostrophes, unicode, emoji all stored correctly without XSS issues",
+        "Verified no-outside-click-to-close: clicking page content while panel is open does not close the panel",
+        "Verified rapid open/close: 5 rapid toggles in 100ms intervals result in consistent state (all indicators in sync)",
+        "Verified responsive at 375x812: panel fills width (375-32=343px), button at bottom:16px right:16px, submit 44px touch target, retake 44px min-height, no horizontal overflow",
+        "Verified reduced-motion CSS overrides present for all animations (panel, shimmer, rec-dot, waveform, toast, button, preview overlay)",
+        "Verified ARIA accessibility: role=dialog on panel, aria-live=polite status region, role=alert on error messages, aria-describedby on record button, focus-visible outlines on all interactive elements",
+        "Identified minor focus trap escape: preview overlay close button (sr-only, tabindex=0) is focusable when preview is not visible, allowing Tab to escape panel focus trap. Non-blocking — core flow works, keyboard users can use Escape/shortcut to recover"
+      ],
+      "filesChanged": [
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "PASS — all 5 user stories' acceptance criteria are met. The bug reporter widget works end-to-end: button visible on all 8 pages, screenshot auto-capture, manual text input, submission creates correct work items, toast confirmation, error handling with retry, responsive layout, keyboard navigation, and ARIA accessibility",
+        "Voice recording with live transcription could not be tested end-to-end in Playwright (requires real microphone and browser permission grant). Verified: scribe token endpoint works, recording UI structure is correct, graceful degradation for mic denied and WebSocket failure is implemented in code. The real-time transcription path is the one feature area that requires manual browser testing with a real mic.",
+        "Focus trap escape via preview overlay close button is a minor a11y defect but does not block release — the Tab cycle can leak to page elements if the preview close button (which is always in the DOM with tabindex=0 and bug-sr-only styling) is reached. The workaround is simple (Escape to close panel, Cmd+Shift+B to reopen). Recommend fixing in a follow-up by setting tabindex=-1 on the preview close button when preview is not visible.",
+        "Accepted Alice's optimization from full-page PNG to viewport-only JPEG at 0.7 quality — verified screenshots are under 100KB and capture the relevant viewport area"
+      ]
     },
     {
       "id": "docs",
       "title": "Write usage documentation for bug reporter",
       "agent": "Nadia",
       "role": "Technical Writer",
-      "status": "pending",
-      "subtasks": [],
-      "filesChanged": [],
-      "decisions": []
+      "status": "completed",
+      "subtasks": [
+        "Read all project docs (requirements, tech approach, design spec) and full JS/CSS implementation before writing any documentation",
+        "Wrote user-facing guide (docs/bug-reporter-user-guide.md) covering: quick start, opening/closing the panel, screenshot capture and preview, voice recording with live transcription, manual text input, submission flow, keyboard navigation, page availability, troubleshooting, and known v1 limitations",
+        "Structured guide with clear hierarchy: Quick Start for returning users, detailed sections for each feature, troubleshooting for common issues, known limitations to set expectations",
+        "Documented the specific browser permission flows for Chrome, Firefox, and Safari for microphone access troubleshooting",
+        "Included a 'What Gets Submitted' table showing exactly what fields are saved with each bug report (type, title generation logic, description, status, priority, screenshot, page URL, timestamp)",
+        "Documented all keyboard shortcuts and full Tab/focus navigation behavior across panel states",
+        "Listed all 8 pages where the widget appears and confirmed it is absent from index.html",
+        "Added bug reporter convention entry to CLAUDE.md with implementation file paths, API endpoints, screenshot storage location, and a link to the user guide",
+        "Verified all documented behavior against the actual JS implementation (js/bug-reporter.js) — confirmed 30-second recording cap, 25-second warning, JPEG 0.7 quality screenshots, default 'bugs' project slug, and graceful degradation paths"
+      ],
+      "filesChanged": [
+        "docs/bug-reporter-user-guide.md",
+        "CLAUDE.md",
+        "data/pipeline-log/bug-reporter.json"
+      ],
+      "decisions": [
+        "Wrote for the newcomer who has never seen the widget — no assumptions about familiarity with TeamHQ internals, work items, or voice transcription services",
+        "Led with a 4-step Quick Start so returning users can get oriented in seconds without reading the full guide",
+        "Included the Ctrl+Shift+B Chrome bookmarks conflict in both the shortcut section and troubleshooting — this is a likely friction point for Windows users that would otherwise be confusing",
+        "Kept the CLAUDE.md addition to a single bullet point under Conventions — the widget is a TeamHQ-wide feature that all agents should know about, but the details belong in the user guide rather than in CLAUDE.md",
+        "Documented known v1 limitations as a separate section rather than scattering them through the guide — this sets clear expectations and prevents users from searching for features that do not exist yet",
+        "Did not document API endpoints or server-side implementation details in the user guide — this is a user-facing doc, not a developer reference. The CLAUDE.md convention entry covers the technical pointers agents need"
+      ]
     }
   ]
 }

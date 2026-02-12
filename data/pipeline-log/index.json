@@ -28,5 +28,6 @@
   "work-log",
   "task-tracker",
   "task-detail",
-  "bug-reporter"
+  "bug-reporter",
+  "tasks-multi-select"
 ]

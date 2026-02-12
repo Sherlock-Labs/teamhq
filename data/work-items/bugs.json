@@ -1,0 +1,219 @@
+{
+  "projectSlug": "bugs",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "BUG-1",
+      "title": "The project cards are not showing full descriptions on...",
+      "description": "The project cards are not showing full descriptions on mobile viewport",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T18:39:03.861Z",
+        "screenshotPath": "data/bug-screenshots/1770921543858-6440f031.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-2",
+      "title": "test bug",
+      "description": "test bug",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T18:39:46.938Z"
+      }
+    },
+    {
+      "id": "BUG-3",
+      "title": "Test bug report: verifying the end-to-end submission flow...",
+      "description": "Test bug report: verifying the end-to-end submission flow with viewport screenshot optimization.",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T18:42:01.232Z",
+        "screenshotPath": "data/bug-screenshots/1770921721231-c3705386.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-4",
+      "title": "QA test: Enzo testing the happy path submission flow",
+      "description": "QA test: Enzo testing the happy path submission flow",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T18:59:24.930Z",
+        "screenshotPath": "data/bug-screenshots/1770922764929-97b515ed.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-5",
+      "title": "Bug on projects page",
+      "description": "",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T19:00:21.944Z",
+        "screenshotPath": "data/bug-screenshots/1770922821943-f8ea2c05.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-6",
+      "title": "QA API test: description only, no screenshot",
+      "description": "QA API test: description only, no screenshot",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/tools.html",
+        "timestamp": "2026-02-12T19:00:58.850Z"
+      }
+    },
+    {
+      "id": "BUG-7",
+      "title": "This is a really long description that should be truncated...",
+      "description": "This is a really long description that should be truncated at around sixty characters to create the title",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T19:01:16.954Z"
+      }
+    },
+    {
+      "id": "BUG-8",
+      "title": "<script>alert(\"xss\")</script> & \"quotes\" 'apostrophe' éàü...",
+      "description": "<script>alert(\"xss\")</script> & \"quotes\" 'apostrophe' éàü emoji test",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T19:04:22.662Z",
+        "screenshotPath": "data/bug-screenshots/1770923062662-501a231f.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-9",
+      "title": "Network error test",
+      "description": "Network error test",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/projects.html",
+        "timestamp": "2026-02-12T19:05:19.857Z",
+        "screenshotPath": "data/bug-screenshots/1770923119856-20824e66.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-10",
+      "title": "Bug from team page",
+      "description": "Bug from team page",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/team.html",
+        "timestamp": "2026-02-12T19:06:43.796Z",
+        "screenshotPath": "data/bug-screenshots/1770923203795-9b3cde00.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-11",
+      "title": "Another team page bug",
+      "description": "Another team page bug",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/team.html",
+        "timestamp": "2026-02-12T19:06:45.809Z"
+      }
+    },
+    {
+      "id": "BUG-12",
+      "title": "Final verification: checking all work item fields are...",
+      "description": "Final verification: checking all work item fields are correct per US-4 acceptance criteria",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/tasks.html",
+        "timestamp": "2026-02-12T19:07:41.171Z",
+        "screenshotPath": "data/bug-screenshots/1770923261171-64b39cbc.png",
+        "userAgent": "Test/1.0"
+      }
+    },
+    {
+      "id": "BUG-13",
+      "title": "Yeah, let's see if this is actually going to work.",
+      "description": "Yeah, let's see if this is actually going to work.",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/tasks.html",
+        "timestamp": "2026-02-12T19:22:43.336Z",
+        "screenshotPath": "data/bug-screenshots/1770924163331-c90e61a6.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+      }
+    }
+  ]
+}

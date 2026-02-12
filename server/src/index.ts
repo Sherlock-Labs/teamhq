@@ -11,6 +11,7 @@ import interviewRoutes from "./routes/interviews.js";
 import docRoutes from "./routes/docs.js";
 import taskRoutes from "./routes/tasks.js";
 import voiceRoutes from "./routes/voice.js";
+import bugReportRoutes from "./routes/bugReports.js";
 import { migrateFromTasksJson } from "./migrate.js";
 import { recoverOrphanedSessions } from "./session/recovery.js";
 import { sessionManager } from "./session/manager.js";
@@ -20,7 +21,7 @@ import { handleVoiceConnection } from "./voice/transcribe.js";
 const app = express();
 const PORT = 3002;
 
-app.use(express.json());
+app.use(express.json({ limit: "5mb" }));
 
 // Serve static frontend files from project root
 const projectRoot = path.resolve(import.meta.dirname, "../..");
@@ -33,6 +34,7 @@ app.use("/api", interviewRoutes);
 app.use("/api", docRoutes);
 app.use("/api", taskRoutes);
 app.use("/api", voiceRoutes);
+app.use("/api", bugReportRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
