@@ -12,7 +12,7 @@ export const NoteSchema = z.object({
 
 export type Note = z.infer<typeof NoteSchema>;
 
-// Pipeline types — agent task entries from data/tasks/{slug}.json
+// Pipeline types — agent task entries from data/pipeline-log/{slug}.json
 export const PipelineTaskStatus = z.enum(["completed", "in-progress", "pending", "skipped"]);
 
 export const PipelineTaskSchema = z.object({
@@ -35,7 +35,7 @@ export type Pipeline = z.infer<typeof PipelineSchema>;
 
 export const ProjectSchema = z.object({
   id: z.string(),
-  slug: z.string().nullable().default(null),       // human-readable identifier, links to data/tasks/{slug}.json
+  slug: z.string().nullable().default(null),       // human-readable identifier, links to data/pipeline-log/{slug}.json
   name: z.string().min(1),
   description: z.string(),
   status: ProjectStatus,

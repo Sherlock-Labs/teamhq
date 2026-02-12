@@ -106,7 +106,8 @@
     {
       field: 'project',
       headerName: 'Project',
-      width: 160,
+      minWidth: 160,
+      flex: 1,
       editable: false,
       valueGetter: function (params) { return params.data.project.name; },
       cellRenderer: function (params) {
@@ -119,7 +120,7 @@
     {
       field: 'id',
       headerName: 'ID',
-      width: 90,
+      width: 80,
       editable: false,
       cellStyle: { fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', cursor: 'pointer' }
     },
@@ -133,7 +134,7 @@
     {
       field: 'status',
       headerName: 'Status',
-      width: 130,
+      width: 120,
       editable: true,
       cellEditor: 'agSelectCellEditor',
       cellEditorParams: { values: ['planned', 'in-progress', 'completed', 'deferred'] },
@@ -153,7 +154,7 @@
     {
       field: 'owner',
       headerName: 'Owner',
-      width: 130,
+      width: 120,
       editable: true,
       cellRenderer: function (params) {
         if (!params.value) return '';
@@ -177,7 +178,7 @@
     {
       field: 'phase',
       headerName: 'Phase',
-      width: 100,
+      width: 80,
       editable: true,
       cellStyle: { color: 'var(--color-text-secondary)' }
     }
@@ -189,6 +190,10 @@
   var gridOptions = {
     columnDefs: columnDefs,
     rowData: [],
+    autoSizeStrategy: {
+      type: 'fitGridWidth',
+      defaultMinWidth: 80
+    },
     domLayout: 'autoHeight',
     rowHeight: 44,
     headerHeight: 40,
@@ -235,11 +240,15 @@
         return;
       }
     },
+    onGridSizeChanged: function () {
+      if (_gridApi) {
+        _gridApi.sizeColumnsToFit();
+      }
+    },
     initialState: {
       sort: {
         sortModel: [
-          { colId: 'status', sort: 'asc' },
-          { colId: 'priority', sort: 'asc' }
+          { colId: 'status', sort: 'asc' }
         ]
       }
     }
@@ -1008,6 +1017,7 @@
 
         _gridApi = agGrid.createGrid(gridEl, gridOptions);
         _gridApi.setGridOption('rowData', _allTasks);
+        _gridApi.sizeColumnsToFit();
         gridEl.setAttribute('aria-label', 'Tasks across all projects');
 
         updateStats();

@@ -45,7 +45,7 @@ When in doubt: show the data and let the CEO decide what it means. Your job is t
 When you're first spawned on a project:
 1. Read the CEO's brief and any existing context
 2. Read `CLAUDE.md` for project conventions
-3. Read `data/tasks/index.json` and the per-project files in `data/tasks/` and scan `data/projects/` for available data
+3. Read `data/pipeline-log/index.json` and the per-project files in `data/pipeline-log/` and scan `data/projects/` for available data
 4. Read `data/sessions/` if session data is available
 5. Clarify the analysis question — what are we trying to learn from the data?
 6. Identify data availability and limitations before promising deliverables
@@ -94,7 +94,7 @@ Before marking your task complete:
 - [ ] Have I separated observations from interpretations?
 - [ ] Are scripts reusable and well-commented?
 - [ ] Have I written to `docs/team-metrics.md` or `docs/{project}-retrospective.md`?
-- [ ] Have I updated data/tasks/{project-id}.json with subtasks and filesChanged?
+- [ ] Have I updated data/pipeline-log/{project-slug}.json with subtasks and filesChanged?
 
 ## Slack Communication
 
@@ -111,13 +111,23 @@ Keep messages concise — 1-3 sentences. Don't post routine intermediate steps.
 
 ## Work Logging
 
-When you complete your work on a project, update `data/tasks/{project-id}.json` with a detailed record of what you did. Find your task entry in the current project and add:
+When you complete your work on a project, update `data/pipeline-log/{project-slug}.json` with a detailed record of what you did. Find your task entry in the current project and add:
 
 - **subtasks**: A list of the specific things you did (5-10 items, be concrete — "Analyzed project completion rates across 5 shipped projects" not "Analyzed data")
 - **filesChanged**: Every file you created or modified
 - **decisions**: Key decisions or trade-offs you made and why
 
 Update your task's status to "completed" when done.
+
+## Work Items
+
+If the project has work items in `data/work-items/`, keep them current as you work:
+
+1. **Before starting:** Read current items via `GET /api/projects/:id/work-items`
+2. **When you start a task:** Set its status to `in-progress` and `owner` to your name
+3. **When you finish a task:** Set its status to `completed`
+4. **When you discover new work:** Add a new item with the next ID (using the project's `taskPrefix`), status `planned`, and a clear title
+5. **Save via:** `PUT /api/projects/:id/work-items` with the full array (read first to avoid overwriting)
 
 ## What You Don't Do
 

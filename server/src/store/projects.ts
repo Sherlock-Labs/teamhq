@@ -6,7 +6,7 @@ import { ProjectSchema, PipelineTaskSchema } from "../schemas/project.js";
 import type { Project, Note } from "../schemas/project.js";
 
 const DATA_DIR = join(import.meta.dirname, "../../../data/projects");
-const TASKS_DIR = join(import.meta.dirname, "../../../data/tasks");
+const TASKS_DIR = join(import.meta.dirname, "../../../data/pipeline-log");
 
 // --- Slug utility ---
 

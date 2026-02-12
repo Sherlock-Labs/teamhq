@@ -1,0 +1,146 @@
+{
+  "projectId": "bug-reporter",
+  "projectName": "Quick Bug Reporter",
+  "status": "in-progress",
+  "currentPhase": "requirements",
+  "tasks": [
+    {
+      "id": "requirements",
+      "title": "Scope requirements for bug reporter widget",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read CLAUDE.md, PM agent definition, and acceptance criteria skill doc",
+        "Analyzed existing WorkItem schema (id, title, description, status, phase, owner, priority, createdBy) — no type field exists yet",
+        "Analyzed existing work items store and task tracker route to understand integration points",
+        "Decided to extend WorkItem schema with 'type' (task/bug/feature) and 'metadata' (key-value) fields — backward-compatible defaults",
+        "Wrote 5 user stories covering: widget open, voice recording, AI transcription, submission, screenshot preview",
+        "Included interaction state checklists for all 5 stories (loading, error, disabled, empty, timeout)",
+        "Specified POST /api/bug-reports endpoint with multipart form data (audio, screenshot, description)",
+        "Classified all files: 4 new, 9 modified, 0 restructured — no early QA notification needed",
+        "Defined technical constraints: browser support, audio format, screenshot capture, transcription latency targets",
+        "Cut aggressive scope: no annotations, no cloud storage, no auth, no mobile, no video, no duplicate detection, no notifications",
+        "Tightened recording cap from 60s to 30s — sufficient for bug context, keeps file sizes under 500KB",
+        "Removed audio playback control — scope creep, transcription text serves as review",
+        "Changed submit requirement: title only is required, description is optional (screenshot + title is a valid bug report)",
+        "Recommended pipeline with Nina/Soren/Amara for UI-heavy floating widget component"
+      ],
+      "filesChanged": [
+        "docs/bug-reporter-requirements.md",
+        "data/tasks/bug-reporter.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Skip Suki and Marco — internal tool with well-understood browser APIs, no market or tech research needed",
+        "Add 'type' field to WorkItem schema (task/bug/feature) with default 'task' — backward-compatible, useful beyond bug reporter",
+        "Add generic 'metadata' field (Record<string, string>) to WorkItem — stores pageUrl, screenshotPath, timestamp for bug reports, reusable for future tools",
+        "Single designated 'Bugs' project for v1 — no project picker in the widget. Simpler UX, can add multi-project in v2",
+        "Desktop-only for v1 — floating widget doesn't make sense on mobile where screen space is limited",
+        "Local filesystem for screenshots — no R2 integration for v1, keeps deployment simple",
+        "Include Nina/Soren/Amara in pipeline — floating widget with recording interactions is UI-heavy",
+        "Skip Sam (one BE endpoint is not enough for two developers) and skip Priya (internal tool, no marketing)"
+      ]
+    },
+    {
+      "id": "tech-approach",
+      "title": "Define technical approach for bug reporter",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "design-spec",
+      "title": "Design bug reporter widget, panel, and recording UI",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "backend",
+      "title": "Build POST /api/bug-reports endpoint with transcription and screenshot storage",
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "frontend",
+      "title": "Implement floating bug reporter widget with screenshot, voice recording, and transcription UI",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "interactions-review",
+      "title": "Review micro-interactions: recording states, panel open/close, toast confirmation",
+      "agent": "Nina",
+      "role": "Interactions Specialist",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "responsive-review",
+      "title": "Review floating widget positioning and panel layout across breakpoints",
+      "agent": "Soren",
+      "role": "Responsive Specialist",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "a11y-review",
+      "title": "Review keyboard navigation, screen reader support, and ARIA for recording states",
+      "agent": "Amara",
+      "role": "Accessibility Specialist",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "design-review",
+      "title": "Design review of implementation against spec",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "qa",
+      "title": "QA pass — validate all acceptance criteria, edge cases, browser compat",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "docs",
+      "title": "Write usage documentation for bug reporter",
+      "agent": "Nadia",
+      "role": "Technical Writer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    }
+  ]
+}

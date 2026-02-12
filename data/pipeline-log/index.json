@@ -26,5 +26,7 @@
   "work-item-tracker",
   "pipeline-parallelism",
   "work-log",
-  "task-tracker"
+  "task-tracker",
+  "task-detail",
+  "bug-reporter"
 ]

@@ -1,0 +1,576 @@
+{
+  "projectId": "roadmap-tool",
+  "projectName": "Roadmap Tool (Roadmunk Replica)",
+  "status": "in-progress",
+  "currentPhase": "sprint-v1-polish",
+  "tasks": [
+    {
+      "id": "research-product",
+      "title": "Deep product research on Roadmunk",
+      "agent": "Suki",
+      "role": "Product Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Analyzed Roadmunk (now Tempo Strategic Roadmaps) product positioning, target audience, and notable customers (Microsoft, Visa, FedEx, Hulu)",
+        "Mapped complete information architecture and entity model — 12 primary entities with full relationship hierarchy (Roadmap > Items > Sub-Items, Fields, Views, Milestones, etc.)",
+        "Documented all 3 view types in depth: Table View (spreadsheet-like), Timeline View (time-axis + field headers + milestones), Swimlane View (dual-axis grid with cards)",
+        "Cataloged complete Item Card anatomy — 4-tab Context Sub-Panel (Overview, Linked Items, Sub-Items, Ideas) + 2-tab Details Sub-Panel (Fields, Activity)",
+        "Mapped the Fields system: types (List, Numeric, Text, Multi-Select, Team Members), levels (Roadmap vs Account), operations (merge, promote, archive), and how fields drive pivots/colors/filters",
+        "Documented milestone system: 3 default types, custom types with shape/color, Timeline-only constraint",
+        "Analyzed formatting/visual design system: Format Panel controls, 6 default color palettes + custom, Theme Orientation, Header Orientation, Compact vs Standard modes",
+        "Mapped Feedback & Idea Management module: Chrome extension, feedback inbox, RICE + Value vs Effort prioritization, idea-to-roadmap promotion flow",
+        "Documented all system limits: 350 items/view, 25 sub-items/parent, 30 linked items/chain, 100 bulk edit, 10K char descriptions, timeline display ranges",
+        "Mapped 6 core UX flows: create roadmap, create timeline view, add item, share roadmap, feedback-to-roadmap pipeline, create portfolio roadmap",
+        "Gathered complete pricing data: 4 tiers ($19-custom), feature gating matrix, 14-day free trial details",
+        "Analyzed user sentiment from Capterra, TrustRadius, G2 — identified 6 love themes and 8 pain point themes",
+        "Positioned Roadmunk against Aha!, ProductPlan, and Productboard with competitive comparison matrix",
+        "Produced prioritized recommendations: 11 must-have, 6 should-have, 4 could-have features with architecture and design implications"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-product-research.md"
+      ],
+      "decisions": [
+        "Must-have for v1: Timeline View, Swimlane View, Table View, Items with full property model, Fields system, Milestones, Multiple views per roadmap, Color palettes, Filtering, Export/Publish, Sharing permissions",
+        "Should-have (fast follow): Portfolio roadmapping, Linked items with auto-date enforcement, CSV import/export, Collections, Drag-and-drop on Timeline, Presentation mode",
+        "Exclude from v1: Jira/Azure integration, SSO/SAML, Chrome extension, Private cloud",
+        "Key competitive opportunities: better performance (Roadmunk is slow), simpler navigation (fewer clicks), better date input (type-in, not just calendar picker), lower learning curve, less feature gating by tier",
+        "Feedback/Ideas module should only be built if we can do it BETTER than Roadmunk — their users complain it's clunky for non-users"
+      ]
+    },
+    {
+      "id": "research-tech",
+      "title": "Technical research on roadmap visualization",
+      "agent": "Marco",
+      "role": "Technical Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Inspected Roadmunk (now Tempo Strategic Roadmaps) — confirmed React/TS/Node stack, documented Timeline and Swimlane views, mapped data model",
+        "Evaluated 7 timeline/Gantt libraries: Bryntum, DHTMLX, Frappe Gantt, vis-timeline, SVAR React Gantt, konva-timeline, shadcn Gantt",
+        "Compared rendering approaches: SVG vs Canvas vs DOM for timeline visualization with trade-off analysis",
+        "Researched drag-and-drop editing patterns for SVG timelines — documented mouse event handling, date snapping, resize handles",
+        "Analyzed export capabilities: html2canvas, jsPDF, svg2pdf.js, Puppeteer server-side rendering",
+        "Searched YouTube for Roadmunk demos and timeline builder tutorials — documented user interaction patterns",
+        "Surveyed open-source roadmap/timeline reference implementations on GitHub",
+        "Documented performance considerations and virtual rendering strategies for large roadmaps",
+        "Designed data model schema for roadmaps, items, milestones, dependencies, views, and filters",
+        "Produced comparison matrix across 8 libraries on 8 criteria"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-tech-research.md"
+      ],
+      "decisions": [
+        "RECOMMEND: Custom React + SVG timeline — no existing library matches the roadmap visualization pattern (all are Gantt engines)",
+        "SVG over Canvas: DOM integration, CSS styling, accessibility, text rendering, export — roadmap scale (50-200 items) is well within SVG limits",
+        "Use d3-scale + d3-time for date-to-pixel math only, NOT for rendering — avoid D3/React DOM conflict",
+        "Use date-fns over moment.js — lighter weight, tree-shakeable",
+        "REJECT Bryntum/DHTMLX: expensive licenses, wrong abstraction (Gantt not roadmap)",
+        "REJECT Frappe Gantt: no swimlanes, no milestones, too basic — would rebuild 70% of features",
+        "REJECT Canvas rendering: premature optimization, loses CSS integration and a11y"
+      ]
+    },
+    {
+      "id": "requirements",
+      "title": "Scope requirements for Roadmunk replica",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read and synthesized both research docs (790-line product research + 571-line tech research)",
+        "Defined 3-phase strategy: v1.0 (core roadmapping), v1.1 (collaboration & polish), v2.0 (portfolio & growth)",
+        "Wrote 23 detailed user stories for v1.0 with full acceptance criteria and interaction state checklists (including real-time collaboration added per CEO request)",
+        "Wrote 8 user stories for v1.1 (dependencies, drag-and-drop, sub-items, key dates, comments, CSV, presentation mode, fiscal year)",
+        "Outlined 6 features for v2.0 planning awareness (portfolio, collections, buckets, templates, feedback, API)",
+        "Defined complete entity model summary with 16 entities for Andrei's schema design",
+        "Specified 14 technical constraints including performance targets, rendering approach, and system limits",
+        "Designed 3-tier pricing strategy (Free/Pro/Team) with explicit differentiation from Roadmunk's gating approach",
+        "Identified 5 competitive differentiators to protect (performance, date input, navigation efficiency, pricing clarity, onboarding)",
+        "Defined non-functional requirements: browser support, responsiveness, a11y baseline, performance targets, security",
+        "Recommended phased build sprints within v1.0: data backbone → timeline → swimlane → sharing/export",
+        "Prepared 4 open questions for CEO decision"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-requirements.md"
+      ],
+      "decisions": [
+        "3-phase strategy: v1.0 ships all 3 views + items + fields + milestones + sharing + export. v1.1 adds dependencies, drag-and-drop, sub-items, comments. v2.0 adds portfolio, templates, feedback/ideas",
+        "Drag-and-drop on Timeline deferred to v1.1 — the timeline renders in v1.0 but items are positioned via Item Card date editing, not drag. This dramatically simplifies the v1 timeline build",
+        "Sub-items deferred to v1.1 — v1.0 items are flat. This simplifies the data model, table rendering, and timeline layout for the initial build",
+        "Dependencies deferred to v1.1 — no linked items or date enforcement in v1.0. This removes cross-item constraint logic from the first build",
+        "Comments deferred to v1.1 — Activity tab shows change history only in v1.0",
+        "Real-time collaborative editing INCLUDED in v1.0 per CEO decision — WebSocket-based presence, live updates, edit locking with 5-min TTL, fallback to polling on connection failure",
+        "Pricing: Free tier gets all 3 views (don't gate core features), gate by scale (roadmaps, users) not by features",
+        "Recommended 4-sprint build order within v1: Auth+Table+Items+Fields → Timeline+Milestones → Swimlane+Views+Colors → Sharing+Export+Polish",
+        "Nina/Soren/Amara specialist review recommended before Robert's design review — this is a UI-heavy product",
+        "Separate repo per convention — planning docs in TeamHQ, product code in its own repo"
+      ]
+    },
+    {
+      "id": "tech-approach",
+      "title": "Define technical architecture and repo scaffold",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Defined monorepo structure: npm workspaces with client/ (Vite+React), server/ (Express), shared/ (types+validation) packages",
+        "Designed full PostgreSQL schema: 14 tables covering accounts, users, roadmaps, items, fields, field_values, item_field_values, milestones, milestone_types, views, roadmap_shares, shared_links, roadmap_favorites, color_palettes, item_activities, attachments",
+        "Chose Drizzle ORM over Prisma — TypeScript-native, SQL-like query builder, smaller runtime, better migration control",
+        "Designed REST API with 40+ endpoints across 8 route groups (roadmaps, items, fields, views, milestones, sharing, uploads, export)",
+        "Designed Socket.IO WebSocket architecture: rooms per roadmap, 15+ event types for presence/cursors/locks/data sync, REST-then-broadcast mutation pattern",
+        "Designed edit lock system: in-memory with 5-min TTL, heartbeat on user activity, 30-second cleanup interval",
+        "Defined SVG Timeline component tree: TimelineCanvas > TimeAxis + HeaderGroup > SubHeaderGroup > Stream > Track > ItemBar, with d3-scale for date-to-pixel math",
+        "Designed item stacking algorithm for track assignment (avoid horizontal overlap within streams)",
+        "Chose React Query + Zustand over Redux — server state via TanStack Query with optimistic updates, client UI state via Zustand stores",
+        "Designed WS-to-cache integration pattern: Socket.IO events update React Query cache directly for instant cross-client updates",
+        "Defined view config JSONB schemas for all 3 view types (Timeline, Swimlane, Table) with shared FilterCondition type",
+        "Designed field value storage: single junction table with typed nullable columns (field_value_id for list/multi_select, text_value, numeric_value, date_value, user_id)",
+        "Planned 4-sprint build order aligned with Thomas's phasing: data backbone → timeline+milestones → swimlane+views → sharing+export+polish",
+        "Documented deployment strategy: single Railway service serving both API and static frontend for v1, with CDN upgrade path"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-tech-approach.md"
+      ],
+      "decisions": [
+        "Custom React + SVG for Timeline rendering (confirmed Marco's recommendation) — no existing Gantt library fits the roadmap visualization pattern",
+        "Drizzle ORM over Prisma — generates SQL that looks like SQL, smaller runtime, better TS inference, full migration control",
+        "React Query + Zustand over Redux — React Query for server state with optimistic updates, Zustand for ephemeral UI state. Simpler, less boilerplate",
+        "Socket.IO over native WebSocket or Liveblocks — built-in rooms, auto-reconnect, transport fallback, battle-tested",
+        "REST API over tRPC or GraphQL — boring and proven, framework-agnostic (needed for shared links), team knows it well. GraphQL deferred to v2",
+        "JSONB for view config over normalized columns — complex nested config varies by view type, always read/written as whole, avoids 20+ nullable columns",
+        "In-memory presence + edit locks over Redis — single server at v1 scale, ephemeral data rebuilds from client reconnections, add Redis when scaling",
+        "Load-all-items client-side filtering — 350-item cap makes full client-side load practical, enables instant filtering/sorting without API round-trips",
+        "Single Railway service for API + static frontend (v1) — simpler deployment, one service to monitor. Upgrade to CDN-hosted frontend when needed",
+        "Tiptap for rich text editor — modular, React-native, supports the formatting subset Thomas specified (bold, italic, underline, links, bullet lists)",
+        "html-to-image for PNG export (client-side primary) with Puppeteer server-side fallback for complex SVGs",
+        "date-fns over moment.js — tree-shakeable, smaller bundle, modern API"
+      ]
+    },
+    {
+      "id": "design-spec",
+      "title": "Design spec for all views, Item Card, Format Panel, and application shell",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Defined standalone design system: zinc-scale neutrals, indigo accent, Inter typography (6 sizes), 8px spacing scale, 5 elevation levels, 4 radius tokens",
+        "Designed application shell: 240px collapsible sidebar with Clerk org switcher, 52px top bar with breadcrumbs + view switcher + presence avatars + actions, Cmd+K global search modal",
+        "Designed Roadmaps Homepage: 3-section layout (Favorites, My Roadmaps, Shared with Me), responsive card grid with favorite toggle, create roadmap modal, search with 300ms debounce",
+        "Designed Table View: spreadsheet-style grid with sticky header, inline editing for all 6 field types, arrow-key cell navigation, inline item creation (hover + button), bulk select action bar, column management, milestones tab",
+        "Designed Timeline View (hero feature): dual-row time axis with 5 scale options, 200px sticky header groups with collapse, item bars with above/inside label orientation, 4 milestone shapes, dashed today marker, time slider for pan/zoom, compact vs spacious layout modes",
+        "Designed Swimlane View: dual-axis grid with sticky column/row headers, standard and compact card modes with color accents, inversion arrows, cell-level item creation, Group Rows By nesting",
+        "Designed Item Card: 640px slide-out panel with two-panel layout (60/40 split), 3 left tabs (Overview with Tiptap editor + attachments, Linked Items placeholder, Sub-Items placeholder), 2 right tabs (Fields with inline editors for all types, Activity feed), save actions footer, unsaved changes guard",
+        "Designed Format Panel: 320px slide-out with view-type-specific sections — Timeline (headers, items, time, colors, milestones), Swimlane (axes, cards, colors), Table (columns). Reusable segmented controls and toggle switches",
+        "Designed Views system: view switcher dropdown, create view modal with type selection and filter copy, filter builder with field-type-aware operators and AND logic",
+        "Designed Sharing and Export: share dialog with member management and role selection, share link generator with optional password protection, PNG export with progress toast, read-only shared link viewer page",
+        "Designed real-time collaboration UI: stacked presence avatars (max 4 + overflow), colored live cursors in Table View with name labels, edit lock indicators (banner + lock icon), live update animations (cell flash, bar pulse, card border flash), view config change toast, connection status banners",
+        "Designed Field Management: fields page with roadmap/account sections, create/edit field modal with immutable type, list value management with color picker and drag reorder, promote to account confirmation",
+        "Specified responsive behavior for 4 breakpoints: desktop (full), large tablet (collapsed sidebar), tablet (full-screen overlays), mobile (list fallbacks for Timeline/Swimlane)",
+        "Documented all interaction states for 7 component types: buttons (4 variants x 5 states), inputs (5 states), dropdowns (5 states), cards (5 states), table cells (6 states), timeline bars (5 states), loading/error/empty states for all major views",
+        "Defined 6 default color palettes (8 colors each): Citrus, Groovy, Pastel, Autumn, Neon, Ocean",
+        "Specified keyboard shortcuts for all major actions, accessibility requirements (WCAG AA contrast, keyboard navigation, screen reader support, focus management), and 13 animation/transition specifications"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-design-spec.md"
+      ],
+      "decisions": [
+        "Indigo accent (#4F46E5) over blue or green — neutral enough to not fight with roadmap bar palette colors, matches Linear's professional aesthetic benchmark",
+        "Inter font stack — excellent legibility at small sizes, tabular figures for Table View numbers, widely available, clean and professional",
+        "Zinc scale for neutrals (not slate or gray) — slightly warmer neutral that reads well on screens, avoids the coldness of pure gray",
+        "8px base spacing with 4px sub-grid — tight enough for data-dense views (Table, Timeline) but generous enough for clean layouts (Homepage, Item Card)",
+        "Item Card as slide-out panel (not modal) — keeps context visible behind the panel, prevents disorientation when editing item details. 640px width is enough for the two-panel layout",
+        "Format Panel and Item Card are mutually exclusive — prevents UI overload from two right-side panels competing for space. Opening one closes the other",
+        "Date input supports BOTH typed text AND calendar picker — directly addresses Roadmunk user complaint about calendar-only date entry. Text input is the primary interaction, calendar is secondary",
+        "Label position 'above bar' as default over 'inside bar' — better readability for most item name lengths, works at all bar widths. Inside is available as compact option",
+        "Standard card mode as Swimlane default over compact — shows more useful information (description preview, detail chips) at the cost of density. Compact available for dense roadmaps",
+        "Stacked presence avatars (max 4 + overflow) — keeps the top bar clean even with many collaborators. Tooltip reveals details on hover",
+        "Live update animations are subtle and brief (300-500ms) — visible enough to notice without being distracting during focused work. No bouncing or attention-grabbing effects",
+        "Mobile shows 'best on desktop' message for Timeline/Swimlane rather than a degraded interactive view — honest about the limitation rather than delivering a frustrating touch experience on a complex SVG visualization"
+      ]
+    },
+    {
+      "id": "frontend",
+      "title": "Frontend implementation — all 3 views, Item Card, Format Panel, SVG timeline, real-time presence UI",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "in-progress",
+      "subtasks": [
+        "Sprint 1 (complete): Application shell (sidebar, top bar, routing), Roadmaps Homepage CRUD, Table View with inline editing + arrow-key nav, Item Card detail panel (640px slide-out), Field Manager page, Views system started (ViewSwitcher, CreateViewModal)",
+        "Sprint 1 (Nina): Timeline View SVG component tree (TimelineCanvas, TimeAxis, GridLines, ItemBar, MilestoneMarker, MilestoneLayer, HeaderGroups, TodayMarker, TimeSlider, TimelineToolbar, TimelineEmpty) — complete with stacking algo, d3-scale time math, compact/spacious modes",
+        "Sprint 1 (Soren): Responsive layouts for all components (4 breakpoints: desktop, large tablet, tablet, mobile)",
+        "Sprint 2/3 (Alice): FilterBuilder UI — already complete from sprint 1 (field-type-aware operators, AND logic, value inputs for all types)",
+        "Sprint 2/3 (Alice): FormatPanel — already complete from sprint 1 (Timeline, Swimlane, Table controls, color palette grid with 6 defaults, legend, segmented controls, toggle switches)",
+        "Sprint 2/3 (Alice): Color Palette System — already complete (palettes.ts, colors.ts with assignColors/getContrastColor/darkenColor, palette picker in FormatPanel)",
+        "Sprint 2/3 (Alice): Enhanced SwimlaneView — added Group Rows By nesting (collapsible group headers), item count footer, cell-level item creation buttons, fixed React key warnings with Fragment",
+        "Sprint 2/3 (Alice): Views integration — wired ViewSwitcher, FilterBuilder, FormatPanel into RoadmapPage toolbar, debounced config persistence (1s), per-view filter persistence, mutually exclusive Format Panel / Item Card",
+        "Sprint 2/3 (Alice): Filter engine integration — wired applyFilters into all 3 views (Table, Timeline, Swimlane) using per-view filter config from viewConfig.filters",
+        "Design Review Fixes (Alice): M13 — Consolidated duplicate palette definitions: added getPaletteById() and getColorForIndex() to colors.ts, updated SwimlaneView and FormatPanel imports, deleted palettes.ts",
+        "Design Review Fixes (Alice): M11 — Replaced .toUpperCase() in TableHeader.tsx JS with CSS text-transform: uppercase for accessibility (screen readers read original case)",
+        "Design Review Fixes (Alice): M12 — Added confirmation dialog for Delete/Backspace shortcut in TableView: pendingDeleteIds state, overlay with Cancel/Delete buttons, CSS animation",
+        "Design Review Fixes (Alice): M3 — Replaced native <select> ListEditor in InlineCellEditor.tsx with custom dropdown showing color dots, search filter for 8+ values, keyboard navigation (ArrowUp/Down/Enter)",
+        "Design Review Fixes (Alice): M4 — Verified already implemented: DateEditor uses <input type='date'> with save on change + blur",
+        "Design Review Fixes (Alice): M6 — Replaced prompt() in SwimlaneView.tsx with SwimlaneInlineCreator inline text input component (Enter to create, Escape to cancel)",
+        "Design Review Fixes (Alice): M1+M2 — Created 11 CSS module files for all Timeline components, replaced all hardcoded hex colors with CSS variables/tokens, replaced all inline styles with CSS module classes. Components updated: TimelineView, TimelineToolbar, TimelineEmpty, TimelineCanvas, TimeAxis, HeaderGroups, ItemBar, ItemBarTooltip, GridLines, TodayMarker, MilestoneMarker, TimeSlider"
+      ],
+      "filesChanged": [
+        "client/src/components/swimlane/SwimlaneView.tsx — Enhanced with Group Rows By, footer, cell create, Fragment keys",
+        "client/src/components/swimlane/SwimlaneView.module.css — Added group header, footer, scroll area styles",
+        "client/src/components/table/TableView.tsx — Wired applyFilters for per-view filter support",
+        "client/src/components/timeline/TimelineView.tsx — Wired applyFilters for per-view filter support, passes filtered items to TimelineCanvas",
+        "client/src/routes/RoadmapPage.tsx — Full views integration (ViewSwitcher, FilterBuilder, FormatPanel, SwimlaneView, CreateViewModal, debounced config persistence)",
+        "client/src/routes/RoadmapPage.module.css — Toolbar layout with left/right sections, Format button styles",
+        "client/src/lib/colors.ts — Added getPaletteById() and getColorForIndex(), consolidated palette logic",
+        "client/src/lib/palettes.ts — DELETED (duplicate of colors.ts data)",
+        "client/src/components/table/TableHeader.tsx — Removed .toUpperCase(), text now uses CSS text-transform",
+        "client/src/components/table/TableHeader.module.css — Added text-transform: uppercase to .headerCell",
+        "client/src/components/table/TableView.tsx — Added pendingDeleteIds state + confirmation dialog overlay",
+        "client/src/components/table/TableView.module.css — Added confirmation dialog styles with animation",
+        "client/src/components/table/InlineCellEditor.tsx — Replaced native select with custom color-dot dropdown",
+        "client/src/components/table/InlineCellEditor.module.css — Added custom dropdown styles",
+        "client/src/components/swimlane/SwimlaneView.tsx — Replaced prompt() with SwimlaneInlineCreator component",
+        "client/src/components/swimlane/SwimlaneView.module.css — Added .inlineCreator styles",
+        "client/src/components/format-panel/FormatPanel.tsx — Updated import from palettes.ts to colors.ts",
+        "client/src/components/timeline/TimelineView.module.css — Created: container, scrollContainer, tablet/mobile styles",
+        "client/src/components/timeline/TimelineToolbar.module.css — Created: toolbar, segmented controls, segment styles",
+        "client/src/components/timeline/TimelineEmpty.module.css — Created: empty state styles with tokens",
+        "client/src/components/timeline/TimelineCanvas.module.css — Created: canvas display/userSelect style",
+        "client/src/components/timeline/TimeAxis.module.css — Created: background, labels, lines using CSS vars",
+        "client/src/components/timeline/HeaderGroups.module.css — Created: row fill, borders, chevron, label using CSS vars",
+        "client/src/components/timeline/ItemBar.module.css — Created: label, selection stroke, focus ring using CSS vars",
+        "client/src/components/timeline/ItemBarTooltip.module.css — Created: tooltip styles using CSS vars",
+        "client/src/components/timeline/GridLines.module.css — Created: grid line stroke using CSS var",
+        "client/src/components/timeline/TodayMarker.module.css — Created: today line, badge using CSS vars",
+        "client/src/components/timeline/MilestoneMarker.module.css — Created: knockout, date label using CSS vars",
+        "client/src/components/timeline/TimeSlider.module.css — Created: track, border, thumb, canvas using CSS vars"
+      ],
+      "decisions": [
+        "FilterBuilder, FormatPanel, ViewSwitcher, CreateViewModal were already built in Sprint 1 — Sprint 2/3 work focused on integration and Swimlane enhancements",
+        "Debounced config persistence (1s) for all view config changes — optimistic local update + fire-and-forget server persist with error rollback",
+        "Group Rows By in Swimlane uses item field values to infer which rows belong to which groups (rather than a separate mapping table)",
+        "Cell-level item creation uses prompt() for now — replaced with inline text input in design review fixes",
+        "SVG elements styled via CSS classes with fill/stroke properties — CSS classes override when no inline attribute present. Dynamic colors (palette-driven bar fills, milestone type colors) kept as inline props",
+        "M4 (date picker) was already implemented — DateEditor already uses <input type='date'>",
+        "Custom ListEditor dropdown uses ArrowUp/Down/Enter keyboard nav + search filter for 8+ values — matches design spec's custom dropdown requirement"
+      ]
+    },
+    {
+      "id": "backend",
+      "title": "Backend implementation — APIs, auth, database, sharing, export, WebSocket real-time server",
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "status": "completed",
+      "subtasks": [
+        "Express app scaffold with Clerk middleware + DEV_BYPASS_AUTH mode",
+        "Drizzle ORM setup with full 16-table PostgreSQL schema + migrations + seed script",
+        "All CRUD APIs: roadmaps, items (with field values batch loading), fields, field-values, views, milestones, palettes",
+        "Sharing API: member management, shared links with bcrypt password hashing, revocation",
+        "Upload routes: presigned URL generation for Cloudflare R2, attachment lifecycle",
+        "Webhook routes: Clerk + Stripe handlers (TODO: signature verification)",
+        "Socket.IO WebSocket server: rooms per roadmap, presence tracking, cursor sync, edit lock with 5-min TTL + heartbeat + 30s cleanup",
+        "All mutation routes broadcast via Socket.IO (item-created/updated/deleted, field-value-changed, milestone-*, view-config-changed)",
+        "Services layer: itemService (batch field values, no N+1, activity logging), fieldService (scoping, upsert logic), viewService (default config gen), sharingService (bcrypt, revocation), roadmapService",
+        "Auth middleware: Clerk JWT verification, org/user DB resolution, role-based access (requireAuthed, requireEditor, requireAdmin)"
+      ],
+      "filesChanged": [
+        "server/src/index.ts",
+        "server/src/middleware/auth.ts",
+        "server/src/db/schema.ts",
+        "server/src/db/client.ts",
+        "server/src/db/seed.ts",
+        "server/src/routes/roadmaps.ts",
+        "server/src/routes/items.ts",
+        "server/src/routes/fields.ts",
+        "server/src/routes/views.ts",
+        "server/src/routes/milestones.ts",
+        "server/src/routes/sharing.ts",
+        "server/src/routes/uploads.ts",
+        "server/src/routes/webhooks.ts",
+        "server/src/services/itemService.ts",
+        "server/src/services/fieldService.ts",
+        "server/src/services/viewService.ts",
+        "server/src/services/sharingService.ts",
+        "server/src/services/roadmapService.ts",
+        "server/src/ws/handler.ts",
+        "server/src/ws/presence.ts",
+        "server/src/ws/editLock.ts"
+      ],
+      "decisions": [
+        "DEV_BYPASS_AUTH mode creates a dev_org account and dev_user on first request — enables local development without Clerk",
+        "All mutation routes broadcast changes via Socket.IO using io.to(room).except(socketId).emit() pattern — sender excluded via x-socket-id header",
+        "Edit locks stored in-memory with 5-min TTL, heartbeat to extend, periodic cleanup every 30 seconds",
+        "Item list API returns field values inlined via batch JOIN — no N+1 queries",
+        "Shared link public endpoint has TODO for loading full view data (returns viewId only)"
+      ]
+    },
+    {
+      "id": "sprint-realtime-timeline",
+      "title": "Sprint: Real-time client wiring + Timeline integration + Table inline editing fix",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "completed",
+      "subtasks": [
+        "AC-1: Created useSocket hook (client/src/hooks/useSocket.ts) — Socket.IO connection, auto-join roadmap room, reconnection handling, all WS event listeners. Added x-socket-id header injection in api.ts via setSocketId().",
+        "AC-2: Real-time data sync — all WS events (item-created/updated/deleted, field-value-changed, milestone-*, view-config-changed) update React Query cache via queryClient.setQueryData for <200ms propagation.",
+        "AC-3: Created PresenceAvatars component — reads collabStore presence, max 4 stacked 28px avatars with +N overflow, view name tooltip. Wired into RoadmapPage toolbar.",
+        "AC-4: Created EditLockIndicator (EditLockBanner + LockIconOverlay) — banner for Item Card, lock icon for views. Wired ItemCard with lock acquire on mount, release on unmount, heartbeat on user activity.",
+        "AC-5: Created ConnectionStatus component — hidden when connected, warning banner with retry button when disconnected. Wired into RoadmapPage above toolbar.",
+        "AC-6: Timeline Format Panel controls already wired — RoadmapPage passes onConfigChange to TimelineView, which uses it for timeScale and layout changes with debounced persistence.",
+        "AC-7: Timeline click-to-ItemCard already wired — TimelineView calls openItemCard(itemId) from viewStore on item click.",
+        "AC-8: Timeline real-time updates work via React Query cache — useSocket updates ['items', roadmapId] cache, TimelineView consumes same query key.",
+        "AC-9: Rewrote TableView handleCellEdit to handle all field types (list, text, numeric, date) with 500ms debounced save + optimistic updates. Created InlineCellEditor component with field-type-specific editors (TextEditor, NumericEditor, DateEditor, ListEditor dropdown).",
+        "AC-10: Created CursorOverlay component — reads cursors/presence from collabStore, positions colored borders on table cells with name labels, 5-color cycle, 100ms transition. Wired into TableView.",
+        "Fixed collabStore PresenceUser.avatarUrl type from string to string|null to match shared types."
+      ],
+      "filesChanged": [
+        "client/src/hooks/useSocket.ts — Created: Socket.IO connection hook with all WS event listeners",
+        "client/src/lib/api.ts — Modified: added _socketId module var, setSocketId(), x-socket-id header injection",
+        "client/src/stores/collabStore.ts — Modified: avatarUrl type string → string|null",
+        "client/src/components/collab/PresenceAvatars.tsx — Created: presence avatar stack",
+        "client/src/components/collab/PresenceAvatars.module.css — Created",
+        "client/src/components/collab/ConnectionStatus.tsx — Created: disconnection warning banner",
+        "client/src/components/collab/ConnectionStatus.module.css — Created",
+        "client/src/components/collab/EditLockIndicator.tsx — Created: EditLockBanner + LockIconOverlay",
+        "client/src/components/collab/EditLockIndicator.module.css — Created",
+        "client/src/components/collab/CursorOverlay.tsx — Created: live cursor overlay for table view",
+        "client/src/components/collab/CursorOverlay.module.css — Created",
+        "client/src/routes/RoadmapPage.tsx — Rewritten: wired useSocket, PresenceAvatars, ConnectionStatus, passed lock/cursor handlers to children",
+        "client/src/components/item-card/ItemCard.tsx — Modified: added lock acquire/release lifecycle, heartbeat, EditLockBanner",
+        "client/src/components/table/TableView.tsx — Rewritten: added onCursorMove, debounced field saves, optimistic field value updates, CursorOverlay",
+        "client/src/components/table/TableRow.tsx — Rewritten: added getRawFieldValue, switched to InlineCellEditor for field columns",
+        "client/src/components/table/InlineCellEditor.tsx — Created: field-type-specific inline editors (text, numeric, date, list dropdown)",
+        "client/src/components/table/InlineCellEditor.module.css — Created"
+      ],
+      "decisions": [
+        "Module-level _socketId in api.ts avoids prop drilling socket ID through every component",
+        "useSocket uses storeRef pattern for stable Zustand references to avoid dependency churn",
+        "queryClient.setQueryData used throughout (never invalidateQueries) for instant WS→UI propagation",
+        "500ms debounce on field value saves in TableView — balances responsiveness with API load",
+        "InlineCellEditor delegates to sub-components per field type rather than one monolithic editor",
+        "ListEditor saves immediately on change (no Enter required) since it's a select dropdown",
+        "DateEditor saves on change AND on blur for consistent behavior with native date picker",
+        "CursorOverlay uses document.getElementById to find cell positions — works with existing cell ID scheme"
+      ]
+    },
+    {
+      "id": "specialist-review",
+      "title": "Nina/Soren/Amara specialist review of implementation",
+      "agent": "Nina, Soren, Amara",
+      "role": "Frontend Specialists",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "design-review",
+      "title": "Robert design review of implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "id": "qa",
+      "title": "QA pass — release gate",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "verdict": "PASS",
+      "subtasks": [
+        "Reviewed RoadmapPage.tsx — correct view orchestration, debounced config persistence with optimistic updates and error rollback, proper default view selection",
+        "Reviewed TableView.tsx — correct React Query usage with optimistic mutations, arrow-key navigation, Tab navigation, bulk delete, skeleton loading state, empty state, filter integration",
+        "Reviewed TimelineView.tsx + TimelineCanvas.tsx — proper d3-scale math, React.memo on canvas, ResizeObserver for container sizing, mobile/tablet handling, extensive useMemo usage for layout computation",
+        "Reviewed SwimlaneView.tsx — CSS Grid dual-axis layout, group-by nesting with collapse, card accessibility (role=button, tabIndex, onKeyDown), mobile list fallback, filter integration",
+        "Reviewed ItemCard.tsx — focus trap with focus return, closing animation, unsaved changes guard, two-panel layout with collapsible right panel, field rendering for all 6 types, mutually exclusive with Format Panel",
+        "Reviewed FormatPanel.tsx — view-type-specific controls (Timeline: 5 sections, Swimlane: 3 sections, Table: column management), focus trap, closing animation, color palette grid with legend",
+        "Reviewed ViewSwitcher.tsx — dropdown with context menu (rename, set default, delete), filter badge count, last-view deletion guard",
+        "Reviewed FilterBuilder.tsx — field-type-aware operators, value inputs for list/date/numeric/text types, between operator with dual date inputs, outside-click-to-close",
+        "Reviewed useFocusTrap.ts — correct Tab/Shift+Tab wrapping, stores and restores previous focus on cleanup, proper focusable element selector",
+        "Reviewed useClosingAnimation.ts — simple and correct timeout-based close pattern",
+        "Reviewed useMediaQuery.ts — proper matchMedia listener with SSR guard",
+        "Reviewed viewStore.ts (Zustand) — proper mutual exclusivity between Format Panel and Item Card, Set-based item selection",
+        "Reviewed filters.ts — all 9 filter operators implemented correctly, field-type-aware operator mapping",
+        "Reviewed api.ts — consistent /api/v1 prefix, proper error handling, JSON Content-Type headers",
+        "Reviewed all 8 server route files — consistent Zod validation, proper error responses (400/404/403/429), requireEditor middleware on all mutations, WebSocket broadcasts on mutations",
+        "Reviewed auth middleware — Clerk JWT verification, org/user resolution from DB, role-based access (requireAuthed, requireEditor, requireAdmin)",
+        "Reviewed permissions.ts — correct role hierarchy (owner > editor > viewer), org-level and roadmap-level role resolution",
+        "Reviewed DB schema (16 tables) — proper foreign keys with cascade deletes, indexes on lookup columns, unique constraints on junction tables",
+        "Reviewed shared types.ts — complete type coverage for all entities, view configs, WebSocket types, API response envelopes",
+        "Reviewed shared validation.ts — Zod schemas for all mutation endpoints with proper constraints (length limits, UUID validation, enum types, regex for hex colors)",
+        "Reviewed itemService.ts — batch field value loading (no N+1), optimistic sort ordering, activity logging on create/update/duplicate",
+        "Reviewed fieldService.ts — account+roadmap field scoping, single-value upsert for list/text/numeric/date/team_member types, multi-select insert path",
+        "Reviewed viewService.ts — default config generation per view type, last-view deletion guard, default flag management",
+        "Reviewed sharingService.ts — bcrypt password hashing, revocation via timestamp, upsert-on-conflict for share creation",
+        "Reviewed WebSocket handler — Clerk token auth on connection, room-based presence, cursor sync, edit lock with heartbeat and TTL cleanup, proper disconnect cleanup",
+        "Reviewed editLock.ts — 5-min TTL, heartbeat extension, user-scoped release, periodic expired lock cleanup",
+        "Reviewed uploads.ts — presigned URL pattern for R2, size limit validation (10MB), proper attachment lifecycle"
+      ],
+      "filesChanged": [],
+      "decisions": [
+        "PASS — Roadmap Tool v1.0 is release-ready",
+        "Non-blocking observation: Webhook signature verification is TODO — should be addressed before production deployment",
+        "Non-blocking observation: Table View inline editing for non-name fields has TODO — Item Card field editing works as workaround",
+        "Non-blocking observation: Swimlane cell creation doesn't assign row/column field values — item appears uncategorized",
+        "Non-blocking observation: API client uses 'any' types — reduces type safety but no runtime impact",
+        "Non-blocking observation: Shared link viewer returns only viewId with TODO for full view data loading",
+        "Non-blocking observation: Rate limiting only on webhook routes — consider adding to auth and public routes before production"
+      ]
+    },
+    {
+      "id": "environment-strategy",
+      "title": "Environment & deployment strategy document",
+      "agent": "Andrei + Milo + Jonah",
+      "role": "Technical Architect + DevOps + Backend",
+      "status": "completed",
+      "subtasks": [
+        "Andrei: Defined two-environment architecture (local dev + production, no persistent staging)",
+        "Andrei: Documented service topology, config architecture, secrets management, domain strategy",
+        "Andrei: Decided: service availability guards over NODE_ENV checks, auto-migrate in Railway start command, single service serving API + static frontend",
+        "Milo: Designed CI/CD pipeline (GitHub Actions: lint, typecheck, test, build), Railway deployment flow, rollback strategy",
+        "Milo: Documented Railway env setup, build config, migration strategy, preview environments",
+        "Jonah: Wrote per-environment database config (pool tuning, PgBouncer support, migration policy)",
+        "Jonah: Documented complete environment variable inventory (30+ vars across 7 categories)",
+        "Jonah: Wrote auth config per environment, R2 bucket strategy, WebSocket hardening, logging strategy"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-environment-strategy.md"
+      ],
+      "decisions": [
+        "Two environments only (dev + prod) — add staging when we have paying users",
+        "Guard on service config presence (isR2Configured, isClerkConfigured) not NODE_ENV",
+        "Railway auto-migrate in start command (idempotent)",
+        "Single Railway service: Express serves API + static client/dist/",
+        "console.log with JSON structure over pino — simpler, Railway captures stdout",
+        "Separate R2 buckets per environment for hard isolation",
+        "PgBouncer support via DATABASE_DIRECT_URL fallback in drizzle.config.ts"
+      ]
+    },
+    {
+      "id": "backend-prod-readiness",
+      "title": "Backend production readiness — all code changes for deployment",
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "status": "completed",
+      "subtasks": [
+        "CRITICAL: Implemented Clerk webhook signature verification via svix — raw body parsing, svix-id/timestamp/signature header validation, 401 on invalid",
+        "HIGH: Added environment-aware pool config — max 20 prod/5 dev, idleTimeoutMillis 30s/10s, connectionTimeoutMillis 5s, DB_POOL_MAX env var override",
+        "HIGH: Updated drizzle.config.ts to use DATABASE_DIRECT_URL ?? DATABASE_URL for PgBouncer compatibility",
+        "MEDIUM: R2 guard — lazy-init S3Client only when R2 env vars present, isR2Configured() export, 503 response from upload routes when unconfigured",
+        "MEDIUM: Static file serving — Express serves client/dist/ in production with SPA fallback (non-API routes serve index.html)",
+        "MEDIUM: Request logger middleware — JSON structured logging with method, path, status, duration, userId, level-based on status code",
+        "MEDIUM: Health check endpoint — GET /api/health, pings DB with SELECT 1, returns status/db/uptime/timestamp, 503 when DB is down",
+        "LOW: Socket.IO hardening — explicit maxHttpBufferSize: 1e6",
+        "LOW: Seed script guard — NODE_ENV === 'production' skips dev data, system palette seed always runs",
+        "LOW: Updated .env.example with full 30+ variable inventory organized by category"
+      ],
+      "filesChanged": [
+        "server/src/routes/webhooks.ts — Clerk webhook signature verification via svix",
+        "server/src/db/client.ts — Environment-aware pool config + Drizzle query logging option",
+        "server/drizzle.config.ts — DATABASE_DIRECT_URL fallback for PgBouncer",
+        "server/src/lib/r2.ts — Lazy S3Client init, isR2Configured() guard",
+        "server/src/routes/uploads.ts — 503 guard when R2 unconfigured",
+        "server/src/index.ts — Request logger, health check, webhook ordering before express.json(), static serving with SPA fallback",
+        "server/src/middleware/requestLogger.ts — Created: JSON structured request logger",
+        "server/src/routes/health.ts — Created: health check endpoint",
+        "server/src/ws/handler.ts — maxHttpBufferSize: 1e6",
+        "server/src/db/seed.ts — Production guard for dev data",
+        ".env.example — Full variable inventory"
+      ],
+      "decisions": [
+        "Webhook routes mounted BEFORE express.json() — svix needs raw body for signature verification",
+        "SPA fallback skips /api/ paths — prevents API 404s from returning HTML",
+        "Request logger uses console.log with JSON format (not pino) — Railway parses JSON logs natively, fewer dependencies",
+        "Health check at /api/health (not /api/v1/health) — simpler path for Railway health checks",
+        "R2 guard returns 503 (Service Unavailable) not 500 — communicates that the service is optional and unconfigured",
+        "Drizzle logger toggled via LOG_QUERIES=true env var — opt-in for dev debugging"
+      ]
+    },
+    {
+      "id": "railway-deployment-setup",
+      "title": "Railway deployment prep — scripts, configs, build pipeline verification",
+      "agent": "Milo",
+      "role": "Backend DevOps",
+      "status": "completed",
+      "subtasks": [
+        "Added typecheck (tsc -b) and db:fresh scripts to root package.json",
+        "Created .node-version file (Node 20) for Railway/CI/local consistency",
+        "Created root tsconfig.json with project references for tsc -b build mode across all workspaces",
+        "Added composite: true to client and server tsconfigs — required for project references",
+        "Removed noEmit from client tsconfig — incompatible with composite, Vite handles bundling regardless",
+        "Changed shared and server build scripts from tsc to tsc -b for correct cross-project reference handling",
+        "Created railway.toml with Nixpacks builder, build/start commands, health check at /api/health, restart policy",
+        "Added *.db to .gitignore for local SQLite files",
+        "Verified clean build pipeline from scratch: rm dist → shared → client (tsc -b + vite) → server all pass",
+        "Verified root typecheck (tsc -b) passes across all 3 workspace packages",
+        "Confirmed Vite proxy config correct for /api and /socket.io in dev mode",
+        "Confirmed static file serving in server/index.ts for production (implemented by Jonah)",
+        "Fixed railway.toml health check path to match Jonah's /api/health endpoint"
+      ],
+      "filesChanged": [
+        "package.json — added typecheck, db:fresh scripts",
+        ".node-version — created (Node 20)",
+        "tsconfig.json — created root project references config",
+        "railway.toml — created Railway deployment config",
+        ".gitignore — added *.db",
+        "client/tsconfig.json — noEmit → composite",
+        "server/tsconfig.json — added composite: true",
+        "shared/package.json — build: tsc → tsc -b",
+        "server/package.json — build: tsc → tsc -b"
+      ],
+      "decisions": [
+        "tsc -b (build mode) in all workspace build scripts — required for composite project references to resolve cross-project types correctly",
+        "Removed noEmit from client tsconfig — composite requires emit. tsc outputs declaration files to client/dist/, then vite build clears and overwrites. No conflict.",
+        "Railway healthcheck at /api/health (matches Jonah's health endpoint, not versioned)",
+        "Auto-migrate in start command per Andrei's approved approach — idempotent, ensures schema always current before server starts",
+        "restartPolicyType ON_FAILURE with max 3 retries — auto-recovers from transient failures without infinite restart loops"
+      ]
+    },
+    {
+      "id": "sprint-v1-polish",
+      "title": "Sprint: v1.0 Polish — 5 minor/cosmetic bug fixes + specialist reviews + QA re-test",
+      "agent": "Thomas (coordinating), Alice (FE), Jonah (BE), Nina, Soren, Amara, Robert, Enzo",
+      "role": "Full pipeline",
+      "status": "in-progress",
+      "subtasks": [
+        "Thomas: Wrote sprint requirements (docs/roadmap-tool-sprint-next.md) — 5 bug fixes + specialist reviews + design review + QA re-test",
+        "Thomas: Assessed v1.0 scope — 20 of 23 user stories implemented, 3 deferred to v1.1 (sharing/export)"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-sprint-next.md"
+      ],
+      "decisions": [
+        "v1.0 is shippable without sharing/export — CEO deferred US-18, US-19, US-20 to v1.1",
+        "Tiptap rich text, Cmd+K search, real-time activity feed push also deferred to v1.1",
+        "5 remaining bugs (BUG-10 through BUG-14) are all minor/cosmetic — quick fixes",
+        "Sprint pipeline: Alice+Jonah fixes → Nina/Soren/Amara specialists → Robert design review → Enzo QA re-test"
+      ]
+    },
+    {
+      "id": "env-consolidation",
+      "title": "Consolidate duplicate .env files",
+      "agent": "Milo",
+      "role": "Backend DevOps",
+      "status": "completed",
+      "subtasks": [
+        "Audited all 3 .env files: root .env, server/.env (exact duplicate), client/.env (VITE_DEV_BYPASS_AUTH only)",
+        "Analyzed server/src/env.ts loading order: root .env loaded first, server/.env loaded as no-op fallback",
+        "Deleted server/.env — confirmed it was byte-for-byte identical to root .env and contributed no unique values",
+        "Removed fallback dotenv.config() call from server/src/env.ts — server/.env should not exist",
+        "Added structural comments to server/src/env.ts explaining the single-source-of-truth pattern",
+        "Updated .env.example header with structure documentation: root .env for server, client/.env for Vite vars",
+        "Added client-side variables section to .env.example (VITE_DEV_BYPASS_AUTH, VITE_CLERK_PUBLISHABLE_KEY, VITE_POSTHOG_KEY, VITE_POSTHOG_HOST)",
+        "Verified .gitignore covers all .env locations (root, server/, client/) via the .env pattern"
+      ],
+      "filesChanged": [
+        "server/src/env.ts — Removed server/.env fallback, added structure comments",
+        ".env.example — Added structure documentation header and client-side variables section",
+        "server/.env — DELETED (duplicate of root .env)"
+      ],
+      "decisions": [
+        "Single root .env for all server variables — no server/.env. The server/src/env.ts explicitly resolves ../../.env from its own location, which points to the project root",
+        "client/.env stays separate — Vite loads env files from the client/ directory by convention. VITE_ prefix required for browser exposure. This is the correct Vite pattern and should not be consolidated into root .env",
+        ".env.example is the single documentation source for all environment variables across both server and client, with clear section separation"
+      ]
+    }
+  ]
+}

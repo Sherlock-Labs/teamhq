@@ -1,0 +1,50 @@
+{
+  "id": "early-qa-notification",
+  "name": "Early QA Notification for Significant Rewrites",
+  "description": "Update pipeline process so that Restructure-classified files in the tech approach trigger an early notification to Enzo, allowing him to begin regression test planning before implementation is complete. Builds on the completed tech-approach-update project.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scope requirements and implement process documentation updates",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read Custom Meeting #4 transcript to understand the specific problem and Enzo's request",
+        "Reviewed the completed tech-approach-update project to understand what classification system already exists",
+        "Identified the timing gap: classifications exist in tech approach docs, but Enzo doesn't see them until after implementation is complete",
+        "Wrote requirements doc with clear problem statement, scope, and 4 acceptance criteria (CLAUDE.md, kickoff skill, Thomas agent def, Enzo agent def)",
+        "Updated CLAUDE.md Proven Pipeline to include step 4 (conditional early QA notification) and renumbered steps 5-11",
+        "Updated project kickoff skill: pipeline diagram, task dependencies (new step 4), and Notes section with full early notification explanation",
+        "Updated Thomas's agent definition: Pipeline Orchestration section with Restructure flag checking, self-review checklist item",
+        "Updated Enzo's agent definition: new 'Early QA Notifications' section with what to do / what not to do, self-review checklist update",
+        "Created project task file and added to index.json"
+      ],
+      "filesChanged": [
+        "docs/early-qa-notification-requirements.md",
+        "CLAUDE.md",
+        "skills/workflow/project-kickoff.md",
+        ".claude/agents/product-manager.md",
+        ".claude/agents/qa.md",
+        "data/tasks/early-qa-notification.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Combined PM scoping and implementation into one step — all changes are process documentation, no architecture or code needed. Andrei not required.",
+        "Early notification is non-blocking and conditional — only triggered by Restructure flags, does not delay the pipeline",
+        "Notification content is minimal: file names, classification, QA impact notes. No formal regression plan document required from Enzo.",
+        "Only Restructure triggers early notification, not Modify. Modify risk is moderate and doesn't warrant the overhead.",
+        "Thomas checks for Restructure flags and reports to CEO who handles notification, consistent with the pipeline orchestration model where CEO spawns agents"
+      ]
+    },
+    {
+      "title": "Review early QA notification process for usefulness from a tester's perspective",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    }
+  ]
+}

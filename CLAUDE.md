@@ -64,6 +64,8 @@ This is the team's north star. Every decision — scoping, architecture, design,
 | `backend-integrations` | Derek | Wires up third-party services (Clerk, Stripe, Loops, R2). Webhooks, OAuth, API syncs, and data flow between systems. | Opus |
 | `backend-devops` | Milo | CI/CD, Railway config, database migrations, monitoring. Keeps the pipeline green and deploys boring. | Opus |
 | `backend-developer-2` | Sam | Jonah's counterpart. Picks up backend work in parallel — APIs, data models, server logic. Follows Jonah's patterns. | Opus |
+| `visual-qa` | Morgan | Conducts pixel-perfect design reviews and responsiveness tests. Ensures "fit and finish" matches the design spec. | Opus |
+| `code-reviewer` | Atlas | Conducts pragmatic code reviews focusing on architecture, security, and maintainability. | Opus |
 
 ## How the Team Operates
 
@@ -151,7 +153,13 @@ Each step produces a doc in `docs/` that downstream agents read. Don't skip step
 
 - **Separate repos for products**: Each new product or tool gets its own repository, not a subdirectory of TeamHQ. TeamHQ is the team's homepage and hub — it tracks projects, hosts the roster, and stores team docs. Product code lives in its own repo with its own README, dependencies, and deployment. The TeamHQ landing page links to products but doesn't contain them.
 - **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively. These planning docs live in TeamHQ even when the product code is in a separate repo.
-- **Work logging**: Every agent updates `data/tasks/{project-id}.json` with subtasks, filesChanged, and decisions when they finish. Each project has its own JSON file to avoid write collisions between concurrent pipelines. Add new project IDs to `data/tasks/index.json`. (See agent profiles for instructions.)
+- **Pipeline log**: Every agent updates `data/pipeline-log/{project-slug}.json` with subtasks, filesChanged, and decisions when they finish. This is the retrospective record of what each agent did during the pipeline — separate from work items (which are the forward-looking task list). Each project has its own JSON file to avoid write collisions. Add new project IDs to `data/pipeline-log/index.json`.
+- **Work items are living documents**: Each project has work items in `data/work-items/{slug}.json` tracked via the Tasks page. Agents must keep them current:
+  - **When you start a task:** Set its status to `in-progress` and set yourself as `owner`.
+  - **When you finish a task:** Set its status to `completed`.
+  - **When you discover new work:** Create a new work item with the next available ID (using the project's `taskPrefix`), status `planned`, and a clear title.
+  - **API:** Use `PUT /api/projects/:id/work-items` with the full work items array. Read current items first with `GET /api/projects/:id/work-items` to avoid overwriting others' changes.
+  - **Thomas (PM)** is responsible for creating the initial work items when scoping a project. Other agents update status and add items as they work.
 - **Landing page**: Plain HTML/CSS/vanilla JS — no frameworks. Light theme with royal jaguar green accent.
 - **SaaS stack**: Railway (hosting + Postgres), Clerk (auth + orgs), Stripe (payments), PostHog (analytics), Loops (email), Cloudflare R2 (file storage). See `skills/development/saas-stack.md` for full integration guide, env vars, and MCP usage. All agents building SaaS products should read this skill first.
 - **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `ost-tool/` for reference pattern — future tools should be separate repos)
@@ -165,7 +173,7 @@ Agents are spawned via the Task tool with `team_name` and the agent's file name:
 
 ```
 subagent_type: "general-purpose"
-name: "pm" (or "fe", "be", "be-2", "arch", "qa", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments", "strategist", "integrations", "devops")
+name: "pm" (or "fe", "be", "be-2", "arch", "qa", "visual-qa", "code-reviewer", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments", "strategist", "integrations", "devops")
 model: "opus" (all agents use Opus)
 ```
 
