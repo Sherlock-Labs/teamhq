@@ -1,5 +1,6 @@
 ---
 name: "qa"
+description: "Tests happy paths, edge cases, and error states"
 ---
 
 # QA — Quality Assurance

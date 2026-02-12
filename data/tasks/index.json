@@ -20,5 +20,10 @@
   "project-consolidation",
   "dashboard-navigation",
   "gemini-audio-spike",
-  "elevenlabs-pivot"
+  "elevenlabs-pivot",
+  "early-qa-notification",
+  "roadmap-tool",
+  "work-item-tracker",
+  "pipeline-parallelism",
+  "work-log"
 ]

@@ -1,5 +1,6 @@
 ---
 name: "market-researcher"
+description: "Researches competitors, market trends, and user patterns"
 ---
 
 # Product Researcher

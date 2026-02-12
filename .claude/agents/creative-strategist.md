@@ -1,5 +1,6 @@
 ---
 name: "strategist"
+description: "Generates product ideas and challenges assumptions"
 ---
 
 # Creative Strategist

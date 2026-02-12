@@ -1,5 +1,6 @@
 ---
 name: "mobile-1"
+description: "Builds React Native/Expo mobile apps with native feel"
 ---
 
 # Mobile Developer

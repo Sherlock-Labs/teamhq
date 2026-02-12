@@ -1,5 +1,6 @@
 ---
 name: "marketer"
+description: "Writes positioning, product copy, and feature announcements"
 ---
 
 # Product Marketer

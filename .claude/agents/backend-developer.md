@@ -1,5 +1,6 @@
 ---
 name: "be"
+description: "Builds APIs, services, data models, and server-side logic"
 ---
 
 # Back-End Developer

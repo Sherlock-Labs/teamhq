@@ -1,0 +1,293 @@
+{
+  "projectSlug": "roadmap-tool",
+  "workItems": [
+    {
+      "id": "US-1",
+      "title": "User signup and login",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Jonah",
+      "priority": "high"
+    },
+    {
+      "id": "US-2",
+      "title": "Team/workspace management",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Jonah",
+      "priority": "high"
+    },
+    {
+      "id": "US-3",
+      "title": "Create a roadmap",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-4",
+      "title": "Roadmaps Homepage",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-5",
+      "title": "Roadmap settings",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "medium"
+    },
+    {
+      "id": "US-6",
+      "title": "Create and manage items",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-7",
+      "title": "Item Card (detail panel)",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-8",
+      "title": "Manage fields",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Jonah",
+      "priority": "high"
+    },
+    {
+      "id": "US-9",
+      "title": "Assign field values to items",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "medium"
+    },
+    {
+      "id": "US-10",
+      "title": "Table View",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-11",
+      "title": "Timeline View",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Nina",
+      "priority": "high"
+    },
+    {
+      "id": "US-12",
+      "title": "Milestones",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Nina",
+      "priority": "medium"
+    },
+    {
+      "id": "US-13",
+      "title": "Swimlane View",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-14",
+      "title": "Multiple views per roadmap",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-15",
+      "title": "Filtering",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "medium"
+    },
+    {
+      "id": "US-16",
+      "title": "Format Panel",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "medium"
+    },
+    {
+      "id": "US-17",
+      "title": "Color palettes",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "medium"
+    },
+    {
+      "id": "US-18",
+      "title": "Share roadmap with teammates",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Jonah",
+      "priority": "medium"
+    },
+    {
+      "id": "US-19",
+      "title": "Export to PNG",
+      "status": "planned",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "medium"
+    },
+    {
+      "id": "US-20",
+      "title": "Share via URL",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Jonah",
+      "priority": "medium"
+    },
+    {
+      "id": "US-21",
+      "title": "Real-time collaborative editing",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Jonah",
+      "priority": "high"
+    },
+    {
+      "id": "US-22",
+      "title": "Real-time activity feed",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Jonah",
+      "priority": "low"
+    },
+    {
+      "id": "US-23",
+      "title": "Application shell and navigation",
+      "status": "completed",
+      "phase": "v1.0",
+      "owner": "Alice",
+      "priority": "high"
+    },
+    {
+      "id": "US-24",
+      "title": "Link items (dependencies)",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "medium"
+    },
+    {
+      "id": "US-25",
+      "title": "Drag items on Timeline",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "medium"
+    },
+    {
+      "id": "US-26",
+      "title": "Sub-items",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "medium"
+    },
+    {
+      "id": "US-27",
+      "title": "Key dates",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "low"
+    },
+    {
+      "id": "US-28",
+      "title": "Comments and activity log",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "medium"
+    },
+    {
+      "id": "US-29",
+      "title": "CSV import/export",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "low"
+    },
+    {
+      "id": "US-30",
+      "title": "Presentation mode",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "low"
+    },
+    {
+      "id": "US-31",
+      "title": "Fiscal year settings",
+      "status": "planned",
+      "phase": "v1.1",
+      "owner": "",
+      "priority": "low"
+    },
+    {
+      "id": "US-32",
+      "title": "Portfolio roadmaps",
+      "status": "planned",
+      "phase": "v2.0",
+      "owner": "",
+      "priority": "medium"
+    },
+    {
+      "id": "US-33",
+      "title": "Collections / folders",
+      "status": "planned",
+      "phase": "v2.0",
+      "owner": "",
+      "priority": "low"
+    },
+    {
+      "id": "US-34",
+      "title": "Buckets (no-date mode)",
+      "status": "planned",
+      "phase": "v2.0",
+      "owner": "",
+      "priority": "medium"
+    },
+    {
+      "id": "US-35",
+      "title": "Templates",
+      "status": "planned",
+      "phase": "v2.0",
+      "owner": "",
+      "priority": "low"
+    },
+    {
+      "id": "US-36",
+      "title": "Feedback and ideas module",
+      "status": "planned",
+      "phase": "v2.0",
+      "owner": "",
+      "priority": "low"
+    }
+  ]
+}

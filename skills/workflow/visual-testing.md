@@ -1,8 +1,8 @@
-# Visual Testing with Puppeteer
+# Visual Testing with Playwright
 
 **Category:** Workflow
 **Used by:** Robert, Nina, Soren, Amara, Enzo, Alice
-**Last updated:** 2026-02-09
+**Last updated:** 2026-02-11
 
 ## When to Use
 
@@ -10,42 +10,70 @@ When you need to visually verify UI implementation against a design spec, check 
 
 ## Prerequisites
 
-The Puppeteer MCP server must be running (configured in `.mcp.json`). The dev server must be active (typically `localhost:3000` for Express or `localhost:5173` for Vite).
+The Playwright MCP server must be running (configured in `.mcp.json`). The dev server must be active (typically `localhost:3000` for Express or `localhost:5173` for Vite).
 
 ## Available MCP Tools
 
-### `mcp__puppeteer__puppeteer_navigate`
+### `mcp__playwright__browser_navigate`
 Navigate to a URL.
 ```
-url: "http://localhost:3000/spreadsheets.html"
+url: "http://localhost:5173/roadmaps/123"
 ```
 
-### `mcp__puppeteer__puppeteer_screenshot`
+### `mcp__playwright__browser_snapshot`
+Take an accessibility snapshot of the current page. Returns structured text representation of the page content — useful for verifying data presence and ARIA structure without screenshots.
+
+### `mcp__playwright__browser_take_screenshot`
 Take a screenshot of the current page or a specific element.
 ```
-name: "spreadsheet-grid"           # descriptive name
-selector: "#spreadsheets-grid-container"  # optional CSS selector
-width: 1440                        # viewport width (default 800)
-height: 900                        # viewport height (default 600)
+raw: true  # return as image (default false returns base64)
 ```
 
-### `mcp__puppeteer__puppeteer_evaluate`
-Execute JavaScript in the browser to interact with elements or check computed styles.
+### `mcp__playwright__browser_click`
+Click an element on the page. Uses accessibility snapshot references.
+```
+element: "Submit button"    # reference from snapshot
+ref: "e12"                  # or element ref from snapshot
+```
+
+### `mcp__playwright__browser_type`
+Type text into an input field.
+```
+element: "Search input"
+ref: "e5"
+text: "roadmap items"
+```
+
+### `mcp__playwright__browser_select_option`
+Select an option from a dropdown.
+```
+element: "Status dropdown"
+ref: "e8"
+values: ["In Progress"]
+```
+
+### `mcp__playwright__browser_hover`
+Hover over an element.
+```
+element: "Card item"
+ref: "e15"
+```
+
+### `mcp__playwright__browser_evaluate`
+Execute JavaScript in the browser to check computed styles or manipulate DOM.
 ```js
-// Click a button
-document.querySelector('.spreadsheet-group__header').click();
-
 // Check computed style
-getComputedStyle(document.querySelector('.ag-header-cell')).color;
+getComputedStyle(document.querySelector('.toolbar')).overflow;
 
-// Resize viewport for responsive testing
-// (prefer using width/height in screenshot instead)
+// Resize viewport
+window.innerWidth;
 ```
 
-### `mcp__puppeteer__puppeteer_click`
-Click an element by CSS selector.
+### `mcp__playwright__browser_resize`
+Resize the browser viewport for responsive testing.
 ```
-selector: ".spreadsheet-item"
+width: 375
+height: 812
 ```
 
 ## Visual QA Workflow
@@ -53,43 +81,39 @@ selector: ".spreadsheet-item"
 ### 1. Full-Page Screenshot
 Take a screenshot at desktop width to get the overall layout.
 ```
-navigate → http://localhost:3000/{page}
-screenshot → name: "page-desktop", width: 1440, height: 900
+navigate → http://localhost:5173/{route}
+resize → width: 1440, height: 900
+screenshot → raw: true
 ```
 
-### 2. Component-Level Screenshots
-Focus on specific components using CSS selectors.
-```
-screenshot → name: "grid-header", selector: ".ag-header", width: 1440
-screenshot → name: "stats-row", selector: ".projects__stats", width: 1440
-```
+### 2. Accessibility Snapshot
+Use `browser_snapshot` to verify content is present and check ARIA structure. This is faster than screenshots for data verification.
 
 ### 3. Responsive Breakpoints
-Check at each standard breakpoint:
+Check at each standard breakpoint using `browser_resize`:
 - **Desktop:** width: 1440
 - **Tablet landscape:** width: 1024
 - **Tablet portrait:** width: 768
 - **Mobile:** width: 375
 
 ```
-screenshot → name: "page-mobile", width: 375, height: 812
-screenshot → name: "page-tablet", width: 768, height: 1024
+resize → width: 375, height: 812
+screenshot → raw: true
+
+resize → width: 768, height: 1024
+screenshot → raw: true
 ```
 
 ### 4. Interaction States
-Use evaluate or click to trigger states, then screenshot:
+Use click, hover, or evaluate to trigger states, then screenshot:
 ```
-# Hover state (evaluate to add class)
-evaluate → document.querySelector('.ag-row').classList.add('ag-row-hover')
-screenshot → name: "row-hover-state"
+# Hover state
+hover → ref: "e15"
+screenshot → raw: true
 
 # Expanded accordion
-click → ".spreadsheet-group__header"
-screenshot → name: "group-expanded"
-
-# Density toggle
-click → "[data-density='compact']"
-screenshot → name: "grid-compact"
+click → ref: "e20"
+screenshot → raw: true
 ```
 
 ### 5. Data Integrity Verification (CRITICAL)
@@ -104,7 +128,7 @@ After every CSS change, take a screenshot and confirm:
 - [ ] **Text content is readable** (not clipped, not white-on-white, not zero-height)
 
 #### b. DOM vs. Render Verification
-Use `puppeteer_evaluate` to cross-check that what's in the DOM is actually visible:
+Use `browser_evaluate` to cross-check that what's in the DOM is actually visible:
 ```js
 // Verify cell content matches visual output
 (() => {

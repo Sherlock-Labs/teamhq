@@ -95,4 +95,40 @@ export async function readEventLog(
   }
 }
 
+export async function getWorkLog(projectId: string, offset: number = 0) {
+  const sessions = await listSessions(projectId);
+  // listSessions returns descending — sort ascending by startedAt
+  sessions.sort(
+    (a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime()
+  );
+
+  const allEvents: (SessionEvent & { sessionId: string; sessionIndex: number })[] = [];
+
+  for (let i = 0; i < sessions.length; i++) {
+    const session = sessions[i];
+    const events = await readEventLog(projectId, session.id);
+    for (const event of events) {
+      allEvents.push({
+        ...event,
+        sessionId: session.id,
+        sessionIndex: i,
+      });
+    }
+  }
+
+  const totalEvents = allEvents.length;
+  const sliced = offset > 0 ? allEvents.slice(offset) : allEvents;
+
+  const sessionSummaries = sessions.map((s) => ({
+    id: s.id,
+    startedAt: s.startedAt,
+    endedAt: s.endedAt,
+    durationMs: s.durationMs,
+    status: s.status,
+    eventCount: s.eventCount,
+  }));
+
+  return { events: sliced, sessions: sessionSummaries, totalEvents };
+}
+
 export { metadataPath, eventLogPath, SESSIONS_DIR };

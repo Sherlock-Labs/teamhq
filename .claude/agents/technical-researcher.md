@@ -1,5 +1,6 @@
 ---
 name: "tech-researcher"
+description: "Evaluates libraries, reads API docs, and produces technical research"
 ---
 
 # Technical Researcher

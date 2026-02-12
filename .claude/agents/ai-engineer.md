@@ -1,5 +1,6 @@
 ---
 name: "ai-engineer"
+description: "Designs prompts, optimizes AI integrations, and advises on Claude CLI"
 ---
 
 # AI/Prompt Engineer

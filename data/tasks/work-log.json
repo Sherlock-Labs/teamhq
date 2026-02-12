@@ -1,0 +1,250 @@
+{
+  "id": "work-log",
+  "name": "Work Log",
+  "description": "Replace per-session UI with unified Work Log per project. Single continuous timeline of all events, cumulative panels, session dividers.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "title": "Write requirements for Work Log",
+      "subtasks": [
+        "Read existing session infrastructure (routes, store, schema, NDJSON format)",
+        "Read frontend session rendering (renderSessionControls, renderSessionHistory, connectToSession, panel rendering)",
+        "Analyzed current session UX flow: sidebar list → click session → view events per-session",
+        "Defined 8 user stories with acceptance criteria covering unified log, dividers, controls, API, SSE, cumulative panels",
+        "Scoped frontend-heavy pipeline: Andrei → Robert + Jonah (parallel) → Alice → Robert review → Enzo",
+        "Defined what's in/out/deferred to keep scope tight",
+        "Identified technical constraints: event ordering, performance, SSE hybrid approach"
+      ],
+      "filesChanged": [
+        "docs/work-log-requirements.md",
+        "data/tasks/work-log.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Presentation change, not data model change — existing NDJSON session files read as-is",
+        "New REST endpoint for aggregation + existing SSE for live = no new streaming infrastructure",
+        "Deferred pagination, search/filter, collapsible blocks to keep v1 tight",
+        "No mobile, marketing, writer, or UI specialist agents needed — mostly removing UI and renaming labels",
+        "Session dividers use session metadata (startedAt, durationMs) not computed from events"
+      ]
+    },
+    {
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "title": "Define tech approach for Work Log",
+      "subtasks": [
+        "Read all 8 user stories and acceptance criteria from Thomas's requirements",
+        "Analyzed existing session infrastructure: NDJSON storage, SessionMetadata schema, session routes, SSE streaming",
+        "Read full frontend session rendering code: renderSessionControls, renderSessionLog, renderSessionHistory, connectToSession, appendSessionEvent, panel state tracking (~800 lines)",
+        "Verified session concurrency model (sessions are sequential per project) — enables O(n) concat instead of sort",
+        "Designed server-side aggregation endpoint with sessionId/sessionIndex injection (no NDJSON file mutation)",
+        "Defined SSE hybrid approach: REST for historical events + SSE for active session only, with offset-based dedup",
+        "Mapped cumulative panel state strategy: process all historical events through existing panel updaters",
+        "Wrote full API contract for Alice + Jonah alignment (request/response shapes, edge cases)",
+        "Classified all affected files with change impact levels and QA impact notes",
+        "Documented 7 architectural decisions with rationale and rejected alternatives"
+      ],
+      "filesChanged": [
+        "docs/work-log-tech-approach.md",
+        "data/tasks/work-log.json"
+      ],
+      "decisions": [
+        "Server-side aggregation over client-side multi-fetch — single request, simpler frontend",
+        "Concatenation not sort — sessions are sequential (concurrency guard), O(n) is correct",
+        "Route in projects.ts not sessions.ts — work log is project-level, matches URL pattern",
+        "Inject sessionId/sessionIndex in response, not in NDJSON files — don't mutate append-only logs",
+        "Per-session event IDs (not globally unique) — no migration, use sessionId+id for uniqueness",
+        "Process all historical events through panel updaters — reuses existing logic, ensures correctness",
+        "js/projects.js classified as Restructure — ~15 functions, ~400 lines affected across session rendering, panel state, controls"
+      ]
+    },
+    {
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "title": "Design spec for Work Log UI",
+      "subtasks": [
+        "Read Thomas's 8 user stories and Andrei's tech approach (frontend refactor strategy, API contract, file classification)",
+        "Read work-item-tracker design spec for format/style reference",
+        "Read interface-design skill doc for design system tokens and conventions",
+        "Reviewed current session rendering code: renderSessionControls, renderSessionLog, renderSessionHistory, session-log CSS, session-history CSS",
+        "Designed session divider visual treatment: centered-rule-with-label pattern, muted tertiary colors, mono duration, dot separator",
+        "Specified active session divider variant (no duration, no dot — just date)",
+        "Defined Work Log header: 'Work Log' title with accumulated duration timer, existing CSS reused",
+        "Mapped all label changes: 'Working', 'Stop', 'Continue Work', card badge tooltip",
+        "Designed empty state ('No work logged yet'), loading state (pulsing text), error state (simple message)",
+        "Identified ~120 lines of dead CSS to remove (session-history block)",
+        "Documented accessibility requirements: role=separator on dividers, aria-labels, existing ARIA patterns preserved",
+        "Confirmed no structural layout changes needed — session history was below log, not beside it"
+      ],
+      "filesChanged": [
+        "docs/work-log-design-spec.md",
+        "data/tasks/work-log.json"
+      ],
+      "decisions": [
+        "Centered-rule-with-label divider pattern — lightweight, doesn't interrupt event flow, subordinate to actual content",
+        "Dot separator between date and duration instead of pipe or dash — less visual weight",
+        "Tertiary-accessible color (#767676) for all divider text — WCAG AA safe, clearly muted",
+        "No empty-state CTA button — Start/Continue Work button already exists in controls above",
+        "No explicit retry button on error — re-fetch on next expand matches current session pattern",
+        "Reuse timer-pulse animation for loading state rather than adding a new spinner",
+        "Remove session-history CSS in same PR — don't leave orphaned styles"
+      ]
+    },
+    {
+      "agent": "Jonah",
+      "role": "Back-End Developer",
+      "status": "completed",
+      "title": "Build work-log aggregation endpoint",
+      "subtasks": [
+        "Read requirements (US-7), tech approach (sections 2, 5, 6), and existing session store/routes/schemas",
+        "Implemented getWorkLog(projectId, offset) in server/src/store/sessions.ts — reads all sessions, sorts ascending by startedAt, merges NDJSON event logs, injects sessionId/sessionIndex per event",
+        "Added GET /api/projects/:id/work-log route in server/src/routes/projects.ts — validates project exists (404), calls getWorkLog, returns response matching API contract",
+        "Imported getWorkLog from sessions store into projects route file",
+        "Built TypeScript and verified clean compilation",
+        "Tested with curl: verified 62 events returned with correct sessionId/sessionIndex injection",
+        "Tested 404 response for non-existent project",
+        "Tested empty response (events: [], sessions: [], totalEvents: 0) for project with no sessions",
+        "Tested offset parameter: offset=60 returns 2 events while totalEvents stays 62"
+      ],
+      "filesChanged": [
+        "server/src/store/sessions.ts",
+        "server/src/routes/projects.ts",
+        "data/tasks/work-log.json"
+      ],
+      "decisions": [
+        "Followed Andrei's tech approach exactly — concatenation in session-start order, no cross-session sort",
+        "Project existence check uses getProject (same pattern as other project routes) — 404 if not found",
+        "Offset applied after merge but totalEvents reflects full count — matches API contract spec",
+        "Route placed in projects.ts per Andrei's routing decision (Option A) — work log is project-level aggregation"
+      ]
+    },
+    {
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "completed",
+      "title": "Implement Work Log UI",
+      "subtasks": [
+        "Read all project docs: requirements (8 user stories), tech approach (frontend refactor strategy, API contract, SSE hybrid), design spec (dividers, controls, states, CSS)",
+        "Read existing js/projects.js in full (~3500 lines) — mapped all session rendering functions, state variables, event delegation, panel updaters",
+        "Added workLogSessions and workLogTotalDuration state variables for unified timeline tracking",
+        "Added apiGetWorkLog function to call GET /api/projects/:id/work-log aggregation endpoint",
+        "Replaced renderSessionControls → renderWorkControls with new labels: 'Working', 'Stop', 'Continue Work'",
+        "Replaced renderSessionLog → renderWorkLogContainer with loading/empty/error state support and cumulative timer",
+        "Created renderSessionDivider function — centered-rule-with-label pattern with date, dot, duration; active session variant omits dot+duration",
+        "Replaced connectToSession → connectWorkLogSSE — lightweight SSE-only connector with offset-based dedup, no state reset",
+        "Created loadWorkLog function (~120 lines) — REST fetch, session divider insertion at sessionIndex boundaries, cumulative panel state via appendSessionEvent, SSE hookup for active sessions",
+        "Replaced startSessionTimer → startWorkLogTimer with accumulated duration baseline + live elapsed",
+        "Updated formatDurationShort to support hours display (Xh Ym Zs format)",
+        "Updated handleSessionDone for work log paradigm — stops timer, adds duration to workLogTotalDuration, updates display",
+        "Updated handleSendMessage to use activeSessionId instead of viewingSessionId",
+        "Updated card badge tooltip: 'Session running' → 'Working'",
+        "Removed ~15 dead functions: renderSessionHistory, loadSessionLog, loadSessionHistory, initSessionsForProject, apiListSessions, formatTimerValue, connectToSession",
+        "Removed session history click handler from event delegation",
+        "Removed ~120 lines of dead .session-history CSS block",
+        "Added ~80 lines of new CSS: session divider styles, empty/loading/error states, mobile responsive rule",
+        "Verified TypeScript compilation passes clean",
+        "Verified no remaining references to removed functions via grep",
+        "Visual tested with Playwright: Work Log header, session dividers, events, empty state, controls — all rendering correctly"
+      ],
+      "filesChanged": [
+        "js/projects.js",
+        "css/styles.css",
+        "data/tasks/work-log.json"
+      ],
+      "decisions": [
+        "Lightweight SSE connector (connectWorkLogSSE) doesn't reset panel/tracking state — loadWorkLog builds cumulative state from REST, SSE continues from that baseline",
+        "SSE offset computed by counting events with sessionId matching activeSessionId from REST response — prevents duplicates without global event IDs",
+        "Session dividers inserted during event iteration when sessionIndex changes — O(n) single pass, no pre-processing needed",
+        "Active session divider omits dot+duration elements entirely (not hidden via CSS) — simpler, matches design spec conditional rendering",
+        "renderList() calls loadWorkLog for expanded cards — ensures work log rebuilds after any list re-render (handleSessionDone, handleRunSession, handleStopSession)",
+        "Removed redundant explicit loadWorkLog calls from handleSessionDone, handleRunSession, doStart since renderList() now handles it",
+        "Used CSS fallback values for --color-text-tertiary-accessible (#767676) in case token isn't defined in all environments",
+        "First session always gets a divider at the top of the log body — marks when work began on the project, per design spec placement rules"
+      ]
+    },
+    {
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "title": "Design review of Work Log implementation",
+      "subtasks": [
+        "Read design spec (docs/work-log-design-spec.md) — 11 sections covering layout, header, dividers, controls, states, CSS, a11y",
+        "Read full renderWorkControls, renderWorkLogContainer, renderSessionDivider, loadWorkLog implementations in js/projects.js",
+        "Verified session divider HTML structure matches spec: centered-rule-with-label, .session-divider__line + __label + __line",
+        "Verified active session divider variant omits dot and duration elements (conditional rendering, not CSS hide)",
+        "Verified role='separator' and aria-label on dividers — accessibility spec met",
+        "Verified Work Log header: 'Work Log' title, accumulated timer with --live class for active sessions",
+        "Verified controls: 'Working' status text, 'Stop' button, 'Continue Work' run button, 'Start Work' for planned projects",
+        "Verified card badge tooltip changed from 'Session running' to 'Working'",
+        "Verified empty state: 'No work logged yet.' + 'Start work to begin tracking progress.' — centered, no CTA button",
+        "Verified loading state: pulsing 'Loading work log...' text reusing timer-pulse animation",
+        "Verified error state: 'Failed to load work log.' — centered, no retry button",
+        "Verified CSS uses design tokens throughout (--space-*, --color-*, --text-*, --font-weight-*, --font-mono)",
+        "Verified main .session-history CSS block (~120 lines) removed from styles.css",
+        "Verified session history sidebar fully removed from JS (no renderSessionHistory, loadSessionHistory, apiListSessions references)",
+        "Verified aria-label='Work Log' on .session-log container",
+        "Visual tested via Playwright: Work Log header renders, empty state renders, controls show correct labels, no session history sidebar present",
+        "Found P2: orphan .session-history__item-events rule at css/styles.css:3493 — 3 lines of dead CSS in mobile media query",
+        "Found P2: redundant ternary at js/projects.js:983 — both branches return 'Continue Work' (harmless, planned state handled separately)"
+      ],
+      "filesChanged": [
+        "data/tasks/work-log.json"
+      ],
+      "decisions": [
+        "PASS — implementation matches design spec, no P1 issues found",
+        "Two P2 items noted (orphan CSS rule, redundant ternary) — neither blocks shipping",
+        "CSS token usage is correct and consistent with design system conventions",
+        "Accessibility requirements met: role=separator, aria-labels, aria-live on log body"
+      ]
+    },
+    {
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "title": "QA pass on Work Log",
+      "subtasks": [
+        "Read all project docs: requirements (8 user stories), design spec (11 sections), tech approach (8 sections, Restructure flag on js/projects.js)",
+        "Read full implementation: js/projects.js (~3500 lines), css/styles.css (new divider/state styles), server/src/store/sessions.ts (getWorkLog), server/src/routes/projects.ts (work-log route)",
+        "Verified TypeScript server build compiles clean (exit 0)",
+        "API test: GET /api/projects/:id/work-log returns correct shape {events, sessions, totalEvents} with sessionId/sessionIndex injected",
+        "API test: 404 for non-existent project — confirmed",
+        "API test: Empty response {events:[], sessions:[], totalEvents:0} for project with no sessions — confirmed",
+        "API test: Corrupt session JSON (0-byte file) gracefully skipped by listSessions — confirmed",
+        "API test: Offset parameter works correctly (totalEvents stays at full count, events array sliced)",
+        "Visual test (Playwright): Projects page loads, 27 projects render correctly",
+        "Visual test: Expanded project shows 'Work Log' header with accumulated duration timer",
+        "Visual test: Session dividers render with correct format (date dot duration), role=separator, aria-labels",
+        "Visual test: Controls show 'Continue Work' (not 'Run Session'), 'Stop' (not 'Stop Session'), 'Working' status",
+        "Visual test: Empty state shows 'No work logged yet.' + 'Start work to begin tracking progress.'",
+        "Visual test: Card running indicators show title='Working' tooltip (not 'Session running')",
+        "Visual test: Session history sidebar completely removed from DOM",
+        "Visual test: No session-language labels found in any visible text",
+        "Code review: No remaining references to removed functions (renderSessionHistory, loadSessionLog, etc.)",
+        "Code review: No remaining .session-history CSS rules",
+        "Code review: Cumulative panel logic correct — all historical events processed through appendSessionEvent",
+        "Code review: SSE hybrid approach correct — REST for historical, SSE for active session, offset dedup",
+        "Code review: handleSendMessage correctly uses activeSessionId (not viewingSessionId)",
+        "Code review: handleSessionDone correctly adds durationMs to workLogTotalDuration",
+        "Regression: Detail view expand/collapse works correctly",
+        "Regression: Pipeline section renders with existing data",
+        "Regression: Progress notes section functional",
+        "Regression: Card rendering with avatars, stats, badges all intact",
+        "Verified all 8 user stories' acceptance criteria against implementation — all pass"
+      ],
+      "filesChanged": [
+        "data/tasks/work-log.json"
+      ],
+      "decisions": [
+        "PASS — all 8 user stories verified, no P1 issues found, regression areas clean",
+        "Robert's P2 orphan CSS (.session-history__item-events) already cleaned up by Alice — no longer present",
+        "Code comments still use 'Session' language in a few places (lines 1747, 3116, 3125) — cosmetic only, not user-facing, not blocking",
+        "Corrupt session files (0-byte JSON) handled gracefully by backend — no crash, no bad data"
+      ]
+    }
+  ]
+}

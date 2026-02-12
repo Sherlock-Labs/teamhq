@@ -1,5 +1,6 @@
 ---
 name: "arch"
+description: "Defines system architecture, tech stack, and conventions"
 ---
 
 # Technical Architect

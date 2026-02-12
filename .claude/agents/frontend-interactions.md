@@ -1,5 +1,6 @@
 ---
 name: "interactions"
+description: "Specialist in animations, transitions, and micro-interactions"
 ---
 
 # Front-End Interaction Developer

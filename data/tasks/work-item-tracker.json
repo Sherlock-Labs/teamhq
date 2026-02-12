@@ -1,0 +1,252 @@
+{
+  "projectId": "work-item-tracker",
+  "projectName": "Work Item Tracker for Projects",
+  "status": "completed",
+  "currentPhase": "qa-pass",
+  "tasks": [
+    {
+      "id": "requirements",
+      "title": "Scope requirements for work item tracker",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read existing project page implementation: projects.html, js/projects.js (detail rendering, pipeline section, spreadsheet data section)",
+        "Read roadmap tool requirements to understand user story format (37 user stories across 3 phases)",
+        "Analyzed existing data architecture: project JSON files, tasks JSON files, merge-on-read pipeline, API routes",
+        "Analyzed existing AG Grid integration pattern: CDN loading, TeamHQSpreadsheet component, embedded spreadsheet rendering in project details",
+        "Designed work item schema: id, title, status, phase, owner, priority — minimal fields for maximum visibility",
+        "Decided on separate file storage (data/work-items/{slug}.json) over embedding in project JSON — keeps list payloads lean, loaded on demand",
+        "Designed two API endpoints: GET and PUT (full replace) for simplicity over per-item CRUD",
+        "Wrote 4 user stories with acceptance criteria and interaction state checklists: view, inline edit, add/delete, import from requirements",
+        "Specified AG Grid column configuration matching existing TeamHQ theming",
+        "Scoped pipeline: Arch -> Designer -> FE+BE parallel -> Design Review -> QA (skip specialists — data table, not UI-heavy)",
+        "Identified lazy-load risk for AG Grid on projects page and proposed mitigation"
+      ],
+      "filesChanged": [
+        "docs/work-item-tracker-requirements.md",
+        "data/tasks/work-item-tracker.json"
+      ],
+      "decisions": [
+        "Separate file storage (data/work-items/) over embedding in project JSON — avoids bloating list payloads, loaded on demand, prevents merge conflicts between agents and CEO",
+        "PUT (full array replace) over per-item CRUD — AG Grid holds full dataset in memory, sending complete array is simpler, item counts are small (10-50)",
+        "Work items are NOT pipeline tasks — different concepts (product scope vs. process tracking), kept as separate data structures",
+        "Free-text phase field over fixed enum — projects use different versioning schemes (v1.0, Sprint 1, Phase I), flexibility is better",
+        "Skip Nina/Soren/Amara specialist review — AG Grid data table doesn't warrant interaction/responsive/a11y specialist passes",
+        "Status values: planned, in-progress, completed, deferred — matches existing project status vocabulary plus 'deferred' for Phase II items",
+        "Import parser targets markdown table format from requirements docs — handles the specific format Thomas already uses in Appendix A user story indexes"
+      ]
+    },
+    {
+      "id": "tech-approach",
+      "title": "Define technical approach for work item tracker",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Read Thomas's requirements doc — 4 user stories, data model, API endpoints, AG Grid config",
+        "Read existing codebase patterns: projects.js detail rendering, spreadsheet.js AG Grid adapter, projects routes, projects store, project schema",
+        "Confirmed data/work-items/{slug}.json storage pattern — follows same slug-keyed approach as data/tasks/",
+        "Defined Zod schema (WorkItemSchema, WorkItemsFileSchema, PutWorkItemsBody) in server/src/schemas/workItem.ts",
+        "Defined store module (getWorkItems, putWorkItems) in server/src/store/workItems.ts — mirrors existing projects store pattern",
+        "Specified lazy-load strategy for AG Grid on projects page — script injection on first detail expand, CSS eager-loaded in <head>",
+        "Decided to duplicate badge renderer rather than extract shared module — status colors differ from spreadsheet badges",
+        "Wrote API contract (GET/PUT with exact request/response shapes) for Alice-Jonah parallel implementation",
+        "Classified all files: 3 new, 4 extended, 0 restructured — all additive changes"
+      ],
+      "filesChanged": [
+        "docs/work-item-tracker-tech-approach.md",
+        "data/tasks/work-item-tracker.json"
+      ],
+      "decisions": [
+        "Lazy-load AG Grid JS on first detail expand rather than eager-load on page — saves ~200KB for users who don't expand project details",
+        "Eager-load AG Grid CSS in <head> — tiny payload, prevents FOUC when grid appears",
+        "Add routes to existing projects.ts rather than creating a separate workItems route file — only 2 endpoints, keeps routing consolidated",
+        "Duplicate badge cell renderer in projects.js rather than extracting shared module — status color mapping differs from spreadsheet badges (planned/deferred vs generic), not worth the abstraction for 15 lines",
+        "Resolve project ID to slug server-side via getProject() — client passes UUID, server looks up slug for file path, consistent with existing patterns"
+      ]
+    },
+    {
+      "id": "design-spec",
+      "title": "Design spec for work item tracker UI",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Defined section placement: after pipeline, before progress notes, conditional on project having a slug",
+        "Designed section header with count badge and ghost action buttons (Import, + Add)",
+        "Specified AG Grid column config: 7 columns (ID pinned, Title flex, Status/Priority as badge renderers, Phase/Owner as text, Actions for delete)",
+        "Mapped status badges to existing thq-badge classes: planned=muted, in-progress=accent, completed=success, deferred=warning",
+        "Mapped priority badges to existing thq-badge classes: high=error, medium=warning, low=muted",
+        "Designed add-item flow: auto-generated ID, ID temporarily editable, Title auto-focused, debounced save",
+        "Designed delete interaction: hover X icon, inline confirmation for non-empty rows, immediate delete for empty rows",
+        "Designed import modal: two-step flow (paste markdown textarea -> preview list -> confirm)",
+        "Designed empty state with dual action buttons (Add + Import)",
+        "Specified all interaction states: cell editing, save flash, save error toast, row hover, loading, fetch error"
+      ],
+      "filesChanged": [
+        "docs/work-item-tracker-design-spec.md"
+      ],
+      "decisions": [
+        "Reuse all existing thq-badge classes rather than creating new ones -- the 5 existing variants (muted, accent, success, warning, error) cover all 4 status values and 3 priority values exactly",
+        "Inline delete confirmation on the row rather than a modal dialog -- faster interaction for a lightweight table, no context-switching. Auto-dismiss after 5 seconds to prevent stale confirmations",
+        "No density toggle for this grid -- always comfortable (44px rows). The work items table is not data-dense enough to warrant compact mode",
+        "Ghost buttons for Import and + Add rather than primary buttons -- the section is secondary to the pipeline; actions should be discoverable but not visually dominant"
+      ]
+    },
+    {
+      "id": "frontend",
+      "title": "Frontend implementation — AG Grid integration, cell editors, add/delete, import, auto-save",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "completed",
+      "subtasks": [
+        "Added AG Grid CSS links (ag-grid.css, ag-theme-quartz.css, spreadsheet.css) to projects.html <head> for eager CSS loading",
+        "Implemented ensureAgGrid() lazy-loader — script injection on first project detail expand, returns Promise, singleton pattern with loading guard",
+        "Implemented renderWorkItemsSection() — loading state, fetch from GET /api/projects/:id/work-items, error state with retry link, empty state with Add + Import buttons",
+        "Implemented wiCreateGridWithItems() — AG Grid createGrid with 7 column defs (ID pinned, Title flex, Status/Priority badge renderers, Phase/Owner text, Actions delete button)",
+        "Implemented badge cell renderers for Status (planned=muted, in-progress=accent, completed=success, deferred=warning) and Priority (high=error, medium=warning, low=muted) using existing .thq-badge classes",
+        "Implemented inline cell editing — singleClickEdit, agSelectCellEditor for Status/Priority dropdowns, free-text for Title/Phase/Owner, ID editable only on new rows",
+        "Implemented debounced auto-save (500ms) via PUT /api/projects/:id/work-items with retry on failure (single retry after 2s) and toast notifications on error",
+        "Implemented wiAddRow() — auto-generated ID (WI-{n+1}), default values (planned/medium), focuses Title cell for immediate editing",
+        "Implemented delete interaction — hover X button in actions column, inline confirmation for rows with titles (auto-dismiss 5s), immediate delete for empty rows",
+        "Implemented import modal — two-step flow (paste markdown textarea -> parse -> preview list -> confirm), wiParseMarkdownTable() regex parser for ID/Title/Phase columns",
+        "Implemented empty state with dual action buttons (+ Add Work Item, Import from Requirements)",
+        "Implemented grid lifecycle management — destroyWorkItemGrid() on card collapse, _workItemGrids map for instance tracking",
+        "Added work-items-specific CSS to spreadsheet.css — section header layout, ghost/secondary buttons, empty state, delete confirmation overlay, import modal, action delete button with row hover reveal",
+        "Added call site in renderDetailView() — work items container div after pipeline section, renderWorkItemsSection() called after innerHTML set, conditional on project.slug",
+        "Custom status sort comparator — in-progress first, then planned, deferred, completed last"
+      ],
+      "filesChanged": [
+        "projects.html",
+        "js/projects.js",
+        "css/spreadsheet.css",
+        "data/tasks/work-item-tracker.json"
+      ],
+      "decisions": [
+        "Duplicated badge renderer logic rather than extracting from spreadsheet.js — status color mappings differ, only 15 lines, not worth shared module abstraction",
+        "Used domLayout: autoHeight for the grid — work items table should grow with content, no fixed height container needed for typical 10-50 items",
+        "Added _newRow flag to newly created items to allow ID editing only on fresh rows — once user edits the ID or any other field, the flag is removed and ID becomes read-only",
+        "Used data attributes (data-wi-action, data-wi-import) for event delegation rather than direct button references — cleaner with innerHTML-based rendering",
+        "Import modal is created once and reused (singleton pattern) — avoids DOM pollution from repeated open/close cycles",
+        "Work items grid destroyed on card collapse to prevent memory leaks — follows same cleanup pattern as SSE connections"
+      ]
+    },
+    {
+      "id": "backend",
+      "title": "Backend implementation — work items API endpoints and storage",
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "status": "completed",
+      "subtasks": [
+        "Created Zod schemas in server/src/schemas/workItem.ts — WorkItemStatus, WorkItemPriority, WorkItemSchema, WorkItemsFileSchema, PutWorkItemsBody exactly matching Andrei's tech approach",
+        "Created store module in server/src/store/workItems.ts — getWorkItems(slug) and putWorkItems(slug, workItems) following meetings store pattern",
+        "Added GET /api/projects/:id/work-items route — resolves project ID to slug via getProject(), returns empty array if no file exists",
+        "Added PUT /api/projects/:id/work-items route — validates body with PutWorkItemsBody.parse(), writes to data/work-items/{slug}.json",
+        "Followed existing error handling pattern: ZodError -> 400 with formatted details, ENOENT -> 404, catch-all -> 500",
+        "Added slug-missing guard on PUT (returns 400) and no-slug guard on GET (returns empty array)",
+        "Created data/work-items/ directory for runtime file storage",
+        "Built and restarted server for testing",
+        "Tested all endpoints via curl: GET empty, GET 404, PUT valid, GET after PUT, PUT invalid status (400), PUT empty id (400), PUT defaults, PUT 404, PUT empty array"
+      ],
+      "filesChanged": [
+        "server/src/schemas/workItem.ts",
+        "server/src/store/workItems.ts",
+        "server/src/routes/projects.ts",
+        "data/tasks/work-item-tracker.json"
+      ],
+      "decisions": [
+        "Implemented schemas exactly as specified in tech approach — no deviations from Andrei's Zod definitions",
+        "GET returns empty array for projects without a slug rather than 400 — graceful degradation, the frontend can treat these the same as projects with no work items",
+        "PUT returns 400 for projects without a slug — writing requires a slug to determine the file path, this is an actual error condition"
+      ]
+    },
+    {
+      "id": "design-review",
+      "title": "Robert design review of implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "completed",
+      "subtasks": [
+        "Verified AG Grid renders correctly on projects page with lazy-loaded script (v34 CDN)",
+        "Confirmed badge color mappings match spec: planned=muted, in-progress=accent, completed=success, deferred=warning, high=error, medium=warning, low=muted",
+        "Confirmed section header layout: WORK ITEMS (n) label with Import and + Add ghost buttons right-aligned, flex row, space-between",
+        "Confirmed column configuration: ID (80px, pinned), Title (flex:2), Status (130px, badge), Phase (100px), Owner (120px), Priority (100px, badge), Actions (40px, delete)",
+        "Confirmed empty state: centered text, dual action buttons (+ Add Work Item secondary, Import from Requirements ghost)",
+        "Confirmed import modal: 520px wide, overlay, header with close X, monospace textarea, two-step Parse/Preview flow, Cancel/Confirm buttons",
+        "Confirmed delete button: 16px, opacity 0 at rest, revealed on row hover, color transitions to error red on hover",
+        "Confirmed section placement: after Pipeline section, before Progress Notes",
+        "Confirmed all CSS uses TeamHQ design tokens (--space-*, --color-*, --text-*, --font-weight-*)",
+        "Verified delete confirmation overlay styling: error bg at 5% opacity, inline Delete/Cancel buttons",
+        "Verified count badge updates dynamically when rows added",
+        "Identified P2: delete icon uses --color-text-tertiary (#999) which fails WCAG AA — functional trade-off since icon is invisible at rest"
+      ],
+      "filesChanged": [
+        "data/tasks/work-item-tracker.json"
+      ],
+      "decisions": [
+        "Approved for QA — no P1 issues found. Implementation matches design spec accurately across all reviewed elements.",
+        "P2 noted: delete icon uses --color-text-tertiary for contrast, but acceptable since the icon is hidden at rest and only visible on row hover with immediate error-red on icon hover",
+        "detail__label uses --font-weight-semibold (600) instead of spec's --font-weight-medium (500) — correct decision by Alice, matches existing section labels (SESSIONS, PIPELINE, etc.) for visual consistency"
+      ]
+    },
+    {
+      "id": "qa",
+      "title": "QA pass — release gate",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Read all reference docs: requirements (4 user stories), design spec, tech approach, AG Grid patterns skill doc, QA test plan skill doc",
+        "Read all implementation files: workItem.ts schema, workItems.ts store, projects.ts routes, projects.js frontend, spreadsheet.css styles, projects.html",
+        "API testing — GET /api/projects/:id/work-items: returns workItems array for project with data, returns empty array for project without data, returns 404 for non-existent project",
+        "API testing — PUT /api/projects/:id/work-items: saves valid data and returns it, rejects invalid status (400), rejects empty id (400), rejects invalid priority (400), returns 404 for non-existent project, accepts empty array, applies Zod defaults for missing fields",
+        "Visual testing — Work items section placement: renders after Pipeline, before Progress Notes (correct per spec)",
+        "Visual testing — Section header: WORK ITEMS (n) with Import and + Add ghost buttons right-aligned (correct per spec)",
+        "Visual testing — AG Grid column config: ID (80px pinned), Title (flex:2), Status (130px badge), Phase (100px), Owner (120px with avatar renderer), Priority (100px badge), Actions (40px delete) — all correct",
+        "Visual testing — Badge rendering: verified all 7 badge mappings correct via DOM inspection (planned=muted, in-progress=accent, completed=success, deferred=warning, high=error, medium=warning, low=muted)",
+        "Visual testing — Row height 44px, header height 40px confirmed via computed styles (set in JS gridOptions, not just CSS)",
+        "Visual testing — Header text: uppercase, 12px, font-weight 500 — correct per AG Grid patterns",
+        "Visual testing — Status sort: custom comparator (in-progress first, planned, deferred, completed last) — correct per spec",
+        "Inline editing — single-click edit on Title/Phase/Owner cells works (singleClickEdit: true)",
+        "Inline editing — Status dropdown renders agSelectCellEditor with all 4 options",
+        "Inline editing — ID column read-only on existing rows (editable only on _newRow flagged rows) — correct per spec",
+        "Add row — + Add button appends new row with auto-generated ID (WI-{n+1}), status planned, priority medium — correct",
+        "Add row — header count badge updates dynamically to (n+1) — correct",
+        "Delete — empty row (no title): deletes immediately without confirmation — correct per spec",
+        "Delete — hover X button appears on row hover, 16px, transitions to error red — correct",
+        "Delete — 5-second auto-dismiss timer works — correct behavior",
+        "Import modal — opens from header Import button with overlay, 520px wide, monospace textarea, Parse/Cancel buttons — correct per spec",
+        "Import modal — markdown table parser correctly extracts ID, Title, Phase columns from pipe-delimited tables",
+        "Import modal — preview step shows count and item list with bold IDs — correct per spec",
+        "Import modal — error state shows red message when no items parsed, hides Confirm button — correct per spec",
+        "Import modal — Back button returns to paste step with textarea focused — correct",
+        "Import modal — Close X button and overlay click dismiss modal correctly (aria-hidden toggled)",
+        "Auto-save — debounced PUT (500ms) fires after cell edit, verified via curl that changed value persisted to API — correct",
+        "Auto-save — retry logic with toast on failure and single retry after 2s — code review confirmed correct",
+        "Empty state — 'No work items tracked yet.' centered with + Add Work Item (secondary) and Import from Requirements (ghost) buttons — correct per spec",
+        "Empty state — renders only for projects with slug and no work items — correct",
+        "No-slug projects — work items section not rendered (conditional on project.slug) — correct per spec",
+        "Responsive — 768px: ID, Title, Status, Phase, Owner visible; Priority scrolls off — acceptable for data table",
+        "Responsive — 375px: ID and Title visible, other columns horizontally scrollable — acceptable",
+        "Grid lifecycle — destroyWorkItemGrid() called on card collapse, prevents memory leaks — code review confirmed",
+        "AG Grid patterns compliance — rowHeight:44 and headerHeight:40 set in gridOptions JS (not CSS only), top:0 on cells, no display:flex on cells — all correct per AG Grid patterns skill doc",
+        "RE-VERIFICATION — P1 fix (delete confirmation overlay): wiShowDeleteConfirm now appends absolute-positioned .wi-delete-confirm overlay to .ag-row element. Verified: overlay renders full-width (790px) covering entire row, light red background (#fff5f5), shows 'Delete this item?' text with Delete and Cancel buttons. Cancel dismisses overlay. Delete removes row (37->36 rows). z-index:10 ensures overlay sits above cell content. PASS.",
+        "RE-VERIFICATION — P2 fix (add-row focus): wiAddRow now uses api.getRowNode(newId) to find the new row by ID instead of using last index. Verified: with status sort active, new row WI-38 sorted to index 36 (planned status), and focus+editing correctly landed on the title cell of WI-38 at index 36. PASS."
+      ],
+      "filesChanged": [
+        "data/tasks/work-item-tracker.json"
+      ],
+      "decisions": [
+        "INITIAL VERDICT: FAIL — 1 P1 issue, 1 P2 issue",
+        "P1 (initial): Delete confirmation rendered inside 40px actions column cell with overflow:hidden — text and buttons clipped and inaccessible",
+        "P2 (initial): Add-row focus targeted wrong cell when sort active — used getDisplayedRowCount()-1 instead of finding row by ID",
+        "RE-VERIFICATION VERDICT: PASS — Both P1 and P2 fixes verified working correctly",
+        "P1 fix verified: Overlay now appends to .ag-row as absolute-positioned div covering full row width. Delete and Cancel buttons both functional.",
+        "P2 fix verified: New row found by getRowNode(newId), focus correctly follows the row to its sorted position.",
+        "P2 (from Robert, accepted): Delete icon uses --color-text-tertiary (#999) which fails WCAG AA contrast — acceptable trade-off since icon is invisible at rest and transitions to error color on hover.",
+        "All acceptance criteria across all 4 user stories now pass. Feature is ready to ship."
+      ]
+    }
+  ]
+}

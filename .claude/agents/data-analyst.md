@@ -1,5 +1,6 @@
 ---
 name: "analyst"
+description: "Analyzes project data, identifies patterns, and produces metrics"
 ---
 
 # Data Analyst

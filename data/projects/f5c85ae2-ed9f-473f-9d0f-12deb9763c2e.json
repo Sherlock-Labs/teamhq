@@ -3,15 +3,15 @@
   "slug": "when-the-tech-approach-identifies-a-significant-file-rewr",
   "name": "When the tech approach identifies a significant file rewr...",
   "description": "",
-  "status": "planned",
+  "status": "in-progress",
   "createdAt": "2026-02-09T22:41:43.073Z",
-  "updatedAt": "2026-02-09T22:41:43.073Z",
+  "updatedAt": "2026-02-10T16:52:18.098Z",
   "completedAt": null,
   "goals": "",
   "constraints": "",
   "brief": "When the tech approach identifies a significant file rewrite, notify Enzo early so he can begin regression test planning before implementation is complete.\n\nOwner: Thomas\nPriority: medium\nSource: Custom Meeting #4",
   "notes": [],
-  "kickoffPrompt": null,
+  "kickoffPrompt": "You have a new project to work on.\n\n## Project: When the tech approach identifies a significant file rewr...\n\n**Brief:**\nWhen the tech approach identifies a significant file rewrite, notify Enzo early so he can begin regression test planning before implementation is complete.\n\nOwner: Thomas\nPriority: medium\nSource: Custom Meeting #4\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
   "activeSessionId": null,
   "pipeline": {
     "tasks": []

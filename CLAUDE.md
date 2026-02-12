@@ -71,13 +71,18 @@ This is the team's north star. Every decision — scoping, architecture, design,
 2. **Suki** (Market Researcher) and **Marco** (Technical Researcher) investigate the landscape (if applicable)
 3. **Thomas** (PM) breaks it into scoped, prioritized work with clear acceptance criteria
 4. **Andrei** (Arch) defines the technical approach; **Kai** (AI Engineer) advises on AI integration
-5. **Robert** (Designer) specs the user experience and interaction design
-6. **Alice** (FE), **Jonah** (BE), and **Zara** + **Leo** (Mobile) align on API contracts before building, then implement in parallel
-7. **Robert** (Designer) reviews implementation against design spec (lightweight visual check)
-8. **Enzo** (QA) gives a pass/fail verdict — QA is a release gate, nothing ships without a pass
-9. **Priya** (Marketer) writes messaging and product copy
-10. **Nadia** (Writer) documents what was built
-11. **Yuki** (Analyst) runs post-project retrospective analysis
+5. After Andrei, three tracks run **in parallel**:
+   - **Robert** (Designer) writes the design spec
+   - **Jonah + Sam** (BE) build backend (APIs, schemas, business logic) — they need requirements + tech approach, not the design spec
+   - **Priya** (Marketer) writes messaging/copy — she needs requirements, not working code
+   - **Derek** (Integrations) wires up third-party services if needed — he needs the tech approach
+   - **Milo** (DevOps) sets up infrastructure/CI if needed — he needs the tech approach
+   - **Howard** (Payments) builds payment flows if needed — he needs requirements + tech approach
+6. **Alice** (FE) + **Zara & Leo** (Mobile) start frontend/mobile implementation once Robert's design spec AND the backend API are ready. **Nina** (Interactions), **Soren** (Responsive), and **Amara** (A11y) contribute during or after implementation for UI-heavy features.
+7. **Robert** (Designer) reviews implementation against design spec (lightweight visual check). For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
+8. **Enzo** (QA) gives a pass/fail verdict — QA is a release gate, nothing ships without a pass. **Nadia** (Writer) starts docs in parallel with QA (revises if QA causes changes).
+9. **Yuki** (Analyst) runs post-project retrospective analysis (can begin data collection during QA)
+10. **Ravi** (Strategist) is available at any point for creative direction, business model input, or challenging assumptions
 
 ## Workflow Rules
 
@@ -102,21 +107,45 @@ These were established in Charter Meeting #1 and are binding for all team operat
 
 ## Proven Pipeline
 
-The team has shipped 5+ projects. This order works:
+The team has shipped 5+ projects. This pipeline exploits parallelism where dependencies allow:
 
-1. **Suki + Marco** research the landscape (if applicable) → `docs/{project}-research.md`
+**Phase 1 — Research** (if applicable)
+1. **Suki + Marco** research the landscape in parallel → `docs/{project}-research.md`
+
+**Phase 2 — Scope**
 2. **Thomas (PM)** scopes requirements → `docs/{project}-requirements.md`
-3. **Andrei (Arch)** defines tech approach; **Kai** advises on AI parts → `docs/{project}-tech-approach.md`
-4. **Early QA notification** (conditional) — if the tech approach classifies any file as **Restructure**, notify Enzo with the file names and QA impact notes so he can begin regression test planning. This is non-blocking; steps 5-6 proceed in parallel.
-5. **Robert (Designer)** writes design spec → `docs/{project}-design-spec.md`
-6. **Alice (FE) + Jonah (BE) + Zara & Leo (Mobile)** align on API contracts, then implement in parallel (blocked by steps 2-5)
-7. **Robert (Designer)** reviews implementation against design spec — lightweight visual check before QA
-8. **Enzo (QA)** gives pass/fail verdict — this is a release gate; failures block shipping (blocked by steps 6-7). If he received an early notification in step 4, he arrives with pre-planned regression cases.
-9. **Priya** writes messaging/copy → `docs/{project}-messaging.md`
-10. **Nadia** writes documentation → user guides, README updates
-11. **Yuki** runs retrospective analysis → `docs/{project}-retrospective.md`
 
-Each step produces a doc in `docs/` that the next person reads. Don't skip steps — Andrei needs Thomas's scope to define the tech approach, Robert needs both to design within constraints, and the developers need all three to implement correctly.
+**Phase 3 — Architecture**
+3. **Andrei (Arch)** defines tech approach; **Kai** advises on AI parts → `docs/{project}-tech-approach.md`
+4. **Early QA notification** (conditional) — if any file is classified **Restructure**, notify Enzo so he can plan regression cases. Non-blocking.
+
+**Phase 4 — Design + Backend + Messaging (parallel)**
+After Andrei finishes, these run simultaneously — they don't depend on each other:
+- **Robert (Designer)** writes design spec → `docs/{project}-design-spec.md`
+- **Jonah + Sam (BE)** build backend (APIs, schemas, business logic). They need requirements + tech approach only, not the design spec. API contracts are defined in the tech approach.
+- **Priya (Marketer)** writes messaging/copy → `docs/{project}-messaging.md`. She needs requirements, not working code.
+- **Derek (Integrations)** wires up third-party services if needed (needs tech approach)
+- **Milo (DevOps)** sets up infrastructure/CI if needed (needs tech approach)
+- **Howard (Payments)** builds payment flows if needed (needs requirements + tech approach)
+
+**Phase 5 — Frontend/Mobile Implementation**
+5. **Alice (FE) + Zara & Leo (Mobile)** implement once Robert's design spec AND the backend API are ready. **Nina** (Interactions), **Soren** (Responsive), and **Amara** (A11y) contribute during or after implementation for UI-heavy features.
+
+**Phase 6 — Review**
+6. **Robert (Designer)** reviews implementation against design spec — lightweight visual check. For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
+
+**Phase 7 — QA + Docs (parallel)**
+7. **Enzo (QA)** gives pass/fail verdict — release gate, failures block shipping. If he received an early notification in step 4, he arrives with pre-planned regression cases.
+8. **Nadia (Writer)** starts documentation in parallel with QA → user guides, README updates. Revises if QA causes changes.
+
+**Phase 8 — Retrospective**
+9. **Yuki (Analyst)** runs retrospective analysis → `docs/{project}-retrospective.md`. Can begin data collection during QA.
+
+**Ravi (Strategist)** is available at any phase for creative direction, business model input, or challenging assumptions.
+
+**Critical path:** Research → Thomas → Andrei → Robert → Alice → Robert review → Enzo → Ship. Jonah, Sam, Priya, Nadia, Derek, Milo, and Howard are off the critical path.
+
+Each step produces a doc in `docs/` that downstream agents read. Don't skip steps — Andrei needs Thomas's scope, Robert needs both, and Alice needs all three. Jonah only needs requirements + tech approach.
 
 ## Conventions
 

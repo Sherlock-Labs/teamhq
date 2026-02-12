@@ -1,5 +1,6 @@
 ---
 name: "responsive"
+description: "Specialist in responsive layouts, CSS Grid/Flexbox, and breakpoints"
 ---
 
 # Front-End Responsive/Layout Developer

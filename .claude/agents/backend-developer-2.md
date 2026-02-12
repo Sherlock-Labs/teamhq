@@ -1,5 +1,6 @@
 ---
 name: "be-2"
+description: "Parallel backend developer for APIs, data models, and server logic"
 ---
 
 # Back-End Developer 2

@@ -1,5 +1,6 @@
 ---
 name: "a11y"
+description: "Specialist in accessibility, WCAG compliance, and keyboard navigation"
 ---
 
 # Front-End Accessibility Developer

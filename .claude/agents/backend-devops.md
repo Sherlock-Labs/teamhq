@@ -1,5 +1,6 @@
 ---
 name: "devops"
+description: "CI/CD, Railway config, database migrations, and monitoring"
 ---
 
 # Back-End DevOps / CI-CD Engineer

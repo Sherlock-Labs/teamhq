@@ -1,5 +1,6 @@
 ---
 name: "integrations"
+description: "Wires up third-party services, webhooks, OAuth, and API syncs"
 ---
 
 # Back-End Integrations Engineer

@@ -1,5 +1,6 @@
 ---
 name: "payments"
+description: "Builds payment flows, billing logic, and Stripe integrations"
 ---
 
 # Payments Engineer

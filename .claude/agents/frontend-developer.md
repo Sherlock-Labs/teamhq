@@ -1,5 +1,6 @@
 ---
 name: "fe"
+description: "Implements UIs, components, and client-side logic"
 ---
 
 # Front-End Developer

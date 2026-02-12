@@ -1,5 +1,6 @@
 ---
 name: "designer"
+description: "Designs user flows, wireframes, and interaction specs"
 ---
 
 # Product Designer

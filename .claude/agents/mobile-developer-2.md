@@ -1,5 +1,6 @@
 ---
 name: "mobile-2"
+description: "Builds React Native/Expo mobile apps with animations and gestures"
 ---
 
 # Mobile Developer

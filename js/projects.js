@@ -139,6 +139,10 @@
   var sessionIsLive = false;           // Whether the current session is live (affects panel defaults)
   var sessionRunnerState = 'unknown';  // 'processing' | 'idle' | 'ended' | 'unknown'
 
+  // Work Log state
+  var workLogSessions = [];             // Session metadata from work-log response (for dividers)
+  var workLogTotalDuration = 0;         // Accumulated duration across all sessions (ms)
+
   // Agent tracking state
   var activeAgents = {};   // taskId -> agentSlug (e.g., 'pm')
   var currentAgent = null; // Most recently spawned agent slug
@@ -260,15 +264,6 @@
     });
   }
 
-  function apiListSessions(projectId) {
-    return fetch(API_BASE + '/' + encodeURIComponent(projectId) + '/sessions')
-      .then(function (res) {
-        if (!res.ok) throw new Error('Failed to load sessions');
-        return res.json();
-      })
-      .then(function (data) { return data.sessions; });
-  }
-
   function apiSendMessage(projectId, sessionId, message) {
     return fetch(
       API_BASE + '/' + encodeURIComponent(projectId) +
@@ -282,6 +277,16 @@
       if (!res.ok) return res.json().then(function (err) { throw err; });
       return res.json();
     });
+  }
+
+  function apiGetWorkLog(projectId, offset) {
+    var url = API_BASE + '/' + encodeURIComponent(projectId) + '/work-log';
+    if (offset) url += '?offset=' + offset;
+    return fetch(url)
+      .then(function (res) {
+        if (!res.ok) throw new Error('Failed to load work log');
+        return res.json();
+      });
   }
 
   // --- Rendering ---
@@ -309,6 +314,7 @@
         details.setAttribute('aria-hidden', 'false');
         if (detailCache[expandedId]) {
           renderDetailView(expandedId);
+          loadWorkLog(expandedId);
         }
       }
     }
@@ -358,7 +364,7 @@
             '<div class="project-card__meta">' +
               avatarsHTML +
               pipelineStatsHTML +
-              (project.activeSessionId ? '<span class="project-card__running-indicator" title="Session running"></span>' : '') +
+              (project.activeSessionId ? '<span class="project-card__running-indicator" title="Working"></span>' : '') +
               '<span class="project-card__badge" data-status="' + escapeAttr(project.status) + '">' + statusLabel + '</span>' +
               '<span class="project-card__date">' + escapeHTML(dateStr) + '</span>' +
             '</div>' +
@@ -376,18 +382,9 @@
     );
   }
 
-  function renderDetailViewAndSessions(id) {
+  function renderDetailViewAndWorkLog(id) {
     renderDetailView(id);
-    // Re-init session UI if this project has sessions
-    var project = detailCache[id] || findProject(id);
-    if (project && (project.status === 'in-progress' || project.status === 'completed')) {
-      // If we had an active SSE for this project, reconnect
-      if (activeSessionProjectId === id && viewingSessionId) {
-        var isLive = project.activeSessionId === viewingSessionId;
-        connectToSession(id, viewingSessionId, isLive);
-      }
-      loadSessionHistory(id);
-    }
+    loadWorkLog(id);
   }
 
   function renderDetailView(id) {
@@ -433,19 +430,21 @@
     if (project.status === 'planned') {
       html += '<button class="detail__start-btn" type="button">Start Work</button>';
     } else if (project.status === 'in-progress' || project.status === 'completed') {
-      html += renderSessionControls(project);
+      html += renderWorkControls(project);
     }
     html += '</div>';
 
-    // Session log placeholder (will be populated by SSE or session load)
+    // Work Log placeholder (populated by loadWorkLog)
     html += '<div class="session-log-container" data-project-id="' + escapeAttr(id) + '"></div>';
-
-    // Session history placeholder (populated async)
-    html += '<div class="session-history-container" data-project-id="' + escapeAttr(id) + '"></div>';
 
     // Pipeline section (conditional — only when pipeline tasks exist)
     if (project.pipeline && project.pipeline.tasks && project.pipeline.tasks.length > 0) {
       html += renderPipelineSection(project.pipeline.tasks);
+    }
+
+    // Work items section placeholder (rendered async after innerHTML set)
+    if (project.slug) {
+      html += '<div class="detail__work-items-container" data-project-id="' + escapeAttr(id) + '"></div>';
     }
 
     // Progress notes
@@ -480,6 +479,14 @@
 
     // Render spreadsheet data section (after Progress Notes)
     renderDataSection(id, inner);
+
+    // Render work items section (after Pipeline, before Progress Notes)
+    if (project.slug) {
+      var wiContainer = inner.querySelector('.detail__work-items-container[data-project-id="' + CSS.escape(id) + '"]');
+      if (wiContainer) {
+        renderWorkItemsSection(id, project.slug, wiContainer);
+      }
+    }
   }
 
   // ===================================================================
@@ -656,12 +663,26 @@
     var ariaAttrs = expandable ? ' aria-expanded="false" type="button"' : '';
     var expandableClass = expandable ? ' task-item--expandable' : '';
 
+    // Handle multi-agent rows (e.g. "Nina, Soren, Amara")
+    var names = task.agent.split(',');
+    var avatarHTML;
+    if (names.length > 1) {
+      avatarHTML = '<div class="task-item__avatar task-item__avatar--group" aria-hidden="true">';
+      for (var i = 0; i < names.length; i++) {
+        var name = names[i].trim().toLowerCase();
+        avatarHTML += '<img class="task-item__avatar-stacked" src="img/avatars/' + name + '.svg" alt="" width="20" height="20">';
+      }
+      avatarHTML += '</div>';
+    } else {
+      avatarHTML = '<div class="task-item__avatar" aria-hidden="true">' +
+        '<img src="img/avatars/' + agentKey + '.svg" alt="" width="32" height="32" style="width:100%;height:100%;border-radius:50%;">' +
+      '</div>';
+    }
+
     return (
       '<div class="task-item' + expandableClass + '">' +
         '<' + headerTag + ' class="task-item__header"' + ariaAttrs + '>' +
-          '<div class="task-item__avatar" aria-hidden="true">' +
-            '<img src="img/avatars/' + agentKey + '.svg" alt="" width="32" height="32" style="width:100%;height:100%;border-radius:50%;">' +
-          '</div>' +
+          avatarHTML +
           '<div class="task-item__content">' +
             '<div class="task-item__agent-line">' +
               '<span class="task-item__agent">' + escapeHTML(task.agent) + '</span>' +
@@ -836,6 +857,7 @@
   // --- Spreadsheet Data Section ---
 
   var _spreadsheetInstances = {}; // projectId -> [TeamHQSpreadsheet]
+  var _workItemGrids = {};         // projectId -> agGrid API instance
 
   function renderDataSection(projectId, containerEl) {
     // Clean up previous instances for this project
@@ -945,21 +967,20 @@
 
   // --- Session Rendering ---
 
-  function renderSessionControls(project) {
+  function renderWorkControls(project) {
     var hasActiveSession = !!project.activeSessionId;
+    var hasPastSessions = workLogSessions.length > 0;
     var html = '<div class="detail__session-controls">';
 
     if (hasActiveSession) {
-      // State C: Running
       html +=
         '<div class="detail__session-status">' +
           '<span class="detail__session-indicator detail__session-indicator--running"></span>' +
-          '<span class="detail__session-status-text">Session running</span>' +
+          '<span class="detail__session-status-text">Working</span>' +
         '</div>' +
-        '<button class="detail__stop-btn" type="button" data-session-id="' + escapeAttr(project.activeSessionId) + '">Stop Session</button>';
+        '<button class="detail__stop-btn" type="button" data-session-id="' + escapeAttr(project.activeSessionId) + '">Stop</button>';
     } else {
-      // State B or D: Ready or completed
-      var label = viewingSessionId ? 'Run New Session' : 'Run Session';
+      var label = 'Continue Work';
       html += '<button class="detail__run-btn" type="button">' + label + '</button>';
     }
 
@@ -971,79 +992,95 @@
     return html;
   }
 
-  function renderSessionLog(sessionMeta, isLive) {
-    var titleText = isLive ? 'Live Session' : 'Session Log';
-    var timerClass = isLive ? ' session-log__timer--live' : '';
-    var timerText = isLive ? '0:00' : (sessionMeta && sessionMeta.durationMs ? formatDurationShort(sessionMeta.durationMs) : '');
-    var sessionId = sessionMeta ? sessionMeta.id : '';
+  function renderWorkLogContainer(options) {
+    // options: { totalDurationMs, isLive, loading, empty, error }
+    var opts = options || {};
+    var timerClass = opts.isLive ? ' session-log__timer--live' : '';
+    var timerText = '';
+    if (opts.totalDurationMs) {
+      timerText = formatDurationShort(opts.totalDurationMs);
+    } else if (opts.isLive) {
+      timerText = '0:00';
+    }
 
-    return (
-      '<div class="session-log" data-session-id="' + escapeAttr(sessionId) + '">' +
-        '<div class="session-log__header">' +
-          '<span class="session-log__title">' + titleText + '</span>' +
-          '<span class="session-log__timer' + timerClass + '">' + timerText + '</span>' +
-        '</div>' +
-        '<div class="session-panels">' +
+    var bodyContent = '';
+    if (opts.loading) {
+      bodyContent =
+        '<div class="session-log__loading">' +
+          '<span class="session-log__loading-text">Loading work log...</span>' +
+        '</div>';
+    } else if (opts.error) {
+      bodyContent =
+        '<div class="session-log__error">' +
+          '<p class="session-log__error-text">Failed to load work log.</p>' +
+        '</div>';
+    } else if (opts.empty) {
+      bodyContent =
+        '<div class="session-log__empty">' +
+          '<p class="session-log__empty-text">No work logged yet.</p>' +
+          '<p class="session-log__empty-subtext">Start work to begin tracking progress.</p>' +
+        '</div>';
+    } else {
+      bodyContent =
+        '<div class="session-log__events"></div>' +
+        '<div class="session-log__jump" aria-hidden="true">' +
+          '<button class="session-log__jump-btn" type="button">Jump to latest</button>' +
+        '</div>';
+    }
+
+    var panelsHtml = (!opts.loading && !opts.error && !opts.empty)
+      ? '<div class="session-panels">' +
           '<div class="pipeline-indicator" aria-label="Pipeline progress"></div>' +
           '<div class="team-activity" aria-hidden="true"></div>' +
           '<div class="file-deliverables" aria-hidden="true"></div>' +
-        '</div>' +
-        '<div class="session-log__body" role="log" aria-live="polite">' +
-          '<div class="session-log__events"></div>' +
-          '<div class="session-log__jump" aria-hidden="true">' +
-            '<button class="session-log__jump-btn" type="button">Jump to latest</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="session-log__input-bar" aria-hidden="true">' +
+        '</div>'
+      : '';
+
+    var inputBarHtml = (!opts.loading && !opts.error && !opts.empty)
+      ? '<div class="session-log__input-bar" aria-hidden="true">' +
           '<input class="session-log__input" type="text" placeholder="Reply to the team..." autocomplete="off" maxlength="10000" aria-label="Reply to the session">' +
           '<button class="session-log__send-btn" type="button" disabled>Send</button>' +
           '<span class="session-log__input-error" role="alert" aria-hidden="true"></span>' +
+        '</div>'
+      : '';
+
+    return (
+      '<div class="session-log" aria-label="Work Log">' +
+        '<div class="session-log__header">' +
+          '<span class="session-log__title">Work Log</span>' +
+          '<span class="session-log__timer' + timerClass + '">' + timerText + '</span>' +
         '</div>' +
+        panelsHtml +
+        '<div class="session-log__body" role="log" aria-live="polite">' +
+          bodyContent +
+        '</div>' +
+        inputBarHtml +
       '</div>'
     );
   }
 
-  function renderSessionHistory(sessions, activeId) {
-    if (!sessions || sessions.length === 0) {
-      return (
-        '<div class="session-history">' +
-          '<div class="session-history__header">' +
-            '<span class="detail__label">Sessions</span>' +
-          '</div>' +
-          '<div class="session-history__empty">' +
-            '<p class="session-history__empty-text">No sessions yet.</p>' +
-          '</div>' +
-        '</div>'
-      );
+  function renderSessionDivider(sessionMeta) {
+    var dateStr = formatSessionDate(sessionMeta.startedAt);
+    var durationStr = sessionMeta.durationMs ? formatDurationShort(sessionMeta.durationMs) : '';
+    var ariaLabel = 'Work block started ' + dateStr;
+    if (durationStr) ariaLabel += ', duration ' + durationStr;
+
+    var labelContent = '<span class="session-divider__date">' + escapeHTML(dateStr) + '</span>';
+    if (durationStr) {
+      labelContent +=
+        '<span class="session-divider__dot" aria-hidden="true"></span>' +
+        '<span class="session-divider__duration">' + escapeHTML(durationStr) + '</span>';
     }
 
-    var hasLog = viewingSessionId || activeSessionId;
-    var extraClass = hasLog ? ' session-history--with-log' : '';
-
-    var html =
-      '<div class="session-history' + extraClass + '">' +
-        '<div class="session-history__header">' +
-          '<span class="detail__label">Sessions</span>' +
-          '<span class="session-history__count">' + sessions.length + ' session' + (sessions.length !== 1 ? 's' : '') + '</span>' +
+    return (
+      '<div class="session-divider" role="separator" aria-label="' + escapeAttr(ariaLabel) + '">' +
+        '<div class="session-divider__line"></div>' +
+        '<div class="session-divider__label">' +
+          labelContent +
         '</div>' +
-        '<div class="session-history__list">';
-
-    for (var i = 0; i < sessions.length; i++) {
-      var s = sessions[i];
-      var isActive = s.id === activeId;
-      var activeClass = isActive ? ' session-history__item--active' : '';
-      html +=
-        '<button class="session-history__item' + activeClass + '" type="button" data-session-id="' + escapeAttr(s.id) + '">' +
-          '<span class="session-history__item-status" data-status="' + escapeAttr(s.status) + '"></span>' +
-          '<span class="session-history__item-date">' + escapeHTML(formatSessionDate(s.startedAt)) + '</span>' +
-          '<span class="session-history__item-duration">' + (s.durationMs ? formatDurationShort(s.durationMs) : '--') + '</span>' +
-          '<span class="session-history__item-events">' + (s.eventCount || 0) + ' events</span>' +
-          '<span class="session-history__item-chevron" aria-hidden="true"></span>' +
-        '</button>';
-    }
-
-    html += '</div></div>';
-    return html;
+        '<div class="session-divider__line"></div>' +
+      '</div>'
+    );
   }
 
   function renderSessionEvent(event) {
@@ -1337,39 +1374,19 @@
 
   // --- Session SSE ---
 
-  function connectToSession(projectId, sessionId, isLive) {
-    disconnectSession();
+  function connectWorkLogSSE(projectId, sessionId, offset) {
+    // Close any existing SSE (but don't reset state)
+    if (activeEventSource) {
+      activeEventSource.close();
+      activeEventSource = null;
+    }
 
     activeSessionProjectId = projectId;
     activeSessionId = sessionId;
-    viewingSessionId = sessionId;
-    sessionEvents = [];
-    lastEventId = -1;
-    autoScrollEnabled = true;
-    currentStreamingEvent = null;
-
-    var logContainer = getLogContainer(projectId);
-    if (!logContainer) return;
-
-    sessionIsLive = isLive;
-    sessionRunnerState = isLive ? 'processing' : 'ended';
-    logContainer.innerHTML = renderSessionLog(null, isLive);
-    renderPipelineIndicator(projectId);
-
-    if (isLive) {
-      startSessionTimer(projectId);
-    } else {
-      // For historical sessions, set sessionStartTime from first event
-      // (will be corrected when first event arrives)
-      sessionStartTime = null;
-      // Mark as completed so spinners are hidden
-      var sessionLogEl = logContainer.querySelector('.session-log');
-      if (sessionLogEl) {
-        sessionLogEl.setAttribute('data-session-status', 'completed');
-      }
-    }
+    sessionRunnerState = 'processing';
 
     var url = API_BASE + '/' + encodeURIComponent(projectId) + '/sessions/' + encodeURIComponent(sessionId) + '/events';
+    if (offset > 0) url += '?offset=' + offset;
     activeEventSource = new EventSource(url);
 
     activeEventSource.addEventListener('session_event', function (e) {
@@ -1386,15 +1403,8 @@
     });
 
     activeEventSource.onerror = function () {
-      // EventSource will auto-reconnect for live sessions.
-      // For completed sessions, close it.
-      if (!isLive && activeEventSource) {
-        activeEventSource.close();
-        activeEventSource = null;
-      }
+      // EventSource will auto-reconnect
     };
-
-    setupAutoScroll(projectId);
   }
 
   function disconnectSession() {
@@ -1427,6 +1437,10 @@
     lastTaskOutputAgent = null;
     deliverableFiles = {};
     deliverableOrder = [];
+
+    // Reset work log state
+    workLogSessions = [];
+    workLogTotalDuration = 0;
   }
 
   function flushGroup(eventsContainer) {
@@ -1689,23 +1703,21 @@
   function handleSessionDone(projectId, status, durationMs) {
     stopSessionTimer();
     sessionRunnerState = 'ended';
+    sessionIsLive = false;
     hideInputBar(projectId);
 
-    // Update timer display and mark session as done
+    // Update work log total duration with the completed session
+    if (durationMs) {
+      workLogTotalDuration += durationMs;
+    }
+
+    // Update timer display
     var logEl = getLogContainer(projectId);
     if (logEl) {
-      var sessionLogEl = logEl.querySelector('.session-log');
-      if (sessionLogEl) {
-        sessionLogEl.setAttribute('data-session-status', status || 'completed');
-      }
       var timerEl = logEl.querySelector('.session-log__timer');
       if (timerEl) {
         timerEl.classList.remove('session-log__timer--live');
-        timerEl.textContent = durationMs ? formatDurationShort(durationMs) : '';
-      }
-      var titleEl = logEl.querySelector('.session-log__title');
-      if (titleEl) {
-        titleEl.textContent = 'Session Log';
+        timerEl.textContent = workLogTotalDuration ? formatDurationShort(workLogTotalDuration) : '';
       }
     }
 
@@ -1725,14 +1737,11 @@
       cached.activeSessionId = null;
     }
 
+    activeSessionId = null;
+
     // Re-render controls and card (remove running indicator)
+    // renderList() handles renderDetailView + loadWorkLog for expanded card
     renderList();
-    if (expandedId === projectId) {
-      renderDetailView(projectId);
-      // Reconnect to view the completed session log
-      loadSessionLog(projectId, viewingSessionId);
-      loadSessionHistory(projectId);
-    }
   }
 
   // --- Session Log Helpers ---
@@ -2072,7 +2081,7 @@
     sendBtn.disabled = true;
     clearInputError(projectId);
 
-    apiSendMessage(activeSessionProjectId, viewingSessionId, message)
+    apiSendMessage(activeSessionProjectId, activeSessionId, message)
       .then(function () {
         // Success: clear input. The SSE events (user_message, turn_start)
         // will hide the input bar and render the message.
@@ -2098,25 +2107,20 @@
 
   // --- Session Timer ---
 
-  function startSessionTimer(projectId) {
+  function startWorkLogTimer(projectId, liveSessionStartMs) {
     stopSessionTimer();
 
-    var cached = detailCache[projectId];
-    if (cached && cached.activeSessionId) {
-      // Try to get the session startedAt time
-      // For now, use current time as fallback
-      sessionStartTime = Date.now();
-    } else {
-      sessionStartTime = Date.now();
-    }
+    // Use provided session start time or current time
+    var timerStart = liveSessionStartMs || Date.now();
 
     sessionTimerInterval = setInterval(function () {
-      var elapsed = Date.now() - sessionStartTime;
+      var elapsed = Date.now() - timerStart;
+      var total = workLogTotalDuration + elapsed;
       var logContainer = getLogContainer(projectId);
       if (!logContainer) { stopSessionTimer(); return; }
       var timerEl = logContainer.querySelector('.session-log__timer');
       if (timerEl) {
-        timerEl.textContent = formatTimerValue(elapsed);
+        timerEl.textContent = formatDurationShort(total);
       }
     }, 1000);
   }
@@ -2127,13 +2131,6 @@
       sessionTimerInterval = null;
     }
     sessionStartTime = null;
-  }
-
-  function formatTimerValue(ms) {
-    var totalSeconds = Math.floor(ms / 1000);
-    var minutes = Math.floor(totalSeconds / 60);
-    var seconds = totalSeconds % 60;
-    return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   }
 
   // --- Session Actions ---
@@ -2162,21 +2159,15 @@
         }
 
         // Re-render card list (shows running indicator)
+        // renderList() handles renderDetailView + loadWorkLog for expanded card
         renderList();
-
-        // Re-render detail view and connect
-        if (expandedId === projectId) {
-          renderDetailView(projectId);
-          connectToSession(projectId, session.id, true);
-          loadSessionHistory(projectId);
-        }
       })
       .catch(function (err) {
         if (runBtn) {
-          runBtn.textContent = 'Run Session';
+          runBtn.textContent = 'Continue Work';
           runBtn.disabled = false;
         }
-        var msg = (err && err.error) || 'Failed to start session';
+        var msg = (err && err.error) || 'Failed to start work';
         showToast(msg, true);
       });
   }
@@ -2196,36 +2187,10 @@
       })
       .catch(function () {
         if (stopBtn) {
-          stopBtn.textContent = 'Stop Session';
+          stopBtn.textContent = 'Stop';
           stopBtn.disabled = false;
         }
-        showToast('Failed to stop session', true);
-      });
-  }
-
-  function loadSessionLog(projectId, sessionId) {
-    viewingSessionId = sessionId;
-    var logContainer = getLogContainer(projectId);
-    if (!logContainer) return;
-
-    // Check if this is a live session
-    var project = detailCache[projectId] || findProject(projectId);
-    var isLive = project && project.activeSessionId === sessionId;
-
-    connectToSession(projectId, sessionId, isLive);
-  }
-
-  function loadSessionHistory(projectId) {
-    var histContainer = listContainer.querySelector('.session-history-container[data-project-id="' + CSS.escape(projectId) + '"]');
-    if (!histContainer) return;
-
-    apiListSessions(projectId)
-      .then(function (sessions) {
-        var displayedId = viewingSessionId || (findProject(projectId) || {}).activeSessionId;
-        histContainer.innerHTML = renderSessionHistory(sessions, displayedId);
-      })
-      .catch(function () {
-        histContainer.innerHTML = '';
+        showToast('Failed to stop work', true);
       });
   }
 
@@ -2234,10 +2199,12 @@
   function formatDurationShort(ms) {
     if (!ms) return '--';
     var totalSeconds = Math.floor(ms / 1000);
-    var minutes = Math.floor(totalSeconds / 60);
+    var hours = Math.floor(totalSeconds / 3600);
+    var minutes = Math.floor((totalSeconds % 3600) / 60);
     var seconds = totalSeconds % 60;
-    if (minutes === 0) return seconds + 's';
-    return minutes + 'm ' + seconds + 's';
+    if (hours > 0) return hours + 'h ' + minutes + 'm ' + seconds + 's';
+    if (minutes > 0) return minutes + 'm ' + seconds + 's';
+    return seconds + 's';
   }
 
   function formatSessionDate(dateStr) {
@@ -2358,7 +2325,7 @@
 
     if (detailCache[id]) {
       renderDetailView(id);
-      initSessionsForProject(id);
+      loadWorkLog(id);
     } else {
       // Show loading
       var inner = card.querySelector('.project-card__details-inner');
@@ -2375,7 +2342,7 @@
           }
           if (expandedId === id) {
             renderDetailView(id);
-            initSessionsForProject(id);
+            loadWorkLog(id);
           }
         })
         .catch(function () {
@@ -2393,6 +2360,9 @@
       disconnectSession();
     }
 
+    // Clean up work items grid
+    destroyWorkItemGrid(id);
+
     var card = listContainer.querySelector('[data-project-id="' + CSS.escape(id) + '"]');
     if (card) {
       var header = card.querySelector('.project-card__header');
@@ -2403,17 +2373,158 @@
     if (expandedId === id) expandedId = null;
   }
 
-  function initSessionsForProject(id) {
-    var project = detailCache[id] || findProject(id);
+  function loadWorkLog(projectId) {
+    var project = detailCache[projectId] || findProject(projectId);
     if (!project) return;
 
-    // If project has an active session, connect to its SSE stream
-    if (project.activeSessionId) {
-      connectToSession(id, project.activeSessionId, true);
-    }
+    // Only show work log for in-progress or completed projects
+    if (project.status !== 'in-progress' && project.status !== 'completed') return;
 
-    // Load session history
-    loadSessionHistory(id);
+    // Reset SSE connection (don't reset panel state yet — loadWorkLog will rebuild)
+    if (activeEventSource) {
+      activeEventSource.close();
+      activeEventSource = null;
+    }
+    stopSessionTimer();
+    activeSessionProjectId = projectId;
+    activeSessionId = null;
+    sessionEvents = [];
+    lastEventId = -1;
+    autoScrollEnabled = true;
+    currentStreamingEvent = null;
+
+    // Reset tracking state
+    activeAgents = {};
+    currentAgent = null;
+    lastTaskToolName = null;
+    currentGroup = null;
+    lastToolClassification = null;
+    sessionRunnerState = 'unknown';
+
+    // Reset panel state
+    sessionIsLive = !!project.activeSessionId;
+    pipelinePhase = null;
+    completedPhases = {};
+    teamAgents = [];
+    teamAgentIndex = {};
+    lastTaskOutputAgent = null;
+    deliverableFiles = {};
+    deliverableOrder = [];
+
+    // Reset work log state
+    workLogSessions = [];
+    workLogTotalDuration = 0;
+
+    var logContainer = getLogContainer(projectId);
+    if (!logContainer) return;
+
+    // Show loading state
+    logContainer.innerHTML = renderWorkLogContainer({ loading: true });
+
+    apiGetWorkLog(projectId)
+      .then(function (data) {
+        if (expandedId !== projectId) return; // project collapsed during fetch
+
+        workLogSessions = data.sessions || [];
+        workLogTotalDuration = 0;
+        for (var i = 0; i < workLogSessions.length; i++) {
+          if (workLogSessions[i].durationMs) {
+            workLogTotalDuration += workLogSessions[i].durationMs;
+          }
+        }
+
+        var events = data.events || [];
+        var isLive = !!project.activeSessionId;
+
+        if (events.length === 0 && !isLive) {
+          // Empty state
+          logContainer.innerHTML = renderWorkLogContainer({ empty: true });
+          return;
+        }
+
+        // Render work log container
+        sessionIsLive = isLive;
+        logContainer.innerHTML = renderWorkLogContainer({
+          totalDurationMs: workLogTotalDuration,
+          isLive: isLive
+        });
+        renderPipelineIndicator(projectId);
+
+        // Find live session start time for timer
+        var liveSessionStartMs = null;
+        if (isLive) {
+          for (var i = 0; i < workLogSessions.length; i++) {
+            if (workLogSessions[i].id === project.activeSessionId) {
+              liveSessionStartMs = new Date(workLogSessions[i].startedAt).getTime();
+              break;
+            }
+          }
+          startWorkLogTimer(projectId, liveSessionStartMs);
+        }
+
+        // Process historical events with session dividers
+        var lastSessionIndex = -1;
+        sessionStartTime = events.length > 0 ? new Date(events[0].timestamp).getTime() : null;
+
+        var eventsContainer = getEventsContainer(projectId);
+        for (var i = 0; i < events.length; i++) {
+          var event = events[i];
+
+          // Insert session divider when session changes
+          if (event.sessionIndex !== lastSessionIndex) {
+            var sessionMeta = workLogSessions[event.sessionIndex];
+            if (sessionMeta && eventsContainer) {
+              var div = document.createElement('div');
+              div.innerHTML = renderSessionDivider(sessionMeta);
+              var el = div.firstChild;
+              if (el) eventsContainer.appendChild(el);
+            }
+            lastSessionIndex = event.sessionIndex;
+          }
+
+          // Process event through panel updaters and render
+          appendSessionEvent(projectId, event);
+        }
+
+        // Flush any pending group
+        if (eventsContainer) flushGroup(eventsContainer);
+
+        // Connect SSE for active session
+        if (isLive && project.activeSessionId) {
+          var activeSessionEventCount = 0;
+          for (var i = 0; i < events.length; i++) {
+            if (events[i].sessionId === project.activeSessionId) {
+              activeSessionEventCount++;
+            }
+          }
+
+          // If no events from active session yet, insert a divider for it
+          if (activeSessionEventCount === 0 && eventsContainer) {
+            for (var j = 0; j < workLogSessions.length; j++) {
+              if (workLogSessions[j].id === project.activeSessionId) {
+                var div = document.createElement('div');
+                div.innerHTML = renderSessionDivider(workLogSessions[j]);
+                var el = div.firstChild;
+                if (el) eventsContainer.appendChild(el);
+                break;
+              }
+            }
+          }
+
+          connectWorkLogSSE(projectId, project.activeSessionId, activeSessionEventCount);
+        }
+
+        setupAutoScroll(projectId);
+
+        // Scroll to bottom for live sessions, top for historical
+        if (isLive) {
+          doAutoScroll(projectId);
+        }
+      })
+      .catch(function () {
+        if (expandedId !== projectId) return;
+        logContainer.innerHTML = renderWorkLogContainer({ error: true });
+      });
   }
 
   function mergeProjectSummary(summary, full) {
@@ -2778,14 +2889,8 @@
         }
 
         // Re-render card list (shows running indicator, in-progress badge)
+        // renderList() handles renderDetailView + loadWorkLog for expanded card
         renderList();
-
-        // Expand card, connect to live session, load history
-        if (expandedId === id) {
-          renderDetailView(id);
-          connectToSession(id, session.id, true);
-          loadSessionHistory(id);
-        }
       })
       .catch(function (err) {
         // Restore the Start Work button
@@ -2822,7 +2927,7 @@
       cached.notes.unshift(tempNote);
     }
     input.value = '';
-    renderDetailViewAndSessions(projectId);
+    renderDetailViewAndWorkLog(projectId);
 
     apiAddNote(projectId, content)
       .then(function (note) {
@@ -2830,14 +2935,14 @@
           var idx = cached.notes.indexOf(tempNote);
           if (idx !== -1) cached.notes[idx] = note;
         }
-        renderDetailViewAndSessions(projectId);
+        renderDetailViewAndWorkLog(projectId);
       })
       .catch(function () {
         if (cached) {
           var idx = cached.notes.indexOf(tempNote);
           if (idx !== -1) cached.notes.splice(idx, 1);
         }
-        renderDetailViewAndSessions(projectId);
+        renderDetailViewAndWorkLog(projectId);
         showToast('Failed to add note. Please try again.', true);
       });
   }
@@ -2859,12 +2964,12 @@
 
     // Optimistic
     cached.notes.splice(noteIdx, 1);
-    renderDetailViewAndSessions(projectId);
+    renderDetailViewAndWorkLog(projectId);
 
     apiDeleteNote(projectId, noteId)
       .catch(function () {
         cached.notes.splice(noteIdx, 0, note);
-        renderDetailViewAndSessions(projectId);
+        renderDetailViewAndWorkLog(projectId);
         showToast('Failed to delete note. Please try again.', true);
       });
   }
@@ -3121,22 +3226,6 @@
       return;
     }
 
-    // Session history item
-    var histItem = e.target.closest('.session-history__item');
-    if (histItem) {
-      var card = histItem.closest('.project-card');
-      var projectId = card.getAttribute('data-project-id');
-      var sessionId = histItem.getAttribute('data-session-id');
-      loadSessionLog(projectId, sessionId);
-      // Update active state in history
-      var allItems = card.querySelectorAll('.session-history__item');
-      for (var j = 0; j < allItems.length; j++) {
-        allItems[j].classList.remove('session-history__item--active');
-      }
-      histItem.classList.add('session-history__item--active');
-      return;
-    }
-
     // Send message button (CEO response input)
     var sendBtn = e.target.closest('.session-log__send-btn');
     if (sendBtn && !sendBtn.disabled) {
@@ -3296,5 +3385,666 @@
         renderList();
       });
   });
+
+  // ===================================================================
+  // Work Items Section
+  // ===================================================================
+
+  var _agGridLoaded = false;
+  var _agGridLoading = null;
+  var _wiSaveTimers = {};        // projectId -> timeout id
+  var _wiImportOverlay = null;   // single shared import modal element
+  var _wiDeleteTimers = {};      // rowId -> timeout id (auto-dismiss confirm)
+
+  var WI_STATUS_ORDER = { 'in-progress': 0, 'planned': 1, 'deferred': 2, 'completed': 3 };
+  var WI_STATUS_BADGE = { 'planned': 'muted', 'in-progress': 'accent', 'completed': 'success', 'deferred': 'warning' };
+  var WI_PRIORITY_BADGE = { 'high': 'error', 'medium': 'warning', 'low': 'muted' };
+
+  function ensureAgGrid() {
+    if (_agGridLoaded || typeof agGrid !== 'undefined') {
+      _agGridLoaded = true;
+      return Promise.resolve();
+    }
+    if (_agGridLoading) return _agGridLoading;
+    _agGridLoading = new Promise(function (resolve, reject) {
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js';
+      script.onload = function () { _agGridLoaded = true; resolve(); };
+      script.onerror = function () { _agGridLoading = null; reject(new Error('AG Grid failed to load')); };
+      document.head.appendChild(script);
+    });
+    return _agGridLoading;
+  }
+
+  function destroyWorkItemGrid(projectId) {
+    if (_workItemGrids[projectId]) {
+      _workItemGrids[projectId].destroy();
+      delete _workItemGrids[projectId];
+    }
+    if (_wiSaveTimers[projectId]) {
+      clearTimeout(_wiSaveTimers[projectId]);
+      delete _wiSaveTimers[projectId];
+    }
+  }
+
+  function wiStatusComparator(a, b) {
+    var oa = WI_STATUS_ORDER[a] !== undefined ? WI_STATUS_ORDER[a] : 99;
+    var ob = WI_STATUS_ORDER[b] !== undefined ? WI_STATUS_ORDER[b] : 99;
+    return oa - ob;
+  }
+
+  function wiBadgeCellRenderer(params, badgeMap) {
+    if (!params.value) return '';
+    var variant = badgeMap[params.value] || 'muted';
+    var el = document.createElement('span');
+    el.className = 'thq-badge thq-badge--' + variant;
+    el.textContent = params.value;
+    return el;
+  }
+
+  function wiActionCellRenderer(params) {
+    var btn = document.createElement('button');
+    btn.className = 'wi-action-delete';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Delete work item');
+    btn.textContent = '\u00d7';
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var rowNode = params.node;
+      var data = rowNode.data;
+      if (data.title && data.title.trim()) {
+        wiShowDeleteConfirm(params);
+      } else {
+        wiDeleteRow(params);
+      }
+    });
+    return btn;
+  }
+
+  function wiShowDeleteConfirm(params) {
+    var rowNode = params.node;
+    var rowId = rowNode.data.id;
+    var api = params.api;
+
+    // Find the AG Grid row DOM element and append an overlay
+    var rowEl = document.querySelector('.detail__work-items-grid .ag-row[row-id="' + CSS.escape(rowId) + '"]');
+    if (!rowEl) return;
+
+    // Remove any existing overlay
+    var existing = rowEl.querySelector('.wi-delete-confirm');
+    if (existing) existing.remove();
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'wi-delete-confirm';
+
+    var text = document.createElement('span');
+    text.className = 'wi-delete-confirm__text';
+    text.textContent = 'Delete this item?';
+
+    var deleteBtn = document.createElement('button');
+    deleteBtn.className = 'wi-delete-confirm__btn wi-delete-confirm__btn--delete';
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', function () {
+      wiDeleteRow(params);
+    });
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.className = 'wi-delete-confirm__btn wi-delete-confirm__btn--cancel';
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', function () {
+      wrapper.remove();
+    });
+
+    wrapper.appendChild(text);
+    wrapper.appendChild(deleteBtn);
+    wrapper.appendChild(cancelBtn);
+    rowEl.appendChild(wrapper);
+
+    // Auto-dismiss after 5 seconds
+    if (_wiDeleteTimers[rowId]) clearTimeout(_wiDeleteTimers[rowId]);
+    _wiDeleteTimers[rowId] = setTimeout(function () {
+      wrapper.remove();
+      delete _wiDeleteTimers[rowId];
+    }, 5000);
+  }
+
+  function wiDeleteRow(params) {
+    var api = params.api;
+    var rowNode = params.node;
+    var rowId = rowNode.data.id;
+    if (_wiDeleteTimers[rowId]) {
+      clearTimeout(_wiDeleteTimers[rowId]);
+      delete _wiDeleteTimers[rowId];
+    }
+    api.applyTransaction({ remove: [rowNode.data] });
+    wiScheduleSave(params.context.projectId);
+    // Check if grid is now empty
+    if (api.getDisplayedRowCount() === 0) {
+      var container = params.context.containerEl;
+      if (container) wiShowEmptyState(params.context.projectId, params.context.slug, container);
+    }
+  }
+
+  // Full-row renderer for delete confirmation
+  function wiFullWidthCellRenderer(params) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'wi-delete-confirm';
+
+    var text = document.createElement('span');
+    text.className = 'wi-delete-confirm__text';
+    text.textContent = 'Delete this item?';
+
+    var deleteBtn = document.createElement('button');
+    deleteBtn.className = 'wi-delete-confirm__btn wi-delete-confirm__btn--delete';
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', function () {
+      wiDeleteRow(params);
+    });
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.className = 'wi-delete-confirm__btn wi-delete-confirm__btn--cancel';
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', function () {
+      delete params.node.data._confirmDelete;
+      params.api.refreshCells({ rowNodes: [params.node], force: true });
+    });
+
+    wrapper.appendChild(text);
+    wrapper.appendChild(deleteBtn);
+    wrapper.appendChild(cancelBtn);
+    return wrapper;
+  }
+
+  function wiGetNextId(api) {
+    var maxNum = 0;
+    api.forEachNode(function (node) {
+      var match = node.data.id && node.data.id.match(/(\d+)$/);
+      if (match) {
+        var n = parseInt(match[1], 10);
+        if (n > maxNum) maxNum = n;
+      }
+    });
+    return 'WI-' + (maxNum + 1);
+  }
+
+  function wiScheduleSave(projectId) {
+    if (_wiSaveTimers[projectId]) clearTimeout(_wiSaveTimers[projectId]);
+    _wiSaveTimers[projectId] = setTimeout(function () {
+      delete _wiSaveTimers[projectId];
+      wiSave(projectId);
+    }, 500);
+  }
+
+  function wiSave(projectId, retryCount) {
+    retryCount = retryCount || 0;
+    var api = _workItemGrids[projectId];
+    if (!api) return;
+
+    var workItems = [];
+    api.forEachNode(function (node) {
+      var d = node.data;
+      workItems.push({
+        id: d.id || '',
+        title: d.title || '',
+        status: d.status || 'planned',
+        phase: d.phase || '',
+        owner: d.owner || '',
+        priority: d.priority || 'medium'
+      });
+    });
+
+    fetch(API_BASE + '/' + encodeURIComponent(projectId) + '/work-items', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workItems: workItems })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Save failed');
+        return res.json();
+      })
+      .then(function () {
+        // Flash saved cells
+        if (api && api.getDisplayedRowCount() > 0) {
+          api.flashCells({});
+        }
+      })
+      .catch(function () {
+        if (retryCount < 1) {
+          showToast('Failed to save work items — retrying...', true);
+          setTimeout(function () { wiSave(projectId, retryCount + 1); }, 2000);
+        } else {
+          showToast('Failed to save work items.', true);
+        }
+      });
+  }
+
+  function wiParseMarkdownTable(text) {
+    var lines = text.trim().split('\n');
+    var items = [];
+    if (lines.length < 2) return items;
+
+    // Find header row — look for a line containing 'ID' and 'Title'
+    var headerIdx = -1;
+    var headers = [];
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].indexOf('|') === -1) continue;
+      var cells = lines[i].split('|').map(function (c) { return c.trim(); }).filter(function (c) { return c; });
+      var lower = cells.map(function (c) { return c.toLowerCase(); });
+      if (lower.indexOf('id') !== -1 && lower.indexOf('title') !== -1) {
+        headerIdx = i;
+        headers = lower;
+        break;
+      }
+    }
+
+    if (headerIdx === -1) return items;
+
+    var idCol = headers.indexOf('id');
+    var titleCol = headers.indexOf('title');
+    var phaseCol = headers.indexOf('phase');
+
+    // Skip separator row (usually headerIdx + 1 with dashes)
+    var startRow = headerIdx + 1;
+    if (startRow < lines.length && lines[startRow].match(/^\s*\|[\s\-|:]+\|\s*$/)) {
+      startRow++;
+    }
+
+    for (var r = startRow; r < lines.length; r++) {
+      if (lines[r].indexOf('|') === -1) continue;
+      var cells = lines[r].split('|').map(function (c) { return c.trim(); }).filter(function (c) { return c; });
+      var id = (idCol >= 0 && idCol < cells.length) ? cells[idCol] : '';
+      var title = (titleCol >= 0 && titleCol < cells.length) ? cells[titleCol] : '';
+      if (!id && !title) continue;
+      var phase = (phaseCol >= 0 && phaseCol < cells.length) ? cells[phaseCol] : '';
+      items.push({
+        id: id,
+        title: title,
+        status: 'planned',
+        phase: phase,
+        owner: '',
+        priority: 'medium'
+      });
+    }
+
+    return items;
+  }
+
+  function wiShowEmptyState(projectId, slug, containerEl) {
+    // Destroy existing grid
+    destroyWorkItemGrid(projectId);
+
+    containerEl.innerHTML =
+      '<div class="detail__work-items">' +
+        '<div class="detail__work-items-header">' +
+          '<span class="detail__label">Work Items</span>' +
+        '</div>' +
+        '<div class="detail__work-items-empty">' +
+          '<p class="detail__work-items-empty-text">No work items tracked yet.</p>' +
+          '<div class="detail__work-items-empty-actions">' +
+            '<button class="detail__btn--secondary" type="button" data-wi-action="add">+ Add Work Item</button>' +
+            '<button class="detail__btn--ghost" type="button" data-wi-action="import">Import from Requirements</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    containerEl.addEventListener('click', function onEmptyClick(e) {
+      var target = e.target.closest('[data-wi-action]');
+      if (!target) return;
+      containerEl.removeEventListener('click', onEmptyClick);
+      var action = target.getAttribute('data-wi-action');
+      if (action === 'add') {
+        wiCreateGridWithItems(projectId, slug, containerEl, []);
+        // Add first item immediately
+        setTimeout(function () { wiAddRow(projectId); }, 100);
+      } else if (action === 'import') {
+        wiOpenImportModal(projectId, slug, containerEl);
+      }
+    });
+  }
+
+  function wiAddRow(projectId) {
+    var api = _workItemGrids[projectId];
+    if (!api) return;
+    var newId = wiGetNextId(api);
+    var newItem = {
+      id: newId,
+      title: '',
+      status: 'planned',
+      phase: '',
+      owner: '',
+      priority: 'medium',
+      _newRow: true
+    };
+    api.applyTransaction({ add: [newItem] });
+
+    // Update header count
+    wiUpdateHeaderCount(projectId);
+
+    // Focus the title cell on the new row (find by ID, not last index — sort may reorder)
+    var newNode = api.getRowNode(newId);
+    var newIdx = newNode ? newNode.rowIndex : api.getDisplayedRowCount() - 1;
+    api.ensureIndexVisible(newIdx);
+    setTimeout(function () {
+      // Re-fetch index in case sort settled
+      var node = api.getRowNode(newId);
+      var idx = node ? node.rowIndex : newIdx;
+      api.setFocusedCell(idx, 'title');
+      api.startEditingCell({ rowIndex: idx, colKey: 'title' });
+    }, 50);
+
+    wiScheduleSave(projectId);
+  }
+
+  function wiUpdateHeaderCount(projectId) {
+    var api = _workItemGrids[projectId];
+    if (!api) return;
+    var count = api.getDisplayedRowCount();
+    var badge = document.querySelector('.detail__work-items-container[data-project-id="' + CSS.escape(projectId) + '"] .detail__count-badge');
+    if (badge) badge.textContent = '(' + count + ')';
+  }
+
+  function wiOpenImportModal(projectId, slug, containerEl) {
+    // Create or reuse import modal overlay
+    if (!_wiImportOverlay) {
+      _wiImportOverlay = document.createElement('div');
+      _wiImportOverlay.className = 'wi-import-overlay';
+      _wiImportOverlay.setAttribute('aria-hidden', 'true');
+      _wiImportOverlay.setAttribute('role', 'dialog');
+      _wiImportOverlay.setAttribute('aria-modal', 'true');
+      _wiImportOverlay.setAttribute('aria-label', 'Import Work Items');
+      document.body.appendChild(_wiImportOverlay);
+    }
+
+    var parsedItems = [];
+
+    function renderPasteStep() {
+      _wiImportOverlay.innerHTML =
+        '<div class="wi-import-modal">' +
+          '<div class="wi-import-modal__header">' +
+            '<h3 class="wi-import-modal__title">Import Work Items</h3>' +
+            '<button class="wi-import-modal__close" type="button" aria-label="Close">&times;</button>' +
+          '</div>' +
+          '<div class="wi-import-modal__body">' +
+            '<textarea class="wi-import-modal__textarea" placeholder="Paste a markdown table with ID and Title columns..."></textarea>' +
+          '</div>' +
+          '<div class="wi-import-modal__actions">' +
+            '<button class="detail__btn--ghost" type="button" data-wi-import="cancel">Cancel</button>' +
+            '<button class="detail__btn--secondary" type="button" data-wi-import="parse">Parse</button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function renderPreviewStep() {
+      var html =
+        '<div class="wi-import-modal">' +
+          '<div class="wi-import-modal__header">' +
+            '<h3 class="wi-import-modal__title">Import Work Items</h3>' +
+            '<button class="wi-import-modal__close" type="button" aria-label="Close">&times;</button>' +
+          '</div>' +
+          '<div class="wi-import-modal__body">';
+
+      if (parsedItems.length === 0) {
+        html += '<p class="wi-import-modal__error">No work items found. Expected format: markdown table with ID and Title columns.</p>';
+      } else {
+        html += '<p class="wi-import-modal__preview-count">Found ' + parsedItems.length + ' work items</p>';
+        html += '<ul class="wi-import-modal__preview-list">';
+        for (var i = 0; i < parsedItems.length; i++) {
+          html += '<li class="wi-import-modal__preview-item"><span class="wi-import-modal__preview-id">' +
+            escapeHTML(parsedItems[i].id) + '</span>' + escapeHTML(parsedItems[i].title) + '</li>';
+        }
+        html += '</ul>';
+      }
+
+      html += '</div>' +
+        '<div class="wi-import-modal__actions">' +
+          '<button class="detail__btn--ghost" type="button" data-wi-import="back">Back</button>';
+      if (parsedItems.length > 0) {
+        html += '<button class="detail__btn--secondary" type="button" data-wi-import="confirm">Confirm</button>';
+      }
+      html += '</div></div>';
+      _wiImportOverlay.innerHTML = html;
+    }
+
+    function closeImport() {
+      _wiImportOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    renderPasteStep();
+    _wiImportOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    var textarea = _wiImportOverlay.querySelector('.wi-import-modal__textarea');
+    if (textarea) textarea.focus();
+
+    _wiImportOverlay.onclick = function (e) {
+      if (e.target === _wiImportOverlay) {
+        closeImport();
+        return;
+      }
+
+      var close = e.target.closest('.wi-import-modal__close');
+      if (close) { closeImport(); return; }
+
+      var action = e.target.closest('[data-wi-import]');
+      if (!action) return;
+      var cmd = action.getAttribute('data-wi-import');
+
+      if (cmd === 'cancel') {
+        closeImport();
+      } else if (cmd === 'parse') {
+        var text = _wiImportOverlay.querySelector('.wi-import-modal__textarea').value;
+        parsedItems = wiParseMarkdownTable(text);
+        renderPreviewStep();
+      } else if (cmd === 'back') {
+        renderPasteStep();
+        var ta = _wiImportOverlay.querySelector('.wi-import-modal__textarea');
+        if (ta) ta.focus();
+      } else if (cmd === 'confirm') {
+        closeImport();
+        // Add items to grid or create grid
+        var api = _workItemGrids[projectId];
+        if (api) {
+          api.applyTransaction({ add: parsedItems });
+          wiUpdateHeaderCount(projectId);
+          wiScheduleSave(projectId);
+        } else {
+          wiCreateGridWithItems(projectId, slug, containerEl, parsedItems);
+        }
+      }
+    };
+  }
+
+  function wiCreateGridWithItems(projectId, slug, containerEl, items) {
+    containerEl.innerHTML =
+      '<div class="detail__work-items">' +
+        '<div class="detail__work-items-header">' +
+          '<span class="detail__label">Work Items <span class="detail__count-badge">(' + items.length + ')</span></span>' +
+          '<div class="detail__work-items-actions">' +
+            '<button class="detail__btn--ghost" type="button" data-wi-action="import">Import</button>' +
+            '<button class="detail__btn--ghost" type="button" data-wi-action="add">+ Add</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="detail__work-items-grid ag-theme-quartz"></div>' +
+      '</div>';
+
+    var gridEl = containerEl.querySelector('.detail__work-items-grid');
+
+    var columnDefs = [
+      {
+        field: 'id',
+        headerName: 'ID',
+        width: 80,
+        pinned: 'left',
+        editable: function (params) { return !!params.data._newRow; },
+        cellStyle: { fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }
+      },
+      {
+        field: 'title',
+        headerName: 'Title',
+        flex: 2,
+        editable: true,
+        cellStyle: { color: 'var(--color-text-primary)' }
+      },
+      {
+        field: 'status',
+        headerName: 'Status',
+        width: 130,
+        editable: true,
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: { values: ['planned', 'in-progress', 'completed', 'deferred'] },
+        cellRenderer: function (params) { return wiBadgeCellRenderer(params, WI_STATUS_BADGE); },
+        comparator: wiStatusComparator
+      },
+      {
+        field: 'phase',
+        headerName: 'Phase',
+        width: 100,
+        editable: true,
+        cellStyle: { color: 'var(--color-text-secondary)' }
+      },
+      {
+        field: 'owner',
+        headerName: 'Owner',
+        width: 140,
+        editable: true,
+        cellRenderer: function (params) {
+          if (!params.value) return '';
+          var wrapper = document.createElement('span');
+          wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:6px;';
+          var key = params.value.toLowerCase();
+          var img = document.createElement('img');
+          img.src = 'img/avatars/' + key + '.svg';
+          img.alt = '';
+          img.width = 20;
+          img.height = 20;
+          img.style.cssText = 'border-radius:50%;flex-shrink:0;';
+          img.onerror = function () { img.style.display = 'none'; };
+          wrapper.appendChild(img);
+          var name = document.createElement('span');
+          name.textContent = params.value;
+          name.style.color = 'var(--color-text-secondary)';
+          wrapper.appendChild(name);
+          return wrapper;
+        }
+      },
+      {
+        field: 'priority',
+        headerName: 'Priority',
+        width: 100,
+        editable: true,
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: { values: ['high', 'medium', 'low'] },
+        cellRenderer: function (params) { return wiBadgeCellRenderer(params, WI_PRIORITY_BADGE); }
+      },
+      {
+        headerName: '',
+        width: 40,
+        sortable: false,
+        filter: false,
+        editable: false,
+        cellRenderer: function (params) {
+          return wiActionCellRenderer(params);
+        },
+        suppressHeaderMenuButton: true
+      }
+    ];
+
+    var gridOptions = {
+      columnDefs: columnDefs,
+      rowData: items,
+      domLayout: 'autoHeight',
+      rowHeight: 44,
+      headerHeight: 40,
+      animateRows: true,
+      singleClickEdit: true,
+      stopEditingWhenCellsLoseFocus: true,
+      context: { projectId: projectId, slug: slug, containerEl: containerEl },
+      defaultColDef: {
+        sortable: true,
+        resizable: false,
+        suppressMovable: true
+      },
+      getRowId: function (params) { return params.data.id; },
+      onCellValueChanged: function (event) {
+        // After editing ID, mark row as no longer new
+        if (event.colDef.field === 'id') {
+          delete event.data._newRow;
+        }
+        wiUpdateHeaderCount(projectId);
+        wiScheduleSave(projectId);
+      },
+      onSortChanged: function () {},
+      initialState: {
+        sort: {
+          sortModel: [
+            { colId: 'status', sort: 'asc' }
+          ]
+        }
+      }
+    };
+
+    var gridApi = agGrid.createGrid(gridEl, gridOptions);
+    _workItemGrids[projectId] = gridApi;
+
+    // Wire header buttons
+    containerEl.addEventListener('click', function (e) {
+      var target = e.target.closest('[data-wi-action]');
+      if (!target) return;
+      var action = target.getAttribute('data-wi-action');
+      if (action === 'add') {
+        wiAddRow(projectId);
+      } else if (action === 'import') {
+        wiOpenImportModal(projectId, slug, containerEl);
+      }
+    });
+  }
+
+  function renderWorkItemsSection(projectId, slug, containerEl) {
+    // Show loading state
+    containerEl.innerHTML =
+      '<div class="detail__work-items">' +
+        '<div class="detail__work-items-header">' +
+          '<span class="detail__label">Work Items</span>' +
+        '</div>' +
+        '<p class="detail__work-items-loading">Loading work items...</p>' +
+      '</div>';
+
+    // Ensure AG Grid is loaded, then fetch data
+    ensureAgGrid()
+      .then(function () {
+        return fetch(API_BASE + '/' + encodeURIComponent(projectId) + '/work-items')
+          .then(function (res) {
+            if (!res.ok) throw new Error('Failed to load');
+            return res.json();
+          });
+      })
+      .then(function (data) {
+        var items = data.workItems || [];
+        if (items.length === 0) {
+          wiShowEmptyState(projectId, slug, containerEl);
+        } else {
+          wiCreateGridWithItems(projectId, slug, containerEl, items);
+        }
+      })
+      .catch(function () {
+        containerEl.innerHTML =
+          '<div class="detail__work-items">' +
+            '<div class="detail__work-items-header">' +
+              '<span class="detail__label">Work Items</span>' +
+            '</div>' +
+            '<div class="detail__work-items-error">' +
+              'Failed to load work items. <a href="#" data-wi-retry>Retry</a>' +
+            '</div>' +
+          '</div>';
+        containerEl.querySelector('[data-wi-retry]').addEventListener('click', function (e) {
+          e.preventDefault();
+          renderWorkItemsSection(projectId, slug, containerEl);
+        });
+      });
+  }
 
 })();

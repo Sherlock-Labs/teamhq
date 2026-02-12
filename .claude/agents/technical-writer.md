@@ -1,5 +1,6 @@
 ---
 name: "writer"
+description: "Writes user guides, READMEs, and keeps documentation current"
 ---
 
 # Technical Writer

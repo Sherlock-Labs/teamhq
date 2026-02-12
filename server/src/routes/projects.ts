@@ -14,6 +14,9 @@ import type { Pipeline } from "../schemas/project.js";
 import { generateKickoffPrompt } from "../kickoff.js";
 import { ZodError } from "zod";
 import { formatZodError } from "./utils.js";
+import { PutWorkItemsBody } from "../schemas/workItem.js";
+import { getWorkItems, putWorkItems } from "../store/workItems.js";
+import { getWorkLog } from "../store/sessions.js";
 
 const router = Router();
 
@@ -178,6 +181,65 @@ router.delete("/projects/:id/notes/:noteId", async (req, res) => {
     }
     console.error("Error deleting note:", err);
     res.status(500).json({ error: "Failed to delete note" });
+  }
+});
+
+// Get work items for a project
+router.get("/projects/:id/work-items", async (req, res) => {
+  try {
+    const project = await getProject(req.params.id);
+    if (!project.slug) {
+      res.json({ workItems: [] });
+      return;
+    }
+    const workItems = await getWorkItems(project.slug);
+    res.json({ workItems });
+  } catch {
+    res.status(404).json({ error: "Project not found" });
+  }
+});
+
+// Replace all work items for a project
+router.put("/projects/:id/work-items", async (req, res) => {
+  try {
+    const project = await getProject(req.params.id);
+    if (!project.slug) {
+      res.status(400).json({ error: "Project has no slug" });
+      return;
+    }
+    const parsed = PutWorkItemsBody.parse(req.body);
+    const saved = await putWorkItems(project.slug, parsed.workItems);
+    res.json({ workItems: saved });
+  } catch (err) {
+    if (err instanceof ZodError) {
+      res.status(400).json({ error: "Validation failed", details: formatZodError(err) });
+      return;
+    }
+    if (err instanceof Error && err.message.includes("ENOENT")) {
+      res.status(404).json({ error: "Project not found" });
+      return;
+    }
+    console.error("Error handling work items:", err);
+    res.status(500).json({ error: "Failed to process work items" });
+  }
+});
+
+// Get aggregated work log for a project (all sessions merged chronologically)
+router.get("/projects/:id/work-log", async (req, res) => {
+  try {
+    await getProject(req.params.id);
+  } catch {
+    res.status(404).json({ error: "Project not found" });
+    return;
+  }
+
+  try {
+    const offset = parseInt(req.query.offset as string) || 0;
+    const workLog = await getWorkLog(req.params.id, offset);
+    res.json(workLog);
+  } catch (err) {
+    console.error("Error fetching work log:", err);
+    res.status(500).json({ error: "Failed to fetch work log" });
   }
 });
 
