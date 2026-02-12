@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/spreadsheet.css">
   <link rel="stylesheet" href="css/tasks.css">
+  <link rel="stylesheet" href="css/tasks-multi-select.css">
   <link rel="stylesheet" href="css/bug-reporter.css">
 </head>
 <body>
@@ -118,6 +119,34 @@
   <!-- Screen reader announcement for panel open -->
   <div class="sr-only" aria-live="polite" aria-atomic="true" id="panel-announcement"></div>
 
+  <!-- Bulk Action Bar -->
+  <div class="bulk-action-bar" id="bulk-action-bar" aria-hidden="true">
+    <div class="bulk-action-bar__count" id="bulk-count">0 selected</div>
+    <div class="bulk-action-bar__controls">
+      <select id="bulk-status" aria-label="Bulk set status">
+        <option value="" disabled selected>Set Status...</option>
+        <option value="planned">Planned</option>
+        <option value="in-progress">In Progress</option>
+        <option value="completed">Completed</option>
+        <option value="deferred">Deferred</option>
+      </select>
+      <select id="bulk-priority" aria-label="Bulk set priority">
+        <option value="" disabled selected>Set Priority...</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <div class="bulk-action-bar__input-group">
+        <input type="text" id="bulk-owner" placeholder="Set Owner">
+        <button type="button" id="bulk-owner-apply" disabled>Apply</button>
+      </div>
+      <button type="button" class="bulk-action-bar__delete" id="bulk-delete" aria-label="Delete selected tasks">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+        Delete
+      </button>
+    </div>
+  </div>
+
   <!-- Task Detail Panel Overlay (click-to-close target) -->
   <div class="task-detail-overlay" id="task-detail-overlay"></div>
 
@@ -138,6 +167,14 @@
       <!-- Description (always-visible textarea) -->
       <textarea class="task-detail__description" id="panel-description"
                 placeholder="Add a description..." rows="4" aria-label="Task description"></textarea>
+
+      <!-- Screenshot (visible for bug reports) -->
+      <div class="task-detail__screenshot" id="panel-screenshot-section" style="display:none;">
+        <span class="task-detail__label">Screenshot</span>
+        <div class="task-detail__screenshot-thumb" id="panel-screenshot-thumb">
+          <img src="" alt="Bug screenshot" id="panel-screenshot-img">
+        </div>
+      </div>
 
       <!-- Separator -->
       <hr class="task-detail__separator">
@@ -257,6 +294,12 @@
       <p class="footer__attribution">Built with Claude Code</p>
     </div>
   </footer>
+
+  <!-- Screenshot Preview Overlay (shared with bug reporter styles) -->
+  <div class="bug-preview-overlay" id="panel-preview-overlay">
+    <button class="bug-preview-overlay__close bug-sr-only" type="button" id="panel-preview-close">Close preview</button>
+    <img src="" alt="Screenshot preview" id="panel-preview-img">
+  </div>
 
   <!-- AG Grid Community — JS (UMD bundle) -->
   <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js"></script>

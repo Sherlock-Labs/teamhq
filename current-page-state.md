@@ -1,0 +1,451 @@
+- generic [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e4]:
+      - link "Sherlock Labs" [ref=e6] [cursor=pointer]:
+        - /url: index.html
+        - img "Sherlock Labs" [ref=e7]
+      - generic [ref=e8]:
+        - link "Tools" [ref=e9] [cursor=pointer]:
+          - /url: tools.html
+        - link "Projects" [ref=e10]:
+          - /url: projects.html
+        - link "Meetings" [ref=e11] [cursor=pointer]:
+          - /url: meetings.html
+        - link "Interviews" [ref=e12] [cursor=pointer]:
+          - /url: interviews.html
+        - link "Docs" [ref=e13] [cursor=pointer]:
+          - /url: docs.html
+        - link "Spreadsheets" [ref=e14] [cursor=pointer]:
+          - /url: spreadsheets.html
+        - link "Team" [ref=e15] [cursor=pointer]:
+          - /url: team.html
+  - main [ref=e16]:
+    - region "Projects" [ref=e17]:
+      - generic [ref=e18]:
+        - heading "Projects" [level=2] [ref=e19]
+        - generic [ref=e20]:
+          - paragraph [ref=e21]: Create and manage projects.
+          - button "+ New Project" [ref=e22] [cursor=pointer]
+        - generic "Project summary statistics" [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e25]: "27"
+            - generic [ref=e26]: Projects
+          - generic [ref=e27]:
+            - generic [ref=e28]: "23"
+            - generic [ref=e29]: Completed
+          - generic [ref=e30]:
+            - generic [ref=e31]: "15"
+            - generic [ref=e32]: Agents
+          - generic [ref=e33]:
+            - generic [ref=e34]: "106"
+            - generic [ref=e35]: Tasks
+          - generic [ref=e36]:
+            - generic [ref=e37]: "284"
+            - generic [ref=e38]: Files
+          - generic [ref=e39]:
+            - generic [ref=e40]: "511"
+            - generic [ref=e41]: Decisions
+        - generic [ref=e42]:
+          - article [ref=e43]:
+            - generic [ref=e44]:
+              - button "Identify which pipeline steps can run in parallel vs. whi... Working In Progress Feb 2026" [expanded] [active] [ref=e45] [cursor=pointer]:
+                - generic [ref=e46]:
+                  - heading "Identify which pipeline steps can run in parallel vs. whi..." [level=3] [ref=e47]
+                  - paragraph
+                - generic [ref=e48]:
+                  - generic "Working" [ref=e49]
+                  - generic [ref=e50]: In Progress
+                  - generic [ref=e51]: Feb 2026
+              - generic [ref=e53]:
+                - button "Edit project" [ref=e54] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e55] [cursor=pointer]: Delete
+            - generic [ref=e57]:
+              - generic [ref=e58]:
+                - generic [ref=e59]:
+                  - generic [ref=e60]: Goals
+                  - paragraph [ref=e61]: No goals set
+                - generic [ref=e62]:
+                  - generic [ref=e63]: Constraints
+                  - paragraph [ref=e64]: No constraints set
+                - generic [ref=e65]:
+                  - generic [ref=e66]: Brief
+                  - paragraph [ref=e67]: "Identify which pipeline steps can run in parallel vs. which have true sequential dependencies Owner: CEO Priority: high Source: Charter Meeting #10"
+              - generic [ref=e68]:
+                - generic [ref=e69]: Created Feb 2026
+                - generic [ref=e70]: Updated Feb 2026
+              - generic [ref=e72]:
+                - generic [ref=e75]: Working
+                - button "Stop" [ref=e76] [cursor=pointer]
+                - button "View Prompt" [ref=e77] [cursor=pointer]
+              - generic "Work Log" [ref=e79]:
+                - generic [ref=e80]:
+                  - generic [ref=e81]: Work Log
+                  - generic [ref=e82]: 10s
+                - generic "Pipeline progress" [ref=e84]:
+                  - generic [ref=e85]:
+                    - generic [ref=e88]: Research
+                    - generic [ref=e92]: Scoping
+                    - generic [ref=e96]: Architecture
+                    - generic [ref=e100]: Design
+                    - generic [ref=e104]: Implementation
+                    - generic [ref=e108]: QA
+                - log [ref=e109]:
+                  - generic:
+                    - button: Jump to latest
+              - generic [ref=e111]:
+                - generic [ref=e113]: Work Items
+                - generic [ref=e114]:
+                  - paragraph [ref=e115]: No work items tracked yet.
+                  - generic [ref=e116]:
+                    - button "+ Add Work Item" [ref=e117] [cursor=pointer]
+                    - button "Import from Requirements" [ref=e118] [cursor=pointer]
+              - generic [ref=e119]:
+                - generic [ref=e121]: Progress Notes
+                - generic [ref=e122]:
+                  - textbox "Add a progress note..." [ref=e123]
+                  - button "Add" [ref=e124] [cursor=pointer]
+                - paragraph [ref=e125]: No progress notes yet.
+          - article [ref=e126]:
+            - generic [ref=e127]:
+              - button "Roadmap Tool (Roadmunk Replica) Full replica of Roadmunk — a roadmap visualization and planning tool. Core value prop is the timeline visualization with milestones, projects, swimlanes, and drag-and-drop editing. Phase 1 excludes Jira integration. +6 12 tasks 73 files In Progress Feb 2026" [ref=e128] [cursor=pointer]:
+                - generic [ref=e129]:
+                  - heading "Roadmap Tool (Roadmunk Replica)" [level=3] [ref=e130]
+                  - paragraph [ref=e131]: Full replica of Roadmunk — a roadmap visualization and planning tool. Core value prop is the timeline visualization with milestones, projects, swimlanes, and drag-and-drop editing. Phase 1 excludes Jira integration.
+                - generic [ref=e132]:
+                  - generic [ref=e134]: "+6"
+                  - generic [ref=e135]: 12 tasks 73 files
+                  - generic [ref=e136]: In Progress
+                  - generic [ref=e137]: Feb 2026
+              - generic [ref=e139]:
+                - button "Edit project" [ref=e140] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e141] [cursor=pointer]: Delete
+          - article [ref=e142]:
+            - generic [ref=e143]:
+              - button "When the tech approach identifies a significant file rewr... In Progress Feb 2026" [ref=e144] [cursor=pointer]:
+                - generic [ref=e145]:
+                  - heading "When the tech approach identifies a significant file rewr..." [level=3] [ref=e146]
+                  - paragraph
+                - generic [ref=e147]:
+                  - generic [ref=e148]: In Progress
+                  - generic [ref=e149]: Feb 2026
+              - generic [ref=e151]:
+                - button "Edit project" [ref=e152] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e153] [cursor=pointer]: Delete
+          - article [ref=e154]:
+            - generic [ref=e155]:
+              - button "Conduct a half-day technical spike on Gemini 2.5 Flash au... In Progress Feb 2026" [ref=e156] [cursor=pointer]:
+                - generic [ref=e157]:
+                  - heading "Conduct a half-day technical spike on Gemini 2.5 Flash au..." [level=3] [ref=e158]
+                  - paragraph
+                - generic [ref=e159]:
+                  - generic [ref=e160]: In Progress
+                  - generic [ref=e161]: Feb 2026
+              - generic [ref=e163]:
+                - button "Edit project" [ref=e164] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e165] [cursor=pointer]: Delete
+          - article [ref=e166]:
+            - generic [ref=e167]:
+              - button "AI-Powered Interviews Add AI-powered video/audio interview capabilities to TeamHQ — real-time conversations with an AI interviewer that get recorded, transcribed, and fed into the existing meeting system. +4 11 tasks 31 files Completed Feb 2026" [ref=e168] [cursor=pointer]:
+                - generic [ref=e169]:
+                  - heading "AI-Powered Interviews" [level=3] [ref=e170]
+                  - paragraph [ref=e171]: Add AI-powered video/audio interview capabilities to TeamHQ — real-time conversations with an AI interviewer that get recorded, transcribed, and fed into the existing meeting system.
+                - generic [ref=e172]:
+                  - generic [ref=e174]: "+4"
+                  - generic [ref=e175]: 11 tasks 31 files
+                  - generic [ref=e176]: Completed
+                  - generic [ref=e177]: Feb 2026
+              - generic [ref=e179]:
+                - button "Edit project" [ref=e180] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e181] [cursor=pointer]: Delete
+          - article [ref=e182]:
+            - generic [ref=e183]:
+              - button "Embedded Spreadsheet Component A read-only, sortable table component for viewing structured data (revenue models, competitive analyses, metrics) natively within TeamHQ project views and doc pages. +5 19 tasks 35 files Completed Feb 2026" [ref=e184] [cursor=pointer]:
+                - generic [ref=e185]:
+                  - heading "Embedded Spreadsheet Component" [level=3] [ref=e186]
+                  - paragraph [ref=e187]: A read-only, sortable table component for viewing structured data (revenue models, competitive analyses, metrics) natively within TeamHQ project views and doc pages.
+                - generic [ref=e188]:
+                  - generic [ref=e190]: "+5"
+                  - generic [ref=e191]: 19 tasks 35 files
+                  - generic [ref=e192]: Completed
+                  - generic [ref=e193]: Feb 2026
+              - generic [ref=e195]:
+                - button "Edit project" [ref=e196] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e197] [cursor=pointer]: Delete
+          - article [ref=e198]:
+            - generic [ref=e199]:
+              - button "Project Consolidation Merge the separate Projects and Portfolio tracking systems into a single unified project section — combining active project management (sessions, notes, briefs) with pipeline history (agent tasks, decisions, files changed). +1 7 tasks 17 files Completed Feb 2026" [ref=e200] [cursor=pointer]:
+                - generic [ref=e201]:
+                  - heading "Project Consolidation" [level=3] [ref=e202]
+                  - paragraph [ref=e203]: Merge the separate Projects and Portfolio tracking systems into a single unified project section — combining active project management (sessions, notes, briefs) with pipeline history (agent tasks, decisions, files changed).
+                - generic [ref=e204]:
+                  - generic [ref=e206]: "+1"
+                  - generic [ref=e207]: 7 tasks 17 files
+                  - generic [ref=e208]: Completed
+                  - generic [ref=e209]: Feb 2026
+              - generic [ref=e211]:
+                - button "Edit project" [ref=e212] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e213] [cursor=pointer]: Delete
+          - article [ref=e214]:
+            - generic [ref=e215]:
+              - button "Acceptance Criteria Template Expansion Expand acceptance criteria template to systematically cover interaction edge cases (async operations, disabled states, error recovery, loading states, empty states, form state, optimistic updates, timeout handling) in addition to core user flows. Completed Feb 2026" [ref=e216] [cursor=pointer]:
+                - generic [ref=e217]:
+                  - heading "Acceptance Criteria Template Expansion" [level=3] [ref=e218]
+                  - paragraph [ref=e219]: Expand acceptance criteria template to systematically cover interaction edge cases (async operations, disabled states, error recovery, loading states, empty states, form state, optimistic updates, timeout handling) in addition to core user flows.
+                - generic [ref=e220]:
+                  - generic [ref=e221]: Completed
+                  - generic [ref=e222]: Feb 2026
+              - generic [ref=e224]:
+                - button "Edit project" [ref=e225] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e226] [cursor=pointer]: Delete
+          - article [ref=e227]:
+            - generic [ref=e228]:
+              - button "CEO Response Input Add a message input to the session viewer so the CEO can respond to agent questions directly from the web UI during a running session. 6 tasks 8 files Completed Feb 2026" [ref=e229] [cursor=pointer]:
+                - generic [ref=e230]:
+                  - heading "CEO Response Input" [level=3] [ref=e231]
+                  - paragraph [ref=e232]: Add a message input to the session viewer so the CEO can respond to agent questions directly from the web UI during a running session.
+                - generic [ref=e233]:
+                  - generic [ref=e235]: 6 tasks 8 files
+                  - generic [ref=e236]: Completed
+                  - generic [ref=e237]: Feb 2026
+              - generic [ref=e239]:
+                - button "Edit project" [ref=e240] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e241] [cursor=pointer]: Delete
+          - article [ref=e242]:
+            - generic [ref=e243]:
+              - button "Custom Meetings Add custom meeting type to the existing meeting system — CEO picks 2-6 agents and provides instructions, agents discuss and produce action items. +1 7 tasks 15 files Completed Feb 2026" [ref=e244] [cursor=pointer]:
+                - generic [ref=e245]:
+                  - heading "Custom Meetings" [level=3] [ref=e246]
+                  - paragraph [ref=e247]: Add custom meeting type to the existing meeting system — CEO picks 2-6 agents and provides instructions, agents discuss and produce action items.
+                - generic [ref=e248]:
+                  - generic [ref=e250]: "+1"
+                  - generic [ref=e251]: 7 tasks 15 files
+                  - generic [ref=e252]: Completed
+                  - generic [ref=e253]: Feb 2026
+              - generic [ref=e255]:
+                - button "Edit project" [ref=e256] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e257] [cursor=pointer]: Delete
+          - article [ref=e258]:
+            - generic [ref=e259]:
+              - button "Project Tracking Improvements Added a Portfolio section to the TeamHQ landing page that showcases the team's completed work with rich data — agent contributions, task breakdowns, decisions, file deliverables, and summary statistics. 5 tasks 6 files Completed Feb 2026" [ref=e260] [cursor=pointer]:
+                - generic [ref=e261]:
+                  - heading "Project Tracking Improvements" [level=3] [ref=e262]
+                  - paragraph [ref=e263]: Added a Portfolio section to the TeamHQ landing page that showcases the team's completed work with rich data — agent contributions, task breakdowns, decisions, file deliverables, and summary statistics.
+                - generic [ref=e264]:
+                  - generic [ref=e266]: 5 tasks 6 files
+                  - generic [ref=e267]: Completed
+                  - generic [ref=e268]: Feb 2026
+              - generic [ref=e270]:
+                - button "Edit project" [ref=e271] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e272] [cursor=pointer]: Delete
+          - article [ref=e273]:
+            - generic [ref=e274]:
+              - button "Revenue Model Spreadsheet Build a structured revenue model covering all three brainstormed product ideas (Audio Ad Stripper, Smart PDF Redactor, Podcast Show Notes Generator) with API costs, pricing tiers, break-even analysis, and 30/60/90 day revenue projections. 2 tasks 4 files Completed Feb 2026" [ref=e275] [cursor=pointer]:
+                - generic [ref=e276]:
+                  - heading "Revenue Model Spreadsheet" [level=3] [ref=e277]
+                  - paragraph [ref=e278]: Build a structured revenue model covering all three brainstormed product ideas (Audio Ad Stripper, Smart PDF Redactor, Podcast Show Notes Generator) with API costs, pricing tiers, break-even analysis, and 30/60/90 day revenue projections.
+                - generic [ref=e279]:
+                  - generic [ref=e281]: 2 tasks 4 files
+                  - generic [ref=e282]: Completed
+                  - generic [ref=e283]: Feb 2026
+              - generic [ref=e285]:
+                - button "Edit project" [ref=e286] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e287] [cursor=pointer]: Delete
+          - article [ref=e288]:
+            - generic [ref=e289]:
+              - button "TeamHQ Redesign v2 Visual redesign of the TeamHQ landing page — switching from dark theme with rose accent to clean light theme with royal jaguar green (#006B3F), inspired by youngjerks.com aesthetic. 3 tasks 2 files Completed Feb 2026" [ref=e290] [cursor=pointer]:
+                - generic [ref=e291]:
+                  - heading "TeamHQ Redesign v2" [level=3] [ref=e292]
+                  - paragraph [ref=e293]: Visual redesign of the TeamHQ landing page — switching from dark theme with rose accent to clean light theme with royal jaguar green (#006B3F), inspired by youngjerks.com aesthetic.
+                - generic [ref=e294]:
+                  - generic [ref=e296]: 3 tasks 2 files
+                  - generic [ref=e297]: Completed
+                  - generic [ref=e298]: Feb 2026
+              - generic [ref=e300]:
+                - button "Edit project" [ref=e301] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e302] [cursor=pointer]: Delete
+          - article [ref=e303]:
+            - generic [ref=e304]:
+              - 'button "Tech Approach Update — Change Impact Classification Update tech approach writing practice to explicitly flag files requiring significant restructuring versus simple extension, with a note on downstream impact for QA test planning. Originated from Custom Meeting #4 action item. 3 tasks 7 files Completed Feb 2026" [ref=e305] [cursor=pointer]':
+                - generic [ref=e306]:
+                  - heading "Tech Approach Update — Change Impact Classification" [level=3] [ref=e307]
+                  - paragraph [ref=e308]: "Update tech approach writing practice to explicitly flag files requiring significant restructuring versus simple extension, with a note on downstream impact for QA test planning. Originated from Custom Meeting #4 action item."
+                - generic [ref=e309]:
+                  - generic [ref=e311]: 3 tasks 7 files
+                  - generic [ref=e312]: Completed
+                  - generic [ref=e313]: Feb 2026
+              - generic [ref=e315]:
+                - button "Edit project" [ref=e316] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e317] [cursor=pointer]: Delete
+          - article [ref=e318]:
+            - generic [ref=e319]:
+              - 'button "Phase 3a: Live Agent Progress Replace the copy-paste kickoff with a Run button that executes agent sessions server-side, streaming a live activity log to the browser. 5 tasks 16 files Completed Feb 2026" [ref=e320] [cursor=pointer]':
+                - generic [ref=e321]:
+                  - 'heading "Phase 3a: Live Agent Progress" [level=3] [ref=e322]'
+                  - paragraph [ref=e323]: Replace the copy-paste kickoff with a Run button that executes agent sessions server-side, streaming a live activity log to the browser.
+                - generic [ref=e324]:
+                  - generic [ref=e326]: 5 tasks 16 files
+                  - generic [ref=e327]: Completed
+                  - generic [ref=e328]: Feb 2026
+              - generic [ref=e330]:
+                - button "Edit project" [ref=e331] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e332] [cursor=pointer]: Delete
+          - article [ref=e333]:
+            - generic [ref=e334]:
+              - button "TeamHQ Mobile App Voice-first mobile companion app for the CEO. Speak a project into existence, monitor team progress, and manage projects from the phone. 1 tasks 30 files Completed Feb 2026" [ref=e335] [cursor=pointer]:
+                - generic [ref=e336]:
+                  - heading "TeamHQ Mobile App" [level=3] [ref=e337]
+                  - paragraph [ref=e338]: Voice-first mobile companion app for the CEO. Speak a project into existence, monitor team progress, and manage projects from the phone.
+                - generic [ref=e339]:
+                  - generic [ref=e341]: 1 tasks 30 files
+                  - generic [ref=e342]: Completed
+                  - generic [ref=e343]: Feb 2026
+              - generic [ref=e345]:
+                - button "Edit project" [ref=e346] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e347] [cursor=pointer]: Delete
+          - article [ref=e348]:
+            - generic [ref=e349]:
+              - button "OST Recommendation Page Redesign Redesigned the OST tool recommendation page to reduce color overload, add expandable debater reasoning, and improve information hierarchy. 3 tasks 3 files Completed Feb 2026" [ref=e350] [cursor=pointer]:
+                - generic [ref=e351]:
+                  - heading "OST Recommendation Page Redesign" [level=3] [ref=e352]
+                  - paragraph [ref=e353]: Redesigned the OST tool recommendation page to reduce color overload, add expandable debater reasoning, and improve information hierarchy.
+                - generic [ref=e354]:
+                  - generic [ref=e356]: 3 tasks 3 files
+                  - generic [ref=e357]: Completed
+                  - generic [ref=e358]: Feb 2026
+              - generic [ref=e360]:
+                - button "Edit project" [ref=e361] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e362] [cursor=pointer]: Delete
+          - article [ref=e363]:
+            - generic [ref=e364]:
+              - button "Expand acceptance criteria template to cover interaction ... Working Completed Feb 2026" [ref=e365] [cursor=pointer]:
+                - generic [ref=e366]:
+                  - heading "Expand acceptance criteria template to cover interaction ..." [level=3] [ref=e367]
+                  - paragraph
+                - generic [ref=e368]:
+                  - generic "Working" [ref=e369]
+                  - generic [ref=e370]: Completed
+                  - generic [ref=e371]: Feb 2026
+              - generic [ref=e373]:
+                - button "Edit project" [ref=e374] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e375] [cursor=pointer]: Delete
+          - article [ref=e376]:
+            - generic [ref=e377]:
+              - button "Update tech approach writing practice to explicitly flag ... Working Completed Feb 2026" [ref=e378] [cursor=pointer]:
+                - generic [ref=e379]:
+                  - heading "Update tech approach writing practice to explicitly flag ..." [level=3] [ref=e380]
+                  - paragraph
+                - generic [ref=e381]:
+                  - generic "Working" [ref=e382]
+                  - generic [ref=e383]: Completed
+                  - generic [ref=e384]: Feb 2026
+              - generic [ref=e386]:
+                - button "Edit project" [ref=e387] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e388] [cursor=pointer]: Delete
+          - article [ref=e389]:
+            - generic [ref=e390]:
+              - button "Podcast Show Notes Tool — Competitive Scan Quick competitive scan of the podcast show notes tool market. Identify top 5 competitors, pricing models, feature sets, and gaps an indie-focused pay-per-episode tool could exploit. 2 tasks 5 files Completed Feb 2026" [ref=e391] [cursor=pointer]:
+                - generic [ref=e392]:
+                  - heading "Podcast Show Notes Tool — Competitive Scan" [level=3] [ref=e393]
+                  - paragraph [ref=e394]: Quick competitive scan of the podcast show notes tool market. Identify top 5 competitors, pricing models, feature sets, and gaps an indie-focused pay-per-episode tool could exploit.
+                - generic [ref=e395]:
+                  - generic [ref=e397]: 2 tasks 5 files
+                  - generic [ref=e398]: Completed
+                  - generic [ref=e399]: Feb 2026
+              - generic [ref=e401]:
+                - button "Edit project" [ref=e402] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e403] [cursor=pointer]: Delete
+          - article [ref=e404]:
+            - generic [ref=e405]:
+              - button "Build a simple revenue model spreadsheet for all three pr... Completed Feb 2026" [ref=e406] [cursor=pointer]:
+                - generic [ref=e407]:
+                  - heading "Build a simple revenue model spreadsheet for all three pr..." [level=3] [ref=e408]
+                  - paragraph
+                - generic [ref=e409]:
+                  - generic [ref=e410]: Completed
+                  - generic [ref=e411]: Feb 2026
+              - generic [ref=e413]:
+                - button "Edit project" [ref=e414] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e415] [cursor=pointer]: Delete
+          - article [ref=e416]:
+            - generic [ref=e417]:
+              - button "PDF editor I'd love to have this little tool where I can upload a PDF and then I can turn that multi-page PDF into individual page PDFs really easily. Completed Feb 2026" [ref=e418] [cursor=pointer]:
+                - generic [ref=e419]:
+                  - heading "PDF editor" [level=3] [ref=e420]
+                  - paragraph [ref=e421]: I'd love to have this little tool where I can upload a PDF and then I can turn that multi-page PDF into individual page PDFs really easily.
+                - generic [ref=e422]:
+                  - generic [ref=e423]: Completed
+                  - generic [ref=e424]: Feb 2026
+              - generic [ref=e426]:
+                - button "Edit project" [ref=e427] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e428] [cursor=pointer]: Delete
+          - article [ref=e429]:
+            - generic [ref=e430]:
+              - button "OST Tool Full-stack Opportunity Solution Tree tool -- generates trees with AI, supports debate between solutions, and provides recommendations. 4 tasks 11 files Completed Jan 2025" [ref=e431] [cursor=pointer]:
+                - generic [ref=e432]:
+                  - heading "OST Tool" [level=3] [ref=e433]
+                  - paragraph [ref=e434]: Full-stack Opportunity Solution Tree tool -- generates trees with AI, supports debate between solutions, and provides recommendations.
+                - generic [ref=e435]:
+                  - generic [ref=e437]: 4 tasks 11 files
+                  - generic [ref=e438]: Completed
+                  - generic [ref=e439]: Jan 2025
+              - generic [ref=e441]:
+                - button "Edit project" [ref=e442] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e443] [cursor=pointer]: Delete
+          - article [ref=e444]:
+            - generic [ref=e445]:
+              - button "Task History Added a Tasks section to the TeamHQ landing page showing project history with expandable cards and subtask breakdowns. 5 tasks 7 files Completed Jan 2025" [ref=e446] [cursor=pointer]:
+                - generic [ref=e447]:
+                  - heading "Task History" [level=3] [ref=e448]
+                  - paragraph [ref=e449]: Added a Tasks section to the TeamHQ landing page showing project history with expandable cards and subtask breakdowns.
+                - generic [ref=e450]:
+                  - generic [ref=e452]: 5 tasks 7 files
+                  - generic [ref=e453]: Completed
+                  - generic [ref=e454]: Jan 2025
+              - generic [ref=e456]:
+                - button "Edit project" [ref=e457] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e458] [cursor=pointer]: Delete
+          - article [ref=e459]:
+            - generic [ref=e460]:
+              - button "TeamHQ Landing Page Built the original TeamHQ landing page -- a single-page static site introducing the AI product team. 5 tasks 5 files Completed Dec 2024" [ref=e461] [cursor=pointer]:
+                - generic [ref=e462]:
+                  - heading "TeamHQ Landing Page" [level=3] [ref=e463]
+                  - paragraph [ref=e464]: Built the original TeamHQ landing page -- a single-page static site introducing the AI product team.
+                - generic [ref=e465]:
+                  - generic [ref=e467]: 5 tasks 5 files
+                  - generic [ref=e468]: Completed
+                  - generic [ref=e469]: Dec 2024
+              - generic [ref=e471]:
+                - button "Edit project" [ref=e472] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e473] [cursor=pointer]: Delete
+          - article [ref=e474]:
+            - generic [ref=e475]:
+              - button "TeamHQ Redesign Redesigned the TeamHQ landing page with a dark theme, navigation bar, and Tools section to serve as a central hub. 5 tasks 5 files Completed Jan 2025" [ref=e476] [cursor=pointer]:
+                - generic [ref=e477]:
+                  - heading "TeamHQ Redesign" [level=3] [ref=e478]
+                  - paragraph [ref=e479]: Redesigned the TeamHQ landing page with a dark theme, navigation bar, and Tools section to serve as a central hub.
+                - generic [ref=e480]:
+                  - generic [ref=e482]: 5 tasks 5 files
+                  - generic [ref=e483]: Completed
+                  - generic [ref=e484]: Jan 2025
+              - generic [ref=e486]:
+                - button "Edit project" [ref=e487] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e488] [cursor=pointer]: Delete
+          - article [ref=e489]:
+            - generic [ref=e490]:
+              - button "Team Activity Profiles & Recent Output Added clickable agent cards that expand inline profile panels with GitHub-style daily activity grids and project contribution lists, plus a Recent Output section showing the last 3 completed projects. 1 tasks 4 files Completed Jan 2025" [ref=e491] [cursor=pointer]:
+                - generic [ref=e492]:
+                  - heading "Team Activity Profiles & Recent Output" [level=3] [ref=e493]
+                  - paragraph [ref=e494]: Added clickable agent cards that expand inline profile panels with GitHub-style daily activity grids and project contribution lists, plus a Recent Output section showing the last 3 completed projects.
+                - generic [ref=e495]:
+                  - generic [ref=e497]: 1 tasks 4 files
+                  - generic [ref=e498]: Completed
+                  - generic [ref=e499]: Jan 2025
+              - generic [ref=e501]:
+                - button "Edit project" [ref=e502] [cursor=pointer]: Edit
+                - button "Delete project" [ref=e503] [cursor=pointer]: Delete
+  - contentinfo [ref=e504]:
+    - generic [ref=e505]:
+      - img "Sherlock Labs" [ref=e506]
+      - paragraph [ref=e507]: Built with Claude Code

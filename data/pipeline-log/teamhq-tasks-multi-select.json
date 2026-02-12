@@ -1,0 +1,25 @@
+[
+  {
+    "id": "qa-verify-tasks-multi-select",
+    "projectSlug": "teamhq",
+    "taskPrefix": "QA",
+    "title": "Verify Tasks Multi-Select Feature",
+    "status": "completed",
+    "owner": "Enzo",
+    "description": "Verified the implementation of multi-select, bulk actions, and responsive design for the Tasks page.",
+    "subtasks": [
+      "Verified AG Grid configuration for multi-row selection and checkbox column",
+      "Verified 'Select All' header checkbox behavior and filtering respect",
+      "Verified Bulk Action Bar appearance, CSS transitions, and mobile responsive layout",
+      "Verified Bulk Update logic (optimistic UI update + parallel API requests per project)",
+      "Verified Bulk Delete logic (confirmation dialog + API sync)",
+      "Verified Detail Panel interaction (clicking row ID/Title still works, checkboxes don't trigger panel)",
+      "Verified integration with backend endpoints (/api/tasks and /api/projects/:id/work-items)"
+    ],
+    "filesChanged": [],
+    "decisions": [
+      "Verified via code review and static analysis as runtime environment does not support browser interaction.",
+      "Confirmed that the bulk update strategy (re-uploading all tasks for affected projects) aligns with the existing backend architecture."
+    ]
+  }
+]

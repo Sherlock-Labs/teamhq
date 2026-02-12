@@ -1,0 +1,100 @@
+{
+  "id": "tasks-multi-select",
+  "name": "Tasks Multi-Select",
+  "description": "Add multi-select capability to the Tasks page for bulk status updates, assignment, and deletion.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "id": "requirements",
+      "agent": "product-manager",
+      "status": "completed",
+      "description": "Define scope and requirements for multi-select feature.",
+      "subtasks": [
+        "Analyzed current tasks.js and AG Grid implementation",
+        "Defined in-scope bulk actions (Status, Priority, Owner, Delete)",
+        "Wrote detailed user stories and acceptance criteria",
+        "Added Interaction States Checklist for bulk UI",
+        "Created pipeline plan including Andrei and Robert"
+      ],
+      "filesChanged": [
+        "docs/tasks-multi-select-requirements.md",
+        "data/pipeline-log/tasks-multi-select.json",
+        "data/pipeline-log/index.json"
+      ],
+      "decisions": [
+        "Excluded bulk editing of text fields (title/desc) to keep scope manageable",
+        "Decided on a floating Bulk Action Bar instead of replacing the filter bar to allow context maintenance",
+        "Requires confirmation dialog for bulk delete only"
+      ]
+    },
+    {
+      "id": "tech-approach",
+      "agent": "technical-architect",
+      "status": "completed",
+      "description": "Define implementation approach for AG Grid selection and bulk actions.",
+      "dependencies": ["requirements"],
+      "subtasks": [
+        "Analyzed existing saveProjectTasks logic and AG Grid config",
+        "Designed 'Optimistic UI' pattern for bulk updates",
+        "Defined data flow for grouping updates by project ID",
+        "Specified new AG Grid column config for checkboxes",
+        "Wrote detailed tech approach document"
+      ],
+      "filesChanged": [
+        "docs/tasks-multi-select-tech-approach.md",
+        "data/pipeline-log/tasks-multi-select.json"
+      ],
+      "decisions": [
+        "Use AG Grid native selection state as source of truth",
+        "Implement optimistic UI updates before API calls for responsiveness",
+        "Use Promise.allSettled for parallel cross-project saves",
+        "Bypass existing debounce for bulk actions to ensure execution"
+      ]
+    },
+    {
+      "id": "design-spec",
+      "agent": "product-designer",
+      "status": "completed",
+      "description": "Design the bulk action bar and selection states.",
+      "dependencies": ["tech-approach"],
+      "subtasks": [
+        "Defined floating 'pill' layout for desktop and fixed bottom sheet for mobile",
+        "Specified high-contrast dark theme (neutral-900) to distinguish from light grid",
+        " detailed CSS specs for bar, inputs, and buttons using design tokens",
+        "Defined interaction states (hover, focus, disabled) and entrance/exit animations",
+        "Ensured accessibility (contrast, keyboard nav) and responsiveness"
+      ],
+      "filesChanged": [
+        "docs/tasks-multi-select-design-spec.md",
+        "data/pipeline-log/tasks-multi-select.json"
+      ],
+      "decisions": [
+        "Chose a floating pill design for the action bar to keep it distinct from the grid",
+        "Used dark theme (neutral-900) for high contrast against the light page",
+        "Defined mobile behavior as a fixed bottom sheet",
+        "Specified optimistic UI animations (slide up/down)"
+      ]
+    },
+    {
+      "id": "implementation",
+      "agent": "frontend-developer",
+      "status": "pending",
+      "description": "Implement multi-select and bulk actions in tasks.js.",
+      "dependencies": ["design-spec"]
+    },
+    {
+      "id": "design-review",
+      "agent": "product-designer",
+      "status": "pending",
+      "description": "Review implementation against design spec.",
+      "dependencies": ["implementation"]
+    },
+    {
+      "id": "qa",
+      "agent": "qa",
+      "status": "pending",
+      "description": "Verify bulk actions work correctly across projects.",
+      "dependencies": ["design-review"]
+    }
+  ]
+}

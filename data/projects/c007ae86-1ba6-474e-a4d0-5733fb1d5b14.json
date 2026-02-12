@@ -1,0 +1,19 @@
+{
+  "id": "c007ae86-1ba6-474e-a4d0-5733fb1d5b14",
+  "slug": "identify-which-pipeline-steps-can-run-in-parallel-vs-whi",
+  "name": "Identify which pipeline steps can run in parallel vs. whi...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-02-11T22:44:49.650Z",
+  "updatedAt": "2026-02-12T17:24:57.609Z",
+  "completedAt": "2026-02-12T17:24:57.609Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Identify which pipeline steps can run in parallel vs. which have true sequential dependencies\n\nOwner: CEO\nPriority: high\nSource: Charter Meeting #10",
+  "notes": [],
+  "kickoffPrompt": "You have a new project to work on.\n\n## Project: Identify which pipeline steps can run in parallel vs. whi...\n\n**Brief:**\nIdentify which pipeline steps can run in parallel vs. which have true sequential dependencies\n\nOwner: CEO\nPriority: high\nSource: Charter Meeting #10\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
+  "activeSessionId": "d41ec5fb-04c5-4e09-9701-d636d544472c",
+  "pipeline": {
+    "tasks": []
+  }
+}

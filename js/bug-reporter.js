@@ -20,7 +20,7 @@
   var API_BASE = '';
   var SCRIBE_TOKEN_URL = '/api/scribe-token';
   var BUG_REPORT_URL = '/api/bug-reports';
-  var HTML2CANVAS_CDN = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+  var HTML_TO_IMAGE_CDN = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
   var MAX_RECORD_SECONDS = 30;
   var WARNING_SECONDS = 25;
   var TOAST_DURATION_MS = 3000;
@@ -123,22 +123,22 @@
     return node;
   }
 
-  // --- html2canvas Lazy Loader ---
+  // --- html-to-image Lazy Loader ---
 
-  var _html2canvasPromise = null;
+  var _htmlToImagePromise = null;
 
-  function loadHtml2Canvas() {
-    if (window.html2canvas) return Promise.resolve(window.html2canvas);
-    if (_html2canvasPromise) return _html2canvasPromise;
+  function loadHtmlToImage() {
+    if (window.htmlToImage) return Promise.resolve(window.htmlToImage);
+    if (_htmlToImagePromise) return _htmlToImagePromise;
 
-    _html2canvasPromise = new Promise(function (resolve, reject) {
+    _htmlToImagePromise = new Promise(function (resolve, reject) {
       var script = document.createElement('script');
-      script.src = HTML2CANVAS_CDN;
-      script.onload = function () { resolve(window.html2canvas); };
-      script.onerror = function () { reject(new Error('Failed to load html2canvas')); };
+      script.src = HTML_TO_IMAGE_CDN;
+      script.onload = function () { resolve(window.htmlToImage); };
+      script.onerror = function () { reject(new Error('Failed to load html-to-image')); };
       document.head.appendChild(script);
     });
-    return _html2canvasPromise;
+    return _htmlToImagePromise;
   }
 
   // --- BugReporter Class ---
@@ -562,23 +562,31 @@
     var existingError = this.screenshotThumb.querySelector('.bug-panel__screenshot-error');
     if (existingError) existingError.remove();
 
-    loadHtml2Canvas().then(function (html2canvas) {
+    loadDomToImage().then(function (domtoimage) {
       // Hide panel during capture
       self.panelEl.style.visibility = 'hidden';
 
-      return html2canvas(document.body, {
-        useCORS: true,
-        scale: 1,
-        logging: false,
-        windowWidth: document.documentElement.clientWidth,
-        windowHeight: window.innerHeight,
+      // Use domtoimage to capture the body
+      // We filter out the bug reporter root itself so it doesn't appear in the shot
+      return domtoimage.toJpeg(document.body, {
+        quality: 0.7,
+        bgcolor: '#ffffff',
+        width: window.innerWidth,
         height: window.innerHeight,
-        y: window.scrollY
+        style: {
+          transform: 'scale(1)',
+          left: 0,
+          top: 0
+        },
+        filter: function (node) {
+          // Exclude the bug reporter widget and the preview overlay
+          if (node.id === 'bug-reporter-root' || node.id === 'panel-preview-overlay') return false;
+          return true;
+        }
       });
-    }).then(function (canvas) {
+    }).then(function (dataUrl) {
       self.panelEl.style.visibility = 'visible';
-      // Use JPEG at 0.7 quality to keep the data URL under 1MB
-      self.screenshotDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      self.screenshotDataUrl = dataUrl;
       self.screenshotImg.src = self.screenshotDataUrl;
       self.screenshotImg.style.display = 'block';
       self.screenshotThumb.classList.remove('bug-panel__screenshot-thumb--loading');
@@ -587,7 +595,8 @@
         self.state = 'READY';
       }
       self._updateSubmitState();
-    }).catch(function () {
+    }).catch(function (error) {
+      console.error('Screenshot capture failed:', error);
       self.panelEl.style.visibility = 'visible';
       self.screenshotThumb.classList.remove('bug-panel__screenshot-thumb--loading');
 

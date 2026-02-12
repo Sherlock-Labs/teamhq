@@ -1,0 +1,106 @@
+{
+  "id": "1df5d513-d411-4c52-99de-c3e3d230e25c",
+  "type": "interview",
+  "status": "completed",
+  "meetingNumber": 5,
+  "scheduledAt": null,
+  "startedAt": "2026-02-10T16:13:53.901Z",
+  "completedAt": "2026-02-10T16:16:49.315Z",
+  "durationMs": 101000,
+  "error": null,
+  "summary": "The CEO outlined an ambitious Q1 goal of launching 10 new SaaS products by end of quarter, but quickly self-corrected to a more pragmatic near-term target of 1-2 products by end of week. The interview revealed a \"learn by doing\" philosophy — acknowledging significant unknowns around deployment, marketing, and support that can only be resolved through actual launches.",
+  "keyTakeaways": [
+    "Q1 headline goal is launching 10 new SaaS products by end of quarter — aggressive but aspirational",
+    "CEO immediately recalibrated to 1-2 products by end of week as the real near-term milestone",
+    "Major unknowns acknowledged: deployment process, marketing, and customer support are all unproven",
+    "Philosophy is learn-by-doing — ship the first one fast, then codify patterns from the experience",
+    "Team needs to establish repeatable launch patterns before volume scaling makes sense"
+  ],
+  "transcript": [
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Hey! I'd like to dig into Q1 with you today. What's top of mind for you on this?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "Yeah, I think we need to be aggressive in setting some goals for the team."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "I see. When you say we need to be aggressive with these goals, what are you hoping that push accomplishes for the team right now?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "I think we really need to push through, get our pattern set up so we can launch 10 new SaaS products by the end of the quarter. So we just need to really codify that into team goals and get cracking."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Ten new products in a single quarter is a massive target. I want to push back gently on that number. What's the biggest risk you see to the team's output if we commit to that volume right now?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "I just think that we, well, we don't know what we don't know. We haven't launched a single one. So we're going to see how it goes for this first one. I think we don't know how deploying a product goes. We don't know how to market it. We don't know how to support it. So I think we'll just learn a lot along the way. I think as a much near-term goal, let's try and launch a new one by the end of the week, maybe two and see how that goes."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Right. Moving from ten in a quarter to one or two by the end of this week is a significant shift in pace. Since you mentioned we don't know how to market or support these yet, what's the one thing you're least sure about regarding launching that first one by Friday?"
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Set Q1 objective to launch 10 new SaaS products by end of quarter",
+      "rationale": "Need to be aggressive with goals and codify the team's launch pattern into repeatable process",
+      "participants": [
+        "CEO"
+      ]
+    },
+    {
+      "description": "Near-term target: launch 1-2 products by end of this week",
+      "rationale": "Haven't launched a single product yet — need to learn how deployment, marketing, and support actually work before committing to volume",
+      "participants": [
+        "CEO"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "CEO",
+      "description": "Define and launch the first SaaS product by end of week",
+      "priority": "high"
+    },
+    {
+      "owner": "CEO",
+      "description": "Codify Q1 OKRs around the 10-product target once first launch learnings are in",
+      "priority": "medium"
+    },
+    {
+      "owner": "CEO",
+      "description": "Figure out deployment, marketing, and support workflows through the first launch",
+      "priority": "high"
+    }
+  ],
+  "mood": "Ambitious but pragmatic",
+  "nextMeetingTopics": [
+    "Post-first-launch retrospective: what did we learn about deploy, marketing, support?",
+    "Refine Q1 OKR targets based on actual launch velocity",
+    "Marketing and support playbook for SaaS products",
+    "Whether 10 products by EOQ is realistic after first launch experience"
+  ],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "Q1",
+    "context": "OKRs",
+    "durationSeconds": 101
+  }
+}

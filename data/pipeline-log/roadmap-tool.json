@@ -571,6 +571,111 @@
         "client/.env stays separate — Vite loads env files from the client/ directory by convention. VITE_ prefix required for browser exposure. This is the correct Vite pattern and should not be consolidated into root .env",
         ".env.example is the single documentation source for all environment variables across both server and client, with clear section separation"
       ]
+    },
+    {
+      "id": "v1.1-sprint-a-scoping",
+      "title": "v1.1 Sprint A scoping — backlog prioritization and requirements for RT-19, RT-25, RT-30",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Reviewed all 13 planned work items (RT-19 through RT-35, excluding RT-36 per CEO)",
+        "Read existing requirements, tech approach, design spec, and sprint-next docs for full context",
+        "Explored the roadmap-tool codebase: component structure, schema, shared types, package.json dependencies",
+        "Verified export/ component directory exists but is empty — RT-19 is greenfield",
+        "Verified ItemCard has 'Linked Items' and 'Sub-Items' placeholder tabs — ready for Sprint B",
+        "Verified Timeline SVG components are well-structured for drag handler extension (ItemBar, TimelineCanvas)",
+        "Grouped 13 items into 4 sprints: A (stakeholder + daily use), B (item depth), C (collaboration + data), D (v2.0 portfolio + scale)",
+        "Selected Sprint A batch: RT-19 (Export to PNG), RT-25 (Drag on Timeline), RT-30 (Presentation mode)",
+        "Wrote detailed requirements with full acceptance criteria and interaction state checklists for all 3 features",
+        "Defined technical constraints: html-to-image library, 60fps drag performance, Fullscreen API",
+        "Confirmed all 3 features are frontend-only — no backend changes, no schema changes, no new API endpoints",
+        "Recommended pipeline: Robert (design addendum) -> Alice (FE) -> Nina (interactions review) -> Robert (design review) -> Enzo (QA)",
+        "Updated all 13 work items with sprint assignments, descriptions, and priorities",
+        "Documented sprint sequencing roadmap for Sprints B, C, D"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v1.1-requirements.md — Created: full requirements for Sprint A (RT-19, RT-25, RT-30)",
+        "data/work-items/roadmap-tool.json — Updated: sprint assignments, descriptions, priorities for RT-19 through RT-35"
+      ],
+      "decisions": [
+        "Sprint A = RT-19 + RT-25 + RT-30 — these three form a 'stakeholder communication + daily editing' batch that delivers the most value fastest",
+        "RT-25 (Drag on Timeline) is the single highest-impact UX improvement — addresses the '8 clicks' problem from Roadmunk user research",
+        "RT-19 (Export to PNG) is a v1.0 leftover and highest-priority for stakeholder communication",
+        "RT-30 (Presentation mode) is trivially small and pairs naturally with export for meetings",
+        "All three features are fully independent — no dependencies between them, all frontend-only",
+        "Skip Andrei (Arch) — no architecture decisions needed, tech approach already covers html-to-image and SVG pointer events",
+        "Include Nina (Interactions) — drag feel is critical for RT-25 (60fps, ghost preview, snap feedback, undo animation)",
+        "Skip Soren/Amara — no new responsive layouts or a11y patterns in this sprint",
+        "Sprint B (dependencies + sub-items + key dates) should come next — adds the most product depth, requires schema changes",
+        "RT-27 (Key dates) deferred to Sprint B despite being low priority — it's a small add-on that ships naturally with sub-items",
+        "Server-side PNG export (Puppeteer fallback) explicitly excluded from scope — client-side only for now, revisit if issues arise"
+      ]
+    },
+    {
+      "id": "v1.1-sprint-a-implementation",
+      "title": "v1.1 Sprint A implementation — RT-30 (Presentation Mode), RT-19 (Export to PNG), RT-25 (Drag on Timeline)",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "completed",
+      "subtasks": [
+        "RT-30: Created PresentationMode component with Fullscreen API, auto-fading chrome (3s idle), Escape key exit, fallback CSS fullscreen for unsupported browsers, screen reader announcements",
+        "RT-30: Added PresentationMode.module.css with overlay, view switcher pill, exit button, opacity transitions, and reduced-motion support",
+        "RT-30: Added Present button (expand icon) to RoadmapPage toolbar right section, desktop-only, disabled when no items",
+        "RT-30: Added isPresentation prop to TimelineView, TableView, and SwimlaneView — hides toolbars, disables item clicks, suppresses config changes",
+        "RT-30: Made SwimlaneView onConfigChange optional to support presentation mode (fixed TS error from non-optional call)",
+        "RT-19: Created ExportButton component with secondary button + dropdown menu, loading spinner, error toast, and disabled state",
+        "RT-19: Created lib/export.ts with exportViewToPng() function using html-to-image toPng at 2x pixel ratio, captures full scroll content with export header overlay",
+        "RT-19: Installed html-to-image dependency in client workspace",
+        "RT-19: Wired ExportButton into RoadmapPage toolbar with viewContentRef, roadmap name, view name, and disabled-when-empty logic",
+        "RT-25: Created lib/dragSnap.ts — pure snap functions: getSnapUnit (zoom-aware), snapDate (day/week/month boundaries), snapPixelToDate, getNearbySnapDates",
+        "RT-25: Created DragLayer.tsx SVG component — ghost bar (0.4 opacity, dashed stroke), origin bar (0.2 opacity), snap grid lines, date tooltip with arrow, stream highlight for cross-group drag",
+        "RT-25: Rewrote ItemBar.tsx with drag support — cursor zone detection (left/right edge = resize, body = move), resize handles (4px white bars on hover), pointer down handler, grab/col-resize cursors, 0.6 opacity dim on non-dragged bars",
+        "RT-25: Added full drag orchestration to TimelineCanvas.tsx — trackedItemMap for O(1) lookup, SVG coordinate conversion, handleDragStart callback, document-level pointermove/pointerup with rAF throttling, snap calculations for move/resize-start/resize-end modes",
+        "RT-25: Implemented Shift+drag (vertical-only lock) and Alt+drag (free positioning, no snap) modifiers via keydown/keyup listeners",
+        "RT-25: Implemented drop commit — optimistic item date update via onItemUpdate callback, undo state storage in viewStore, screen reader live region announcement",
+        "RT-25: Created onItemUpdate callback in TimelineView.tsx — optimistic React Query cache update + server persist with invalidation fallback on error",
+        "RT-25: Implemented Cmd/Ctrl+Z undo handler in TimelineView.tsx — single-level undo that reverts dates optimistically and persists to server, clears undo state after use",
+        "RT-25: Wired roadmapId and onItemUpdate props from TimelineView to TimelineCanvas, disabled in presentation mode",
+        "RT-25: Added DragLayer export to timeline/index.ts barrel file",
+        "Verified TypeScript compiles cleanly (0 errors) across all workspaces",
+        "Verified Vite production build succeeds (733 modules transformed, 602KB bundle)",
+        "Verified dev server starts without errors"
+      ],
+      "filesChanged": [
+        "client/src/components/presentation/PresentationMode.tsx — Created: fullscreen wrapper with auto-fade, view switcher, a11y announcements",
+        "client/src/components/presentation/PresentationMode.module.css — Created: overlay, chrome, transitions, reduced-motion",
+        "client/src/components/export/ExportButton.tsx — Created: dropdown button with loading states, error toast",
+        "client/src/components/export/ExportButton.module.css — Created: button, dropdown, spinner styles",
+        "client/src/lib/export.ts — Created: exportViewToPng() with html-to-image at 2x density",
+        "client/src/lib/dragSnap.ts — Created: snap calculation utilities (day/week/month)",
+        "client/src/components/timeline/DragLayer.tsx — Created: SVG drag feedback layer",
+        "client/src/components/timeline/ItemBar.tsx — Modified: added drag support (resize handles, cursor zones, pointer events)",
+        "client/src/components/timeline/ItemBar.module.css — Modified: added .resizeHandle styles",
+        "client/src/components/timeline/TimelineCanvas.tsx — Modified: added drag orchestration (trackedItemMap, handleDragStart, pointermove/up listeners, snap, DragLayer rendering, screen reader region)",
+        "client/src/components/timeline/TimelineView.tsx — Modified: added onItemUpdate callback, Cmd/Ctrl+Z undo handler, passes roadmapId and onItemUpdate to TimelineCanvas",
+        "client/src/components/timeline/index.ts — Modified: added DragLayer export",
+        "client/src/routes/RoadmapPage.tsx — Modified: added PresentationMode, ExportButton, Present button, isPresentation props to views",
+        "client/src/routes/RoadmapPage.module.css — Modified: added .presentBtn styles",
+        "client/src/components/table/TableView.tsx — Modified: added isPresentation prop",
+        "client/src/components/swimlane/SwimlaneView.tsx — Modified: added isPresentation prop, made onConfigChange optional, fixed TS error with optional chaining",
+        "client/package.json — Modified: added html-to-image dependency",
+        "package-lock.json — Modified: lockfile updated for html-to-image"
+      ],
+      "decisions": [
+        "Built RT-30 first (smallest), then RT-19 (medium), then RT-25 (largest) — follows the recommended warmup order from Thomas's scoping",
+        "PresentationMode uses Fullscreen API with CSS fallback (position: fixed, z-index: 9999) — handles browsers that block fullscreen or deny the permission request",
+        "Export uses html-to-image (toPng) over html2canvas — lighter library, better SVG support, already specified in the tech approach",
+        "Export captures at 2x pixel ratio for retina-quality PNG output — standard practice for export features",
+        "Drag uses document-level pointer events (not React DnD or any library) — simpler, more control over 60fps performance, follows tech approach recommendation",
+        "Drag throttled via requestAnimationFrame (one update per frame) — prevents state thrashing during rapid pointer moves",
+        "Snap behavior varies by zoom level: days at weeks/months scale, weeks at quarters/halves, months at years — matches design spec section A2",
+        "Shift+drag locks to vertical axis only, Alt+drag disables snapping for free positioning — modifier keys documented in design addendum",
+        "Single-level undo (Cmd/Ctrl+Z) stored in viewStore — reverts dates optimistically then persists. Cleared after use, no multi-level undo stack",
+        "Optimistic updates for both drag commit and undo — React Query cache updated immediately, server request sent async with invalidation fallback on error",
+        "Screen reader live region (aria-live='polite') announces drag results and undo actions — satisfies a11y requirements from design spec",
+        "SwimlaneView.onConfigChange made optional with ?. operator — needed for presentation mode where config changes are disabled"
+      ]
     }
   ]
 }

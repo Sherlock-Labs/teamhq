@@ -736,6 +736,17 @@
       );
     }
 
+    if (task.metadata && task.metadata.screenshotPath) {
+      sections.push(
+        '<div class="task-item__screenshot">' +
+          '<span class="task-item__detail-label">Screenshot</span>' +
+          '<div class="task-item__screenshot-thumb">' +
+            '<img src="' + escapeHTML(task.metadata.screenshotPath) + '" alt="Bug screenshot" loading="lazy">' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
     return (
       '<div class="task-item__details" aria-hidden="true">' +
         '<div class="task-item__details-inner">' +
@@ -2492,15 +2503,16 @@
 
         // Connect SSE for active session
         if (isLive && project.activeSessionId) {
-          var activeSessionEventCount = 0;
-          for (var i = 0; i < events.length; i++) {
+          var activeSessionReplayOffset = 0;
+          for (var i = events.length - 1; i >= 0; i--) {
             if (events[i].sessionId === project.activeSessionId) {
-              activeSessionEventCount++;
+              activeSessionReplayOffset = events[i].id + 1;
+              break;
             }
           }
 
           // If no events from active session yet, insert a divider for it
-          if (activeSessionEventCount === 0 && eventsContainer) {
+          if (activeSessionReplayOffset === 0 && eventsContainer) {
             for (var j = 0; j < workLogSessions.length; j++) {
               if (workLogSessions[j].id === project.activeSessionId) {
                 var div = document.createElement('div');
@@ -2512,7 +2524,7 @@
             }
           }
 
-          connectWorkLogSSE(projectId, project.activeSessionId, activeSessionEventCount);
+          connectWorkLogSSE(projectId, project.activeSessionId, activeSessionReplayOffset);
         }
 
         setupAutoScroll(projectId);
@@ -2899,7 +2911,7 @@
           actionArea.innerHTML =
             '<button class="detail__start-btn" type="button">Start Work</button>';
         }
-        var msg = (err && err.error) || 'Failed to start project. Please try again.';
+        var msg = (err && (err.detail || err.error)) || 'Failed to start project. Please try again.';
         showToast(msg, true);
       });
   }

@@ -235,11 +235,11 @@
     {
       "id": "RT-24",
       "title": "Link items (dependencies)",
-      "description": "Three link types (Blocking, Moves With, Relates To). Dependency lines on Timeline. Schema change required. Deferred to Sprint B.",
-      "status": "planned",
+      "description": "Three link types (Blocks/Blocked by, Moves With, Relates To). Dependency arrows on Timeline with right-angle routing and conflict highlighting. New item_links table. CRUD API + WebSocket broadcast. Managed from Item Card Linked Items tab. Scoped in v1.1 Sprint B.",
+      "status": "ready",
       "phase": "v1.1-sprint-b",
       "owner": "",
-      "priority": "medium",
+      "priority": "high",
       "createdBy": "Thomas"
     },
     {
@@ -255,21 +255,21 @@
     {
       "id": "RT-26",
       "title": "Sub-items",
-      "description": "Nested items under parents. parentId on items table. Expand/collapse in Table, nested bars in Timeline, badge on Swimlane cards. Deferred to Sprint B.",
-      "status": "planned",
+      "description": "One level of nesting: parent -> children via parentId column on items table. Summary bars on Timeline, indented rows with expand/collapse in Table, count badge on Swimlane cards. Sub-Items tab in Item Card with compact table, drag reorder, add/remove. Max 50 sub-items per parent. Scoped in v1.1 Sprint B.",
+      "status": "ready",
       "phase": "v1.1-sprint-b",
       "owner": "",
-      "priority": "medium",
+      "priority": "high",
       "createdBy": "Thomas"
     },
     {
       "id": "RT-27",
       "title": "Key dates",
-      "description": "Named date markers within items (e.g., 'Design Complete: Mar 15'). Small markers on Timeline bars. Deferred to Sprint B.",
-      "status": "planned",
+      "description": "Named date markers within items (e.g., 'Design Complete: Mar 15'). Max 10 per item. Diamond markers on Timeline bars. Key Dates section in Item Card Fields tab with inline editing and auto-save. Key Dates column in Table View showing next upcoming date. New key_dates table. Scoped in v1.1 Sprint B.",
+      "status": "ready",
       "phase": "v1.1-sprint-b",
       "owner": "",
-      "priority": "low",
+      "priority": "medium",
       "createdBy": "Thomas"
     },
     {

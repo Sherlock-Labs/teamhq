@@ -21,7 +21,14 @@ class SessionManager {
     return { ok: true };
   }
 
-  registerSession(sessionId: string, projectId: string, runner: SessionRunner): void {
+  tryStartSession(
+    sessionId: string,
+    projectId: string,
+    runner: SessionRunner
+  ): { ok: boolean; reason?: string } {
+    const check = this.canStartSession(projectId);
+    if (!check.ok) return check;
+
     this.runningSessions.set(sessionId, runner);
     this.projectToSession.set(projectId, sessionId);
 
@@ -29,6 +36,15 @@ class SessionManager {
       this.runningSessions.delete(sessionId);
       this.projectToSession.delete(projectId);
     });
+
+    return { ok: true };
+  }
+
+  registerSession(sessionId: string, projectId: string, runner: SessionRunner): void {
+    const result = this.tryStartSession(sessionId, projectId, runner);
+    if (!result.ok) {
+      throw new Error(result.reason || "Session start denied");
+    }
   }
 
   getRunner(sessionId: string): SessionRunner | undefined {

@@ -73,9 +73,19 @@ export async function createProject(data: {
 }): Promise<Project> {
   await ensureDir();
   const now = new Date().toISOString();
+  const slug = toSlug(data.slug ?? data.name);
+  if (!slug) {
+    throw new Error("Invalid project slug");
+  }
+
+  const existingProjects = await listProjects();
+  if (existingProjects.some((p) => p.slug === slug)) {
+    throw Object.assign(new Error("Project slug already exists"), { code: "SLUG_EXISTS" });
+  }
+
   const project: Project = {
     id: uuidv4(),
-    slug: data.slug ?? toSlug(data.name),
+    slug,
     name: data.name,
     description: data.description,
     status: data.status,

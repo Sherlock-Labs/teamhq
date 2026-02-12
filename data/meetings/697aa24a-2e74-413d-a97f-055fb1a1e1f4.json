@@ -1,0 +1,64 @@
+{
+  "id": "697aa24a-2e74-413d-a97f-055fb1a1e1f4",
+  "type": "interview",
+  "status": "completed",
+  "meetingNumber": 10,
+  "scheduledAt": null,
+  "startedAt": "2026-02-11T22:43:27.401Z",
+  "completedAt": "2026-02-11T22:44:38.806Z",
+  "durationMs": 32000,
+  "error": null,
+  "summary": "The CEO discussed frustrations with the current sequential pipeline approach to multi-agent workflows, where agents pass work like a relay race rather than running in parallel. The interview focused on identifying opportunities to increase team velocity by running more agents concurrently, though the conversation was cut short after just the opening exchange.",
+  "keyTakeaways": [
+    "The current multi-agent pipeline runs too sequentially — like a relay race with baton passing, which feels slow",
+    "The bottleneck isn't individual agent performance but the sequential nature of the workflow",
+    "The CEO wants to explore running more agents concurrently to increase throughput",
+    "This has been top of mind — the CEO was thinking about it the night before the interview",
+    "The core question is: which pipeline steps actually need to be sequential vs. which can safely run in parallel?"
+  ],
+  "transcript": [
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Hey! I'd like to dig into Team Velocity with you today. What's top of mind for you on this?"
+    }
+  ],
+  "decisions": [
+    {
+      "description": "The team needs to move from a sequential relay-race pipeline to a more parallel multi-agent workflow",
+      "rationale": "The current sequential approach is the primary bottleneck — individual steps aren't slow, but waiting for each to finish before starting the next is",
+      "participants": [
+        "CEO"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "CEO",
+      "description": "Identify which pipeline steps can run in parallel vs. which have true sequential dependencies",
+      "priority": "high"
+    },
+    {
+      "owner": "CEO",
+      "description": "Explore whether different models could help with velocity (mentioned in pre-interview context)",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Frustrated but solution-oriented",
+  "nextMeetingTopics": [
+    "Concrete plan for parallelizing pipeline steps",
+    "Which agent handoffs have true dependencies vs. artificial sequencing",
+    "Whether different models (not just Opus) could improve speed for certain roles",
+    "Defining what 'running more stuff at the same time' looks like in practice"
+  ],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "Team Velocity",
+    "context": "Yeah, I'd love to have a chat about how we can increase team velocity. Just feels like some of the threads in the multi-agent stuff has taken a long time. So is there a way that we can employ more agents at the same time? It just seems like a lot of this stuff is just taking forever. Maybe it's different models? I don't know.",
+    "durationSeconds": 32
+  }
+}

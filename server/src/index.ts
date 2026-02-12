@@ -23,6 +23,14 @@ const PORT = 3002;
 
 app.use(express.json({ limit: "5mb" }));
 
+// Enable CORS for all routes to help with screenshot capture
+app.use((_req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
 // Serve static frontend files from project root
 const projectRoot = path.resolve(import.meta.dirname, "../..");
 app.use(express.static(projectRoot));

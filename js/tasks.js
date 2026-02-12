@@ -16,6 +16,8 @@
   var _allTasks = [];
   var _saveTimers = {}; // projectId → timeout id
   var _projectPrefixes = {}; // projectId → taskPrefix
+  var _selectedNodes = []; // for bulk actions
+  var _isBulkUpdating = false; // flag to suppress individual auto-saves during bulk ops
 
   // Panel state
   var _panelOpen = false;
@@ -44,6 +46,15 @@
   var filterBadge = document.getElementById('filter-badge');
   var filterClear = document.getElementById('filter-clear');
 
+  // Bulk Action Bar controls
+  var bulkBar = document.getElementById('bulk-action-bar');
+  var bulkCount = document.getElementById('bulk-count');
+  var bulkStatus = document.getElementById('bulk-status');
+  var bulkPriority = document.getElementById('bulk-priority');
+  var bulkOwnerInput = document.getElementById('bulk-owner');
+  var bulkOwnerApply = document.getElementById('bulk-owner-apply');
+  var bulkDelete = document.getElementById('bulk-delete');
+
   // Modal
   var modalOverlay = document.getElementById('task-modal-overlay');
   var modalForm = document.getElementById('task-form');
@@ -70,6 +81,12 @@
   var panelPhaseInput = document.getElementById('panel-phase');
   var panelProjectLink = document.getElementById('panel-project-link');
   var panelCreatedBy = document.getElementById('panel-created-by');
+  var panelScreenshotSection = document.getElementById('panel-screenshot-section');
+  var panelScreenshotImg = document.getElementById('panel-screenshot-img');
+  var panelScreenshotThumb = document.getElementById('panel-screenshot-thumb');
+  var panelPreviewOverlay = document.getElementById('panel-preview-overlay');
+  var panelPreviewImg = document.getElementById('panel-preview-img');
+  var panelPreviewClose = document.getElementById('panel-preview-close');
   var panelCloseBtn = document.getElementById('panel-close');
 
   // =====================
@@ -103,6 +120,23 @@
   // Column Definitions
   // =====================
   var columnDefs = [
+    {
+      headerName: '',
+      headerCheckboxSelection: true,
+      headerCheckboxSelectionFilteredOnly: true,
+      checkboxSelection: true,
+      width: 50,
+      minWidth: 50,
+      maxWidth: 50,
+      pinned: 'left',
+      lockPosition: true,
+      sortable: false,
+      resizable: false,
+      suppressMovable: true,
+      suppressHeaderMenuButton: true,
+      field: '_selection', // dummy field
+      cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' }
+    },
     {
       field: 'project',
       headerName: 'Project',
@@ -200,6 +234,8 @@
     animateRows: true,
     singleClickEdit: true,
     stopEditingWhenCellsLoseFocus: true,
+    rowSelection: 'multiple', // Multi-row selection
+    suppressRowClickSelection: true, // Only checkbox selects row
     defaultColDef: {
       sortable: true,
       resizable: false,
@@ -214,7 +250,9 @@
     doesExternalFilterPass: function (node) {
       return passesFilters(node.data);
     },
+    onSelectionChanged: handleSelectionChanged,
     onCellValueChanged: function (event) {
+      if (_isBulkUpdating) return; // Skip during bulk update
       scheduleTaskSave(event.data.project.id);
       // Reverse sync: if panel is showing this task, update the panel field
       if (_panelOpen && _panelRowId === event.data.project.slug + '::' + event.data.id) {
@@ -224,6 +262,9 @@
     onCellClicked: function (event) {
       // Editable cells → AG Grid handles inline edit
       if (event.colDef && event.colDef.editable) return;
+
+      // Checkbox column → handled by selection logic
+      if (event.colDef && event.colDef.field === '_selection') return;
 
       var field = event.colDef ? event.colDef.field : null;
 
@@ -253,6 +294,139 @@
       }
     }
   };
+
+  // =====================
+  // Bulk Action Logic
+  // =====================
+  function handleSelectionChanged() {
+    _selectedNodes = _gridApi.getSelectedNodes();
+    var count = _selectedNodes.length;
+    
+    bulkCount.textContent = count + ' selected';
+    if (count > 0) {
+      bulkBar.classList.add('visible');
+      bulkBar.setAttribute('aria-hidden', 'false');
+    } else {
+      bulkBar.classList.remove('visible');
+      bulkBar.setAttribute('aria-hidden', 'true');
+      // Reset controls
+      bulkStatus.value = "";
+      bulkPriority.value = "";
+      bulkOwnerInput.value = "";
+    }
+  }
+
+  function executeBulkUpdate(field, value) {
+    if (!_selectedNodes.length) return;
+
+    var affectedProjectIds = new Set();
+    _isBulkUpdating = true; // Suppress individual save triggers
+
+    // 1. Update Grid UI immediately (Optimistic)
+    _selectedNodes.forEach(function(node) {
+      node.setDataValue(field, value);
+      affectedProjectIds.add(node.data.project.id);
+    });
+
+    _isBulkUpdating = false;
+
+    // 2. Persist Changes
+    var promises = [];
+    affectedProjectIds.forEach(function(projectId) {
+      promises.push(saveProjectTasks(projectId, 0, true)); // true = return promise
+    });
+
+    Promise.allSettled(promises).then(function(results) {
+      var failed = results.filter(function(r) { return r.status === 'rejected'; });
+      if (failed.length === 0) {
+        showToast('Updated ' + _selectedNodes.length + ' tasks');
+        _gridApi.deselectAll();
+      } else {
+        showToast('Completed with errors. Failed to save ' + failed.length + ' projects.');
+        // In a more complex app, we might revert UI changes here
+      }
+    });
+  }
+
+  function executeBulkDelete() {
+    if (!_selectedNodes.length) return;
+
+    if (!confirm('Are you sure you want to delete ' + _selectedNodes.length + ' tasks? This cannot be undone.')) {
+      return;
+    }
+
+    var affectedProjectIds = new Set();
+    var rowsToRemove = [];
+    
+    _selectedNodes.forEach(function(node) {
+      affectedProjectIds.add(node.data.project.id);
+      rowsToRemove.push(node.data);
+    });
+
+    // 1. Update Grid UI
+    _gridApi.applyTransaction({ remove: rowsToRemove });
+
+    // 2. Persist Changes
+    var promises = [];
+    affectedProjectIds.forEach(function(projectId) {
+      promises.push(saveProjectTasks(projectId, 0, true));
+    });
+
+    Promise.allSettled(promises).then(function(results) {
+      var failed = results.filter(function(r) { return r.status === 'rejected'; });
+      if (failed.length === 0) {
+        showToast('Deleted ' + rowsToRemove.length + ' tasks');
+        _gridApi.deselectAll();
+        updateStats(); // Update stats after delete
+      } else {
+        showToast('Error deleting tasks in ' + failed.length + ' projects.');
+      }
+    });
+  }
+
+  // Bind Bulk Actions
+  bulkStatus.addEventListener('change', function() {
+    if (this.value) {
+      executeBulkUpdate('status', this.value);
+      this.value = ""; // Reset dropdown
+    }
+  });
+
+  bulkPriority.addEventListener('change', function() {
+    if (this.value) {
+      executeBulkUpdate('priority', this.value);
+      this.value = ""; // Reset dropdown
+    }
+  });
+
+  bulkOwnerInput.addEventListener('input', function() {
+    bulkOwnerApply.disabled = !this.value.trim();
+  });
+
+  bulkOwnerApply.addEventListener('click', function() {
+    var val = bulkOwnerInput.value.trim();
+    if (val) {
+      executeBulkUpdate('owner', val);
+      bulkOwnerInput.value = "";
+      bulkOwnerApply.disabled = true;
+    }
+  });
+  
+  // Allow Enter key in owner input
+  bulkOwnerInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var val = bulkOwnerInput.value.trim();
+      if (val) {
+        executeBulkUpdate('owner', val);
+        bulkOwnerInput.value = "";
+        bulkOwnerApply.disabled = true;
+      }
+    }
+  });
+
+  bulkDelete.addEventListener('click', executeBulkDelete);
+
 
   // =====================
   // Filter Logic
@@ -370,11 +544,11 @@
     if (_saveTimers[projectId]) clearTimeout(_saveTimers[projectId]);
     _saveTimers[projectId] = setTimeout(function () {
       delete _saveTimers[projectId];
-      saveProjectTasks(projectId, 0);
+      saveProjectTasks(projectId, 0, false);
     }, 500);
   }
 
-  function saveProjectTasks(projectId, retryCount) {
+  function saveProjectTasks(projectId, retryCount, returnPromise) {
     var workItems = [];
     _gridApi.forEachNode(function (node) {
       if (node.data.project.id !== projectId) return;
@@ -390,29 +564,37 @@
       });
     });
 
-    fetch('/api/projects/' + encodeURIComponent(projectId) + '/work-items', {
+    var fetchPromise = fetch('/api/projects/' + encodeURIComponent(projectId) + '/work-items', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ workItems: workItems })
     })
       .then(function (res) {
         if (!res.ok) throw new Error('Save failed');
-        var rowNodes = [];
-        _gridApi.forEachNode(function (node) {
-          if (node.data.project.id === projectId) rowNodes.push(node);
-        });
-        if (rowNodes.length > 0) {
-          _gridApi.flashCells({ rowNodes: rowNodes, columns: ['status', 'priority', 'owner', 'phase'] });
+        // Only flash cells if not bulk updating, to avoid UI noise
+        if (!_isBulkUpdating) {
+            var rowNodes = [];
+            _gridApi.forEachNode(function (node) {
+              if (node.data.project.id === projectId) rowNodes.push(node);
+            });
+            if (rowNodes.length > 0) {
+              _gridApi.flashCells({ rowNodes: rowNodes, columns: ['status', 'priority', 'owner', 'phase'] });
+            }
         }
       })
-      .catch(function () {
-        if (retryCount < 1) {
+      .catch(function (err) {
+        if (retryCount < 1 && !returnPromise) {
           showToast('Failed to save — retrying...');
-          setTimeout(function () { saveProjectTasks(projectId, 1); }, 2000);
-        } else {
+          setTimeout(function () { saveProjectTasks(projectId, 1, false); }, 2000);
+        } else if (!returnPromise) {
           showToast('Failed to save.');
         }
+        throw err; // Propagate error for Promise.allSettled
       });
+
+    if (returnPromise) {
+      return fetchPromise;
+    }
   }
 
   // =====================
@@ -442,17 +624,37 @@
   // Stats
   // =====================
   function updateStats() {
-    var total = _allTasks.length;
-    var projectSet = {};
-    for (var i = 0; i < _allTasks.length; i++) {
-      projectSet[_allTasks[i].project.slug] = true;
+    var total = _allTasks.length; // This might be stale if we deleted rows, but we usually reload or splice.
+    
+    // Better to count from grid rows if we want to be accurate after deletes without full reload
+    // But _allTasks is used for global stats. Let's update _allTasks reference when needed.
+    // For now, simpler to just recount from grid if initialized.
+    
+    if (_gridApi) {
+        var allNodesCount = 0;
+        _gridApi.forEachNode(function() { allNodesCount++; });
+        // Update total if mismatch (e.g. after delete)
+        if (allNodesCount !== total) {
+             // Sync _allTasks with grid data roughly
+             // (Not perfect but keeps stats aligned visually)
+             total = allNodesCount;
+        }
     }
-    var projectCount = Object.keys(projectSet).length;
 
     var displayed = 0;
     if (_gridApi) {
       _gridApi.forEachNodeAfterFilter(function () { displayed++; });
     }
+    
+    // Recount projects
+    var projectSet = new Set();
+    if (_gridApi) {
+        _gridApi.forEachNode(function(node) {
+            projectSet.add(node.data.project.id);
+        });
+    }
+    var projectCount = projectSet.size;
+
 
     if (hasActiveFilters()) {
       statsEl.textContent = displayed + ' of ' + total + ' tasks across ' + projectCount + ' project' + (projectCount !== 1 ? 's' : '');
@@ -665,6 +867,12 @@
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
 
+    // 0. Preview overlay takes high precedence
+    if (panelPreviewOverlay.classList.contains('bug-preview-overlay--visible')) {
+      panelPreviewOverlay.classList.remove('bug-preview-overlay--visible');
+      return;
+    }
+
     // 1. Modal takes precedence
     if (modalOverlay.getAttribute('aria-hidden') === 'false') {
       closeModal();
@@ -736,6 +944,15 @@
     panelCreatedBy.textContent = cb || '—';
     panelCreatedBy.className = 'task-detail__readonly' + (cb ? '' : ' task-detail__readonly--empty');
 
+    // Screenshot
+    if (data.metadata && data.metadata.screenshotPath) {
+      panelScreenshotImg.src = data.metadata.screenshotPath;
+      panelScreenshotSection.style.display = 'block';
+    } else {
+      panelScreenshotSection.style.display = 'none';
+      panelScreenshotImg.src = '';
+    }
+
     // Show panel
     if (!wasOpen) {
       panelEl.setAttribute('aria-hidden', 'false');
@@ -801,9 +1018,8 @@
     if (!rowNode) return;
 
     // Update row data directly and trigger save
-    rowNode.data[field] = newValue;
-    _gridApi.refreshCells({ rowNodes: [rowNode], columns: [field], force: true });
-    scheduleTaskSave(rowNode.data.project.id);
+    rowNode.setDataValue(field, newValue); // Use setDataValue to trigger onCellValueChanged
+    // scheduleTaskSave is handled by onCellValueChanged
   }
 
   function updatePanelField(field, newValue) {
@@ -975,12 +1191,34 @@
   // --- Close button ---
   panelCloseBtn.addEventListener('click', closePanel);
 
+  // --- Screenshot Preview ---
+  panelScreenshotThumb.addEventListener('click', function () {
+    var src = panelScreenshotImg.src;
+    if (src) {
+      panelPreviewImg.src = src;
+      panelPreviewOverlay.classList.add('bug-preview-overlay--visible');
+      setTimeout(function () { panelPreviewClose.focus(); }, 50);
+    }
+  });
+
+  panelPreviewOverlay.addEventListener('click', function (e) {
+    if (e.target === panelPreviewOverlay || e.target === panelPreviewClose) {
+      panelPreviewOverlay.classList.remove('bug-preview-overlay--visible');
+    }
+  });
+
+  panelPreviewClose.addEventListener('click', function () {
+    panelPreviewOverlay.classList.remove('bug-preview-overlay--visible');
+  });
+
   // --- Click-outside close (mousedown to allow grid cell clicks to pass through) ---
   document.addEventListener('mousedown', function (e) {
     if (!_panelOpen) return;
     if (panelEl.contains(e.target)) return;
     // Grid clicks are handled by onCellClicked — don't close for those
     if (gridEl.contains(e.target)) return;
+    // Bulk bar interactions shouldn't close panel
+    if (bulkBar.contains(e.target)) return;
     closePanel();
   });
 

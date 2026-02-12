@@ -67,19 +67,27 @@ router.get("/projects", async (_req, res) => {
 
 // Create a project
 router.post("/projects", async (req, res) => {
-  try {
-    const parsed = CreateProjectSchema.parse(req.body);
-    const project = await createProject(parsed);
-    res.status(201).json(project);
-  } catch (err) {
-    if (err instanceof ZodError) {
-      res.status(400).json({ error: "Validation failed", details: formatZodError(err) });
-      return;
+    try {
+      const parsed = CreateProjectSchema.parse(req.body);
+      const project = await createProject(parsed);
+      res.status(201).json(project);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        res.status(400).json({ error: "Validation failed", details: formatZodError(err) });
+        return;
+      }
+      if (err && typeof err === "object" && "code" in err && err.code === "SLUG_EXISTS") {
+        res.status(409).json({ error: "Project slug already exists" });
+        return;
+      }
+      if (err instanceof Error && err.message === "Invalid project slug") {
+        res.status(400).json({ error: "Validation failed", details: [{ path: ["slug"], message: err.message }] });
+        return;
+      }
+      console.error("Error creating project:", err);
+      res.status(500).json({ error: "Failed to create project" });
     }
-    console.error("Error creating project:", err);
-    res.status(500).json({ error: "Failed to create project" });
-  }
-});
+  });
 
 // Get a single project (full payload including notes and kickoffPrompt)
 router.get("/projects/:id", async (req, res) => {

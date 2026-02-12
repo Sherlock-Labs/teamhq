@@ -56,7 +56,7 @@ export type Project = z.infer<typeof ProjectSchema>;
 
 export const CreateProjectSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  slug: z.string().optional(),                      // if omitted, auto-generated from name
+  slug: z.string().trim().max(80).optional(),                      // if omitted, auto-generated from name
   description: z.string().optional().default(""),
   status: ProjectStatus.optional().default("planned"),
   goals: z.string().optional().default(""),

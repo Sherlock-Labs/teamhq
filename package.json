@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "TeamHQ — central headquarters for the Sherlock Labs AI product team",
-  "workspaces": ["server"],
+  "workspaces": [
+    "server"
+  ],
   "scripts": {
     "dev": "concurrently -n server,client -c blue,green \"npm run dev -w server\" \"vite --port 5174\"",
     "build": "vite build",
@@ -14,5 +16,8 @@
   "devDependencies": {
     "concurrently": "^9.1.2",
     "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "playwright": "^1.58.2"
   }
 }

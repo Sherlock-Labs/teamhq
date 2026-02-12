@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { unlink } from "node:fs/promises";
 import { getProject, startProject, setActiveSession, clearActiveSession } from "../store/projects.js";
 import { createSessionFiles, getSessionMetadata, listSessions, readEventLog } from "../store/sessions.js";
 import { generateKickoffPrompt } from "../kickoff.js";
@@ -21,80 +22,92 @@ function getSessionId(req: Request): string {
 router.post("/", async (req: Request, res: Response) => {
   const projectId = getProjectId(req);
 
-  // 1. Validate project exists
-  let project;
   try {
-    project = await getProject(projectId);
-  } catch {
-    res.status(404).json({ error: "Project not found" });
-    return;
-  }
-
-  // 2. If status is "planned", transition to "in-progress" first
-  if (project.status === "planned") {
-    const kickoffPrompt = generateKickoffPrompt(project);
-    project = await startProject(projectId, kickoffPrompt);
-  }
-
-  // 3. Ensure kickoff prompt exists (generate if missing for in-progress projects)
-  if (!project.kickoffPrompt) {
-    const kickoffPrompt = generateKickoffPrompt(project);
-    project = await startProject(projectId, kickoffPrompt);
-  }
-
-  // 4. Check concurrency limits -- no await between check and register
-  const check = sessionManager.canStartSession(projectId);
-  if (!check.ok) {
-    const code = check.reason?.includes("already running") ? 409 : 429;
-    res.status(code).json({ error: check.reason });
-    return;
-  }
-
-  // 5. Create session files
-  const { sessionId, metadataPath, eventLogPath } = await createSessionFiles(projectId);
-
-  // 6. Get the kickoff prompt
-  const prompt = project.kickoffPrompt!;
-
-  // 7. Create and start the runner
-  const runner = createRunner({
-    sessionId,
-    projectId,
-    prompt,
-    metadataPath,
-    eventLogPath,
-    timeoutMs: 1_800_000, // 30 minutes
-    workingDirectory: process.cwd(),
-  });
-
-  // Register synchronously after check (no await gap)
-  sessionManager.registerSession(sessionId, projectId, runner);
-
-  // 8. Set activeSessionId on project and start the runner
-  try {
-    await setActiveSession(projectId, sessionId);
-    runner.start();
-  } catch (err) {
-    // Rollback: unregister session and clear activeSessionId
-    sessionManager.stopSession(sessionId);
-    try { await clearActiveSession(projectId); } catch {}
-    console.error("Failed to start session:", err);
-    res.status(500).json({ error: "Failed to start session" });
-    return;
-  }
-
-  // 9. On session end, clear activeSessionId
-  runner.on("end", async () => {
+    // 1. Validate project exists
+    let project;
     try {
-      await clearActiveSession(projectId);
-    } catch (err) {
-      console.error("Failed to clear activeSessionId:", err);
+      project = await getProject(projectId);
+    } catch {
+      res.status(404).json({ error: "Project not found" });
+      return;
     }
-  });
 
-  // 10. Return session metadata
-  const metadata = await getSessionMetadata(projectId, sessionId);
-  res.status(201).json(metadata);
+    // 2. If status is "planned", transition to "in-progress" first
+    if (project.status === "planned") {
+      const kickoffPrompt = generateKickoffPrompt(project);
+      project = await startProject(projectId, kickoffPrompt);
+    }
+
+    // 3. Ensure kickoff prompt exists (generate if missing for in-progress projects)
+    if (!project.kickoffPrompt) {
+      const kickoffPrompt = generateKickoffPrompt(project);
+      project = await startProject(projectId, kickoffPrompt);
+    }
+
+    // 5. Create session files
+    const { sessionId, metadataPath, eventLogPath } = await createSessionFiles(projectId);
+
+    // 6. Get the kickoff prompt
+    const prompt = project.kickoffPrompt!;
+
+    // 7. Create and start the runner
+    const runner = createRunner({
+      sessionId,
+      projectId,
+      prompt,
+      metadataPath,
+      eventLogPath,
+      timeoutMs: 1_800_000, // 30 minutes
+      workingDirectory: process.cwd(),
+    });
+
+    // 4+ Register session ownership atomically before starting work
+    const startCheck = sessionManager.tryStartSession(sessionId, projectId, runner);
+    if (!startCheck.ok) {
+      await Promise.all([
+        unlink(metadataPath).catch(() => {}),
+        unlink(eventLogPath).catch(() => {}),
+      ]);
+      const code = startCheck.reason?.includes("already running") ? 409 : 429;
+      res.status(code).json({ error: startCheck.reason });
+      return;
+    }
+
+    // 8. Set activeSessionId on project and start the runner
+    try {
+      await setActiveSession(projectId, sessionId);
+      runner.start();
+    } catch (err) {
+      // Rollback: unregister session and clear activeSessionId
+      sessionManager.stopSession(sessionId);
+      try { await clearActiveSession(projectId); } catch {}
+      try {
+        await Promise.all([
+          unlink(metadataPath).catch(() => {}),
+          unlink(eventLogPath).catch(() => {}),
+        ]);
+      } catch {}
+      throw err;
+    }
+
+    // 9. On session end, clear activeSessionId
+    runner.on("end", async () => {
+      try {
+        await clearActiveSession(projectId);
+      } catch (err) {
+        console.error("Failed to clear activeSessionId:", err);
+      }
+    });
+
+    // 10. Return session metadata (from runner to avoid disk read race)
+    const metadata = runner.getMetadata();
+    res.status(201).json(metadata);
+  } catch (err) {
+    if (res.headersSent) return;
+    const message = err instanceof Error ? err.message : "Failed to start session";
+    console.error("Error starting session:", err);
+    res.status(500).json({ error: "Failed to start session", detail: message });
+  }
 });
 
 // GET /api/projects/:id/sessions -- List sessions for a project
@@ -143,10 +156,14 @@ router.get("/:sessionId/events", async (req: Request, res: Response) => {
   res.flushHeaders();
 
   // Determine offset for reconnection
+  const queryOffset = parseInt(req.query.offset as string);
+  const headerOffset = parseInt(req.headers["last-event-id"] as string);
   const offset =
-    parseInt(req.query.offset as string) ||
-    parseInt(req.headers["last-event-id"] as string) ||
-    0;
+    Number.isNaN(queryOffset)
+      ? Number.isNaN(headerOffset)
+        ? 0
+        : headerOffset + 1
+      : queryOffset;
 
   // Replay existing events from NDJSON
   const existingEvents = await readEventLog(projectId, sessionId, offset);

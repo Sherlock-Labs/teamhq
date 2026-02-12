@@ -1,0 +1,355 @@
+{
+  "id": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "slug": "roadmap-tool",
+  "name": "Roadmap Tool (Roadmunk Replica)",
+  "description": "Full replica of Roadmunk — a roadmap visualization and planning tool. Core value prop is the timeline visualization with milestones, projects, swimlanes, and drag-and-drop editing. Phase 1 excludes Jira integration.",
+  "status": "in-progress",
+  "createdAt": "2026-02-10T16:54:08.425Z",
+  "updatedAt": "2026-02-10T17:08:35.003Z",
+  "completedAt": null,
+  "goals": "",
+  "constraints": "",
+  "brief": "",
+  "notes": [],
+  "kickoffPrompt": "You have a new project to work on.\n\n## Project: Roadmap Tool (Roadmunk Replica)\n\n**Description:** Full replica of Roadmunk — a roadmap visualization and planning tool. Core value prop is the timeline visualization with milestones, projects, swimlanes, and drag-and-drop editing. Phase 1 excludes Jira integration.\n\n## Instructions\n\nHand this project to Thomas (PM) to scope and manage. He will decide who to involve and in what order. Follow CLAUDE.md and the agent definitions for workflow and team details.",
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": [
+      {
+        "title": "Deep product research on Roadmunk",
+        "agent": "Suki",
+        "role": "Product Researcher",
+        "status": "completed",
+        "subtasks": [
+          "Analyzed Roadmunk (now Tempo Strategic Roadmaps) product positioning and entity model — 12 primary entities mapped",
+          "Documented all 3 view types: Table View, Timeline View, Swimlane View with full interaction details",
+          "Cataloged complete Item Card anatomy, Fields system, milestone types, and formatting controls",
+          "Mapped 6 core UX flows and all system limits (350 items/view, 25 sub-items, etc.)",
+          "Gathered pricing data, user sentiment from Capterra/TrustRadius/G2, and competitive positioning",
+          "Produced prioritized recommendations: 11 must-have, 6 should-have, 4 could-have features"
+        ],
+        "filesChanged": ["docs/roadmap-tool-product-research.md"],
+        "decisions": [
+          "Must-have for v1: Timeline View, Swimlane View, Table View, Items, Fields system, Milestones, Color palettes, Filtering, Export, Sharing",
+          "Key competitive opportunities: better performance, simpler navigation, better date input, lower learning curve, less feature gating"
+        ]
+      },
+      {
+        "title": "Technical research on roadmap visualization",
+        "agent": "Marco",
+        "role": "Technical Researcher",
+        "status": "completed",
+        "subtasks": [
+          "Evaluated 7 timeline/Gantt libraries across 8 criteria",
+          "Compared SVG vs Canvas vs DOM rendering approaches",
+          "Researched drag-and-drop patterns, export capabilities, and open-source references",
+          "Designed data model schema for roadmaps, items, milestones, dependencies, views"
+        ],
+        "filesChanged": ["docs/roadmap-tool-tech-research.md"],
+        "decisions": [
+          "RECOMMEND: Custom React + SVG timeline — no existing library matches the roadmap visualization pattern",
+          "SVG over Canvas for DOM integration, CSS styling, accessibility, and export",
+          "Use d3-scale + d3-time for math only, NOT for rendering"
+        ]
+      },
+      {
+        "title": "Scope requirements for Roadmunk replica",
+        "agent": "Thomas",
+        "role": "Product Manager",
+        "status": "completed",
+        "subtasks": [
+          "Wrote 23 user stories for v1.0 with full acceptance criteria",
+          "Defined 3-phase strategy: v1.0 (core), v1.1 (polish), v2.0 (portfolio)",
+          "Added real-time collaboration to v1.0 per CEO decision",
+          "Designed 3-tier pricing strategy (Free/Pro/Team)"
+        ],
+        "filesChanged": ["docs/roadmap-tool-requirements.md"],
+        "decisions": [
+          "Real-time collab IN v1.0 per CEO — WebSocket presence, live updates, edit locking",
+          "Drag-and-drop deferred to v1.1 — timeline renders but items positioned via Item Card",
+          "Sub-items and dependencies deferred to v1.1",
+          "Free tier gets all 3 views — gate by scale not features"
+        ]
+      },
+      {
+        "title": "Define technical architecture",
+        "agent": "Andrei",
+        "role": "Technical Architect",
+        "status": "completed",
+        "subtasks": [
+          "Designed npm workspaces monorepo: client/, server/, shared/ packages",
+          "Defined 14-table Postgres schema with flexible field value junction table",
+          "Chose REST (40+ endpoints) over tRPC/GraphQL for v1",
+          "Designed Socket.IO real-time architecture: REST-then-broadcast, in-memory presence/locks",
+          "Defined SVG timeline component tree: TimelineCanvas > TimeAxis + HeaderGroups > Streams > Tracks > ItemBars",
+          "Chose React Query + Zustand for state management (no Redux)",
+          "Planned 4-sprint build order aligned with Thomas's requirements"
+        ],
+        "filesChanged": ["docs/roadmap-tool-tech-approach.md"],
+        "decisions": [
+          "REST over tRPC/GraphQL — boring, proven, needed for shared link rendering",
+          "Socket.IO for real-time — REST-then-broadcast pattern, no Redis at v1 scale",
+          "React Query + Zustand over Redux — server state vs UI state separation",
+          "Client-side filtering — all items in memory (350-item cap), instant view switching",
+          "Drizzle ORM over Prisma — lighter, SQL-close, better migration control",
+          "Single Railway service for v1 — Express serves API + static Vite build"
+        ]
+      },
+      {
+        "title": "Design spec for all views, Item Card, Format Panel, and application shell",
+        "agent": "Robert",
+        "role": "Product Designer",
+        "status": "completed",
+        "subtasks": [
+          "Defined standalone design system: zinc neutrals, indigo accent, Inter typography, 8px spacing scale, 5 elevation levels",
+          "Designed application shell: 240px collapsible sidebar, 52px top bar, Cmd+K search",
+          "Designed all 3 views: Table (inline editing, arrow-key nav), Timeline (dual-row axis, 5 scales, milestones), Swimlane (dual-axis grid, cards)",
+          "Designed Item Card (640px slide-out), Format Panel (320px slide-out), Views system, Field Management",
+          "Designed Sharing/Export, Real-time collaboration UI, responsive behavior (4 breakpoints)",
+          "Specified 6 default color palettes, keyboard shortcuts, accessibility, and 13 animation specs"
+        ],
+        "filesChanged": ["docs/roadmap-tool-design-spec.md"],
+        "decisions": [
+          "Indigo accent to avoid competing with roadmap palette colors",
+          "Item Card as slide-out panel, not modal — keeps context visible",
+          "Format Panel and Item Card mutually exclusive — prevents UI overload",
+          "Date input supports typed text AND calendar picker — addresses top Roadmunk complaint",
+          "Mobile shows 'best on desktop' for Timeline/Swimlane rather than degraded touch experience"
+        ]
+      },
+      {
+        "title": "Frontend implementation — all views, Item Card, Format Panel, Filtering, Colors",
+        "agent": "Alice",
+        "role": "Frontend Developer",
+        "status": "completed",
+        "subtasks": [
+          "Sprint 1: Scaffolded monorepo (client/, server/, shared/) with Vite + React + TypeScript",
+          "Sprint 1: Built application shell (sidebar, top bar, React Router routing)",
+          "Sprint 1: Built Roadmaps Homepage with CRUD",
+          "Sprint 1: Built Table View with inline editing and arrow-key cell navigation",
+          "Sprint 1: Built Item Card detail panel (640px slide-out, 2-panel layout, Tiptap editor)",
+          "Sprint 1: Built Field Manager page with field CRUD and list value management",
+          "Sprint 2: Built ViewSwitcher dropdown, CreateViewModal, view config debounced persistence",
+          "Sprint 2: Built FilterBuilder (480px dropdown, type-aware operators, client-side filter engine)",
+          "Sprint 2: Built Format Panel (320px slide-out, view-type-specific controls, mutually exclusive with Item Card)",
+          "Sprint 2: Built Color Palette system (6 defaults with 8 colors each, palette grid, auto-legend)",
+          "Sprint 3: Built Swimlane View (CSS Grid, sticky headers, standard/compact card modes, axis swap)",
+          "Sprint 3: Integrated all Sprint 2/3 components into RoadmapPage with toolbar refactor"
+        ],
+        "filesChanged": [
+          "client/src/App.tsx",
+          "client/src/routes/RoadmapPage.tsx",
+          "client/src/routes/HomePage.tsx",
+          "client/src/routes/FieldsPage.tsx",
+          "client/src/routes/SharedViewPage.tsx",
+          "client/src/components/layout/AppShell.tsx",
+          "client/src/components/layout/Sidebar.tsx",
+          "client/src/components/layout/TopBar.tsx",
+          "client/src/components/table/TableView.tsx",
+          "client/src/components/table/TableRow.tsx",
+          "client/src/components/table/TableHeader.tsx",
+          "client/src/components/table/InlineEditor.tsx",
+          "client/src/components/table/InlineItemCreator.tsx",
+          "client/src/components/table/BulkActionBar.tsx",
+          "client/src/components/item-card/ItemCard.tsx",
+          "client/src/components/fields/FieldModal.tsx",
+          "client/src/components/views/ViewSwitcher.tsx",
+          "client/src/components/views/CreateViewModal.tsx",
+          "client/src/components/views/FilterBuilder.tsx",
+          "client/src/components/format-panel/FormatPanel.tsx",
+          "client/src/components/swimlane/SwimlaneView.tsx",
+          "client/src/lib/api.ts",
+          "client/src/lib/filters.ts",
+          "client/src/lib/palettes.ts",
+          "client/src/lib/colors.ts",
+          "client/src/stores/viewStore.ts",
+          "client/src/stores/collabStore.ts"
+        ],
+        "decisions": [
+          "View config persisted via 1s debounced API updates with optimistic local state",
+          "Format Panel and Item Card mutually exclusive — opening one closes the other",
+          "Client-side filter engine with all operator types (eq, neq, contains, in, before, after, between, is_empty)",
+          "Swimlane View uses CSS Grid with position:sticky for both column and row headers",
+          "Vite build: 661 modules, 504KB JS, 54KB CSS, 2s build time"
+        ]
+      },
+      {
+        "title": "Backend implementation — schema, APIs, auth, WebSocket",
+        "agent": "Jonah",
+        "role": "Backend Developer",
+        "status": "completed",
+        "subtasks": [
+          "Scaffolded server package with Express + TypeScript + Drizzle ORM",
+          "Created 16-table Postgres schema with migrations (roadmaps, items, fields, field_values, item_field_values, milestones, milestone_types, views, roadmap_shares, shared_links, color_palettes, item_activities, users, accounts, roadmap_favorites, attachments)",
+          "Built Clerk auth middleware and role enforcement (viewer/editor/admin)",
+          "Built Roadmaps CRUD API with favorites and sharing",
+          "Built Items CRUD API with field value assignments and bulk operations",
+          "Built Fields CRUD API with list value management and promote-to-account",
+          "Built Views CRUD API with JSONB config persistence",
+          "Built Milestones CRUD API",
+          "Built Sharing API (member management, shared links, password protection)",
+          "Built Socket.IO WebSocket infrastructure (rooms per roadmap, presence, edit locks, live data sync)",
+          "Built seed script for demo data",
+          "Built rate limiting middleware"
+        ],
+        "filesChanged": [
+          "server/src/index.ts",
+          "server/src/db/schema.ts",
+          "server/src/db/client.ts",
+          "server/src/db/seed.ts",
+          "server/src/middleware/auth.ts",
+          "server/src/middleware/rateLimit.ts",
+          "server/src/routes/roadmaps.ts",
+          "server/src/routes/items.ts",
+          "server/src/routes/fields.ts",
+          "server/src/routes/views.ts",
+          "server/src/routes/milestones.ts",
+          "server/src/routes/sharing.ts",
+          "server/src/routes/uploads.ts",
+          "server/src/routes/webhooks.ts",
+          "server/src/services/roadmapService.ts",
+          "server/src/services/itemService.ts",
+          "server/src/services/fieldService.ts",
+          "server/src/services/viewService.ts",
+          "server/src/services/sharingService.ts",
+          "server/src/ws/handler.ts",
+          "server/src/ws/presence.ts",
+          "server/src/ws/editLock.ts",
+          "server/src/lib/params.ts",
+          "server/src/lib/permissions.ts",
+          "server/src/lib/r2.ts"
+        ],
+        "decisions": [
+          "40+ REST endpoints across 8 route groups",
+          "REST-then-broadcast pattern for real-time: mutations go through REST, then Socket.IO broadcasts to room",
+          "Edit locks in-memory with 5-min TTL and heartbeat cleanup",
+          "JSONB view config — complex nested config varies by view type"
+        ]
+      },
+      {
+        "title": "Timeline View SVG rendering",
+        "agent": "Nina",
+        "role": "Frontend Interactions",
+        "status": "completed",
+        "subtasks": [
+          "Built timeScale.ts — d3-scale wrappers for date-to-pixel math, tick generation for all 5 time scales",
+          "Built timelineLayout.ts — O(n log n) stacking algorithm for track assignment, header group layout",
+          "Built colors.ts — 6 default palettes (8 colors each), contrast calculation, darken utility",
+          "Built TimelineCanvas — top-level SVG container, horizontal scroll/pan via wheel events",
+          "Built TimeAxis — dual-row time axis header (major/minor labels), sticky top",
+          "Built GridLines — vertical grid lines at minor time unit boundaries",
+          "Built HeaderGroups — 200px left sidebar, collapse/expand chevrons, alternating backgrounds",
+          "Built ItemBar — rounded bars, palette colors, above/inside label auto-switch, hover/selected states, keyboard accessible",
+          "Built MilestoneMarker — diamond/circle/triangle/square SVG shapes with knockout stroke",
+          "Built MilestoneLayer — renders all milestones at timeline bottom",
+          "Built TodayMarker — 1.5px dashed indigo line with 'Today' badge",
+          "Built TimeSlider — draggable thumb for panning visible date range",
+          "Built TimelineToolbar — segmented controls for time scale and layout toggle",
+          "Built TimelineEmpty — empty state with calendar icon and view switch link",
+          "Integrated TimelineView into RoadmapPage with React Query data consumption"
+        ],
+        "filesChanged": [
+          "client/src/lib/timeScale.ts",
+          "client/src/lib/timelineLayout.ts",
+          "client/src/lib/colors.ts",
+          "client/src/components/timeline/TimelineCanvas.tsx",
+          "client/src/components/timeline/TimeAxis.tsx",
+          "client/src/components/timeline/GridLines.tsx",
+          "client/src/components/timeline/HeaderGroups.tsx",
+          "client/src/components/timeline/ItemBar.tsx",
+          "client/src/components/timeline/MilestoneMarker.tsx",
+          "client/src/components/timeline/MilestoneLayer.tsx",
+          "client/src/components/timeline/TodayMarker.tsx",
+          "client/src/components/timeline/TimeSlider.tsx",
+          "client/src/components/timeline/TimelineToolbar.tsx",
+          "client/src/components/timeline/TimelineEmpty.tsx",
+          "client/src/components/timeline/TimelineView.tsx",
+          "client/src/components/timeline/index.ts"
+        ],
+        "decisions": [
+          "All rendering via React JSX + SVG — d3 only for math (d3-scale, d3-time)",
+          "Every component memo()-wrapped for performance",
+          "All item bars have role=img, aria-label, tabIndex, keyboard handlers",
+          "Stacking algorithm O(n log n) — sort by start date, greedy track assignment"
+        ]
+      },
+      {
+        "title": "Responsive layouts across all views",
+        "agent": "Soren",
+        "role": "Frontend Responsive",
+        "status": "completed",
+        "subtasks": [
+          "Implemented 4 breakpoints: mobile (<640px), tablet (640-1024px), desktop (1024-1440px), wide (>1440px)",
+          "Sidebar collapse/expand behavior with mobile hamburger menu",
+          "Table View horizontal scroll with column priority and sticky first column",
+          "Timeline/Swimlane 'best on desktop' message with illustration on mobile",
+          "Item Card and Format Panel full-screen overlay on mobile",
+          "Touch targets: 44px minimum on all interactive elements on mobile",
+          "Applied responsive styles across 13 component files"
+        ],
+        "filesChanged": [],
+        "decisions": [
+          "Sidebar auto-collapses below 1024px, becomes hamburger drawer below 640px",
+          "Timeline/Swimlane show honest 'best on desktop' message rather than degraded touch experience"
+        ]
+      },
+      {
+        "title": "Specialist review (Nina, Soren, Amara)",
+        "agent": "Nina, Soren, Amara",
+        "role": "Frontend Specialists",
+        "status": "completed",
+        "subtasks": [
+          "Nina (Interactions): 28 issues found — 7 P1, 12 P2, 9 P3. All P1s fixed by Alice.",
+          "Soren (Responsive): 23 issues found — 5 P1, 11 P2, 7 P3. All P1s fixed by Alice.",
+          "Amara (Accessibility): 38 issues found — 12 P1, 16 P2, 10 P3. All P1s fixed by Alice.",
+          "Alice created reusable hooks: useFocusTrap, useClosingAnimation, useMediaQuery, MobileMessage component",
+          "24 total P1 fixes applied across 25 files"
+        ],
+        "filesChanged": [],
+        "decisions": [
+          "Focus traps via single reusable useFocusTrap hook for all 5 modals/panels",
+          "Mobile fallback via reusable MobileMessage component for Timeline and Swimlane",
+          "Portal-based tooltip for Timeline item bars replaces native SVG title"
+        ]
+      },
+      {
+        "title": "Design review",
+        "agent": "Robert",
+        "role": "Product Designer",
+        "status": "completed",
+        "subtasks": [
+          "Verified all design tokens (colors, typography, spacing, shadows, radii) match spec",
+          "Verified layout structure (sidebar 240px, top bar 52px, Item Card 640px, Format Panel 320px)",
+          "Verified all 6 color palettes with correct hex values",
+          "Verified interaction states across all component types",
+          "5 minor polish observations noted for future sprints"
+        ],
+        "filesChanged": [],
+        "decisions": [
+          "PASS verdict — implementation faithful to design spec"
+        ]
+      },
+      {
+        "title": "QA pass",
+        "agent": "Enzo",
+        "role": "QA",
+        "status": "completed",
+        "subtasks": [
+          "Deep-read 27 key files across client, server, and shared packages",
+          "Verified code quality: clean TypeScript, consistent patterns",
+          "Verified data flow: React Query with optimistic updates, proper cache invalidation",
+          "Verified state management: Zustand/React Query separation, no data leaks",
+          "Verified edge cases: loading, empty, error states handled across all views",
+          "Verified security: Clerk auth, Zod validation, parameterized queries, bcrypt, no XSS",
+          "Verified real-time: WebSocket auth, presence, edit locks with TTL, disconnect cleanup",
+          "Verified performance: React.memo, useMemo, batch queries (no N+1)",
+          "6 non-blocking observations noted for post-v1"
+        ],
+        "filesChanged": [],
+        "decisions": [
+          "PASS verdict — Roadmap Tool v1.0 ready to ship"
+        ]
+      }
+    ]
+  }
+}

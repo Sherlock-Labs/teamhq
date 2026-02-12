@@ -1,0 +1,17 @@
+{
+  "experimental": {
+    "enableAgents": true
+  },
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp",
+        "--cwd",
+        "/Users/jeffsherlock/projects/personal/teamhq"
+      ],
+      "trust": true
+    }
+  }
+}

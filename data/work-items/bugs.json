@@ -214,6 +214,40 @@
         "screenshotPath": "data/bug-screenshots/1770924163331-c90e61a6.png",
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
       }
+    },
+    {
+      "id": "BUG-14",
+      "title": "Test bug for visual inspection",
+      "description": "Test bug for visual inspection",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/tasks.html",
+        "timestamp": "2026-02-12T20:55:44.198Z",
+        "screenshotPath": "data/bug-screenshots/1770929744198-ea4a1c10.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36"
+      }
+    },
+    {
+      "id": "BUG-15",
+      "title": "Test bug for visual inspection",
+      "description": "Test bug for visual inspection",
+      "status": "planned",
+      "phase": "v1",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Bug Reporter",
+      "type": "bug",
+      "metadata": {
+        "pageUrl": "http://localhost:3002/tasks.html",
+        "timestamp": "2026-02-12T20:56:53.639Z",
+        "screenshotPath": "data/bug-screenshots/1770929813639-99dd6d61.png",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36"
+      }
     }
   ]
 }

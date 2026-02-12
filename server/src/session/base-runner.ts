@@ -81,6 +81,11 @@ export abstract class BaseSessionRunner extends EventEmitter {
     return this.options.sessionId;
   }
 
+  /** Return current session metadata (for immediate response after start) */
+  getMetadata(): SessionMetadata {
+    return { ...this.metadata };
+  }
+
   get pid(): number | null {
     return this.process?.pid ?? null;
   }

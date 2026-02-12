@@ -1,0 +1,108 @@
+{
+  "id": "5f76088f-d5cd-4c77-818f-7c4571eb8109",
+  "type": "interview",
+  "status": "completed",
+  "meetingNumber": 12,
+  "scheduledAt": null,
+  "startedAt": "2026-02-12T17:16:39.632Z",
+  "completedAt": "2026-02-12T17:20:40.191Z",
+  "durationMs": 198000,
+  "error": null,
+  "summary": "The CEO wants a much more frictionless way to report bugs than the current modal/form approach. He envisions a floating widget that lets him take a screenshot and narrate what he sees, with AI transcribing it into a structured bug report that gets automatically added to the task tracker so the team can immediately start working on it.",
+  "keyTakeaways": [
+    "The current bug-reporting flow (filling out a modal form) feels too heavy and slow — the CEO wants something radically simpler.",
+    "The envisioned solution is a floating widget (bottom-right corner) with screenshot capture and voice narration capabilities.",
+    "AI should do the heavy lifting: transcribe voice notes and combine them with screenshots into structured bug reports automatically.",
+    "Bugs should flow directly into the task tracker with the correct task type ('bug') so the team can start working immediately.",
+    "The CEO is open on implementation details (which transcription model, exact UI) but has a clear vision of the end-to-end workflow: spot bug → screenshot + narrate → auto-filed ticket."
+  ],
+  "transcript": [
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Hey! I'd like to dig into handling bugs with you today. What's top of mind for you on this?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "I just feel like we could do, we could have like a better way to import and handle bugs. I just feel like there's just gotta be like a, you know, a simpler way than filling out some modal and, and like some complex form. Maybe like a built-in screenshot tool or something is, I don't even know if that's possible, but something like that would be pretty cool."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "I see. You are looking for something much more frictionless than a standard form, perhaps even something that captures the context for you. When you imagine using a built-in screenshot tool, how do you see that fitting into your actual workflow when you first spot a bug?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "Well, the first thing I, I'm imagining like maybe some sort of floating thing in the bottom right-hand corner or something that's like, add a bug or, or take screenshot. And then, um, I'd be able to just quickly add the bu- add the, add the screenshot and maybe, uh, narrate a little bit about what I observe, and then it would get added to the task tracker. And, uh, identified as a bug is the type of task. And then the team could immediately start working on it."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "[excited] That sounds like a very direct path from discovery to documentation. When you mention narrating what you observe, are you thinking the AI would transcribe that into a written report, or would the team actually listen to your audio clip?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "[lips smack] I think, I think just transcribed, um, you know, using something. I don't, I don't know what. Um, there's a lot of good models out there, but, um, yeah. That, I think that's kinda what I have in mind. Are you still there?"
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "[happy] I'm still here, just taking in that idea. It sounds like you want the AI to do the heavy lifting of turning your voice and a quick image into a structured report. If the team is just getting a transcription and a screenshot, what's the biggest thing you worry they might miss without that manual form?"
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Bug reports should be voice + screenshot, not form-based. AI transcribes voice into structured text automatically.",
+      "rationale": "The current modal/form approach has too much friction. The CEO wants to go from spotting a bug to filing it in seconds, not minutes.",
+      "participants": [
+        "CEO"
+      ]
+    },
+    {
+      "description": "Bugs filed through the widget should auto-populate in the task tracker with type set to 'bug'.",
+      "rationale": "Eliminates manual categorization and lets the team start working immediately without any intermediate steps.",
+      "participants": [
+        "CEO"
+      ]
+    },
+    {
+      "description": "The UI mechanism should be a floating widget in the bottom-right corner of the app.",
+      "rationale": "Always accessible without navigating away from whatever page the bug was spotted on.",
+      "participants": [
+        "CEO"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "CEO",
+      "description": "Scope a 'quick bug reporter' feature: floating widget with screenshot capture, voice narration, AI transcription, and auto-filing to task tracker as a bug-type task.",
+      "priority": "high"
+    },
+    {
+      "owner": "CEO",
+      "description": "Evaluate transcription model options for converting voice narration to structured bug descriptions.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Exploratory and energized",
+  "nextMeetingTopics": [
+    "What context might get lost without a manual form — how to ensure AI-generated bug reports have enough detail for the team",
+    "Technical feasibility of in-browser screenshot capture and voice recording",
+    "Which transcription model/service to use for voice-to-text",
+    "How the floating widget interacts with the existing task tracker data model and task types"
+  ],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "handling bugs",
+    "context": "I wish there was an easy way to add bugs to our task tracker.",
+    "durationSeconds": 198
+  }
+}

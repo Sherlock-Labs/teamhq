@@ -1,0 +1,43 @@
+{
+  "id": "417d48cf-580d-452c-b1e0-211e29329045",
+  "type": "interview",
+  "status": "failed",
+  "meetingNumber": 9,
+  "scheduledAt": null,
+  "startedAt": "2026-02-11T22:40:33.505Z",
+  "completedAt": "2026-02-11T22:43:24.298Z",
+  "durationMs": null,
+  "error": "Connection lost after reconnection attempts",
+  "summary": null,
+  "keyTakeaways": [],
+  "transcript": [
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Hey! I'd like to dig into Team Velocity with you today. What's top of mind for you on this?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "Yeah, I just want to see how the team's performing and how we can increase team performance."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "I see. You mentioned earlier that some of the threads in the multi-agent work have been taking a long time. What specifically makes it feel like things are taking forever right now?"
+    }
+  ],
+  "decisions": [],
+  "actionItems": [],
+  "mood": null,
+  "nextMeetingTopics": [],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "Team Velocity",
+    "context": "Yeah, I'd love to have a chat about how we can increase team velocity. Just feels like some of the threads in the multi-agent stuff has taken a long time. So is there a way that we can employ more agents at the same time? It just seems like a lot of this stuff is just taking forever. Maybe it's different models? I don't know."
+  }
+}
