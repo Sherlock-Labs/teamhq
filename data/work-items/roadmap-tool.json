@@ -275,20 +275,20 @@
     {
       "id": "RT-28",
       "title": "Comments and activity log",
-      "description": "Comment threads on items with @mentions and notifications. Full activity log with real-time push. Deferred to Sprint C.",
-      "status": "planned",
+      "description": "Plain-text comments on items with @mentions of roadmap collaborators (owner + shared users). Flat comment list (no threading), max 5000 chars, with edit/delete by author or roadmap owner. New comments table with mentions JSONB. Unified Activity tab in Item Card interleaves comments with system events (created, updated, field_changed, linked, unlinked, sub_item_added, sub_item_removed, key_date_added, key_date_removed). Paginated at 50 entries per page. Optimistic comment submission. Real-time WebSocket push for comments and activity. Collaborators endpoint for @mention picker. No rich text, no file attachments on comments, no email/push notifications in v1. Scoped in v1.1 Sprint C.",
+      "status": "completed",
       "phase": "v1.1-sprint-c",
-      "owner": "",
+      "owner": "Alice",
       "priority": "medium",
       "createdBy": "Thomas"
     },
     {
       "id": "RT-29",
       "title": "CSV import/export",
-      "description": "Import items from CSV with column-to-field mapping. Export all items to CSV. Deferred to Sprint C.",
-      "status": "planned",
+      "description": "4-step import wizard: upload CSV (max 5MB, 1000 rows) -> column-to-field mapping with auto-map -> preview first 10 rows with warning highlights -> confirm and batch create. Client-side CSV parsing (PapaParse). Auto-detects 4 date formats (YYYY-MM-DD, MM/DD/YYYY, DD/MM/YYYY, M/D/YYYY). Maps list/multi_select values case-insensitively; unmatched values degrade to null. Creates flat items only (no sub-items, links, or key dates from CSV). New batch import endpoint POST /items/import. Export is fully client-side: generates CSV from loaded items respecting active view filters. Columns: Name, Description, Start Date, End Date, Parent, plus all custom fields. Multi-select semicolon-separated. File named {roadmap-name}-{YYYY-MM-DD}.csv. Scoped in v1.1 Sprint C.",
+      "status": "completed",
       "phase": "v1.1-sprint-c",
-      "owner": "",
+      "owner": "Alice",
       "priority": "medium",
       "createdBy": "Thomas"
     },
@@ -305,10 +305,10 @@
     {
       "id": "RT-31",
       "title": "Fiscal year settings",
-      "description": "Account-level fiscal year-end config. Timeline date headers adjust to show fiscal periods. Deferred to Sprint C.",
-      "status": "planned",
+      "description": "Account-level fiscal year start month setting in Account Settings page. Stored in existing accounts.fiscal_year_end column (integer 1-12, no schema change). UI dropdown 'Fiscal year starts in' with 12 month options. Display-only: affects Timeline axis labels for Quarters ('FY26 Q1'), Halves ('FY26 H1'), and Years ('FY2026') scales. Months and Weeks scales unaffected. When start is January, no FY prefix (calendar behavior). Does not change date storage, date pickers, Table View dates, CSV dates, or filters. Setting change broadcasts via WebSocket to all account users. Admin-only setting. Scoped in v1.1 Sprint C.",
+      "status": "completed",
       "phase": "v1.1-sprint-c",
-      "owner": "",
+      "owner": "Alice",
       "priority": "low",
       "createdBy": "Thomas"
     },
