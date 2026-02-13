@@ -1,1016 +1,1184 @@
 # Bug Reporter -- Design Spec
 
-**Author:** Robert (Product Designer)
-**Date:** February 12, 2026
+**Project:** bug-reporter
+**Author:** Robert (Designer)
+**Date:** 2026-02-13
 **Status:** Ready for implementation
-**Project ID:** `bug-reporter`
-**Dependencies:** `docs/bug-reporter-requirements.md` (Thomas), `docs/bug-reporter-tech-approach.md` (Andrei)
+
+**Upstream docs:**
+- Requirements: `docs/bug-reporter-requirements.md`
+- Tech approach: `docs/bug-reporter-tech-approach.md`
+- Design tokens: `client/src/styles/tokens.css`
 
 ---
 
-## Overview
+## Design Principles for This Feature
 
-A floating bug-report widget that lives on every TeamHQ page (except `index.html`). The user clicks a persistent button in the bottom-right corner, a compact panel opens, and they can capture a screenshot, record a voice note with live real-time transcription, and submit a bug -- all without leaving the page. The entire flow should take under 10 seconds.
-
-The widget has three conceptual layers:
-1. **Trigger** -- the floating button (always visible)
-2. **Panel** -- the popover reporter (opens on click)
-3. **Toast** -- the success/error confirmation (brief, auto-dismiss)
+1. **Under 10 seconds.** The entire report flow -- shortcut, paste, describe, submit -- must feel instantaneous. Every design decision optimizes for speed.
+2. **Minimal surface area.** This is a utility modal, not a product feature. Small footprint, no chrome, get in and get out.
+3. **Follow the system.** Every token, radius, shadow, and spacing value comes from the existing Forge design system. No new visual patterns introduced.
+4. **Graceful degradation.** When R2 is not configured, the screenshot zone disappears entirely. The modal still works as a description-only reporter with no visual awkwardness.
 
 ---
 
-## Design Principles for This Widget
+## 1. Bug Report Modal
 
-1. **Stay out of the way.** The button is small, low-contrast, and hugs the corner. It should never compete with page content.
-2. **Speed is the feature.** Every decision optimizes for time-to-file. No unnecessary steps, no mode switches, no forms.
-3. **Graceful degradation.** If screenshot capture fails, recording fails, or transcription fails -- the user can always type and submit. Never block the happy path because an optional feature broke.
-4. **Live transcription is the hero moment.** Words appearing in real-time as the user speaks is the key differentiator. Design the recording state to showcase this.
+### 1.1 Trigger
+
+**Keyboard shortcut:** `Cmd+Shift+K` (macOS) / `Ctrl+Shift+K` (Windows/Linux). Registered on `window` at the `AppShell` level. Opens the modal from any authenticated page.
+
+**Floating action button:** Persistent in the bottom-right corner of the viewport (see Section 2). Click opens the same modal.
+
+**Close:** Escape key, backdrop click, or the close button. None of these work while a submission is in progress (the user should not accidentally discard mid-upload).
+
+### 1.2 Layout Structure
+
+The modal follows the existing `FieldModal` pattern exactly: overlay, centered panel, header/body/footer.
+
+```
+.overlay               -- fixed inset, backdrop, z-index: 50
+  .modal               -- 480px wide, white, rounded, shadow-xl
+    .modalHeader       -- flex row, title + close button, border-bottom
+    .modalBody         -- flex column, screenshot zone + description textarea
+    .modalFooter       -- flex row, cancel + submit, border-top
+```
+
+**Modal width:** `480px`. This is 40px wider than `FieldModal` (440px) to give the screenshot preview comfortable breathing room. On screens narrower than 480px + 32px margin, the modal becomes `calc(100vw - var(--space-8))`.
+
+**Max height:** `80vh`, with `overflow-y: auto` on `.modalBody`.
+
+### 1.3 CSS Specification
+
+#### `.overlay`
+
+```css
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+```
+
+Same as `FieldModal.module.css` -- light backdrop, centered content.
+
+#### `.modal`
+
+```css
+.modal {
+  width: 480px;
+  max-height: 80vh;
+  background: var(--white);
+  border-radius: var(--radius-lg);       /* 8px */
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 150ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+```
+
+#### `.modalHeader`
+
+```css
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);  /* 16px 20px */
+  border-bottom: 1px solid var(--gray-200);
+  flex-shrink: 0;
+}
+```
+
+**Title:** "Report a Bug"
+- Font size: `var(--text-lg)` (16px)
+- Font weight: 600
+- Color: `var(--gray-950)`
+
+**Close button:** 28x28px, `var(--radius-md)` border-radius. Icon: 16x16 X mark, `stroke="currentColor"`, `strokeWidth="2"`.
+- Default: `color: var(--gray-500)`, no background
+- Hover: `background: var(--gray-100)`, `color: var(--gray-700)`
+- Focus-visible: `outline: 2px solid var(--accent-600)`, `outline-offset: 2px`
+
+#### `.modalBody`
+
+```css
+.modalBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5);               /* 20px */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);                   /* 16px */
+}
+```
+
+Body contains two form groups stacked vertically: screenshot zone (if R2 enabled) and description textarea.
+
+#### `.modalFooter`
+
+```css
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);                   /* 8px */
+  padding: var(--space-4) var(--space-5); /* 16px 20px */
+  border-top: 1px solid var(--gray-200);
+  flex-shrink: 0;
+}
+```
+
+### 1.4 Form Fields
+
+#### Description Textarea
+
+**Label:** "What happened?" -- `var(--text-sm)` (13px), weight 500, `var(--gray-700)`.
+
+```css
+.description {
+  width: 100%;
+  min-height: 88px;                      /* ~4 lines at 14px/20px */
+  max-height: 200px;
+  padding: var(--space-2) var(--space-3); /* 8px 12px */
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);       /* 6px */
+  font-family: var(--font-sans);
+  font-size: var(--text-base);           /* 14px */
+  line-height: var(--leading-base);      /* 20px */
+  color: var(--gray-950);
+  resize: vertical;
+}
+```
+
+**States:**
+- Placeholder: "Describe the bug..." in `var(--gray-500)`
+- Hover (not focused): `border-color: var(--gray-400)`
+- Focus: `outline: none; border-color: var(--accent-600); box-shadow: 0 0 0 2px var(--accent-100)`
+- Error (empty on submit): `border-color: var(--error-600); background: var(--error-50)`
+
+**Character count:** Not shown in the UI. The 5000-character max is validated on submit only. If exceeded (unlikely in a quick-fire form), show error text below the textarea: "Description is too long (max 5000 characters)" in `var(--text-xs)`, `var(--error-600)`.
+
+**Auto-focus:** The description textarea receives focus when the modal opens (via `autoFocus` or `ref.focus()` after mount). This way the user can immediately start typing.
+
+#### Error Text (inline)
+
+```css
+.errorText {
+  font-size: var(--text-xs);            /* 11px */
+  line-height: var(--leading-xs);       /* 16px */
+  color: var(--error-600);
+  margin-top: var(--space-1);           /* 4px */
+}
+```
+
+Used for: screenshot too large, upload failed, submission failed. Appears below the relevant form element.
+
+### 1.5 Footer Buttons
+
+#### Cancel Button
+
+```css
+.cancelBtn {
+  height: 32px;
+  padding: 0 var(--space-4);            /* 0 16px */
+  font-size: var(--text-sm);            /* 13px */
+  font-weight: 500;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);      /* 6px */
+  background: transparent;
+}
+```
+
+- Hover: `background: var(--gray-50)`
+- Active: `background: var(--gray-100)`
+- Focus-visible: `outline: 2px solid var(--accent-600); outline-offset: 2px`
+- Disabled during submission: `opacity: 0.5; pointer-events: none`
+
+#### Submit Button
+
+```css
+.submitBtn {
+  height: 32px;
+  padding: 0 var(--space-4);            /* 0 16px */
+  font-size: var(--text-sm);            /* 13px */
+  font-weight: 500;
+  background: var(--accent-600);        /* #4F46E5 */
+  color: var(--white);
+  border-radius: var(--radius-md);      /* 6px */
+  border: none;
+}
+```
+
+- Hover: `background: var(--accent-500)` (#6366F1)
+- Active: scale(0.98) for 100ms
+- Focus-visible: `outline: 2px solid var(--accent-600); outline-offset: 2px`
+- Disabled (empty description or submitting): `background: var(--gray-300); color: var(--gray-500); cursor: not-allowed`
+
+**Label states:**
+- Default: "Submit Bug"
+- Submitting: "Submitting..." (text change only, no spinner -- keeps it lightweight)
+
+### 1.6 Accessibility
+
+- `role="dialog"`, `aria-modal="true"`, `aria-label="Report a Bug"` on `.modal`
+- Focus trap via existing `useFocusTrap(modalRef)` hook
+- Tab order: description textarea, cancel button, submit button (screenshot zone elements sit between description and cancel if R2 is enabled)
+- Close button has `aria-label="Close"`
+- All focus-visible outlines use `2px solid var(--accent-600)` with `outline-offset: 2px`
+- `@media (prefers-reduced-motion: reduce)`: disable the `fadeIn` animation on `.modal`
+
+### 1.7 Responsive
+
+The modal targets tablet and up (768px+). Below 768px, Forge shows a mobile fallback message, so the modal does not need mobile-specific treatment.
+
+```css
+@media (max-width: 639px) {
+  .modal {
+    width: calc(100vw - var(--space-8)); /* 100vw - 32px */
+    max-width: 480px;
+    max-height: 90vh;
+  }
+
+  .modalBody {
+    padding: var(--space-4);             /* 16px */
+  }
+
+  .modalHeader,
+  .modalFooter {
+    padding: var(--space-3) var(--space-4); /* 12px 16px */
+  }
+}
+```
 
 ---
 
-## 1. Floating Trigger Button
+## 2. Floating Action Button (FAB)
 
-### Layout
+### 2.1 Position and Sizing
 
+The FAB sits in the bottom-right corner of the viewport, outside the `.shell` div in `AppShell.tsx` so it is not affected by sidebar stacking context.
+
+```css
+.fab {
+  position: fixed;
+  bottom: var(--space-6);               /* 24px */
+  right: var(--space-6);                /* 24px */
+  z-index: 40;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);    /* 9999px -- circle */
+  background: var(--gray-900);          /* #18181B */
+  color: var(--white);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: background 100ms ease, box-shadow 100ms ease, transform 100ms ease;
+}
 ```
-.bug-btn
-  position: fixed
-  bottom: var(--space-5)         → 20px
-  right: var(--space-5)          → 20px
-  z-index: 1000
-  width: 44px
-  height: 44px
-  border-radius: 9999px
-  display: flex
-  align-items: center
-  justify-content: center
-  cursor: pointer
-```
 
-### Visual Properties
+`z-index: 40` keeps it below the modal overlay (50) but above page content.
 
-| Property | Value |
-|----------|-------|
-| Background | `var(--color-neutral-900)` (#171717) |
-| Border | 1px solid `var(--color-neutral-700)` (#404040) |
-| Shadow | `0 2px 8px rgba(0, 0, 0, 0.15)` |
-| Icon | Bug SVG, 20x20px, `var(--color-white)` fill |
+### 2.2 Icon
 
-The dark circle on a light page gives just enough contrast to be findable without being loud. The bug icon is a simple outlined insect -- functional, not cute.
+A 16x16 bug icon. Inline SVG:
 
-### Icon SVG
-
-Use a minimal bug/beetle icon. 20x20 viewBox, stroke-based, 1.5px stroke weight, `currentColor`. Something like:
-
-```
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-  <!-- oval body -->
-  <ellipse cx="10" cy="12" rx="4" ry="5"/>
-  <!-- head -->
-  <circle cx="10" cy="6" r="2"/>
-  <!-- antennae -->
-  <path d="M8.5 4.5L6 2"/>
-  <path d="M11.5 4.5L14 2"/>
-  <!-- legs left -->
-  <path d="M6 10L3 8.5"/>
-  <path d="M6 12.5L3 13"/>
-  <path d="M6 15L3.5 17"/>
-  <!-- legs right -->
-  <path d="M14 10L17 8.5"/>
-  <path d="M14 12.5L17 13"/>
-  <path d="M14 15L16.5 17"/>
+```svg
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <!-- Bug body (oval) -->
+  <ellipse cx="8" cy="9" rx="3.5" ry="4" />
+  <!-- Bug head -->
+  <circle cx="8" cy="4.5" r="1.5" />
+  <!-- Left legs -->
+  <path d="M4.5 7.5L2.5 6" />
+  <path d="M4.5 10L2.5 11" />
+  <!-- Right legs -->
+  <path d="M11.5 7.5L13.5 6" />
+  <path d="M11.5 10L13.5 11" />
+  <!-- Antennae -->
+  <path d="M7 3.5L5.5 1.5" />
+  <path d="M9 3.5L10.5 1.5" />
 </svg>
 ```
 
-Alice can adjust the exact paths, but the gist is: recognizable bug silhouette, minimal detail, reads clearly at 20px.
+The icon is stroke-based, matching the nav icon style throughout Forge (16x16, `stroke="currentColor"`, `strokeWidth="1.5"`).
 
-### Interaction States
+### 2.3 Interaction States
 
-| State | Visual Change |
-|-------|--------------|
-| **Default** | As specified above |
-| **Hover** | Background `var(--color-neutral-800)` (#262626), shadow `0 4px 12px rgba(0, 0, 0, 0.2)`, `transition: all 150ms ease` |
-| **Focus-visible** | `outline: 2px solid var(--color-accent)`, `outline-offset: 2px` |
-| **Active** | `transform: scale(0.95)`, background `var(--color-neutral-950)` (#0a0a0a) |
-| **Panel open** | `transform: rotate(45deg)`, icon morphs to an X (close). Transition: `transform 200ms ease` |
+| State | Treatment |
+|-------|-----------|
+| Default | `background: var(--gray-900)`, `color: var(--white)`, `box-shadow: var(--shadow-md)` |
+| Hover | `background: var(--gray-700)`, `box-shadow: var(--shadow-lg)` |
+| Active (mousedown) | `transform: scale(0.95)` |
+| Focus-visible | `outline: 2px solid var(--accent-600)`, `outline-offset: 2px` |
 
-When the panel is open, the button becomes the close button. Rotating 45 degrees turns a "+" shape into an "X" -- but since our icon is a bug, we swap the icon content to a simple X (two crossing lines) when open. The rotation is on the button itself for a subtle twist effect.
+### 2.4 Tooltip
 
-**Alternative considered:** Hiding the button when the panel is open. Rejected -- the button-as-close-control is more discoverable and saves vertical space in the panel.
-
-### Keyboard Shortcut
-
-`Cmd+Shift+B` (Mac) / `Ctrl+Shift+B` (Windows). Toggles the panel. Announced via `aria-keyshortcuts="Meta+Shift+B"` on the button.
-
-### Tooltip
-
-On hover (after 500ms delay), show a minimal tooltip above the button:
-
-```
-.bug-btn__tooltip
-  position: absolute
-  bottom: calc(100% + var(--space-2))    → 8px above button
-  right: 0
-  background: var(--color-neutral-900)
-  color: var(--color-white)
-  font-size: var(--text-xs)
-  font-weight: var(--font-weight-medium)
-  padding: var(--space-1) var(--space-2)
-  border-radius: var(--radius-sm)
-  white-space: nowrap
-  pointer-events: none
-  opacity: 0
-  transition: opacity 150ms ease
-```
-
-Text: "Report a bug" with the shortcut in lighter text: `Cmd+Shift+B`. Show shortcut as `var(--color-text-tertiary)` (#999) inline, separated by a middle dot.
-
-Full tooltip text: `Report a bug · Cmd+Shift+B`
-
----
-
-## 2. Reporter Panel
-
-### Layout Structure
-
-The panel is a popover that appears above the floating button. It anchors to the bottom-right corner.
-
-```
-.bug-panel
-  position: fixed
-  bottom: calc(var(--space-5) + 44px + var(--space-3))   → 20px + button height + 12px gap
-  right: var(--space-5)                                    → 20px
-  z-index: 999
-  width: 380px
-  max-height: calc(100vh - 120px)
-  overflow-y: auto
-  background: var(--color-bg-card)
-  border: 1px solid var(--color-border)
-  border-radius: var(--radius-lg)
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06)
-
-  display: flex
-  flex-direction: column
-```
-
-Shadow is deliberately stronger than the standard `--shadow-lg` because this panel floats over page content and needs clear visual separation.
-
-### Internal Structure
-
-```
-.bug-panel
-  .bug-panel__header        → title + close context
-  .bug-panel__screenshot    → screenshot preview area
-  .bug-panel__recording     → record button + timer + waveform
-  .bug-panel__description   → transcription text area
-  .bug-panel__footer        → submit button
-```
-
-### Panel Header
-
-```
-.bug-panel__header
-  display: flex
-  align-items: center
-  justify-content: space-between
-  padding: var(--space-4) var(--space-5)
-  border-bottom: 1px solid var(--color-border)
-```
-
-| Element | Spec |
-|---------|------|
-| Title text | "Report a bug" -- `var(--text-sm)`, `var(--font-weight-semibold)`, `var(--color-text-primary)` |
-| Page context | Below title, same flex row is fine -- or as a subtitle line. Shows current page name extracted from URL, e.g., "on Projects". `var(--text-xs)`, `var(--color-text-tertiary-accessible)` |
-
-No explicit close button in the header -- the floating button serves as the close control (it shows an X when panel is open). This keeps the header minimal.
-
-### Screenshot Section
-
-```
-.bug-panel__screenshot
-  padding: var(--space-4) var(--space-5)
-  border-bottom: 1px solid var(--color-border)
-```
-
-The screenshot auto-captures when the panel opens. This section shows the result.
-
-#### Screenshot Thumbnail
-
-```
-.bug-panel__screenshot-thumb
-  width: 100%
-  aspect-ratio: 16 / 10
-  border-radius: var(--radius-sm)
-  border: 1px solid var(--color-border)
-  overflow: hidden
-  cursor: pointer
-  position: relative
-  background: var(--color-bg-secondary)
-```
-
-The thumbnail fills the panel width (minus padding). The `16/10` aspect ratio approximates a typical browser viewport and keeps the thumbnail compact.
-
-Image inside:
-```
-.bug-panel__screenshot-thumb img
-  width: 100%
-  height: 100%
-  object-fit: cover
-  object-position: top left
-  display: block
-```
-
-`object-position: top left` ensures the top of the page is always visible in the thumbnail, which is usually where the bug context is.
-
-#### Screenshot States
-
-**Loading (shimmer):**
-```
-.bug-panel__screenshot-thumb--loading
-  background: linear-gradient(
-    90deg,
-    var(--color-bg-secondary) 0%,
-    var(--color-neutral-100) 50%,
-    var(--color-bg-secondary) 100%
-  )
-  background-size: 200% 100%
-  animation: shimmer 1.5s ease infinite
-```
-
-```
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-```
-
-Respect `prefers-reduced-motion`: disable animation, show static `var(--color-bg-secondary)`.
-
-**Error:**
-Replace thumbnail with centered message:
-- Text: "Screenshot unavailable" -- `var(--text-xs)`, `var(--color-text-tertiary-accessible)`
-- Retake button below: ghost style, `var(--text-xs)`, `var(--color-accent)` text, no background
-
-**Loaded:**
-Show the captured screenshot image. On hover, show a subtle expand icon (top-right corner, small magnifying glass or expand arrows) to indicate the image is clickable for a larger preview.
-
-#### Screenshot Actions
-
-Below the thumbnail, a single row:
-
-```
-.bug-panel__screenshot-actions
-  display: flex
-  justify-content: flex-end
-  margin-top: var(--space-2)
-```
-
-- **Retake** button: ghost style, `var(--text-xs)`, `var(--color-text-secondary)`, hover `var(--color-text-primary)`. Text: "Retake".
-
-#### Screenshot Preview (enlarged)
-
-Clicking the thumbnail opens a larger view. Two options considered:
-
-**Option A: Modal overlay.** Full-viewport overlay at `z-index: 1001` (above the panel), dark backdrop `rgba(0, 0, 0, 0.7)`, image centered at `max-width: 90vw; max-height: 80vh; object-fit: contain`. Click backdrop or press Escape to close.
-
-**Option B: Expand in-place.** The panel stretches wider and the image takes more space.
-
-**Recommendation: Option A (modal overlay).** The screenshot needs to be seen at scale to be useful. An overlay gives room without distorting the panel layout. Keep it simple -- image + backdrop + close on click/Escape. No animation beyond a quick fade-in (150ms opacity).
-
----
-
-## 3. Recording Section
-
-This is the core interaction. The recording section handles microphone capture, live transcription via ElevenLabs Scribe v2 Realtime WebSocket, and the visual feedback that makes the experience feel alive.
-
-### Layout
-
-```
-.bug-panel__recording
-  padding: var(--space-4) var(--space-5)
-  border-bottom: 1px solid var(--color-border)
-```
-
-### Before Recording (idle state)
-
-A single prominent button, centered, with helper text.
-
-```
-.bug-panel__record-btn
-  display: flex
-  align-items: center
-  justify-content: center
-  gap: var(--space-2)
-  width: 100%
-  height: 44px
-  border-radius: var(--radius-sm)
-  background: var(--color-neutral-900)
-  color: var(--color-white)
-  border: none
-  cursor: pointer
-  font-size: var(--text-sm)
-  font-weight: var(--font-weight-medium)
-  transition: background 150ms ease
-```
-
-Button content: microphone icon (16x16, `currentColor`) + "Record voice note"
-
-Below the button:
-```
-.bug-panel__record-hint
-  text-align: center
-  margin-top: var(--space-2)
-  font-size: var(--text-xs)
-  color: var(--color-text-tertiary-accessible)
-```
-
-Text: "or type your description below"
-
-### During Recording (active state)
-
-When recording starts, the button area transforms into a recording control strip.
-
-```
-.bug-panel__recording-active
-  display: flex
-  align-items: center
-  gap: var(--space-3)
-  padding: var(--space-3)
-  background: rgba(var(--color-red-600-rgb), 0.04)
-  border: 1px solid rgba(var(--color-red-600-rgb), 0.12)
-  border-radius: var(--radius-sm)
-```
-
-Contents (left to right):
-
-1. **Recording indicator dot**
-```
-.bug-panel__rec-dot
-  width: 8px
-  height: 8px
-  border-radius: 9999px
-  background: var(--color-status-error)       → #dc2626 (red)
-  animation: pulse 1.5s ease infinite
-  flex-shrink: 0
-```
-
-```
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-```
-
-2. **Timer**
-```
-.bug-panel__rec-timer
-  font-family: var(--font-mono)
-  font-size: var(--text-sm)
-  font-weight: var(--font-weight-medium)
-  color: var(--color-text-primary)
-  min-width: 48px
-```
-
-Format: `0:00` counting up. At 25 seconds, apply `.bug-panel__rec-timer--warning`: `color: var(--color-status-warning)` (#ca8a04).
-
-At 30 seconds, recording auto-stops.
-
-3. **Waveform visualization (optional, nice-to-have)**
-
-A simple CSS-only waveform using 5 vertical bars that animate at different speeds to suggest audio activity. This is purely decorative -- it does not visualize actual audio levels.
-
-```
-.bug-panel__waveform
-  display: flex
-  align-items: center
-  gap: 2px
-  height: 20px
-  flex: 1
-```
-
-Each bar:
-```
-.bug-panel__waveform-bar
-  width: 3px
-  border-radius: 9999px
-  background: var(--color-status-error)
-  animation: wave 0.8s ease-in-out infinite
-  opacity: 0.6
-```
-
-Stagger animation delay: `0s, 0.15s, 0.3s, 0.15s, 0s` across 5 bars. `animation-duration` varies: `0.8s, 0.6s, 0.9s, 0.7s, 0.85s` for organic feel.
-
-```
-@keyframes wave {
-  0%, 100% { height: 4px; }
-  50% { height: 16px; }
-}
-```
-
-Respect `prefers-reduced-motion`: replace animation with static bars at 50% height.
-
-4. **Stop button** (right-aligned)
-```
-.bug-panel__stop-btn
-  width: 32px
-  height: 32px
-  border-radius: var(--radius-sm)
-  background: var(--color-status-error)
-  border: none
-  cursor: pointer
-  display: flex
-  align-items: center
-  justify-content: center
-  flex-shrink: 0
-  transition: background 150ms ease
-```
-
-Icon: white square (stop symbol), 12x12px. On hover: `background: #b91c1c` (darker red).
-
-### After Recording (review state)
-
-The recording strip disappears. A "Re-record" link appears below the description textarea (see section 4). The transcription is already visible in the textarea from the live transcription -- no loading state needed.
-
-If the user clicks "Re-record":
-- Clear the current transcript text
-- Return to the idle recording state
-- Previous recording is discarded
-
-```
-.bug-panel__rerecord
-  font-size: var(--text-xs)
-  color: var(--color-text-secondary)
-  background: none
-  border: none
-  cursor: pointer
-  padding: 0
-  text-decoration: underline
-  text-underline-offset: 2px
-```
-
-Text: "Re-record". Hover: `color: var(--color-text-primary)`.
-
-### Microphone Permission Denied
-
-If the browser denies microphone access, show an inline message in place of the recording controls:
-
-```
-.bug-panel__mic-denied
-  display: flex
-  align-items: flex-start
-  gap: var(--space-2)
-  padding: var(--space-3)
-  background: rgba(var(--color-warning-rgb), 0.06)
-  border: 1px solid rgba(var(--color-warning-rgb), 0.15)
-  border-radius: var(--radius-sm)
-```
-
-Icon: warning triangle, 16x16, `var(--color-status-warning)`.
-Text: "Microphone access denied. Check your browser settings to allow audio recording, or type your description below."
-Font: `var(--text-xs)`, `var(--color-text-secondary)`, `line-height: var(--leading-normal)`.
-
-### MediaRecorder Unsupported
-
-If the browser does not support MediaRecorder, hide the entire recording section. The description textarea (section 4) becomes the primary input, with its placeholder updated to: "Describe the bug..."
-
----
-
-## 4. Description Section
-
-### Layout
-
-```
-.bug-panel__description
-  padding: var(--space-4) var(--space-5)
-  border-bottom: 1px solid var(--color-border)
-```
-
-### Textarea
-
-```
-.bug-panel__textarea
-  width: 100%
-  min-height: 80px
-  max-height: 160px
-  resize: vertical
-  padding: var(--space-3)
-  border: 1px solid var(--color-border)
-  border-radius: var(--radius-sm)
-  font-family: var(--font-family)
-  font-size: var(--text-sm)
-  line-height: var(--leading-normal)
-  color: var(--color-text-primary)
-  background: var(--color-bg-primary)
-  transition: border-color 150ms ease
-```
-
-Placeholder text: "Bug description will appear here during recording, or type manually"
-Placeholder color: `var(--color-text-tertiary-accessible)`
-
-### Textarea States
-
-| State | Visual |
-|-------|--------|
-| **Default** | As above |
-| **Focus** | `border-color: var(--color-accent)`, `outline: none`, `box-shadow: 0 0 0 2px rgba(var(--color-green-accent-rgb), 0.15)` |
-| **Live transcription in progress** | Text appears character-by-character. Partial (unconfirmed) transcript text gets a subtle styling distinction -- see below. |
-| **Disabled** | N/A -- textarea is always editable (user can type during recording) |
-| **Error** | `border-color: var(--color-status-error)` if validation fails |
-
-### Live Transcription Visual Treatment
-
-This is the signature UX moment. As the user speaks, words appear in real-time in the textarea.
-
-**How it works technically:** The ElevenLabs Scribe v2 Realtime WebSocket sends two types of events:
-- `partial_transcript` -- interim text that may change as more audio context arrives
-- `committed_transcript` -- finalized text that will not change
-
-**Visual treatment:**
-
-The textarea value is continuously updated. Committed text is rendered normally. The partial (interim) text appended after committed text has no special styling in a native textarea -- this is a limitation of `<textarea>` which does not support mixed styling.
-
-**Alternative considered:** Using a `contenteditable` div instead of a textarea to style partial text differently (e.g., lighter color). Rejected -- `contenteditable` introduces cursor management complexity and accessibility issues. The simpler approach: just update the textarea value. The user sees words appearing in real-time, which is already compelling. The text "catching up and changing" as partials resolve into committed text is natural enough.
-
-**Label above textarea:**
-```
-.bug-panel__textarea-label
-  font-size: var(--text-xs)
-  font-weight: var(--font-weight-medium)
-  color: var(--color-text-tertiary-accessible)
-  text-transform: uppercase
-  letter-spacing: 0.05em
-  margin-bottom: var(--space-2)
-  display: block
-```
-
-Text: "Description"
-
-During recording, append a live indicator:
-- "Description" becomes "Description -- listening..." with "listening..." in `var(--color-status-error)` (matching the recording red) and a subtle pulse animation on the text opacity (same keyframe as the recording dot).
-
-After recording stops, revert to plain "Description".
-
-### Re-record Link Placement
-
-The "Re-record" link (from section 3) appears below the textarea, right-aligned:
-
-```
-.bug-panel__textarea-actions
-  display: flex
-  justify-content: flex-end
-  margin-top: var(--space-2)
-```
-
-Only visible after a recording has been made.
-
----
-
-## 5. Footer / Submit
-
-### Layout
-
-```
-.bug-panel__footer
-  padding: var(--space-4) var(--space-5)
-  display: flex
-  flex-direction: column
-  gap: var(--space-3)
-```
-
-No top border -- the description section's bottom border serves as the separator.
-
-### Submit Button
-
-```
-.bug-panel__submit
-  width: 100%
-  height: 40px
-  border-radius: var(--radius-sm)
-  background: var(--color-accent)
-  color: var(--color-white)
-  border: none
-  cursor: pointer
-  font-size: var(--text-sm)
-  font-weight: var(--font-weight-medium)
-  display: flex
-  align-items: center
-  justify-content: center
-  gap: var(--space-2)
-  transition: background 150ms ease
-```
-
-Text: "File bug"
-
-### Submit States
-
-| State | Visual |
-|-------|--------|
-| **Default** | Background `var(--color-accent)`, text white |
-| **Hover** | Background `var(--color-accent-hover)` |
-| **Focus-visible** | `outline: 2px solid var(--color-accent)`, `outline-offset: 2px` |
-| **Active** | Background `var(--color-accent-active)`, `transform: scale(0.98)` |
-| **Disabled** | `opacity: 0.5`, `pointer-events: none`, `cursor: default` |
-| **Submitting** | Text changes to "Filing...", 16px spinner icon replaces the bug icon (CSS animation, `animation: spin 0.6s linear infinite`), button disabled |
-
-### Disabled Conditions
-
-The submit button is disabled when:
-1. Recording is currently active (the user should stop recording first)
-2. No content exists -- both description is empty AND no screenshot was captured
-
-A bug report with only a screenshot (no description) is valid. A bug report with only a description (no screenshot) is also valid. But at least one must be present.
-
-### Error State
-
-If submission fails, show an inline error message above the submit button:
-
-```
-.bug-panel__error
-  display: flex
-  align-items: center
-  gap: var(--space-2)
-  padding: var(--space-2) var(--space-3)
-  background: rgba(var(--color-red-600-rgb), 0.04)
-  border: 1px solid rgba(var(--color-red-600-rgb), 0.12)
-  border-radius: var(--radius-sm)
-  font-size: var(--text-xs)
-  color: var(--color-status-error)
-```
-
-Icon: small alert circle, 14px. Text: "Failed to file bug. Try again."
-
-The submit button text reverts to "File bug" (not "Filing...") so the user can retry.
-
----
-
-## 6. Success Toast
-
-After successful submission, the panel closes and a toast notification appears briefly.
-
-### Layout
-
-```
-.bug-toast
-  position: fixed
-  bottom: calc(var(--space-5) + 44px + var(--space-3))    → same vertical position as panel
-  right: var(--space-5)
-  z-index: 999
-  display: flex
-  align-items: center
-  gap: var(--space-2)
-  padding: var(--space-3) var(--space-4)
-  background: var(--color-neutral-900)
-  color: var(--color-white)
-  border-radius: var(--radius-sm)
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
-  font-size: var(--text-sm)
-  font-weight: var(--font-weight-medium)
-```
-
-### Content
-
-- Checkmark icon: 16px, `var(--color-emerald-400)` (#34d399)
-- Text: "Bug filed!"
-- Optional: a subtle "View" link at the end, `text-decoration: underline`, `color: var(--color-neutral-400)`, that navigates to the task tracker. If this adds complexity, skip for v1 -- the toast confirmation alone is sufficient.
-
-### Animation
-
-```
-Enter:  opacity 0 → 1, translateY(8px) → translateY(0), 200ms ease-out
-Exit:   opacity 1 → 0, 150ms ease-in (after 3 second hold)
-```
-
-Total visible duration: 3 seconds, then auto-dismiss. No manual dismiss needed.
-
-Respect `prefers-reduced-motion`: skip translate, fade only.
-
----
-
-## 7. Panel Open/Close Animation
-
-### Open
-
-```
-opacity: 0 → 1
-transform: translateY(8px) → translateY(0)
-duration: 200ms
-easing: ease-out
-```
-
-The panel appears to rise up from the button. Subtle, fast, functional.
-
-### Close
-
-```
-opacity: 1 → 0
-transform: translateY(0) → translateY(8px)
-duration: 150ms
-easing: ease-in
-```
-
-Respect `prefers-reduced-motion`: instant show/hide, no transform animation.
-
-### Backdrop
-
-No backdrop/overlay when the panel is open. The panel is a lightweight popover, not a modal. The user can still interact with the page behind it (though they probably will not want to). Clicking outside the panel does NOT close it -- only the button (X) or Escape key closes it. This prevents accidental closure during a recording.
-
----
-
-## 8. Responsive Behavior
-
-### Desktop (> 1024px)
-
-Full layout as specified. Panel width 380px. Button in bottom-right corner.
-
-### Tablet (640px - 1024px)
-
-Same as desktop. The 380px panel still fits comfortably. No changes needed.
-
-### Small screens (< 640px)
-
-Per Thomas's requirements, the floating widget is desktop-only for v1. However, the button should still be present on small screens as a graceful minimum:
-
-- **Button:** Still visible at `bottom: var(--space-4); right: var(--space-4)` (slightly tighter to edges)
-- **Panel:** Full width with edge margins. `width: calc(100vw - var(--space-4) * 2)`, `right: var(--space-4)`, `left: var(--space-4)`. Panel is anchored to the bottom, same as desktop.
-- **Screenshot thumbnail:** Same aspect ratio, fills the narrower panel.
-
-This is a simple responsive adjustment, not a full mobile redesign. If the CEO wants to cut even this, the button can be hidden below 640px with `display: none`.
-
----
-
-## 9. Accessibility
-
-### ARIA Structure
+On hover, show a tooltip above the button. Use the native `title` attribute for simplicity. This is an internal tool; a custom tooltip component is not warranted.
 
 ```html
 <button
-  class="bug-btn"
+  className={styles.fab}
+  onClick={onClick}
+  title="Report a bug (Cmd+Shift+K)"
   aria-label="Report a bug"
-  aria-expanded="false"
-  aria-controls="bug-panel"
-  aria-keyshortcuts="Meta+Shift+B"
 >
-  <!-- bug icon -->
-</button>
+```
 
-<div
-  id="bug-panel"
-  class="bug-panel"
-  role="dialog"
-  aria-label="Bug reporter"
-  aria-modal="false"
+On non-macOS platforms, the shortcut text should read `Ctrl+Shift+K`. Alice can detect platform via `navigator.platform?.includes('Mac')` or `navigator.userAgentData?.platform`.
+
+### 2.5 Visibility
+
+The FAB is visible on every authenticated page. It is rendered in `AppShell.tsx` outside the `.shell` div. When the bug report modal is open, the FAB remains visible behind the overlay (it naturally dims behind the `rgba(0,0,0,0.15)` backdrop). No need to explicitly hide it.
+
+### 2.6 Reduced Motion
+
+The `transform: scale(0.95)` active state is subtle enough that it does not need a `prefers-reduced-motion` override.
+
+---
+
+## 3. Screenshot Paste Zone
+
+### 3.1 Conditional Rendering
+
+The screenshot zone is only rendered when `screenshotsEnabled` is `true` (determined by the `GET /api/v1/bugs/count` response piggybacked from AppShell). When R2 is not configured, the zone is omitted entirely -- no placeholder, no "screenshots unavailable" message. The modal simply shows the description textarea with more vertical space.
+
+### 3.2 Empty State (No Screenshot Pasted)
+
+```
++------------------------------------------+
+|                                          |
+|          [clipboard icon]                |
+|                                          |
+|     Paste a screenshot (Cmd+V)           |
+|     or drag and drop an image            |
+|                                          |
++------------------------------------------+
+```
+
+```css
+.screenshotZone {
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--radius-lg);       /* 8px */
+  padding: var(--space-6) var(--space-4); /* 24px 16px */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);                   /* 8px */
+  background: var(--gray-50);
+  transition: border-color 150ms ease, background 150ms ease;
+  cursor: default;
+  min-height: 100px;
+}
+```
+
+**Icon:** A 24x24 clipboard/paste icon in `var(--gray-400)`:
+
+```svg
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style="color: var(--gray-400)">
+  <rect x="8" y="2" width="8" height="4" rx="1" />
+  <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+</svg>
+```
+
+**Primary text:** "Paste a screenshot (Cmd+V)"
+- Font size: `var(--text-sm)` (13px)
+- Font weight: 500
+- Color: `var(--gray-500)`
+
+**Secondary text:** "or drag and drop an image"
+- Font size: `var(--text-xs)` (11px)
+- Font weight: 400
+- Color: `var(--gray-400)`
+
+**"Optional" label:** Not shown. The requirements state screenshots are optional, and the helper text implies optionality by not using "required" language. Keeping the zone clean.
+
+### 3.3 Drag Over State
+
+When a file is dragged over the modal (not just the zone -- use the modal container for the drag target to make it forgiving):
+
+```css
+.screenshotZoneDragOver {
+  border-color: var(--accent-600);
+  background: var(--accent-50);          /* #EEF2FF */
+}
+```
+
+The icon and text color shift to `var(--accent-600)` during drag-over. This gives clear visual feedback that the drop target is active.
+
+### 3.4 Preview State (Screenshot Pasted)
+
+When a screenshot has been pasted or dropped, the dashed zone is replaced by a preview:
+
+```
++------------------------------------------+
+|                                          |
+|  +------------------------------------+ |
+|  |                                    | |
+|  |     [screenshot thumbnail]         | |
+|  |     object-fit: contain            | |
+|  |     max-height: 180px              | |
+|  |                                    | |
+|  +------------------------------------+ |
+|                              [x Remove]  |
+|                                          |
++------------------------------------------+
+```
+
+```css
+.screenshotPreview {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);       /* 8px */
+  padding: var(--space-3);               /* 12px */
+  background: var(--gray-50);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);                   /* 8px */
+}
+
+.screenshotImage {
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  border-radius: var(--radius-md);       /* 6px */
+  background: var(--white);              /* visible border against gray-50 bg */
+  border: 1px solid var(--gray-200);
+}
+
+.screenshotRemoveBtn {
+  align-self: flex-end;
+  height: 24px;
+  padding: 0 var(--space-2);            /* 0 8px */
+  font-size: var(--text-xs);            /* 11px */
+  font-weight: 500;
+  color: var(--gray-500);
+  border-radius: var(--radius-sm);      /* 4px */
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);                  /* 4px */
+  cursor: pointer;
+}
+```
+
+**Remove button states:**
+- Default: `color: var(--gray-500)`
+- Hover: `background: var(--error-50); color: var(--error-600)`
+- Focus-visible: `outline: 2px solid var(--accent-600); outline-offset: 2px`
+
+The remove button shows a small 12x12 X icon + the text "Remove". Clicking it clears the screenshot, revokes the object URL, and re-shows the empty paste zone.
+
+### 3.5 Error State (File Too Large)
+
+If the pasted image exceeds 5 MB, the paste zone border flashes red briefly and an error message appears below:
+
+```css
+.screenshotZoneError {
+  border-color: var(--error-600);
+}
+```
+
+Error text below the zone: "Screenshot too large (max 5 MB). Try a smaller selection." in `var(--text-xs)`, `var(--error-600)`.
+
+The zone remains in its empty state -- no preview is shown for an oversized file.
+
+### 3.6 Paste Behavior Details
+
+- **Paste listener** is scoped to the modal container ref (not `window`). Only intercepts clipboard items of type `image/*`.
+- **Text paste into the description textarea** works normally. When the textarea is focused and the clipboard contains text, the paste event propagates as usual.
+- **Re-paste replaces:** If a screenshot is already previewed and the user pastes again, the new image replaces the old one. The old object URL is revoked.
+- **Accepted formats:** `image/png`, `image/jpeg` only. Other image types (gif, webp) are silently ignored -- the paste zone stays in its current state.
+
+---
+
+## 4. Success State
+
+After successful submission, the modal body transitions to a centered success message for 1.5 seconds, then the modal closes automatically.
+
+```
++------------------------------------------+
+|               Report a Bug        [x]    |
+|------------------------------------------|
+|                                          |
+|          [checkmark icon]                |
+|                                          |
+|          Bug reported!                   |
+|                                          |
+|------------------------------------------|
+|                       [Cancel] [Submit]  |
++------------------------------------------+
+```
+
+The header and footer remain visible (no layout jump). The body content is replaced with:
+
+```css
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);                   /* 12px */
+  padding: var(--space-8) 0;            /* 32px 0 */
+}
+```
+
+**Checkmark icon:** 24x24 circle with checkmark, `var(--success-600)` (#16A34A).
+
+```svg
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--success-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <circle cx="12" cy="12" r="10" />
+  <path d="M9 12l2 2 4-4" />
+</svg>
+```
+
+**Text:** "Bug reported!"
+- Font size: `var(--text-sm)` (13px)
+- Font weight: 500
+- Color: `var(--gray-700)`
+
+Both footer buttons are disabled during the success state (the modal auto-closes after 1.5s). The animation is a simple `fadeIn 150ms ease-out` on the success content replacing the form content.
+
+After the modal closes, invalidate `['bugs']` and `['bugs', 'count']` queries so the sidebar badge updates immediately.
+
+---
+
+## 5. Bug List Page
+
+### 5.1 Page Layout
+
+Follows the `HomePage` pattern exactly: `.page` container with max-width, `.header` with title and no action buttons (bugs are created via the modal, not from this page).
+
+```css
+.page {
+  padding: var(--space-10);              /* 40px */
+  max-width: 800px;                      /* narrower than HomePage's 1200px -- single-column list */
+}
+```
+
+**Page title:** "Bugs"
+- Font size: `var(--text-2xl)` (24px)
+- Font weight: 600
+- Line height: `var(--leading-2xl)` (32px)
+- Color: `var(--gray-950)`
+
+### 5.2 Bug Card (Collapsed)
+
+Each bug is a card in a vertical list:
+
+```
++--------------------------------------------------+
+| [thumbnail]  Description text truncated to       |
+|              about 120 characters so it fits...   |
+|                                                  |
+|              Feb 13, 2026   Jeff    [Open]        |
++--------------------------------------------------+
+```
+
+```css
+.bugList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);                   /* 12px */
+}
+
+.bugCard {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);       /* 8px */
+  padding: var(--space-4);               /* 16px */
+  cursor: pointer;
+  transition: border-color 100ms ease;
+  display: flex;
+  gap: var(--space-4);                   /* 16px */
+}
+```
+
+**States:**
+- Default: `border: 1px solid var(--gray-200)`
+- Hover: `border-color: var(--gray-300)`
+- Focus-visible: `outline: 2px solid var(--accent-600); outline-offset: 2px`
+- Expanded: `border-color: var(--gray-300)` (stays highlighted)
+- Resolved: entire card gets `opacity: 0.6` -- text and thumbnail both dim
+
+#### Screenshot Thumbnail (left side, if present)
+
+```css
+.bugThumbnail {
+  width: 80px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--radius-md);       /* 6px */
+  border: 1px solid var(--gray-200);
+  flex-shrink: 0;
+  background: var(--gray-100);           /* placeholder bg while loading */
+}
+```
+
+If no screenshot, the thumbnail column is omitted entirely (the content area takes full width). No placeholder icon.
+
+#### Content Area (right side)
+
+```css
+.bugContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);                   /* 8px */
+}
+
+.bugDescription {
+  font-size: var(--text-base);           /* 14px */
+  line-height: var(--leading-base);      /* 20px */
+  color: var(--gray-950);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bugMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);                   /* 12px */
+  flex-wrap: wrap;
+}
+
+.bugDate {
+  font-size: var(--text-xs);            /* 11px */
+  color: var(--gray-500);
+}
+
+.bugReporter {
+  font-size: var(--text-xs);            /* 11px */
+  color: var(--gray-500);
+}
+```
+
+#### Status Badge
+
+```css
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--space-2);            /* 0 8px */
+  border-radius: var(--radius-full);     /* 9999px -- pill */
+  font-size: var(--text-xs);            /* 11px */
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.statusOpen {
+  background: var(--error-50);           /* #FEF2F2 */
+  color: var(--error-600);              /* #DC2626 */
+}
+
+.statusResolved {
+  background: var(--gray-100);           /* #F4F4F5 */
+  color: var(--gray-500);               /* #71717A */
+}
+```
+
+Using red for "open" bugs (they demand attention) and neutral gray for "resolved" (they are done, fade into background). This is an internal tool, so we use strong signal colors.
+
+### 5.3 Bug Card (Expanded)
+
+Clicking a collapsed card expands it inline. The expansion reveals:
+1. Full description text (no truncation)
+2. Full-size screenshot (if present)
+3. Resolve/Reopen button
+4. Page URL where the bug was reported
+
+The expand/collapse uses the `grid-template-rows: 0fr -> 1fr` CSS pattern per the interface design skill doc. Duration: 200ms, easing: `ease`.
+
+```
++--------------------------------------------------+
+| [thumbnail]  Description text truncated to       |
+|              about 120 characters so it fits...   |
+|                                                  |
+|              Feb 13, 2026   Jeff    [Open]        |
+|--------------------------------------------------|
+|                                                  |
+| Full description text without truncation.        |
+| Can be multiple paragraphs and as long as        |
+| the user wrote.                                  |
+|                                                  |
+| +----------------------------------------------+ |
+| |                                              | |
+| |          [full-size screenshot]               | |
+| |                                              | |
+| +----------------------------------------------+ |
+|                                                  |
+| Reported on: /roadmaps/abc123                    |
+|                                                  |
+|                              [Resolve]           |
++--------------------------------------------------+
+```
+
+#### Expanded Content Area
+
+```css
+.bugExpandedWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms ease;
+}
+
+.bugExpandedWrapper[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.bugExpandedInner {
+  overflow: hidden;
+}
+
+.bugExpanded {
+  padding-top: var(--space-4);           /* 16px */
+  border-top: 1px solid var(--gray-200);
+  margin-top: var(--space-4);            /* 16px */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);                   /* 16px */
+}
+
+.bugFullDescription {
+  font-size: var(--text-base);           /* 14px */
+  line-height: var(--leading-base);      /* 20px */
+  color: var(--gray-950);
+  white-space: pre-wrap;                 /* preserve line breaks */
+  word-break: break-word;
+}
+
+.bugScreenshotFull {
+  max-width: 100%;
+  border-radius: var(--radius-lg);       /* 8px */
+  border: 1px solid var(--gray-200);
+  cursor: pointer;                       /* click to open in new tab */
+}
+
+.bugPageUrl {
+  font-size: var(--text-xs);            /* 11px */
+  color: var(--gray-400);
+  font-family: var(--font-mono);
+}
+
+.bugActions {
+  display: flex;
+  justify-content: flex-end;
+}
+```
+
+**Screenshot click:** Opens the presigned R2 URL in a new tab (`target="_blank"`, `rel="noopener noreferrer"`). The cursor is `pointer` to indicate clickability. Add `title="Open full size"` for accessibility.
+
+#### Resolve/Reopen Button
+
+Uses the secondary button style from the design system:
+
+```css
+.resolveBtn {
+  height: 32px;
+  padding: 0 var(--space-4);            /* 0 16px */
+  font-size: var(--text-sm);            /* 13px */
+  font-weight: 500;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);       /* 6px */
+  background: transparent;
+  transition: background 100ms ease;
+}
+```
+
+- Hover: `background: var(--gray-50)`
+- Active: `background: var(--gray-100)`
+- Focus-visible: `outline: 2px solid var(--accent-600); outline-offset: 2px`
+
+**Label:** "Resolve" for open bugs, "Reopen" for resolved bugs.
+
+**Optimistic update:** Clicking Resolve/Reopen immediately updates the status badge and card opacity. If the API call fails, revert and show an error toast using the existing `useToast` pattern (dark background toast, bottom-right, 3s duration).
+
+### 5.4 Loading State
+
+Use skeleton placeholders matching the card shape. Show 3 skeleton cards:
+
+```css
+.bugCardSkeleton {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  height: 80px;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+```
+
+### 5.5 Empty State
+
+Centered in the page, following the `HomePage` empty state pattern:
+
+```
+        [bug icon, 32x32, gray-400]
+
+       No bugs reported yet
+
+  Use Cmd+Shift+K to report your first bug.
+```
+
+```css
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) 0;            /* 48px 0 */
+  gap: var(--space-3);                   /* 12px */
+}
+
+.emptyIcon {
+  color: var(--gray-400);
+  margin-bottom: var(--space-2);         /* 8px */
+}
+
+.emptyTitle {
+  font-size: var(--text-lg);            /* 16px */
+  font-weight: 500;
+  color: var(--gray-900);
+}
+
+.emptyDesc {
+  font-size: var(--text-base);           /* 14px */
+  color: var(--gray-500);
+}
+```
+
+Shortcut text should be platform-aware: "Cmd+Shift+K" on macOS, "Ctrl+Shift+K" elsewhere.
+
+### 5.6 Error State
+
+```
+       Failed to load bugs.
+
+         [Try again]
+```
+
+Uses the same centered layout as the empty state. The "Try again" button is a secondary button (border, gray text) that calls `queryClient.invalidateQueries({ queryKey: ['bugs'] })`.
+
+### 5.7 Responsive
+
+```css
+@media (max-width: 1023px) {
+  .page {
+    padding: var(--space-6);             /* 24px */
+  }
+}
+
+@media (max-width: 639px) {
+  .page {
+    padding: var(--space-4);             /* 16px */
+  }
+
+  .bugCard {
+    flex-direction: column;              /* stack thumbnail above content */
+  }
+
+  .bugThumbnail {
+    width: 100%;
+    height: 120px;
+  }
+}
+```
+
+On mobile, thumbnail stacks above the content for better readability.
+
+---
+
+## 6. Sidebar Integration
+
+### 6.1 Nav Item
+
+Add a "Bugs" entry to the sidebar navigation in `Sidebar.tsx`. It appears after the existing nav items, separated by a `divider`. Unlike the "Fields" nav item which is contextual (only shows inside a roadmap), "Bugs" is always visible.
+
+```tsx
+<div className={styles.divider} />
+<NavLink
+  to="/bugs"
+  className={({ isActive }) =>
+    `${styles.navItem} ${isActive ? styles.navItemActive : ''}`
+  }
+  onClick={onMobileClose}
 >
-  <!-- panel content -->
-</div>
+  <svg className={styles.navIcon} width="16" height="16" viewBox="0 0 16 16"
+    fill="none" stroke="currentColor" strokeWidth="1.5"
+    strokeLinecap="round" strokeLinejoin="round">
+    <ellipse cx="8" cy="9" rx="3.5" ry="4" />
+    <circle cx="8" cy="4.5" r="1.5" />
+    <path d="M4.5 7.5L2.5 6" />
+    <path d="M4.5 10L2.5 11" />
+    <path d="M11.5 7.5L13.5 6" />
+    <path d="M11.5 10L13.5 11" />
+    <path d="M7 3.5L5.5 1.5" />
+    <path d="M9 3.5L10.5 1.5" />
+  </svg>
+  <span className={styles.navLabel}>Bugs</span>
+  {openBugCount > 0 && (
+    <span className={styles.navBadge}>{openBugCount}</span>
+  )}
+</NavLink>
 ```
 
-- `aria-expanded` toggles `true/false` on the button when panel opens/closes
-- `aria-modal="false"` because the panel is a popover, not a modal -- page content is still interactive
-- `role="dialog"` signals to screen readers that this is a distinct interface region
+### 6.2 Badge
 
-### Focus Management
+The badge shows the count of open bugs. Hidden when count is 0.
 
-1. When panel opens: focus moves to the record button (the primary action)
-2. Tab order within panel: Record button, Screenshot retake, Description textarea, Submit button
-3. When panel closes: focus returns to the floating button
-4. Escape key: closes the panel (same as clicking the X button)
-
-### Screen Reader Announcements
-
-Use `aria-live="polite"` on a visually hidden status region inside the panel to announce state changes:
-
-- When recording starts: "Recording started. Speak to describe the bug."
-- When recording stops: "Recording stopped. Transcription complete."
-- Live transcription: The textarea itself serves as the live region -- screen readers will pick up text changes. No additional `aria-live` needed on the textarea.
-- When bug is filed: "Bug filed successfully." (announced via the toast)
-- On error: "Failed to file bug. Try again."
-
-```html
-<div class="sr-only" aria-live="polite" id="bug-status"></div>
+```css
+.navBadge {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--space-1);            /* 0 4px */
+  border-radius: var(--radius-full);     /* 9999px -- pill */
+  background: var(--error-600);          /* #DC2626 -- red, signals attention */
+  color: var(--white);
+  font-size: 10px;                       /* slightly below --text-xs for compact badge */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
 ```
 
-```
-.sr-only
-  position: absolute
-  width: 1px
-  height: 1px
-  padding: 0
-  margin: -1px
-  overflow: hidden
-  clip: rect(0, 0, 0, 0)
-  white-space: nowrap
-  border-width: 0
+The badge uses `margin-left: auto` to push it to the right edge of the nav item. In the collapsed sidebar state, the badge and label are both hidden. Add a collapse-hide rule:
+
+```css
+.sidebar[data-collapsed="true"] .navBadge {
+  display: none;
+}
 ```
 
-### Recording State Announcements
+On tablet (1024-1279px) where the sidebar auto-collapses to icons, the badge is also hidden. This is acceptable -- users on the bugs page will see the full list, and the FAB + keyboard shortcut are the primary reporting paths.
 
-The recording timer and waveform are visual-only. Screen reader users get announcements via the status region:
-- At recording start: announced once
-- At 25 seconds (warning): "5 seconds remaining"
-- At 30 seconds (auto-stop): "Recording stopped. Maximum duration reached."
+### 6.3 Active State
 
-### Keyboard Navigation
+When the user is on `/bugs`, the nav item gets the existing `.navItemActive` style: `background: var(--accent-50)`, `color: var(--accent-600)`. The badge color does not change -- red on an indigo-tinted background still has sufficient contrast (error-600 #DC2626 on accent-50 #EEF2FF gives 5.3:1).
 
-| Key | Action |
-|-----|--------|
-| `Cmd/Ctrl + Shift + B` | Toggle panel open/close (global) |
-| `Escape` | Close panel (when panel is open) |
-| `Tab` | Move forward through interactive elements in panel |
-| `Shift + Tab` | Move backward through interactive elements |
-| `Enter` / `Space` | Activate focused button |
+### 6.4 Icon
+
+Same bug icon as the FAB but at 16x16 to match the other nav icons. Uses `stroke="currentColor"` so it inherits the nav item color (gray-700 default, accent-600 active).
+
+---
+
+## 7. Complete State Matrix
+
+### 7.1 Bug Report Modal States
+
+| State | Trigger | Visual Treatment |
+|-------|---------|------------------|
+| **Default (empty form)** | Modal opens | Screenshot zone empty (dashed border), description empty with placeholder, Submit disabled (gray-300 bg) |
+| **Form filled (no screenshot)** | User types description | Screenshot zone unchanged, Submit enabled (accent-600 bg) |
+| **Form filled (with screenshot)** | User pastes image | Screenshot preview replaces zone, Submit enabled |
+| **Screenshot too large** | Paste image > 5 MB | Zone border turns red, error text below zone, no preview |
+| **Submitting** | User clicks Submit | Submit text changes to "Submitting...", both buttons disabled, Cancel has opacity 0.5 |
+| **Upload failed** | R2 upload error or timeout | Error text below screenshot zone: "Screenshot upload failed. Submit without screenshot or try again." Submit re-enabled. Form preserved. |
+| **Submission failed** | Bug creation API error | Error text below description: "Failed to submit bug report. Please try again." Submit re-enabled. Form preserved. |
+| **Success** | Bug created | Body replaced with checkmark + "Bug reported!" for 1.5s, then modal auto-closes |
+| **R2 not configured** | `screenshotsEnabled: false` | Screenshot zone not rendered. Description textarea only. Modal is narrower in feel but same 480px width. |
+
+### 7.2 Bug List Page States
+
+| State | Trigger | Visual Treatment |
+|-------|---------|------------------|
+| **Loading** | Initial page load | 3 skeleton card placeholders, pulse animation |
+| **Empty** | No bugs in account | Centered empty state with bug icon + "No bugs reported yet" + shortcut hint |
+| **Populated** | Bugs exist | Vertical card list, newest first |
+| **Error (load failed)** | API error | Centered error message + "Try again" button |
+| **Card expanded** | Click a bug card | Inline expansion with full description, screenshot, page URL, resolve/reopen button |
+| **Resolved bug** | Bug status is "resolved" | Card at `opacity: 0.6`, gray status badge |
+| **Resolve/reopen optimistic** | Click Resolve/Reopen | Immediate badge + opacity change. Reverts on API error with toast. |
+
+### 7.3 FAB States
+
+| State | Trigger | Visual Treatment |
+|-------|---------|------------------|
+| **Default** | Always visible | Gray-900 circle, shadow-md, 40x40px |
+| **Hover** | Mouse over | Gray-700 bg, shadow-lg |
+| **Active** | Mouse down | scale(0.95) |
+| **Modal open** | Bug modal visible | FAB visible but dimmed behind overlay backdrop |
+
+---
+
+## 8. Animation Summary
+
+| Element | Animation | Duration | Easing | Reduced Motion |
+|---------|-----------|----------|--------|----------------|
+| Modal entrance | `opacity: 0 -> 1`, `scale(0.98) -> scale(1)` | 150ms | ease-out | Disable (instant show) |
+| Bug card expand/collapse | `grid-template-rows: 0fr -> 1fr` | 200ms | ease | Disable (instant show/hide) |
+| FAB active press | `scale(0.95)` | 100ms | ease | Keep (too subtle to matter) |
+| Skeleton pulse | `opacity: 1 -> 0.5 -> 1` | 1500ms | ease-in-out | Disable (static gray) |
+| Success state swap | `opacity: 0 -> 1` (form content replaced) | 150ms | ease-out | Disable (instant swap) |
+| Toast entrance | `translateY(16px) -> 0`, `opacity: 0 -> 1` | 200ms | ease-out | Disable (instant show) |
+
+All reduced motion overrides use `@media (prefers-reduced-motion: reduce)`.
+
+---
+
+## 9. Z-Index Map
+
+| Element | z-index | Notes |
+|---------|---------|-------|
+| Mobile sidebar overlay | 29 | Existing |
+| Sidebar (mobile drawer) | 30 | Existing |
+| FAB | 40 | Below modal, above page content |
+| Bug report modal overlay | 50 | Same as FieldModal |
+| Toast | 100 | Existing, always on top |
+
+---
+
+## 10. Typography Reference (All Values)
+
+| Element | Font Size | Weight | Line Height | Color |
+|---------|-----------|--------|-------------|-------|
+| Modal title "Report a Bug" | `var(--text-lg)` 16px | 600 | `var(--leading-lg)` 24px | `var(--gray-950)` |
+| Form label "What happened?" | `var(--text-sm)` 13px | 500 | `var(--leading-sm)` 18px | `var(--gray-700)` |
+| Description textarea | `var(--text-base)` 14px | 400 | `var(--leading-base)` 20px | `var(--gray-950)` |
+| Description placeholder | `var(--text-base)` 14px | 400 | `var(--leading-base)` 20px | `var(--gray-500)` |
+| Paste zone primary text | `var(--text-sm)` 13px | 500 | `var(--leading-sm)` 18px | `var(--gray-500)` |
+| Paste zone secondary text | `var(--text-xs)` 11px | 400 | `var(--leading-xs)` 16px | `var(--gray-400)` |
+| Button text (Submit/Cancel) | `var(--text-sm)` 13px | 500 | 1 | white / `var(--gray-700)` |
+| Error text | `var(--text-xs)` 11px | 400 | `var(--leading-xs)` 16px | `var(--error-600)` |
+| Success text "Bug reported!" | `var(--text-sm)` 13px | 500 | `var(--leading-sm)` 18px | `var(--gray-700)` |
+| Page title "Bugs" | `var(--text-2xl)` 24px | 600 | `var(--leading-2xl)` 32px | `var(--gray-950)` |
+| Bug card description | `var(--text-base)` 14px | 400 | `var(--leading-base)` 20px | `var(--gray-950)` |
+| Bug card date/reporter | `var(--text-xs)` 11px | 400 | `var(--leading-xs)` 16px | `var(--gray-500)` |
+| Status badge text | `var(--text-xs)` 11px | 500 | 1 | `var(--error-600)` or `var(--gray-500)` |
+| Sidebar badge count | 10px | 600 | 1 | `var(--white)` |
+| Bug page URL | `var(--text-xs)` 11px | 400 | `var(--leading-xs)` 16px | `var(--gray-400)` |
+| Empty state title | `var(--text-lg)` 16px | 500 | `var(--leading-lg)` 24px | `var(--gray-900)` |
+| Empty state description | `var(--text-base)` 14px | 400 | `var(--leading-base)` 20px | `var(--gray-500)` |
+
+---
+
+## 11. Spacing Reference (Key Measurements)
+
+| Measurement | Token | Value |
+|-------------|-------|-------|
+| Modal width | -- | 480px |
+| Modal max-height | -- | 80vh |
+| Modal header/footer padding | `var(--space-4) var(--space-5)` | 16px 20px |
+| Modal body padding | `var(--space-5)` | 20px |
+| Modal body gap (between form groups) | `var(--space-4)` | 16px |
+| Screenshot zone padding | `var(--space-6) var(--space-4)` | 24px 16px |
+| Screenshot zone min-height | -- | 100px |
+| Screenshot preview max-height | -- | 180px |
+| Description textarea min-height | -- | 88px |
+| Description textarea max-height | -- | 200px |
+| Footer button gap | `var(--space-2)` | 8px |
+| FAB bottom offset | `var(--space-6)` | 24px |
+| FAB right offset | `var(--space-6)` | 24px |
+| FAB size | -- | 40x40px |
+| Bug card padding | `var(--space-4)` | 16px |
+| Bug card gap (thumbnail to content) | `var(--space-4)` | 16px |
+| Bug list gap (between cards) | `var(--space-3)` | 12px |
+| Bug thumbnail size | -- | 80x56px |
+| Sidebar badge size | -- | 18px height, 18px min-width |
+| Page padding (bugs page) | `var(--space-10)` | 40px |
+| Page max-width (bugs page) | -- | 800px |
+
+---
+
+## 12. Accessibility Checklist
 
 ### Color Contrast Verification
 
 | Element | Foreground | Background | Ratio | Pass |
 |---------|-----------|------------|-------|------|
-| Button icon | #ffffff | #171717 | 15.4:1 | AA |
-| Panel title | #171717 | #ffffff | 15.4:1 | AA |
-| Placeholder text | #767676 | #ffffff | 4.5:1 | AA |
-| Recording timer | #171717 | ~#fef2f2 (red bg) | >10:1 | AA |
-| Timer warning | #ca8a04 | ~#fef2f2 | 4.8:1 | AA |
-| Error text | #dc2626 | ~#fef2f2 | 5.6:1 | AA |
-| Submit text | #ffffff | #006B3F | 7.1:1 | AA |
-| Toast text | #ffffff | #171717 | 15.4:1 | AA |
+| Modal title | var(--gray-950) #09090B | var(--white) #FFFFFF | 19.3:1 | AA |
+| Form label | var(--gray-700) #3F3F46 | var(--white) #FFFFFF | 9.5:1 | AA |
+| Description text | var(--gray-950) #09090B | var(--white) #FFFFFF | 19.3:1 | AA |
+| Placeholder text | var(--gray-500) #71717A | var(--white) #FFFFFF | 4.7:1 | AA |
+| Paste zone text | var(--gray-500) #71717A | var(--gray-50) #FAFAFA | 4.5:1 | AA |
+| Error text | var(--error-600) #DC2626 | var(--white) #FFFFFF | 4.6:1 | AA |
+| Submit button text | var(--white) #FFFFFF | var(--accent-600) #4F46E5 | 7.1:1 | AA |
+| FAB icon | var(--white) #FFFFFF | var(--gray-900) #18181B | 16.8:1 | AA |
+| Status badge (open) | var(--error-600) #DC2626 | var(--error-50) #FEF2F2 | 4.5:1 | AA |
+| Status badge (resolved) | var(--gray-500) #71717A | var(--gray-100) #F4F4F5 | 4.2:1 | AA* |
+| Sidebar badge | var(--white) #FFFFFF | var(--error-600) #DC2626 | 4.6:1 | AA |
+
+*Resolved badge is borderline at 4.2:1. Acceptable because: (1) resolved bugs are intentionally de-emphasized, (2) the badge is not the sole indicator -- card opacity also signals resolved status, (3) the text is uppercase and weight-500 which aids legibility.
+
+### Keyboard Navigation
+
+| Key | Context | Action |
+|-----|---------|--------|
+| Cmd/Ctrl+Shift+K | Global | Open bug report modal |
+| Escape | Modal open, not submitting | Close modal |
+| Tab | Inside modal | Move through: description textarea, screenshot remove button (if present), cancel button, submit button |
+| Shift+Tab | Inside modal | Reverse tab order |
+| Enter/Space | On any button | Activate |
+| Enter/Space | On bug card | Toggle expand/collapse |
+
+### Screen Reader
+
+- Modal: `role="dialog"`, `aria-modal="true"`, `aria-label="Report a Bug"`
+- FAB: `aria-label="Report a bug"`
+- Close button: `aria-label="Close"`
+- Screenshot remove: `aria-label="Remove screenshot"`
+- Bug cards: use `<button>` or `role="button"` with `aria-expanded` for expand/collapse
+- Status badge: include text content ("Open" or "Resolved") -- no icon-only indicators
 
 ---
 
-## 10. Complete State Machine
+## 13. Implementation Notes for Alice
 
-Mapping the widget's states for Alice's implementation:
+1. **Start from FieldModal.** Copy the overlay/modal/header/body/footer structure from `FieldModal.module.css` and `FieldModal.tsx`. Same animation, same CSS patterns. Adjust width to 480px.
 
-```
-                         Cmd+Shift+B
-                         or click btn
-CLOSED ─────────────────────────────────→ CAPTURING
-  ↑                                          │
-  │                                    screenshot done
-  │                                    or screenshot failed
-  │                                          │
-  │                                          ▼
-  │            click X / Escape          READY
-  ├───────────────────────────────────── (idle, can type
-  │                                      or record)
-  │                                          │
-  │                                    click Record
-  │                                          │
-  │                                          ▼
-  │                                     RECORDING
-  │                                    (live transcription
-  │                                     appears in textarea)
-  │                                          │
-  │                                    click Stop /
-  │                                    30s auto-stop
-  │                                          │
-  │                                          ▼
-  │                                      READY
-  │                                    (text in textarea,
-  │                                     can edit or re-record)
-  │                                          │
-  │                                    click Submit
-  │                                          │
-  │                                          ▼
-  │                                     SUBMITTING
-  │                                          │
-  │                            ┌─────────────┴─────────────┐
-  │                            │                           │
-  │                         success                      failure
-  │                            │                           │
-  │                            ▼                           ▼
-  ├──────────────────────── SUCCESS                     READY
-  │        (panel closes,   (toast)               (error shown,
-  │         toast shown)                           can retry)
-  │
-  └─ (back to CLOSED after toast dismisses)
-```
+2. **Paste listener scope.** Attach to `modalRef.current`, not `window`. This avoids intercepting text paste in the description textarea. Only intercept `image/*` clipboard items.
 
-Key difference from the original tech approach: there is NO "TRANSCRIBING" state. The Scribe v2 Realtime WebSocket means transcription happens during RECORDING. When the user stops recording, the text is already in the textarea. This eliminates the post-recording wait entirely.
+3. **Auto-focus.** The description textarea should receive focus on modal open so the user can immediately start typing.
+
+4. **Screenshot preview object URL.** Use `URL.createObjectURL(file)` for the preview. Revoke it in the cleanup function and when replacing/removing a screenshot.
+
+5. **FAB outside `.shell`.** Render the FAB and modal in a fragment outside the `.shell` div in AppShell. This avoids z-index stacking context issues.
+
+6. **Platform-aware shortcut text.** Use `navigator.platform?.includes('Mac')` (or `navigator.userAgentData?.platform`) to show "Cmd" vs "Ctrl" in the FAB tooltip, paste zone text, and empty state hint.
+
+7. **Expand/collapse pattern.** Use `grid-template-rows: 0fr / 1fr` with a wrapper div for the bug card expansion. This gives smooth height animation without measuring DOM elements.
+
+8. **Toast for resolve/reopen errors.** Use the existing `useToast` hook from `@/components/shared/Toast`. Error messages: "Could not update bug status. Please try again."
+
+9. **Sidebar badge query.** Create a `useBugCount()` hook wrapping `useQuery(['bugs', 'count'])` with `staleTime: 30_000`. Use it in both Sidebar (for the badge) and AppShell (for `screenshotsEnabled`).
+
+10. **Resolved card dimming.** Use `opacity: 0.6` on the card element, not on individual children. This uniformly dims everything including the thumbnail.
 
 ---
 
-## 11. Visual Summary -- Panel Layout
+## 14. What This Spec Does Not Cover
 
-```
-┌────────────────────────────────────┐
-│  Report a bug                      │
-│  on Projects                       │
-├────────────────────────────────────┤
-│  ┌──────────────────────────────┐  │
-│  │                              │  │
-│  │     screenshot thumbnail     │  │
-│  │         (16:10 ratio)        │  │
-│  │                              │  │
-│  └──────────────────────────────┘  │
-│                          Retake    │
-├────────────────────────────────────┤
-│                                    │
-│  ┌──────────────────────────────┐  │
-│  │  🎙  Record voice note       │  │
-│  └──────────────────────────────┘  │
-│     or type your description below │
-│                                    │
-├────────────────────────────────────┤
-│  DESCRIPTION                       │
-│  ┌──────────────────────────────┐  │
-│  │ Bug description will appear  │  │
-│  │ here during recording, or    │  │
-│  │ type manually                │  │
-│  │                              │  │
-│  └──────────────────────────────┘  │
-│                                    │
-├────────────────────────────────────┤
-│                                    │
-│  ┌──────────────────────────────┐  │
-│  │        File bug              │  │
-│  └──────────────────────────────┘  │
-│                                    │
-└────────────────────────────────────┘
-
-                              [X]  ← floating button (now showing X)
-```
-
-During recording, the record button area transforms:
-
-```
-├────────────────────────────────────┤
-│                                    │
-│  ● 0:14  ||||||||||||||||   [■]    │
-│  (dot)  (timer) (waveform) (stop)  │
-│                                    │
-├────────────────────────────────────┤
-│  DESCRIPTION -- listening...       │
-│  ┌──────────────────────────────┐  │
-│  │ When I click the create      │  │
-│  │ project button nothing       │  │
-│  │ happens the modal|           │  │  ← text appears live
-│  │                              │  │
-│  └──────────────────────────────┘  │
-```
-
----
-
-## 12. CSS Custom Properties (bug-reporter-specific)
-
-These are scoped to the widget, not global tokens. Alice should define them at the top of `css/bug-reporter.css`:
-
-```css
-:root {
-  /* Bug Reporter — widget-specific tokens */
-  --bug-btn-size: 44px;
-  --bug-panel-width: 380px;
-  --bug-panel-offset-bottom: calc(var(--space-5) + 44px + var(--space-3));
-  --bug-panel-offset-right: var(--space-5);
-  --bug-panel-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
-  --bug-rec-color: var(--color-status-error);
-}
-```
-
-All other values reference existing TeamHQ tokens from `css/tokens.css`.
-
----
-
-## 13. Animation Specifications Summary
-
-| Animation | Duration | Easing | Trigger | Reduced-Motion |
-|-----------|----------|--------|---------|----------------|
-| Panel open | 200ms | ease-out | Button click / shortcut | Instant (no transform) |
-| Panel close | 150ms | ease-in | X click / Escape | Instant |
-| Button hover | 150ms | ease | Mouse enter/leave | Same (no motion) |
-| Button active | instant | - | Mouse down | Same |
-| Button icon rotate (to X) | 200ms | ease | Panel open | Instant swap, no rotate |
-| Screenshot shimmer | 1500ms loop | ease | While loading | Static gray bg |
-| Recording dot pulse | 1500ms loop | ease | While recording | Static red dot |
-| Waveform bars | 600-900ms loop (staggered) | ease-in-out | While recording | Static bars at 50% height |
-| Toast enter | 200ms | ease-out | Bug filed | Fade only, no translate |
-| Toast exit | 150ms | ease-in | After 3s hold | Fade only |
-| Submit spinner | 600ms loop | linear | While submitting | Same (functional) |
-
----
-
-## 14. Implementation Notes for Alice
-
-1. **The widget is self-contained.** `js/bug-reporter.js` creates all DOM elements programmatically. No HTML changes beyond adding the script/link tags and the `<div id="bug-reporter-root"></div>` container to each page.
-
-2. **No TRANSCRIBING state.** The tech approach specifies Scribe v2 Realtime (WebSocket). Text appears live during recording. When the user stops, the transcript is already complete. Do not design a "Transcribing..." spinner -- it does not exist in this flow.
-
-3. **The floating button is the close control.** When the panel is open, the bug icon swaps to an X icon and the button acts as the close trigger. No separate close button in the panel header.
-
-4. **Screenshot capture hides the panel.** Per Andrei's tech approach, `panelEl.style.visibility = "hidden"` before capture, then restored. The shimmer state shows while this happens.
-
-5. **The textarea is always editable.** Even during recording, the user can type into the textarea. The live transcription appends text, but the user can edit, delete, or add to it at any time.
-
-6. **Token endpoint first, then WebSocket.** When recording starts: (1) fetch `GET /api/scribe-token`, (2) request mic via `getUserMedia`, (3) open WebSocket to ElevenLabs, (4) start MediaRecorder. If the token fetch fails, skip live transcription -- the recording still works, the user just types the description manually.
-
-7. **30-second hard cap.** `setTimeout` at 30s calls `recorder.stop()` and closes the WebSocket. The timer warning at 25s is a CSS class toggle on the timer element.
-
-8. **Panel does NOT close on outside click.** This prevents accidental closure mid-recording. Only the X button or Escape closes the panel.
-
----
-
-## 15. What This Spec Does NOT Cover
-
-- Screenshot annotation tools (drawing, arrows) -- v2
-- Multi-project selection in the widget -- v2
-- Mobile-optimized layout -- v2
-- Audio playback controls -- cut from v1 scope
-- Dark mode -- TeamHQ is light-mode only
-- Notification on bug filing (Slack, email) -- v2
+- Bug severity/priority fields -- deferred
+- Assignment to team members -- deferred
+- Editing bugs after submission -- deferred
+- Multiple screenshots per bug -- deferred
+- Browser/viewport auto-capture -- deferred
+- Dark mode -- Forge is light-mode only
+- Mobile layout below 768px -- Forge shows mobile fallback message

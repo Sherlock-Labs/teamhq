@@ -1,534 +1,781 @@
-# Bug Reporter -- Technical Approach
+# Bug Reporter -- Tech Approach
 
-**Project ID:** `bug-reporter`
+**Project:** bug-reporter
 **Author:** Andrei (Arch)
-**Date:** 2026-02-12
-**Status:** Defined
-
----
+**Date:** 2026-02-13
+**Status:** Ready for implementation
 
 ## Overview
 
-The Bug Reporter is a floating widget that lives on every TeamHQ page (except index.html). It captures a screenshot, records a voice note, transcribes it via AI, and auto-files a bug work item -- all without leaving the current page. This document defines the technical approach for both the client-side widget and the server-side endpoint.
+A lightweight in-app bug reporter for Forge (the roadmap tool). Users trigger a modal via keyboard shortcut or floating button, paste a screenshot from the OS clipboard, type a description, and submit. Bugs are stored in Postgres with optional screenshots in Cloudflare R2.
 
-## Architecture Summary
+This feature is entirely additive -- no existing functionality is modified or restructured. We add a new DB table, a new route file, new client components, and wire them into the existing AppShell/Sidebar/App.tsx with small additions.
 
-```
-Client (browser)                         Server (Express, port 3002)
------------------                        ---------------------------
-bug-reporter.js                          GET /api/scribe-token
-  - html2canvas screenshot capture         - Returns single-use ElevenLabs token
-  - MediaRecorder + WebSocket streaming
-  - ElevenLabs Scribe v2 Realtime        POST /api/bug-reports
-    (live transcription via WebSocket)     - Screenshot saved to filesystem
-  - Panel UI (popover)                     - Work item created via putWorkItems
-  - JSON form submission                   - Returns created work item
-```
+---
 
-The widget is a self-contained vanilla JS module loaded on every page. It lazy-loads its dependencies (html2canvas) only when the user opens the panel. Transcription happens client-side in real-time via a WebSocket connection to ElevenLabs Scribe v2 Realtime — words appear as the user speaks. The server generates single-use tokens for the WebSocket connection and handles bug report submission (screenshot saving + work item creation) via a simple JSON POST.
+## 1. Database: `bugs` Table
 
-## Key Decisions
+Add to `server/src/db/schema.ts`, following the existing table definition pattern (uuid PK, accountId FK with cascade, timestamps with timezone, index array in third argument):
 
-### Decision 1: Client-side live transcription via ElevenLabs Scribe v2 Realtime
-
-**Choice:** ElevenLabs Scribe v2 Realtime — client-side WebSocket streaming transcription
-
-**How it works:** The client connects to `wss://api.elevenlabs.io/v1/speech-to-text/realtime` with a single-use token. As the user speaks, audio chunks are streamed to ElevenLabs and partial transcripts appear in real-time (~150ms latency). When the user stops recording, the final transcript is already complete — no waiting.
-
-**Alternatives considered:**
-- **ElevenLabs Scribe v2 batch REST API** -- Server-side, simpler code path. Rejected: the user would have to wait for transcription after finishing their recording. Realtime gives a dramatically better UX — words appear as you speak.
-- **Client-side Web Speech API** -- Free and instant, but inconsistent across browsers and not available in Firefox. Rejected: too unreliable.
-- **OpenAI Whisper API** -- New API key needed when we already have ELEVENLABS_API_KEY. Rejected.
-
-**Rationale:** The realtime model gives the best possible UX. The user sees their words appear live as they speak, and by the time they stop recording, the transcription is done. No loading spinner, no "Transcribing..." wait. The API key is already configured — we just need a server endpoint to generate single-use tokens (API key never exposed to browser).
-
-**Authentication flow:**
-```
-1. Client clicks Record
-2. Client fetches GET /api/scribe-token (server generates single-use token)
-3. Client opens WebSocket to ElevenLabs with token
-4. Client streams audio chunks via WebSocket
-5. ElevenLabs sends partial/committed transcripts back via WebSocket
-6. Text appears in the description field in real-time
-```
-
-**Server-side token generation:**
 ```typescript
-// GET /api/scribe-token
-router.get("/scribe-token", async (req, res) => {
-  const apiKey = process.env.ELEVENLABS_API_KEY;
-  const response = await fetch("https://api.elevenlabs.io/v1/tokens/single-use", {
-    method: "POST",
-    headers: {
-      "xi-api-key": apiKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ scope: "realtime_scribe" }),
-  });
-  const token = await response.json();
-  res.json(token);
-});
+// --- Bugs ---
+
+export const bugs = pgTable('bugs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  accountId: uuid('account_id').notNull().references(() => accounts.id, { onDelete: 'cascade' }),
+  reportedBy: uuid('reported_by').notNull().references(() => users.id),
+  description: text('description').notNull(),
+  screenshotR2Key: text('screenshot_r2_key'),
+  pageUrl: text('page_url'),
+  status: text('status').notNull().default('open'),
+  resolvedBy: uuid('resolved_by').references(() => users.id),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_bugs_account').on(table.accountId),
+  index('idx_bugs_status').on(table.accountId, table.status),
+]);
 ```
 
-**Client-side WebSocket connection:**
-```javascript
-// Connect to ElevenLabs Scribe Realtime
-const ws = new WebSocket(
-  `wss://api.elevenlabs.io/v1/speech-to-text/realtime?token=${token}&model_id=scribe_v2_realtime`
+This matches the existing schema patterns exactly: uuid PKs with `defaultRandom()`, `references(() => table.id)` for FKs, `defaultNow()` for timestamps, and index array in the third argument.
+
+### Migration: `0004_bug_reporter.sql`
+
+Create `server/src/db/migrations/0004_bug_reporter.sql`:
+
+```sql
+-- Bug Reporter: bugs table
+
+CREATE TABLE bugs (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id       UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  reported_by      UUID NOT NULL REFERENCES users(id),
+  description      TEXT NOT NULL,
+  screenshot_r2_key TEXT,
+  page_url         TEXT,
+  status           TEXT NOT NULL DEFAULT 'open',
+  resolved_by      UUID REFERENCES users(id),
+  resolved_at      TIMESTAMPTZ,
+  created_at       TIMESTAMPTZ DEFAULT NOW()
 );
 
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  if (data.type === "partial_transcript") {
-    // Update text area with interim text (grey/italic)
-    this.descriptionEl.value = this.committedText + data.text;
-  } else if (data.type === "committed_transcript") {
-    // Finalize this segment
-    this.committedText += data.text + " ";
-    this.descriptionEl.value = this.committedText;
-  }
-};
-
-// Send audio chunks from MediaRecorder
-mediaRecorder.ondataavailable = async (event) => {
-  const arrayBuffer = await event.data.arrayBuffer();
-  const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-  ws.send(JSON.stringify({ audio_base64: base64 }));
-};
+CREATE INDEX idx_bugs_account ON bugs(account_id);
+CREATE INDEX idx_bugs_status ON bugs(account_id, status);
 ```
 
-**Token security:** Single-use tokens expire after 15 minutes and are scoped to `realtime_scribe` only. The ELEVENLABS_API_KEY never leaves the server.
-
-**Cost note:** ElevenLabs charges per minute of audio. With the 30-second cap per recording, costs are minimal. No billing surprises.
-
-### Decision 2: html2canvas for screenshot capture
-
-**Choice:** html2canvas (CDN, lazy-loaded)
-
-**Alternatives considered:**
-- **Native Screen Capture API (getDisplayMedia)** -- Requires user to grant screen sharing permission via a system dialog. Too much friction for a quick bug report. Rejected.
-- **dom-to-image / dom-to-image-more** -- Similar capability to html2canvas but less maintained and documented. Rejected: html2canvas is the boring standard.
-- **Canvas-based manual rendering** -- Too much work for v1. Rejected.
-
-**Rationale:** html2canvas is the de facto standard for client-side page screenshots. It has been around since 2013, has 31k+ GitHub stars, and is well-documented. It renders the DOM to a canvas element -- not pixel-perfect for every CSS feature (backdrop-filter, complex SVGs), but good enough to capture the visual context of a bug. Thomas's requirements explicitly accept this limitation.
-
-**Loading strategy:** Do NOT include html2canvas in the initial page load. Load it dynamically when the user first opens the bug reporter panel:
-```javascript
-async function loadHtml2Canvas() {
-  if (window.html2canvas) return window.html2canvas;
-  const script = document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
-  document.head.appendChild(script);
-  return new Promise((resolve) => {
-    script.onload = () => resolve(window.html2canvas);
-  });
-}
-```
-
-### Decision 3: JSON request body (no multer needed)
-
-**Choice:** Standard `express.json()` with an increased size limit for the screenshot data URL.
-
-**Rationale:** With transcription happening client-side via WebSocket, the server no longer receives audio files. The POST /api/bug-reports payload is all strings: description text, screenshot data URL (base64), page URL, and project slug. This fits naturally in a JSON body — no multipart form, no multer, no new npm dependencies.
-
-**Size limit:** A 1920x1080 screenshot at 1x scale produces a ~500KB-1MB base64 data URL. Set `express.json({ limit: "5mb" })` on the bug-reports route to accommodate this comfortably.
-
-### Decision 4: Vanilla JS class pattern for the widget
-
-**Choice:** Single-class widget (`BugReporter`) in `js/bug-reporter.js`, matching the existing pattern used by `ThqSpreadsheet` in `js/spreadsheet.js`.
-
-**Rationale:** TeamHQ's front-end is plain HTML/CSS/vanilla JS -- no frameworks. The bug reporter follows the same pattern: a self-contained JS class that manages its own DOM, state, and event listeners. This is consistent with the codebase and avoids introducing any new client-side dependencies beyond html2canvas.
-
-### Decision 5: Screenshot storage on local filesystem
-
-**Choice:** Save screenshots as PNG files in `data/bug-screenshots/` with timestamped filenames.
-
-**Rationale:** Per Thomas's requirements, local filesystem storage is the v1 approach. No R2 integration needed. The server creates the directory if it does not exist (same pattern used by `data/work-items/`). Screenshots are served as static files via Express's existing `express.static(projectRoot)` middleware -- no new route needed.
-
-**Filename format:** `{timestamp}-{random-8-chars}.png` (e.g., `1739404800000-a1b2c3d4.png`)
-
-**Cleanup:** Not in scope for v1. Thomas noted this as a v2 concern. File accumulation is manageable for an internal tool.
-
-### Decision 6: Client-side transcription, server-side submission
-
-**Choice:** Transcription is fully client-side (WebSocket to ElevenLabs). Submission is a simple JSON POST to the server (text + screenshot + metadata).
-
-**Rationale:** Clean separation of concerns. The client handles the interactive, real-time part (recording + live transcription). The server handles the durable part (saving screenshot, creating work item). The API key never leaves the server — single-use tokens handle client auth. If ElevenLabs Realtime is down, the user can still type a description manually and submit.
+Purely additive -- zero risk to existing tables. Run with `npx drizzle-kit push` or `npx drizzle-kit generate` per the existing workflow.
 
 ---
 
-## API Contract
+## 2. Shared Types and Validation
 
-### GET /api/scribe-token
+### `shared/src/types.ts` -- Add Bug types
 
-Generates a single-use token for the ElevenLabs Scribe v2 Realtime WebSocket connection. Called by the client when the user starts recording.
-
-**Response (200):**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIs..."
-}
-```
-
-**Error responses:**
-- `500` -- ELEVENLABS_API_KEY not configured or ElevenLabs API error
-
-**Security:** The token is scoped to `realtime_scribe` and expires after 15 minutes. The ELEVENLABS_API_KEY never leaves the server.
-
-### POST /api/bug-reports
-
-Receives the completed bug report (transcription already done client-side) and creates the work item.
-
-**Content-Type:** `application/json`
-
-**Body:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `description` | string | No | Transcribed or manually typed bug description |
-| `screenshotDataUrl` | string | No | Base64 data URL of the screenshot (PNG) |
-| `pageUrl` | string | Yes | URL of the page where the bug was reported |
-| `projectSlug` | string | Yes | Which project to file the bug under |
-
-**At least `description` or `screenshotDataUrl` must be provided.** A title-only submission (generated from description) is valid.
-
-**Response (200):**
-```json
-{
-  "workItem": {
-    "id": "BR-6",
-    "title": "Button click does not open modal on projects page",
-    "description": "When I click the create project button, nothing happens. The modal doesn't open. I'm on the projects page.",
-    "status": "planned",
-    "phase": "v1",
-    "owner": "",
-    "priority": "medium",
-    "type": "bug",
-    "metadata": {
-      "pageUrl": "http://localhost:3002/projects.html",
-      "screenshotPath": "data/bug-screenshots/1739404800000-a1b2c3d4.png",
-      "timestamp": "2026-02-12T18:00:00.000Z",
-      "userAgent": "Mozilla/5.0 ..."
-    },
-    "createdBy": "Bug Reporter"
-  }
-}
-```
-
-**Error responses:**
-- `400` -- Missing required fields or no description/screenshot provided
-- `500` -- Server error (screenshot save failure is non-blocking; work item creation failure returns 500)
-
-**Server-side flow:**
-1. Parse JSON body (express.json with 5MB limit for screenshot data URLs)
-2. Generate title: first ~60 characters of description, or "Bug on [page name]" as fallback
-3. If `screenshotDataUrl` is provided, decode base64, save as PNG to `data/bug-screenshots/`
-4. Create work item via existing `putWorkItems()` function with type "bug" and metadata
-5. Return the created work item
-
-### Title Generation
-
-The title is auto-generated from the description. Simple string truncation -- no AI needed:
+Append to the end of the file, following the existing section comment pattern:
 
 ```typescript
-function generateBugTitle(description: string, pageUrl: string): string {
-  if (description && description.trim().length > 0) {
-    const trimmed = description.trim();
-    if (trimmed.length <= 60) return trimmed;
-    // Cut at last word boundary before 60 chars
-    const cut = trimmed.substring(0, 60);
-    const lastSpace = cut.lastIndexOf(" ");
-    return (lastSpace > 20 ? cut.substring(0, lastSpace) : cut) + "...";
+// --- Bugs ---
+
+export type BugStatus = 'open' | 'resolved';
+
+export interface Bug {
+  id: string;
+  accountId: string;
+  reportedBy: string;
+  description: string;
+  screenshotR2Key: string | null;
+  pageUrl: string | null;
+  status: BugStatus;
+  resolvedBy: string | null;
+  resolvedAt: string | null;
+  createdAt: string;
+  // Populated via JOIN
+  reporter?: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  };
+}
+
+export interface BugListItem extends Bug {
+  screenshotUrl: string | null;  // Presigned download URL, generated server-side
+}
+```
+
+### `shared/src/validation.ts` -- Add bug schemas
+
+Append to the end of the file:
+
+```typescript
+// --- Bugs ---
+
+export const bugStatusEnum = z.enum(['open', 'resolved']);
+
+export const createBugSchema = z.object({
+  description: z.string().min(1).max(5000),
+  screenshotR2Key: z.string().nullable().optional(),
+  pageUrl: z.string().max(500).nullable().optional(),
+});
+
+export const updateBugStatusSchema = z.object({
+  status: bugStatusEnum,
+});
+
+export const presignBugScreenshotSchema = z.object({
+  filename: z.string().min(1).max(255),
+  mimeType: z.enum(['image/png', 'image/jpeg']),
+  sizeBytes: z.number().int().min(1).max(5 * 1024 * 1024), // 5 MB
+});
+```
+
+The bug screenshot presign schema is intentionally separate from the existing `presignUploadSchema` (which allows 10 MB and any mime type). Bug screenshots have tighter constraints: 5 MB max and PNG/JPEG only.
+
+---
+
+## 3. API Routes: `server/src/routes/bugs.ts`
+
+New file. Follows the same patterns as `uploads.ts` and other route files: `Router()`, try/catch with `next(err)`, `req.accountId` scoping, Zod validation with `safeParse`.
+
+### Endpoints
+
+#### `GET /api/v1/bugs/count` -- Open bug count (sidebar badge)
+
+- Auth: authenticated (via `resolveAuth`)
+- Query: `SELECT count(*) FROM bugs WHERE account_id = $1 AND status = 'open'`
+- Response: `{ data: { openCount: number } }`
+
+This endpoint must be defined BEFORE the `/:id` parameter routes to avoid Express treating "count" as an ID.
+
+#### `GET /api/v1/bugs` -- List bugs
+
+- Auth: authenticated (via `resolveAuth`)
+- Query `bugs` where `accountId = req.accountId`, ordered by `createdAt DESC`
+- LEFT JOIN `users` on `reported_by` to populate reporter name/avatar
+- For each bug with a `screenshotR2Key`, generate a presigned download URL using `getPresignedDownloadUrl` from `r2.ts`. If R2 is not configured, set `screenshotUrl: null`.
+- Response: `{ data: BugListItem[], meta: { openCount: number, screenshotsEnabled: boolean } }`
+
+The `meta.screenshotsEnabled` flag tells the client whether R2 is available (server calls `isR2Configured()`). The `meta.openCount` is included here too so the bug list page can update the sidebar badge without a separate call.
+
+#### `POST /api/v1/bugs` -- Create bug
+
+- Auth: `requireEditor`
+- Validate body with `createBugSchema`
+- Insert into `bugs` with `accountId: req.accountId`, `reportedBy: req.userId`
+- Response: `{ data: Bug }`
+
+#### `PATCH /api/v1/bugs/:id` -- Resolve/reopen
+
+- Auth: `requireEditor`
+- Validate body with `updateBugStatusSchema`
+- Account scoping guard: verify the bug's `accountId` matches `req.accountId`
+- If status is `resolved`: set `resolvedBy = req.userId`, `resolvedAt = now()`
+- If status is `open`: clear `resolvedBy` and `resolvedAt` (set to null)
+- Response: `{ data: Bug }`
+
+#### `POST /api/v1/bugs/screenshot/presign` -- Presigned upload URL
+
+- Auth: `requireEditor`
+- Check `isR2Configured()` -- return 503 if not (same pattern as `uploads.ts` line 16-18)
+- Validate body with `presignBugScreenshotSchema`
+- Generate R2 key: `{req.accountId}/bugs/{randomUUID()}-{filename}`
+- Call `getPresignedUploadUrl(key, mimeType)` from existing `r2.ts`
+- Response: `{ data: { uploadUrl: string, r2Key: string } }`
+
+Unlike the item attachment flow in `uploads.ts`, we do NOT create a DB record at presign time. The R2 key is returned to the client, which passes it back in the `POST /api/v1/bugs` body after upload completes. This is simpler because bug screenshots are 1:1 with bugs, not a separate entity table.
+
+#### `GET /api/v1/bugs/:id/screenshot-url` -- Presigned download URL
+
+- Auth: authenticated
+- Account scoping guard: verify the bug's `accountId` matches `req.accountId`
+- Verify `screenshotR2Key` is not null (404 otherwise)
+- Call `getPresignedDownloadUrl(bug.screenshotR2Key)` from existing `r2.ts`
+- Response: `{ data: { url: string } }`
+
+This endpoint exists for the case where a user has the bug list open for over an hour and the inline presigned URLs have expired. The client can re-fetch on demand.
+
+### Route registration in `server/src/index.ts`
+
+Add after the existing route registrations (near line 125, after the templates route):
+
+```typescript
+import { bugsRouter } from './routes/bugs.js';
+
+// Bugs
+app.use('/api/v1/bugs', bugsRouter);
+```
+
+This follows the flat route pattern used by `collections`, `portfolios`, `templates`, and `account` -- top-level routes that are already account-scoped via `resolveAuth` middleware on `/api/v1`.
+
+---
+
+## 4. R2 Integration: Screenshot Upload Flow
+
+### Upload sequence (client-side orchestration)
+
+```
+1. User pastes screenshot into modal (clipboard paste event)
+2. Client validates: is image? is PNG or JPEG? under 5 MB?
+3. User clicks Submit
+4. Client calls POST /api/v1/bugs/screenshot/presign
+   -> Server returns { uploadUrl, r2Key }
+5. Client PUTs the image blob directly to the presigned R2 URL
+   -> 15-second timeout (AbortSignal.timeout)
+6. Client calls POST /api/v1/bugs with { description, screenshotR2Key: r2Key, pageUrl }
+   -> Server creates the bug record
+```
+
+### R2 not configured (graceful degradation)
+
+The client detects R2 availability via the `meta.screenshotsEnabled` flag returned by `GET /api/v1/bugs`. This flag is cached by TanStack Query and available immediately when the modal opens (if the user has visited the bugs page) or fetched on first modal open.
+
+To avoid a blocking network call on modal open, Alice should pre-fetch the bugs query at the AppShell level with a long `staleTime`:
+
+```typescript
+// In AppShell.tsx or a shared hook
+const { data: bugsMeta } = useQuery({
+  queryKey: ['bugs', 'count'],
+  queryFn: () => api.getBugCount(),
+  staleTime: 60_000,
+});
+```
+
+The `screenshotsEnabled` flag can be added to the count endpoint response as well: `{ data: { openCount: number, screenshotsEnabled: boolean } }`. This way the AppShell always knows whether screenshots are available without loading the full bug list.
+
+When `screenshotsEnabled` is false:
+- The screenshot paste area is hidden entirely
+- The modal works as a description-only bug reporter
+- No error messaging needed -- the feature is simply not visible
+
+### R2 key format
+
+```
+{accountId}/bugs/{uuid}-{sanitized-filename}
+```
+
+Follows the same `{accountId}/...` prefix pattern used by the existing attachment uploads in `uploads.ts` (line 28) for account-scoped storage isolation.
+
+---
+
+## 5. Client Architecture
+
+### 5.1 Keyboard Shortcut Decision
+
+**Thomas's question:** Cmd+Shift+B conflicts with Chrome's bookmarks bar toggle. Evaluate alternatives.
+
+**Evaluation:**
+
+| Shortcut | Conflict | Verdict |
+|----------|----------|---------|
+| Cmd+Shift+B | Chrome bookmarks bar toggle | **Unusable.** Chrome intercepts the keydown event before it reaches the page JS. This is a hard blocker, not a preference. |
+| Cmd+Shift+K | No browser binding in Chrome, Safari, or Firefox | **Selected.** Available, no conflicts. |
+| Cmd+B | Bold in text editors, textarea formatting | Conflicts with description textarea. Rejected. |
+| Cmd+Shift+F | Some browsers use for fullscreen or find | Risky. Rejected. |
+| Cmd+J | Chrome downloads panel | Intercepted by Chrome. Rejected. |
+| Cmd+. | macOS system cancel | Unreliable cross-platform. Rejected. |
+
+**Decision: Cmd+Shift+K** (Ctrl+Shift+K on Windows/Linux).
+
+Rationale: Cmd+Shift+B is a dead end -- Chrome swallows the event entirely and it will never reach our JavaScript. Cmd+Shift+K has no default browser binding in any major browser. The mnemonic is weak (K does not stand for "bug"), but discoverability comes from the floating button's tooltip, not the shortcut itself. The shortcut is a power-user convenience, not the primary entry point.
+
+**Implementation:** A single `useEffect` in `AppShell.tsx` that listens for `keydown` on `window`:
+
+```typescript
+const [bugModalOpen, setBugModalOpen] = useState(false);
+
+useEffect(() => {
+  function onKeyDown(e: KeyboardEvent) {
+    const mod = e.metaKey || e.ctrlKey;
+    if (mod && e.shiftKey && e.key === 'K') {
+      e.preventDefault();
+      setBugModalOpen(true);
+    }
   }
-  // Fallback: extract page name from URL
+  window.addEventListener('keydown', onKeyDown);
+  return () => window.removeEventListener('keydown', onKeyDown);
+}, []);
+```
+
+This follows the exact same pattern already used in `AppShell.tsx` for the Escape-to-close-mobile-menu handler (lines 38-44).
+
+### 5.2 BugReportModal Component
+
+**File:** `client/src/components/bugs/BugReportModal.tsx`
+**Styles:** `client/src/components/bugs/BugReportModal.module.css`
+
+Structure follows the existing `FieldModal` pattern exactly:
+
+```
+<div className={styles.overlay} onClick={onClose}>        -- backdrop (fixed inset 0)
+  <div className={styles.modal} ref={modalRef} ...>       -- modal panel (stopPropagation)
+    <div className={styles.modalHeader}>                   -- title + close button
+    <div className={styles.modalBody}>                     -- form content
+      <div className={styles.screenshotZone}>              -- paste area or preview
+      <textarea className={styles.description}>            -- description input
+    <div className={styles.modalFooter}>                   -- submit + cancel buttons
+  </div>
+</div>
+```
+
+Key patterns copied from `FieldModal.tsx`:
+- `useFocusTrap(modalRef)` for accessibility (existing hook at `client/src/lib/useFocusTrap.ts`)
+- `onClick={onClose}` on overlay, `e.stopPropagation()` on modal panel
+- `role="dialog"`, `aria-modal="true"`, `aria-label="Report a Bug"`
+- Same CSS animation: `fadeIn 150ms ease-out` with `scale(0.98)` to `scale(1)` (FieldModal.module.css lines 23-26)
+- Close on Escape: add a keydown handler in the modal that calls `onClose()` when `e.key === 'Escape'` and submission is not in progress
+
+**Modal width:** 480px (slightly wider than FieldModal's 440px to accommodate the screenshot preview comfortably).
+
+**Props interface:**
+```typescript
+interface BugReportModalProps {
+  onClose: () => void;
+  screenshotsEnabled: boolean;
+}
+```
+
+### 5.3 Clipboard Paste Handling
+
+The paste listener is scoped to the modal's container ref, not `window`. This avoids intercepting paste events when the modal is closed and preserves normal text paste in the description textarea.
+
+```typescript
+useEffect(() => {
+  const container = modalRef.current;
+  if (!container) return;
+
+  function onPaste(e: ClipboardEvent) {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (!file) return;
+
+        // Validate size
+        if (file.size > 5 * 1024 * 1024) {
+          setError('Screenshot too large (max 5 MB). Try a smaller selection.');
+          return;
+        }
+
+        // Validate type
+        if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+          setError('Only PNG and JPEG screenshots are supported.');
+          return;
+        }
+
+        setScreenshotFile(file);
+        setScreenshotPreview(URL.createObjectURL(file));
+        setError(null);
+        return; // Take only the first image item
+      }
+    }
+    // If no image items found, let the event propagate normally
+    // (text paste into the description textarea works as expected)
+  }
+
+  container.addEventListener('paste', onPaste);
+  return () => container.removeEventListener('paste', onPaste);
+}, []);
+```
+
+**Why scope to modal container, not window?** Two reasons:
+1. When the description textarea is focused and the user pastes text, we want default browser behavior (text into textarea). The handler only intercepts clipboard items of type `image/*` and calls `preventDefault()` only for those.
+2. When the modal is closed, no paste interception should happen.
+
+**Preview cleanup:** Call `URL.revokeObjectURL(screenshotPreview)` in the effect cleanup and when removing/replacing a screenshot to avoid memory leaks.
+
+### 5.4 Screenshot Upload and Submit Flow
+
+The submit handler orchestrates the two-step process with imperative async/await:
+
+```typescript
+async function handleSubmit() {
+  if (!description.trim()) return;
+  setSubmitting(true);
+  setError(null);
+  let r2Key: string | null = null;
+
   try {
-    const path = new URL(pageUrl).pathname;
-    const page = path.split("/").pop()?.replace(".html", "") || "unknown";
-    return `Bug on ${page} page`;
-  } catch {
-    return "Bug report";
+    // Step 1: Upload screenshot if present
+    if (screenshotFile && screenshotsEnabled) {
+      const ext = screenshotFile.type === 'image/png' ? 'png' : 'jpg';
+      const presign = await api.presignBugScreenshot({
+        filename: `screenshot-${Date.now()}.${ext}`,
+        mimeType: screenshotFile.type as 'image/png' | 'image/jpeg',
+        sizeBytes: screenshotFile.size,
+      });
+
+      // Direct upload to R2 (raw PUT, not JSON)
+      const uploadRes = await fetch(presign.uploadUrl, {
+        method: 'PUT',
+        body: screenshotFile,
+        headers: { 'Content-Type': screenshotFile.type },
+        signal: AbortSignal.timeout(15_000), // 15s timeout per requirements
+      });
+
+      if (!uploadRes.ok) throw new Error('Screenshot upload failed');
+      r2Key = presign.r2Key;
+    }
+
+    // Step 2: Create bug record
+    await api.createBug({
+      description: description.trim(),
+      screenshotR2Key: r2Key,
+      pageUrl: window.location.pathname,
+    });
+
+    // Success indicator
+    setSubmitSuccess(true);
+    setTimeout(() => onClose(), 1500);
+
+  } catch (err) {
+    if (screenshotFile && !r2Key) {
+      setError('Screenshot upload failed. Submit without screenshot or try again.');
+    } else {
+      setError('Failed to submit bug report. Please try again.');
+    }
+    setSubmitting(false);
   }
 }
 ```
 
----
+**Why not use TanStack Query mutations?** The bug report modal is fire-and-forget. There is no query cache to invalidate on the current page (the user may not be on the bugs page). The submit flow is sequential (presign -> upload -> create) and benefits from simple imperative async/await. TanStack Query mutations add ceremony without benefit here.
 
-## Schema Changes
-
-### WorkItem Schema (`server/src/schemas/workItem.ts`)
-
-Add two optional fields with backward-compatible defaults:
+However, after successful submission, the modal should invalidate the `['bugs', 'count']` query so the sidebar badge updates:
 
 ```typescript
-// Add to WorkItemSchema
-type: z.enum(["task", "bug", "feature"]).default("task"),
-metadata: z.record(z.string()).default({}),
+// After setSubmitSuccess(true):
+queryClient.invalidateQueries({ queryKey: ['bugs'] });
 ```
 
-These fields are additive. Existing work items will parse correctly with the defaults. No migration needed.
+### 5.5 BugReportButton (Floating Action Button)
 
----
+**File:** `client/src/components/bugs/BugReportButton.tsx`
 
-## File-by-File Plan
+A small component rendered in `AppShell.tsx`, outside the `.shell` div so it floats above all content:
 
-### New Files
+```typescript
+interface BugReportButtonProps {
+  onClick: () => void;
+}
 
-| File | Purpose |
-|------|---------|
-| `server/src/routes/bugReports.ts` | **[New]** Express router with GET /api/scribe-token and POST /api/bug-reports. Token generation, screenshot saving, work item creation. |
-| `js/bug-reporter.js` | **[New]** Client-side widget class (BugReporter). Manages the floating button, panel UI, screenshot capture, voice recording, and form submission. |
-| `css/bug-reporter.css` | **[New]** Styles for the floating button, reporter panel, recording states, screenshot preview, and toast notification. |
-| `data/bug-screenshots/` | **[New]** Directory for stored screenshot PNGs. Created automatically by the server on first save. Add `.gitkeep` so git tracks the directory. |
-
-### Modified Files
-
-| File | Classification | Change Description |
-|------|---------------|-------------------|
-| `server/src/schemas/workItem.ts` | **Modify** | Add `type` (enum, default "task") and `metadata` (Record<string,string>, default {}) fields to WorkItemSchema. Two new lines in the schema object. |
-| `server/src/index.ts` | **Extend** | Import and register bugReports router: `import bugReportRoutes from "./routes/bugReports.js"` and `app.use("/api", bugReportRoutes)`. Two lines added. |
-| `projects.html` | **Extend** | Add `<link rel="stylesheet" href="css/bug-reporter.css">` in head and `<script src="js/bug-reporter.js" defer></script>` before closing body. Add `<div id="bug-reporter-root"></div>` before closing body. |
-| `tools.html` | **Extend** | Same three additions as projects.html. |
-| `meetings.html` | **Extend** | Same three additions as projects.html. |
-| `interviews.html` | **Extend** | Same three additions as projects.html. |
-| `docs.html` | **Extend** | Same three additions as projects.html. |
-| `spreadsheets.html` | **Extend** | Same three additions as projects.html. |
-| `team.html` | **Extend** | Same three additions as projects.html. |
-| `tasks.html` | **Extend** | Same three additions as projects.html. |
-
-**No Restructure-classified files.** All modifications are additive. No early QA notification needed.
-
----
-
-## Client-Side Architecture
-
-### BugReporter Class
-
-```
-js/bug-reporter.js
-├── class BugReporter
-│   ├── constructor()          -- Create DOM, attach event listeners
-│   ├── open()                 -- Show panel, trigger screenshot capture
-│   ├── close()                -- Hide panel, reset state
-│   ├── captureScreenshot()    -- Lazy-load html2canvas, render to canvas, store data URL
-│   ├── startRecording()       -- Request mic, create MediaRecorder, start capture
-│   ├── stopRecording()        -- Stop MediaRecorder, store blob
-│   ├── submit()               -- Build FormData, POST to /api/bug-reports, show toast
-│   ├── showToast(message, link) -- Brief success/error toast
-│   └── destroy()              -- Cleanup (if ever needed)
-│
-└── Auto-init: new BugReporter() on DOMContentLoaded
-```
-
-### State Machine
-
-The widget has a simple state machine:
-
-```
-CLOSED  →  OPEN (screenshot capturing)
-        →  READY (screenshot done, waiting for input)
-        →  RECORDING (voice capture + live transcription appearing in real-time)
-        →  READY (recording stopped, transcription already complete — user can edit)
-        →  SUBMITTING (JSON POST to server)
-        →  SUCCESS (toast shown, auto-close)
-        →  CLOSED
-```
-
-**Key difference from batch transcription:** There is no TRANSCRIBING state. Transcription happens live during RECORDING via the ElevenLabs WebSocket. By the time the user stops recording, the text is already there. This eliminates the biggest UX wait.
-
-Error states return to READY with an inline error message. The user can always type manually, re-record, or retry.
-
-### Keyboard Shortcut
-
-`Cmd+Shift+B` (Mac) / `Ctrl+Shift+B` (Windows/Linux) toggles the panel. Registered via a global `keydown` listener in the constructor. Uses `event.metaKey || event.ctrlKey` for cross-platform support.
-
-**Important:** `Ctrl+Shift+B` is the Chrome bookmarks shortcut on Windows. This is acceptable for an internal tool (the CEO uses Mac), but Alice should add a note in the code for awareness.
-
-### Lazy Loading
-
-The html2canvas library (~50KB gzipped) is loaded only when the panel opens for the first time. The bug reporter button itself is pure CSS/HTML -- zero JS overhead on page load. The `bug-reporter.js` file registers the button and keyboard shortcut, but defers all heavy work until first interaction.
-
-### Recording + Live Transcription
-
-Recording and transcription happen simultaneously via two parallel connections:
-
-1. **MediaRecorder** captures audio from the microphone
-2. **WebSocket** streams audio chunks to ElevenLabs Scribe v2 Realtime
-3. **Partial transcripts** update the description field in real-time (~150ms latency)
-4. **Committed transcripts** finalize segments as the user pauses
-
-**Flow:**
-1. User clicks Record → fetch single-use token from `GET /api/scribe-token`
-2. Request microphone via `getUserMedia({ audio: true })`
-3. Open WebSocket to `wss://api.elevenlabs.io/v1/speech-to-text/realtime?token=...&model_id=scribe_v2_realtime`
-4. Create MediaRecorder with `mimeType: "audio/webm;codecs=opus"` and `timeslice: 250` (send chunks every 250ms)
-5. `ondataavailable` → convert chunk to base64 → send via WebSocket
-6. `ws.onmessage` → update description field with partial/committed text
-7. 30-second hard cap via `setTimeout` that calls `recorder.stop()` + `ws.close()`
-8. Visual timer counts up; warning state at 25 seconds (CSS class change, e.g., text turns orange)
-
-**Graceful degradation:** If the WebSocket connection fails (network issue, token expired), the recording still works — the user just won't see live text. They can type their description manually after stopping.
-
-### Screenshot Capture
-
-```javascript
-async captureScreenshot() {
-  const html2canvas = await this.loadHtml2Canvas();
-  // Hide the bug reporter panel before capturing
-  this.panelEl.style.visibility = "hidden";
-  const canvas = await html2canvas(document.body, {
-    useCORS: true,
-    scale: 1,          // 1x is sufficient for bug context
-    logging: false,
-    windowWidth: document.documentElement.scrollWidth,
-    windowHeight: document.documentElement.scrollHeight,
-  });
-  this.panelEl.style.visibility = "visible";
-  this.screenshotDataUrl = canvas.toDataURL("image/png");
+export function BugReportButton({ onClick }: BugReportButtonProps) {
+  return (
+    <button
+      className={styles.fab}
+      onClick={onClick}
+      title="Report a bug (Cmd+Shift+K)"
+      aria-label="Report a bug"
+    >
+      {/* Bug icon SVG */}
+    </button>
+  );
 }
 ```
 
-The panel is hidden during capture so it does not appear in the screenshot. `scale: 1` keeps file sizes reasonable (a 1920x1080 page produces roughly a 500KB-1MB PNG).
-
----
-
-## Server-Side Architecture
-
-### New Route: `server/src/routes/bugReports.ts`
-
-Two endpoints: token generation and bug report submission.
-
-```typescript
-import { Router, json } from "express";
-import { getWorkItems, putWorkItems } from "../store/workItems.js";
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { randomBytes } from "node:crypto";
-
-const router = Router();
-const jsonParser = json({ limit: "5mb" }); // Large limit for screenshot data URLs
-
-const SCREENSHOTS_DIR = join(import.meta.dirname, "../../../data/bug-screenshots");
-
-// Generate single-use token for ElevenLabs Scribe Realtime
-router.get("/scribe-token", async (req, res) => {
-  const apiKey = process.env.ELEVENLABS_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: "ELEVENLABS_API_KEY not configured" });
-
-  const response = await fetch("https://api.elevenlabs.io/v1/tokens/single-use", {
-    method: "POST",
-    headers: { "xi-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ scope: "realtime_scribe" }),
-  });
-  if (!response.ok) return res.status(500).json({ error: "Failed to generate token" });
-
-  const token = await response.json();
-  res.json(token);
-});
-
-// Submit bug report (transcription already done client-side)
-router.post("/bug-reports", jsonParser, async (req, res) => {
-  // 1. Validate required fields (pageUrl, projectSlug, at least description or screenshot)
-  // 2. Save screenshot if provided
-  // 3. Generate title from description
-  // 4. Create work item via putWorkItems
-  // 5. Return created work item
-});
-```
-
-**No transcription module needed.** Transcription is handled entirely client-side via the ElevenLabs WebSocket. The server's only AI-related responsibility is generating the single-use token.
-
-### Screenshot Saving
-
-```typescript
-async function saveScreenshot(dataUrl: string): Promise<string> {
-  await mkdir(SCREENSHOTS_DIR, { recursive: true });
-
-  // Strip data URL prefix: "data:image/png;base64,..."
-  const base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
-  const buffer = Buffer.from(base64Data, "base64");
-
-  const timestamp = Date.now();
-  const random = randomBytes(4).toString("hex");
-  const filename = `${timestamp}-${random}.png`;
-
-  await writeFile(join(SCREENSHOTS_DIR, filename), buffer);
-  return `data/bug-screenshots/${filename}`;
+CSS (in BugReportModal.module.css -- shared file, no separate CSS module needed for this tiny component):
+```css
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 40;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* ... */
 }
 ```
 
-The returned path is relative to the project root, which means it can be served directly via Express's static file middleware. No new route needed to view screenshots.
+`z-index: 40` keeps the button below the modal overlay (`z-index: 50`).
+
+### 5.6 AppShell Integration
+
+In `AppShell.tsx`, add the modal state, keyboard listener, and render the button + modal:
+
+```typescript
+export function AppShell({ children }: AppShellProps) {
+  // ... existing state ...
+  const [bugModalOpen, setBugModalOpen] = useState(false);
+
+  // Keyboard shortcut
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.shiftKey && e.key === 'K') {
+        e.preventDefault();
+        setBugModalOpen(true);
+      }
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
+  return (
+    <>
+      <div className={styles.shell} data-sidebar-collapsed={sidebarCollapsed}>
+        {/* ... existing skip link, overlay, sidebar, main ... */}
+      </div>
+      <BugReportButton onClick={() => setBugModalOpen(true)} />
+      {bugModalOpen && (
+        <BugReportModal
+          onClose={() => setBugModalOpen(false)}
+          screenshotsEnabled={/* from count query */}
+        />
+      )}
+    </>
+  );
+}
+```
+
+The button and modal render outside the `.shell` div to avoid z-index stacking context issues with the sidebar.
+
+### 5.7 BugsPage (Bug List)
+
+**File:** `client/src/routes/BugsPage.tsx`
+**Styles:** `client/src/routes/BugsPage.module.css`
+
+Uses `useQuery` to fetch bugs from `GET /api/v1/bugs`.
+
+**Layout:**
+- Page header: "Bugs" title
+- Bug cards in a vertical list, newest first
+- Each card shows: description (truncated to ~120 chars), screenshot thumbnail (if present), status badge (open/resolved), date, reporter name
+- Click a card to expand inline (toggle state, not navigation)
+- Expanded: full description, full-size screenshot, resolve/reopen button
+- Click screenshot to open in new tab
+
+**Resolve/reopen with optimistic update:**
+
+```typescript
+const updateBug = useMutation({
+  mutationFn: ({ id, status }: { id: string; status: 'open' | 'resolved' }) =>
+    api.updateBug(id, { status }),
+  onMutate: async ({ id, status }) => {
+    await queryClient.cancelQueries({ queryKey: ['bugs'] });
+    const previous = queryClient.getQueryData(['bugs']);
+    queryClient.setQueryData(['bugs'], (old: any) => ({
+      ...old,
+      data: old.data.map((b: Bug) => b.id === id ? { ...b, status } : b),
+      meta: {
+        ...old.meta,
+        openCount: status === 'resolved' ? old.meta.openCount - 1 : old.meta.openCount + 1,
+      },
+    }));
+    return { previous };
+  },
+  onError: (_err, _vars, context) => {
+    queryClient.setQueryData(['bugs'], context?.previous);
+    // Show brief error toast
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: ['bugs'] });
+  },
+});
+```
+
+**Screenshot thumbnails:** The `GET /api/v1/bugs` response includes pre-generated presigned download URLs as `screenshotUrl` on each `BugListItem`. The server generates these at query time using `getPresignedDownloadUrl` from `r2.ts` -- presigned URL generation is a local HMAC computation, not a network call to R2, so generating 50 URLs adds negligible latency. This eliminates N+1 API calls from the client.
+
+**Empty state:** "No bugs reported yet. Use Cmd+Shift+K to report your first bug."
+
+### 5.8 Sidebar Badge
+
+Add a "Bugs" nav entry to `Sidebar.tsx` following the existing `NavLink` pattern (same structure as Roadmaps and Fields nav items).
+
+The badge count comes from a lightweight count query:
+
+```typescript
+const { data: bugCount } = useQuery({
+  queryKey: ['bugs', 'count'],
+  queryFn: () => api.getBugCount(),
+  staleTime: 30_000, // refresh at most every 30s
+});
+```
+
+The badge is hidden when `openCount` is 0 (per requirements). The nav item appears unconditionally (not gated by a roadmap being selected, unlike the Fields nav item which only shows inside a roadmap context).
+
+### 5.9 Route Registration in App.tsx
+
+```typescript
+import { BugsPage } from './routes/BugsPage';
+
+// Inside AuthenticatedApp <Routes>:
+<Route path="/bugs" element={<BugsPage />} />
+```
+
+### 5.10 Client API Methods
+
+Add to `client/src/lib/api.ts`, inside the `api` object:
+
+```typescript
+// Bugs
+getBugs: () =>
+  requestFull<{ data: BugListItem[]; meta: { openCount: number; screenshotsEnabled: boolean } }>('/bugs'),
+getBugCount: () =>
+  request<{ openCount: number; screenshotsEnabled: boolean }>('/bugs/count'),
+createBug: (data: { description: string; screenshotR2Key?: string | null; pageUrl?: string | null }) =>
+  request<Bug>('/bugs', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+updateBug: (id: string, data: { status: 'open' | 'resolved' }) =>
+  request<Bug>(`/bugs/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  }),
+presignBugScreenshot: (data: { filename: string; mimeType: 'image/png' | 'image/jpeg'; sizeBytes: number }) =>
+  request<{ uploadUrl: string; r2Key: string }>('/bugs/screenshot/presign', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+getBugScreenshotUrl: (id: string) =>
+  request<{ url: string }>(`/bugs/${id}/screenshot-url`),
+```
 
 ---
 
-## Error Handling Strategy
+## 6. Key Technical Decisions
 
-| Failure | Impact | Handling |
-|---------|--------|----------|
-| Screenshot capture fails (html2canvas error) | Non-blocking | Show "Screenshot unavailable" placeholder. User can retry or submit without screenshot. |
-| Microphone permission denied | Non-blocking | Show message explaining how to grant permission. Fall back to text input. |
-| MediaRecorder not supported | Non-blocking | Hide recording UI entirely. Show text input only. |
-| ElevenLabs WebSocket fails | Non-blocking | Client falls back to manual text input. Recording still works (user just won't see live text). |
-| Token generation fails | Non-blocking | Client skips live transcription, enables manual text input. Recording can still proceed without transcription. |
-| Screenshot save fails (filesystem error) | Non-blocking | Log error, skip screenshot. Work item is created without screenshotPath in metadata. |
-| Work item creation fails | Blocking | Return 500 error. Client shows "Failed to file bug. Try again." with retry button. User input is preserved. |
-| Network error (client cannot reach server) | Blocking | Client shows error with retry button. Input preserved. |
+### 6.1 Screenshot Format: Accept as-is, no conversion
 
-**Design principle:** Only work item creation failure blocks submission. Everything else degrades gracefully. A bug report with just a typed title and no screenshot or transcription is still valuable.
+**Decision:** Accept PNG and JPEG without client-side conversion or compression.
 
----
+**Rationale:**
+- OS screenshot tools produce PNGs by default. Converting to WebP would require a canvas-based conversion step, adding complexity and processing delay.
+- WebP saves roughly 25-35% over PNG, but region-select screenshots (Cmd+Shift+4) are typically 200KB-1.5MB -- well within the 5 MB limit.
+- Full-screen Retina screenshots can exceed 5 MB, but users reporting bugs will almost always drag-select a region. The 5 MB limit naturally encourages region selection, which produces better bug reports.
+- If this becomes a problem, client-side canvas compression can be added in v2 without changing the architecture (just transform the blob before upload).
 
-## Dependencies
+### 6.2 Max File Size: 5 MB
 
-### New npm packages
+Validated in two places:
+- **Client-side:** Check `file.size` immediately on paste. Show error before any network request.
+- **Server-side:** The `presignBugScreenshotSchema` validates `sizeBytes <= 5 * 1024 * 1024`. Even if the client check is bypassed, the presigned URL includes content-length conditions that R2 enforces.
 
-**None.** With transcription handled client-side via WebSocket and the submission using JSON (not multipart), no new server dependencies are needed. The server uses Node.js built-in `fetch` for the token endpoint.
+### 6.3 No Orphan Cleanup for R2 Screenshots
 
-### CDN dependencies (client, lazy-loaded)
+If a user gets a presigned URL, uploads a screenshot, but then the bug creation fails or the user closes the modal, the screenshot blob sits in R2 with no database record.
 
-| Library | Version | CDN URL | Purpose |
-|---------|---------|---------|---------|
-| html2canvas | 1.4.1 | `https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js` | Client-side screenshot capture |
+**Decision:** Accept orphans. Rationale:
+- Bug screenshots are small (under 5 MB each)
+- Volume is low (internal tool, small user base)
+- A cleanup cron is disproportionate complexity for v1
+- If needed later, a script can scan R2 for `*/bugs/*` keys not referenced in the `bugs` table
 
-The server uses Node.js built-in `fetch` (available in Node 18+). The client uses browser-native MediaRecorder, WebSocket, and FormData APIs — no additional client-side libraries beyond html2canvas.
+### 6.4 Screenshot URLs Inlined in Bug List Response
 
----
+**Decision:** Server generates presigned download URLs at query time and includes them in the `GET /api/v1/bugs` response, rather than requiring per-bug client-side fetches.
 
-## Performance Considerations
+Presigned URL generation is a local HMAC computation (not a network call to R2). For 50 bugs, generating 50 URLs adds negligible server-side latency. This eliminates N+1 API calls and keeps the client simple.
 
-1. **Zero page load impact.** The floating button is a lightweight CSS-only element. `bug-reporter.js` registers event listeners but does not initialize any heavy objects. html2canvas is lazy-loaded on first panel open.
+### 6.5 Separate Count Endpoint for Sidebar Badge
 
-2. **Screenshot capture is async.** The panel opens immediately with a shimmer placeholder. The screenshot renders in the background (~200-500ms for a typical TeamHQ page).
+**Decision:** `GET /api/v1/bugs/count` returns `{ openCount, screenshotsEnabled }`.
 
-3. **Audio files stay small.** WebM/Opus at default quality produces ~16KB/second. A 30-second recording is ~500KB -- well within comfortable upload size.
+The sidebar renders on every page. Loading all bugs into TanStack Query cache just for a badge count is wasteful. The count endpoint runs `SELECT count(*) FROM bugs WHERE account_id = $1 AND status = 'open'` -- fast, lightweight, cacheable with a 30-second stale time.
 
-4. **Live transcription eliminates post-recording wait.** With batch transcription, users wait 3-5 seconds after recording. With Scribe v2 Realtime, text appears live during recording (~150ms latency). By the time the user stops, the transcription is already complete.
+The `screenshotsEnabled` boolean is piggybacked onto this response so the AppShell always knows whether to show the screenshot paste area in the modal, without a separate config endpoint.
 
----
+### 6.6 No New Dependencies
 
-## Testing Considerations for Enzo
-
-Key areas to test:
-- **Happy path:** Open panel, screenshot captures, record audio, live transcription appears as user speaks, edit text, submit, toast shows, work item created
-- **No audio path:** Open panel, skip recording, type description manually, submit
-- **Screenshot failure:** Simulate html2canvas failure (e.g., corrupt DOM), verify graceful fallback
-- **Mic denied:** Deny microphone permission, verify text fallback appears
-- **WebSocket failure:** Simulate token endpoint failure or WebSocket disconnect, verify manual input still works
-- **30-second recording cap:** Record for 30 seconds, verify auto-stop and WebSocket close
-- **Keyboard shortcut:** Cmd/Ctrl+Shift+B opens and closes the panel
-- **Multiple pages:** Verify the widget loads and works on all 8 HTML pages
-- **Schema backward compatibility:** Verify existing work items (without type/metadata fields) still load correctly
-- **Screenshot file creation:** Verify PNG files appear in `data/bug-screenshots/`
+Zero new npm packages. Everything uses what is already installed:
+- `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner` -- existing in server, used by `r2.ts`
+- `drizzle-orm` -- existing, used by all route files
+- `zod` -- existing in `@forge-app/shared`
+- `@tanstack/react-query` -- existing in client
+- CSS Modules -- existing client styling pattern
+- Clipboard API (`paste` event, `clipboardData.items`) -- browser built-in
 
 ---
 
-## What This Approach Does NOT Include (v2 concerns)
+## 7. File Classification and Change Impact
 
-- Annotation tools on screenshots
-- Cloud storage (R2) for screenshots
-- Auth-aware reporting (Clerk user ID)
-- Duplicate detection
-- Mobile-responsive widget
-- Video recording
-- Multi-project selection
-- Notification on bug filing (Slack/email)
-- Screenshot cleanup/rotation
+| File | Classification | Notes |
+|------|---------------|-------|
+| `server/src/db/schema.ts` | **Extend** | Append `bugs` table definition at the end. No existing code touched. |
+| `server/src/db/migrations/0004_bug_reporter.sql` | **New** | New migration file. |
+| `server/src/routes/bugs.ts` | **New** | New route file with 6 endpoints. |
+| `server/src/index.ts` | **Extend** | Add import + `app.use` line. Two lines total. |
+| `shared/src/validation.ts` | **Extend** | Append 3 new schemas. No existing schemas changed. |
+| `shared/src/types.ts` | **Extend** | Append `BugStatus`, `Bug`, `BugListItem` types. No existing types changed. |
+| `client/src/lib/api.ts` | **Extend** | Add 6 new methods to the `api` object. No existing methods changed. |
+| `client/src/components/bugs/BugReportModal.tsx` | **New** | Modal component with clipboard paste handling. |
+| `client/src/components/bugs/BugReportModal.module.css` | **New** | Modal styles + floating button styles. |
+| `client/src/components/bugs/BugReportButton.tsx` | **New** | Floating action button. |
+| `client/src/routes/BugsPage.tsx` | **New** | Bug list page with expand/collapse, resolve/reopen. |
+| `client/src/routes/BugsPage.module.css` | **New** | Bug list styles. |
+| `client/src/components/layout/AppShell.tsx` | **Modify** | Add keyboard shortcut listener, bug modal state, render BugReportButton + BugReportModal. Adds ~20 lines to the existing 76-line file. Existing code paths (sidebar collapse, mobile menu) are completely untouched. |
+| `client/src/components/layout/Sidebar.tsx` | **Modify** | Add "Bugs" NavLink with count badge query. Adds ~25 lines. Existing nav items untouched. |
+| `client/src/App.tsx` | **Extend** | Add one `<Route>` element and one import. Two lines. |
+
+**No Restructure-classified files.** All changes are additive or small modifications that do not alter existing code paths. No early QA notification needed.
+
+---
+
+## 8. API Contract (Alice + Jonah align on this)
+
+```
+POST /api/v1/bugs
+  Request:  { description: string; screenshotR2Key?: string | null; pageUrl?: string | null }
+  Response: { data: Bug }
+
+GET /api/v1/bugs
+  Response: { data: BugListItem[]; meta: { openCount: number; screenshotsEnabled: boolean } }
+
+GET /api/v1/bugs/count
+  Response: { data: { openCount: number; screenshotsEnabled: boolean } }
+
+PATCH /api/v1/bugs/:id
+  Request:  { status: 'open' | 'resolved' }
+  Response: { data: Bug }
+
+POST /api/v1/bugs/screenshot/presign
+  Request:  { filename: string; mimeType: 'image/png' | 'image/jpeg'; sizeBytes: number }
+  Response: { data: { uploadUrl: string; r2Key: string } }
+
+GET /api/v1/bugs/:id/screenshot-url
+  Response: { data: { url: string } }
+```
+
+---
+
+## 9. Implementation Notes
+
+### For Jonah (BE)
+
+1. Create `server/src/routes/bugs.ts` following the structure of `uploads.ts` -- same Router pattern, try/catch/next error handling, Zod safeParse validation.
+2. The `GET /api/v1/bugs` endpoint needs a LEFT JOIN on `users` (for reporter info). Use the same join pattern as other routes. Generate presigned download URLs for each bug's `screenshotR2Key` using `getPresignedDownloadUrl` from `r2.ts`. If R2 is not configured (`!isR2Configured()`), set all `screenshotUrl` to null and `meta.screenshotsEnabled` to false.
+3. Define `GET /api/v1/bugs/count` BEFORE any `/:id` routes in the router to prevent Express from matching "count" as a UUID parameter.
+4. For the presign endpoint, the R2 key format is `{req.accountId}/bugs/{randomUUID()}-{filename}`. Return both the upload URL and the key in the response.
+5. Add the `bugs` export to `schema.ts` and schemas to `validation.ts` in the shared package.
+6. Account scoping: every query must filter by `req.accountId`. The PATCH endpoint must verify the bug belongs to the requesting account before updating.
+
+### For Alice (FE)
+
+1. Copy the `FieldModal` overlay/modal/header/body structure for `BugReportModal`. Same CSS patterns, same `useFocusTrap` hook, same accessibility attributes.
+2. Clipboard paste listener: attach to `modalRef.current`, not `window`. Only intercept `image/*` items. Let text pastes pass through to the description textarea naturally.
+3. The floating button uses `z-index: 40`; the modal overlay uses `z-index: 50`.
+4. In `AppShell.tsx`, the keyboard listener and state sit alongside the existing mobile menu state. The modal and button render outside the `.shell` div in a fragment wrapper.
+5. Create a `useBugCount` hook that wraps the `useQuery(['bugs', 'count'])` call. This keeps Sidebar clean and makes the query reusable by AppShell.
+6. Screenshot preview: use `object-fit: contain` with a `max-height` of ~200px so it does not dominate the modal.
+7. Success state: after submission, replace the form content with "Bug reported!" and a checkmark for 1.5 seconds, then call `onClose()`.
+8. Invalidate `['bugs']` and `['bugs', 'count']` queries after successful submission so the sidebar badge and bug list update.
+
+---
+
+## 10. Testing Notes for Enzo
+
+- **Happy path:** Keyboard shortcut (Cmd+Shift+K) opens modal, paste screenshot, type description, submit. Verify bug appears in bug list with screenshot thumbnail.
+- **Description only:** Submit without pasting a screenshot. Verify it works cleanly.
+- **R2 not configured:** Remove R2 env vars. Verify screenshot paste area is hidden. Verify description-only submission works.
+- **Oversize screenshot:** Paste a >5 MB image. Verify inline error appears and no upload attempt is made.
+- **Resolve/reopen:** Toggle a bug's status. Verify optimistic update (immediate visual change). Refresh page and verify the server state matches.
+- **Sidebar badge:** File a new bug -- badge count should increment. Resolve it -- badge should decrement. When count is 0, badge should be hidden.
+- **Escape to close:** Verify modal closes on Escape. Verify it does NOT close during an active submission.
+- **Backdrop click:** Verify modal closes when clicking the backdrop overlay.
+- **Text paste in description:** With modal open and description textarea focused, paste text. Verify it goes into the textarea as normal text (no screenshot capture).
+- **Floating button:** Visible on all pages. Tooltip shows shortcut. Click opens the modal.
+- **Account scoping:** Verify bugs from one account are not visible to another (if multi-account testing is available).
+- **Upload timeout:** Simulate slow network. Verify 15-second timeout triggers error message.
+- **Page URL capture:** Report a bug from different pages (homepage, roadmap detail, fields). Verify the `pageUrl` field captures the correct route.

@@ -1,0 +1,93 @@
+{
+  "id": "bug-reporter",
+  "name": "Forge Bug Reporter",
+  "description": "Lightweight in-app bug reporter for Forge with clipboard-paste screenshot support, Postgres storage, and R2 screenshot uploads.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "title": "Scope requirements and write acceptance criteria",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read Forge codebase: routes, schema, R2 integration, modal patterns, AppShell layout, shared validation",
+        "Rewrote requirements doc from scratch (previous version was for TeamHQ with voice recording -- entirely different scope)",
+        "Defined 5 user stories: keyboard shortcut, floating button, clipboard paste, submit, bug list",
+        "Wrote interaction states checklist for bug list and modal (loading, error, disabled, empty, form, timeout)",
+        "Specified Postgres data model (bugs table) following existing Drizzle patterns",
+        "Defined 5 API endpoints following existing Express router patterns",
+        "Wrote validation schemas following existing Zod patterns in shared/src/validation.ts",
+        "Classified all 15 files (8 new, 7 modify) with no Restructure classifications",
+        "Recommended pipeline: Andrei, Robert, Alice+Jonah parallel, Robert review, Enzo QA",
+        "Identified 3 risks: keyboard shortcut conflict, R2 dev config, large Retina screenshots"
+      ],
+      "filesChanged": [
+        "docs/bug-reporter-requirements.md",
+        "data/tasks/bug-reporter.json",
+        "data/tasks/index.json"
+      ],
+      "decisions": [
+        "Clipboard paste over html2canvas -- CEO tested html2canvas and it failed with SVGs, clipboard paste is simpler and more reliable",
+        "Postgres+R2 over local filesystem -- Forge already has both, no reason to invent a different storage pattern",
+        "Dropped voice recording/AI transcription from previous spec -- clipboard paste + typed description is faster and has zero dependencies",
+        "Single screenshot per bug -- keeps the flow fast, multiple attachments deferred",
+        "Auto-capture page URL -- low effort, high value for debugging context",
+        "Skipped Nina/Soren/Amara -- the modal is a standard form pattern, no complex interactions or responsive challenges"
+      ]
+    },
+    {
+      "title": "Define technical approach for bug reporter",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "title": "Create design spec for bug reporter UI",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "title": "Implement bug reporter frontend -- modal, floating button, bug list page",
+      "agent": "Alice",
+      "role": "Front-End Developer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "title": "Implement bug reporter backend -- schema, migration, routes, validation",
+      "agent": "Jonah",
+      "role": "Back-End Developer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "title": "Design review of bug reporter implementation",
+      "agent": "Robert",
+      "role": "Product Designer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "title": "QA validation of bug reporter feature",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "pending",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    }
+  ]
+}
