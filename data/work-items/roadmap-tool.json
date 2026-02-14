@@ -420,12 +420,142 @@
     {
       "id": "RT-36",
       "title": "Feedback and ideas module",
-      "description": "",
-      "status": "planned",
-      "phase": "v2.0",
+      "description": "Deferred indefinitely — Productboard owns this space, Roadmunk tried it and users say it's clunky. Not our lane.",
+      "status": "deferred",
+      "phase": "deferred",
       "owner": "",
       "priority": "low",
       "createdBy": ""
+    },
+    {
+      "id": "RT-37",
+      "title": "Visual themes & styling options",
+      "description": "Visual presentation themes beyond just colors. Preset themes (Boardroom, Startup, Minimal, etc.), typography choices, item card density options, timeline grid styles, dark mode for roadmap content, branding/logo placement. Pairs with existing data templates for two axes of customization. CEO-initiated feature.",
+      "status": "in-progress",
+      "phase": "v2.0",
+      "owner": "Thomas",
+      "priority": "high",
+      "createdBy": "CEO"
+    },
+    {
+      "id": "RT-38",
+      "title": "Command Palette (Cmd+K)",
+      "description": "Keyboard-driven command menu for searching items, navigating views, switching roadmaps, and executing actions. Uses cmdk library. Robert's v1.0 design spec already includes the modal design (560px wide, centered, shadow-xl). v2 Phase 1 / Sprint E.",
+      "status": "planned",
+      "phase": "v2.0-phase1",
+      "owner": "",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-39",
+      "title": "Keyboard Shortcuts Layer",
+      "description": "15 essential keyboard shortcuts for common actions plus a '?' overlay showing all available shortcuts. Companion to command palette — palette handles discovery, shortcuts handle muscle memory. v2 Phase 1 / Sprint E.",
+      "status": "planned",
+      "phase": "v2.0-phase1",
+      "owner": "",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-40",
+      "title": "Embeddable Roadmap Views",
+      "description": "Iframe embed codes for roadmap views. Leverages existing shared links infrastructure. Responsive embed with configurable width/height. 'Powered by Forge' badge for organic distribution. v2 Phase 2 / Sprint F.",
+      "status": "planned",
+      "phase": "v2.0-phase2",
+      "owner": "",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-41",
+      "title": "Status Updates with Stakeholder Digests",
+      "description": "Per-roadmap health indicator (on-track/at-risk/off-track) with weekly status update posts. Email digest to stakeholders. Linear's project updates system is the benchmark. v2 Phase 2 / Sprint F.",
+      "status": "planned",
+      "phase": "v2.0-phase2",
+      "owner": "",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-42",
+      "title": "Changelog Timeline",
+      "description": "'Show Shipped' toggle that surfaces completed items as a changelog on the roadmap. Past + present + future on one timeline. Unique differentiator — the only roadmap that shows receipts. v2 Phase 2 / Sprint F.",
+      "status": "planned",
+      "phase": "v2.0-phase2",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-43",
+      "title": "Natural Language Item Creation",
+      "description": "Type a sentence, Claude structured outputs parse it into a fully-formed item with dates, fields, and dependencies. Integrates with Cmd+K palette. Uses Haiku tier (~$0.001/request). v2 Phase 3 / Sprint G.",
+      "status": "planned",
+      "phase": "v2.0-phase3",
+      "owner": "",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-44",
+      "title": "Roadmap Summarization",
+      "description": "AI-generated executive summary with progress, risks, and milestones. Streaming display via Sonnet. Feeds into status updates. v2 Phase 3 / Sprint G.",
+      "status": "planned",
+      "phase": "v2.0-phase3",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-45",
+      "title": "Critical Path Visualization",
+      "description": "Client-side topological sort + forward/backward pass on existing itemLinks data. ~100 lines TypeScript, no external dependencies. Highlights critical path items on Timeline. v2 Phase 3 / Sprint G.",
+      "status": "planned",
+      "phase": "v2.0-phase3",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-46",
+      "title": "Threaded Comments",
+      "description": "Add parentCommentId to existing comments table. One level of nesting only. Single schema migration. v2 Phase 4 / Sprint H.",
+      "status": "planned",
+      "phase": "v2.0-phase4",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-47",
+      "title": "@Mentions with Notifications",
+      "description": "New notifications table that becomes shared infrastructure for all future alert-producing features. @mention picker in comments. In-app notification bell. v2 Phase 4 / Sprint H.",
+      "status": "planned",
+      "phase": "v2.0-phase4",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-48",
+      "title": "Slack Integration",
+      "description": "One-way Forge-to-Slack via Bolt.js framework. Notifications for status updates, item changes, milestones. Slash commands for quick lookups. v2 Phase 4 / Sprint H.",
+      "status": "planned",
+      "phase": "v2.0-phase4",
+      "owner": "",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "RT-49",
+      "title": "Roadmap-Level Goals/Themes",
+      "description": "Radically simple — max 7 labels with auto-progress calculation from child items. NOT a full OKR system. v2 Phase 4 / Sprint H.",
+      "status": "planned",
+      "phase": "v2.0-phase4",
+      "owner": "",
+      "priority": "low",
+      "createdBy": "Thomas"
     }
   ]
 }

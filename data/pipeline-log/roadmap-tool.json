@@ -2,7 +2,7 @@
   "projectId": "roadmap-tool",
   "projectName": "Roadmap Tool (Roadmunk Replica)",
   "status": "in-progress",
-  "currentPhase": "sprint-v1-polish",
+  "currentPhase": "v2-scoping",
   "tasks": [
     {
       "id": "research-product",
@@ -833,6 +833,141 @@
         "Bug #4 (BucketSettings not wired) suggests the component was built but the FormatPanel integration was missed during implementation. The Planning Mode radio group now appears correctly at the bottom of the Format Panel.",
         "Non-blocking observation: The 'as any[]' cast in the mappedSources useMemo could be replaced with proper typing in a future cleanup pass.",
         "Non-blocking observation: Portfolio view is read-only as specified — clicking items should navigate to source roadmap, but this navigation is not yet implemented (just a console log). This matches the Sprint D requirements which focus on the aggregation view."
+      ]
+    },
+    {
+      "id": "forge-strategy",
+      "title": "Strategic positioning and growth ideas for Forge (post-v1.1)",
+      "agent": "Ravi",
+      "role": "Creative Strategist",
+      "status": "completed",
+      "subtasks": [
+        "Read and synthesized all project docs: product research (790 lines), requirements, naming doc, all 4 sprint scoping docs, tech approach, design spec",
+        "Reviewed the live codebase to understand what's actually shipped: components directory structure, lib utilities, full feature inventory",
+        "Read the complete pipeline log (837 lines) to understand the build history and decisions made across all sprints",
+        "Assessed competitive positioning gap: Forge is currently a faster/cheaper Roadmunk clone without a distinctive story",
+        "Generated 7 strategic ideas across positioning, distribution, business model, and feature differentiation",
+        "Idea 1 (Public Roadmap as Distribution): Upgrade Share via URL into a brandable, interactive, embeddable public roadmap page with 'Powered by Forge' — every page becomes organic distribution",
+        "Idea 2 (AI Onboarding): 60-second guided flow where AI generates a populated roadmap from bullet points — kills the blank canvas problem, targets 5x activation improvement",
+        "Idea 3 (Sell the Artifact): Flip monetization to free tool / paid exports — charge at moment of maximum perceived value (the boardroom export), not at signup",
+        "Idea 4 (Anti-Jira Positioning): Position against Jira as the 'strategy layer above the backlog' — 10x larger market than 'roadmap tool' searchers",
+        "Idea 5 (Roadmap-as-a-Deck): Auto-generate multi-slide presentations from roadmap data — reframe the product as 'the thing that makes your quarterly review go well'",
+        "Idea 6 (Changelog Roadmap): Show past + present + future on one timeline — shipped items become changelog entries automatically, unique differentiator no competitor has",
+        "Idea 7 (AI-Native Planning Surface): Build API and agent integration layer for AI-powered teams — long-term bet on AI assistants maintaining roadmaps",
+        "Defined recommended execution stack: Immediate (Anti-Jira positioning + AI onboarding), Near-term (public roadmaps + changelog), Medium-term (presentation decks + export-based monetization)",
+        "Wrote explicit 'What NOT to Build' section: no Jira integration yet, no feedback/ideas module, no SSO/SAML, no Table View gold-plating, no new view types",
+        "Wrote one-line pitch: 'Your roadmap, ready to present'"
+      ],
+      "filesChanged": [
+        "docs/forge-strategy.md"
+      ],
+      "decisions": [
+        "Lead with Anti-Jira positioning over Roadmunk comparison — the emotional resonance of 'stop copy-pasting from Jira into slides' is stronger than 'faster Roadmunk', and the addressable market is 10x larger",
+        "AI-powered onboarding is highest-leverage product change — targets the blank canvas problem that kills activation at every planning tool. Small build (prompt + structured JSON output), outsized impact on conversion",
+        "Public roadmap pages are the cheapest organic distribution channel — the feature half-exists already (Share via URL), just needs to become a first-class brandable web experience with 'Powered by Forge'",
+        "Changelog timeline is the genuine differentiator no competitor has — it's cheap to build (filter on existing data) and makes the public roadmap 10x more credible",
+        "Explicitly recommend NOT building Jira integration despite Anti-Jira positioning — the positioning works without the integration, and 3-6 weeks of integration work should wait until there are 500+ users asking",
+        "Explicitly recommend NOT building feedback/ideas module — Productboard owns this space, Roadmunk users say theirs is clunky. Own visualization and communication, not feedback collection",
+        "One-line pitch 'Your roadmap, ready to present' captures the core insight: PMs don't need a roadmap tool, they need the meeting to go well"
+      ]
+    },
+    {
+      "id": "forge-competitive-research",
+      "title": "Competitive landscape research: feature opportunities for Forge post-v1.1",
+      "agent": "Suki",
+      "role": "Product Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Analyzed 8 competitor products: Linear, Productboard, Monday.com, Asana, Jira Advanced Roadmaps, Shortcut, Notion, plus niche tools (Featurebase, Canny, Sleekplan, ProductPlan)",
+        "Built comprehensive competitive matrix across 17 feature dimensions — identified 8 gap areas where Forge has no coverage",
+        "Deep-dived Linear's project updates system: health indicators, Slack sync, update reminders, automated progress reports — documented as the gold standard for stakeholder communication",
+        "Researched Linear's command palette and keyboard shortcuts: 50+ shortcuts across 7 categories, Cmd+K as core navigation — confirmed no dedicated roadmap tool has this",
+        "Investigated embeddable roadmap capabilities across competitors: ProductPlan (iframe), Jira (iframe embed), Productboard (viewer links) — confirmed Forge's shared links are 80% of the way there",
+        "Researched goals/OKR alignment features: Linear Initiatives, Asana Goals, Productboard Objectives+KRs — concluded full OKR is overbuilt, lightweight themes layer is the right scope",
+        "Evaluated and explicitly excluded 6 feature areas with evidence-based reasoning: full OKR, public roadmap voting, scenario planning, two-way Jira sync, AI auto-scheduling, RICE scoring",
+        "Cross-referenced findings with Ravi's strategy doc to ensure complementary (not duplicate) recommendations",
+        "Noted Robert's design spec already includes Cmd+K search modal — confirmed implementation priority aligns with competitive evidence",
+        "Produced prioritized 6-feature recommendation list with build order, complexity estimates, and specific competitive evidence for each"
+      ],
+      "filesChanged": [
+        "docs/forge-research.md"
+      ],
+      "decisions": [
+        "Command palette (Cmd+K) is #1 priority — highest ROI, already designed by Robert, no backend work, creates immediate 'fast tool' differentiation that Linear has proven works",
+        "Embeddable views are #2 — near-free win leveraging existing shared links, strong distribution play that aligns with Ravi's public roadmap recommendation",
+        "Status updates with stakeholder digests are the team-purchase catalyst — Linear's implementation is the benchmark, this is what turns Forge from PM tool to team infrastructure",
+        "Goals/themes should be radically simple (3-5 labels with auto-progress) NOT a full OKR system — competitors that went deep (Productboard, Asana) created features most teams never adopt",
+        "Slack integration is table stakes but should follow status updates — it's the delivery mechanism, not the feature itself",
+        "Explicitly excluded AI features despite market noise — evidence of actual user adoption in roadmap tools is thin, Monday/Asana/ClickUp AI claims are marketing-heavy but adoption data is inconclusive",
+        "Agreed with Ravi that Jira integration should wait despite Anti-Jira positioning — the positioning works without the integration, and the engineering cost is too high for current stage"
+      ]
+    },
+    {
+      "id": "forge-technical-research-next-gen",
+      "title": "Technical research: next-gen feature capabilities (AI, integrations, visualization, collaboration, analytics)",
+      "agent": "Marco",
+      "role": "Technical Researcher",
+      "status": "completed",
+      "subtasks": [
+        "Read full Forge codebase: schema.ts (16 tables), shared types.ts (500+ lines), api.ts (60 endpoints), all 3 WebSocket modules (handler, presence, editLock), timelineLayout.ts, export.ts, package.json dependencies for client and server",
+        "Evaluated Claude API for 4 AI features: NL item creation via structured outputs (Haiku tier), AI estimation via historical data analysis, roadmap summarization via Sonnet with streaming, risk detection combining rule-based engine with AI suggestions",
+        "Researched 5 external integration targets: GitHub (GraphQL v4 + GitHub App + webhooks), Linear (GraphQL + OAuth + webhooks via @linear/sdk), Jira (REST v3 + OAuth 2.0 3LO with 5-webhook limit), Slack (Bolt.js framework), Notion (REST API + webhooks new in 2025)",
+        "Assessed 4 advanced visualization features: critical path analysis (topological sort on existing itemLinks data, ~100 lines TS, no deps), resource heatmap (d3-scale-chromatic on team_member field), capacity planning (new schema + stacked bar chart), Gantt-style dependency arrow routing",
+        "Evaluated 4 collaboration enhancements: live cursors for Timeline/Swimlane (extend existing Socket.IO infra), threaded comments (parentCommentId schema change), @mentions with notification system (new notifications table + WebSocket push), CRDT vs field-level locking (recommended field-level locking over Yjs for structured data)",
+        "Researched 4 analytics capabilities: velocity tracking (activity log queries + Recharts), slippage tracking (endDate change events in item_activities), completion forecasting (rolling average + Monte Carlo), analytics dashboard (server-side aggregation)",
+        "Produced comparison tables for each category with effort estimates, dependencies, and priorities",
+        "Identified 3 shared infrastructure investments: integration_links table, notifications system, AI endpoint pattern",
+        "Wrote tiered priority recommendations: Tier 1 (12-16 days), Tier 2 (30-42 days), Tier 3 (deferred)",
+        "Documented technical constraints: bundle size budget, API costs per model tier, Railway single-instance limitation for WebSocket state, PostgreSQL performance considerations for analytics queries"
+      ],
+      "filesChanged": [
+        "docs/forge-technical-research.md"
+      ],
+      "decisions": [
+        "Tier 1 (build now): Critical Path Analysis + NL Item Creation + Threaded Comments + Roadmap Summary — highest impact, lowest risk, 12-16 days total",
+        "Claude Haiku 4.5 for per-request AI features ($1/$5 per million tokens) — cost-viable even on free tier. Sonnet reserved for summarization only",
+        "Field-level locking over Yjs CRDT — current edit-lock model works for structured fields. Yjs overhead not justified until rich-text descriptions are added",
+        "Recharts over building charts with raw d3 — declarative React API, 45KB gzipped, covers all analytics chart types needed",
+        "GitHub + Slack integrations first among external tools — GitHub has largest developer user base, Slack has highest daily visibility and lowest effort",
+        "Jira integration deferred despite highest enterprise demand — API complexity (3LO OAuth, 5-webhook limit, inconsistent docs) makes it 10-14 days vs 6-8 for Linear. Build after integration infra is established",
+        "Critical path algorithm requires no external dependencies — topological sort + forward/backward pass on existing itemLinks data, runs client-side in <5ms for 500 items",
+        "Notifications system should be built with @mentions — it becomes shared infrastructure for milestone alerts, integration events, slippage warnings",
+        "Single Railway instance means in-memory WebSocket state (presence, locks) works. Flag Redis migration as needed when scaling to multiple instances"
+      ]
+    },
+    {
+      "id": "v2-requirements",
+      "title": "Forge v2 feature roadmap and requirements",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read and synthesized three parallel research inputs: Suki (competitive landscape, 6 feature recommendations), Marco (technical feasibility across 5 categories with effort estimates), Ravi (strategic positioning, 7 growth ideas)",
+        "Reviewed existing Forge codebase: schema.ts (17 tables), package.json (client + server + shared workspaces), all route files, v1.0 and v1.1 Sprint A-D requirements to understand shipped feature surface",
+        "Defined 12 features organized into 4 shippable phases, each independently valuable: Phase 1 (Power User Productivity), Phase 2 (Communication Layer), Phase 3 (Intelligence Layer), Phase 4 (Collaboration & Growth)",
+        "Wrote detailed acceptance criteria for all 12 features including interaction states checklist (loading, error, disabled, empty, optimistic updates) for interactive features",
+        "Made hard priority calls: Command Palette + Keyboard Shortcuts first (highest ROI, zero backend), Communication Layer second (gets Forge bought by teams), AI third (needs backend infra), Collaboration fourth (highest effort, most parallelizable)",
+        "Defined explicit 'NOT building' list of 14 features with rationale synthesized from all three researchers — prevented scope creep on OKRs, public voting, scenario planning, two-way Jira sync, etc.",
+        "Identified three shared infrastructure investments that get built once and reused: AI endpoint pattern, notifications system, completion indicator concept",
+        "Specified data models for 4 new tables (status_updates, digest_recipients, notifications, goals) and 1 column addition (goal_id on items)",
+        "Recommended pipeline per phase with specific agent assignments, parallel tracks, and skip decisions",
+        "Captured Ravi's positioning recommendation ('Your roadmap, ready to present' / anti-Jira positioning) as go-to-market context for Priya",
+        "Flagged 4 open questions for CEO: pricing gates on embeds/digests, AI cost absorption, Slack App Directory submission timing, phase ordering flexibility"
+      ],
+      "filesChanged": [
+        "docs/forge-v2-requirements.md"
+      ],
+      "decisions": [
+        "Phase 1 is frontend-only (Cmd+K + shortcuts) — ships fastest, establishes 'speed as identity' positioning. Leverages Robert's existing Cmd+K design spec from v1.0.",
+        "Embeddable views over full public roadmap pages for v2 — Ravi's full brandable page vision is compelling but too much scope. Embeds leverage existing shared links infrastructure and ship in 1-2 days.",
+        "Status updates + changelog timeline together in Phase 2 — they share the 'completion indicator' concept and together transform Forge from planning tool to communication platform.",
+        "NL item creation over AI onboarding flow — same underlying capability (Claude structured output parsing) but item creation is useful for every session, not just first-time. Onboarding flow is v2.1.",
+        "Radically simple goals (max 7 named labels with auto-progress) over full OKR system — 80/20 of the value. Competitors that went full OKR created features most users never adopt.",
+        "One-way Slack integration (Forge -> Slack) in v2 — slash commands and two-way interaction are deferred. Gets 80% of the value (visibility in Slack) at 40% of the effort.",
+        "Threaded comments limited to one level (comments + replies, not replies to replies) — matches Linear and GitHub pattern, avoids unwieldy nesting.",
+        "AI features use Haiku 4.5 for per-request operations ($0.001/req) and Sonnet 4.5 for summarization ($0.01-0.05/req) — cost-viable for all users with rate limits.",
+        "Did NOT include resource heatmap, capacity planning, or analytics dashboard in v2 — these are high-effort visualization features that benefit from more user data. Deferred to v3.",
+        "Did NOT include Jira or GitHub integration in v2 — Ravi's insight that positioning against Jira works without the integration is correct. Slack integration covers the 'team tool' story for now."
       ]
     }
   ]
