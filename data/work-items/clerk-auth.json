@@ -1,0 +1,76 @@
+{
+  "projectSlug": "clerk-auth",
+  "taskPrefix": "CA",
+  "workItems": [
+    {
+      "id": "CA-1",
+      "title": "Write requirements and scope project",
+      "description": "Read research docs, define scope (in/out/deferred), write user stories with acceptance criteria, determine pipeline order, create pipeline log and work items.",
+      "status": "completed",
+      "phase": "v1",
+      "owner": "Thomas",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "CA-2",
+      "title": "Review integration patterns for correctness",
+      "description": "Validate research doc patterns against actual @clerk/express SDK and Stripe Managed Payments. Check middleware ordering, raw body parsing, Drizzle conventions. Produce tech-approach.md if gaps found, otherwise a review note.",
+      "status": "completed",
+      "phase": "v1",
+      "owner": "Andrei",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "CA-3",
+      "title": "Write backend sections of skills doc",
+      "description": "Write skills/development/clerk-stripe-integration.md backend sections: Express middleware, Clerk webhooks, Stripe webhooks, checkout endpoint, feature gating, billing portal. Create skills/development/templates/clerk-stripe-schema.ts. Follow research doc but use Drizzle ORM and our Express conventions.",
+      "status": "completed",
+      "phase": "v1",
+      "owner": "Jonah",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "CA-4",
+      "title": "Write React frontend sections of skills doc",
+      "description": "Add frontend sections to skills/development/clerk-stripe-integration.md: ClerkProvider setup, SignIn/SignUp pages, OrganizationSwitcher, UserButton, plan gating component, upgrade button/checkout redirect, billing settings skeleton.",
+      "status": "completed",
+      "phase": "v1",
+      "owner": "Alice",
+      "priority": "high",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "CA-5",
+      "title": "Update saas-stack.md with cross-references",
+      "description": "Add cross-references from saas-stack.md Clerk and Stripe sections to the new clerk-stripe-integration.md skill doc. Replace any duplicated integration pattern details with pointers.",
+      "status": "completed",
+      "phase": "v1",
+      "owner": "Jonah",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "CA-6",
+      "title": "Review skills doc for clarity and completeness",
+      "description": "Technical writing review: verify setup checklists are followable, code blocks have file paths, cross-references are correct, no ambiguous language. Fix any issues found.",
+      "status": "completed",
+      "phase": "v1",
+      "owner": "Nadia",
+      "priority": "medium",
+      "createdBy": "Thomas"
+    },
+    {
+      "id": "CA-7",
+      "title": "QA validation of integration patterns",
+      "description": "Verify: webhook handlers are idempotent, race conditions are addressed, error handling is complete, schema is correct, env var references are complete, middleware ordering is documented. This is a documentation review, not functional testing.",
+      "status": "completed",
+      "phase": "v1",
+      "owner": "Enzo",
+      "priority": "high",
+      "createdBy": "Thomas"
+    }
+  ]
+}

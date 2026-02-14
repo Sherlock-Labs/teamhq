@@ -1,0 +1,211 @@
+{
+  "projectId": "clerk-auth",
+  "projectName": "Clerk + Stripe Managed Payments Integration Template",
+  "status": "in-progress",
+  "currentPhase": "frontend-doc",
+  "tasks": [
+    {
+      "id": "requirements",
+      "title": "Scope requirements for Clerk + Stripe integration template",
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "status": "completed",
+      "subtasks": [
+        "Read Marco's 730-line research doc covering Clerk Billing vs DIY, webhook coordination, session flow, and DB schema",
+        "Read saas-stack.md skill doc to understand existing documented patterns and identify gaps",
+        "Made key scoping decision: skills doc + schema template for v1, defer standalone starter repo to v2",
+        "Identified that research doc code uses raw SQL — Jonah needs to convert to Drizzle ORM conventions",
+        "Identified raw body parsing as a common gotcha needing explicit documentation",
+        "Identified middleware ordering (webhooks before Clerk auth) as a critical implementation detail",
+        "Wrote 9 user stories covering setup, schema, backend auth, webhooks (Clerk + Stripe), checkout, feature gating, frontend auth, and upgrade flow",
+        "Defined 3 deliverables: skills reference doc, Drizzle schema template, saas-stack.md update",
+        "Cut scope aggressively: no starter template repo, no Loops/PostHog/R2 integration, no mobile, no custom roles, no usage-based billing",
+        "Determined pipeline: Andrei (review) -> Jonah (backend doc) -> Alice (frontend doc) -> Nadia + Enzo (parallel review)",
+        "Skipped 13 agents not needed for a documentation-only project"
+      ],
+      "filesChanged": [
+        "docs/clerk-auth-requirements.md",
+        "data/pipeline-log/clerk-auth.json",
+        "data/pipeline-log/index.json",
+        "data/work-items/clerk-auth.json"
+      ],
+      "decisions": [
+        "v1 is a skills doc + schema template, NOT a starter repo — fastest path to value with zero maintenance burden",
+        "Skills doc lives at skills/development/clerk-stripe-integration.md — agents will read it alongside saas-stack.md when building new products",
+        "Drizzle schema template at skills/development/templates/clerk-stripe-schema.ts — copy-paste ready, not embedded in the doc",
+        "DB is source of truth for plan status, Clerk publicMetadata is a convenience mirror for client-side UI gating — hybrid approach from research",
+        "Eager Stripe Customer creation (synchronous on org creation, webhook as safety net) — avoids race condition identified in research",
+        "Skip Howard (Payments) — the billing patterns are straightforward and well-documented in the research; Jonah can handle them",
+        "Skip Robert (Designer) — no UI to design; this is a code template project",
+        "Andrei first, then Jonah — Andrei may find gaps that Jonah should incorporate; parallel would risk rework"
+      ]
+    },
+    {
+      "id": "tech-review",
+      "title": "Review integration patterns for correctness and gaps",
+      "agent": "Andrei",
+      "role": "Technical Architect",
+      "status": "completed",
+      "subtasks": [
+        "Read requirements doc (9 user stories), research doc (730 lines), and saas-stack.md for full context",
+        "Validated core architecture: skip Clerk Billing, DIY Clerk+Stripe, hybrid plan storage, eager Customer creation — all confirmed correct",
+        "Discovered Clerk now exports verifyWebhook from @clerk/express/webhooks — eliminates need for raw Svix dependency (ADJ-1)",
+        "Identified critical Express middleware ordering gap: research doc uses req.text() (Web Request API, not Express), webhook routes must use express.raw() before express.json() (ADJ-2)",
+        "Found orgRole format change: session token v2 drops 'org:' prefix, recommend has() method instead of string comparison (ADJ-3)",
+        "Researched Stripe Managed Payments changelog — found breaking change: customer_update params removed, auto-collects billing address (ADJ-5)",
+        "Clarified Billing Portal limitations under Managed Payments — subscription management via Link, portal for payment methods only (ADJ-4)",
+        "Defined Drizzle schema conventions: table named 'organizations' not 'teams', serial PKs, camelCase, inferred types (ADJ-6)",
+        "Added authorizedParties security recommendation for clerkMiddleware() in production (ADJ-7)",
+        "Wrote recommended file structure for the skills doc — 9 sections mapped to Thomas's user stories",
+        "Documented 4 architecture decisions with rationale (verifyWebhook, table naming, has() for roles, Vite env var prefix)"
+      ],
+      "filesChanged": [
+        "docs/clerk-auth-tech-approach.md",
+        "data/work-items/clerk-auth.json",
+        "data/pipeline-log/clerk-auth.json"
+      ],
+      "decisions": [
+        "Use verifyWebhook from @clerk/express/webhooks instead of raw Svix — first-party, typed, eliminates dependency, pin >= 1.7.4 for security patch",
+        "Table named 'organizations' not 'teams' — direct mapping to Clerk concept, reduces cognitive translation",
+        "Use auth.has({ role: 'org:admin' }) instead of string comparison on orgRole — forward-compatible across session token versions",
+        "Use VITE_ prefix for client-side env vars, not NEXT_PUBLIC_ — we use Vite, not Next.js",
+        "Express middleware ordering: webhook routes with express.raw() first, then express.json(), then clerkMiddleware() — most common gotcha, must be documented prominently"
+      ]
+    },
+    {
+      "id": "backend-doc",
+      "title": "Write backend sections of skills doc + Drizzle schema template",
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "status": "completed",
+      "subtasks": [
+        "Read all upstream docs: requirements (9 user stories), tech approach (7 adjustments), research (730 lines), and saas-stack.md",
+        "Created Drizzle ORM schema template with 4 tables: users, organizations, orgMemberships, processedEvents — serial PKs, camelCase columns, proper indexes, InferSelectModel/InferInsertModel exports",
+        "Wrote complete server/index.ts showing correct Express middleware ordering: CORS -> webhook routes with express.raw() -> express.json() -> clerkMiddleware with authorizedParties -> API routes",
+        "Wrote Clerk webhook handler using verifyWebhook from @clerk/express/webhooks (not raw Svix) with handlers for user.created/updated/deleted, organization.created/updated, organizationMembership.created/updated/deleted",
+        "Implemented eager Stripe Customer creation in organization.created webhook as safety net, with idempotency check against existing org records",
+        "Wrote Stripe webhook handler with constructEvent verification and handlers for all 5 subscription lifecycle events: checkout.session.completed, invoice.paid, invoice.payment_failed, customer.subscription.updated, customer.subscription.deleted",
+        "Implemented activatePlan helper with configurable PRICE_TO_PLAN mapping and syncPlanToClerk for Clerk publicMetadata mirroring",
+        "Built checkout session endpoint with requireOrgAdmin middleware using auth.has({ role: 'org:admin' }), on-demand Stripe Customer fallback creation, and subscription_data.metadata.clerkOrgId cross-reference",
+        "Wrote requirePlan() feature gating middleware with proper HTTP status codes: 401 (unauth), 400 (no org), 404 (org not found), 402 (inactive subscription), 403 (wrong plan tier) — includes request-scoped plan caching",
+        "Added billing portal endpoint with Managed Payments caveat documentation",
+        "Wrote 8 troubleshooting entries covering common failure modes: webhook signature failures, missing Stripe Customer race condition, subscription activation delay, orgRole format confusion, tax code errors, missing env vars, dev-to-prod webhook issues",
+        "Updated saas-stack.md: added cross-references to new integration doc in both Clerk and Stripe sections, corrected env var names (VITE_ prefix, CLERK_WEBHOOK_SIGNING_SECRET), removed duplicated integration pattern details"
+      ],
+      "filesChanged": [
+        "skills/development/clerk-stripe-integration.md",
+        "skills/development/templates/clerk-stripe-schema.ts",
+        "skills/development/saas-stack.md",
+        "data/work-items/clerk-auth.json",
+        "data/pipeline-log/clerk-auth.json"
+      ],
+      "decisions": [
+        "Incorporated all 7 of Andrei's adjustments: verifyWebhook (ADJ-1), middleware ordering shown as complete file (ADJ-2), auth.has() for role checks (ADJ-3), Billing Portal with Managed Payments caveat (ADJ-4), noted customer_update removal (ADJ-5), organizations table with serial PKs and camelCase (ADJ-6), authorizedParties in clerkMiddleware (ADJ-7)",
+        "Event deduplication via processedEvents table checked at the top of each webhook handler — prevents duplicate Stripe Customers on Clerk webhook retries and duplicate plan updates on Stripe retries",
+        "Webhook handlers return 500 on processing errors so Clerk/Stripe retry delivery — only return 200 on success or idempotent skip",
+        "requirePlan middleware caches org plan on req.orgPlan to avoid redundant DB queries when multiple middlewares check the plan in a single request",
+        "Checkout endpoint includes on-demand Stripe Customer creation as fallback for when eager creation fails or org was created via Clerk Dashboard — belt-and-suspenders approach from research",
+        "syncPlanToClerk is wrapped in try/catch with console.error — Clerk metadata sync failure is non-fatal since DB is source of truth",
+        "Also completed CA-5 (saas-stack.md update) since it was a natural part of this work — added cross-references, corrected env var naming conventions, removed duplicated integration pattern details"
+      ]
+    },
+    {
+      "id": "frontend-doc",
+      "title": "Write React frontend sections of skills doc",
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "status": "completed",
+      "subtasks": [
+        "Read all upstream docs: requirements (US-8 and US-9), tech approach (7 adjustments, especially ADJ-3 on has() for role checks), and Jonah's complete backend sections (Sections 1-8) to understand API contracts",
+        "Wrote Section 9a: ClerkProvider setup in main.tsx with VITE_CLERK_PUBLISHABLE_KEY, afterSignOutUrl, and BrowserRouter wrapping",
+        "Wrote Section 9b: React Router v6 routing with ProtectedRoute wrapper using SignedIn/SignedOut/RedirectToSignIn, public routes (landing, sign-in, sign-up) and protected routes (dashboard, billing) with nested layout",
+        "Wrote Section 9c: Reusable api() fetch helper with ApiError class for typed error handling — same-origin cookies, no Bearer token needed, includes Vite proxy config for dev",
+        "Wrote Section 9d: useOrgPlan() hook that reads plan/planStatus from Clerk org publicMetadata for fast client-side UI gating, with explanation that DB (via requirePlan middleware) is the real source of truth",
+        "Wrote Section 10a: SignIn and SignUp page components with path, signUpUrl/signInUrl cross-links, and forceRedirectUrl",
+        "Wrote Section 10b: AppLayout with UserButton and OrganizationSwitcher in header, using hidePersonal and afterSelectOrganizationUrl props, Outlet for nested route rendering",
+        "Wrote Section 10c: Full BillingPage component with plan cards, upgrade flow (POST /api/checkout -> redirect to checkoutUrl), manage billing flow (POST /api/billing/portal -> redirect to portalUrl), success/canceled/past_due banners, admin-only gating via has({ role: 'org:admin' }), loading and error states",
+        "Wrote Section 10d: usePollPlan() hook for post-checkout delay handling — polls organization.reload() every 2s for up to 30s until publicMetadata plan changes from expected value",
+        "Wrote Section 10e: PlanGate component for client-side plan-based route protection with fallback rendering, plus reusable UpgradePrompt component"
+      ],
+      "filesChanged": [
+        "skills/development/clerk-stripe-integration.md",
+        "data/work-items/clerk-auth.json",
+        "data/pipeline-log/clerk-auth.json"
+      ],
+      "decisions": [
+        "Same-origin cookie auth over Bearer tokens — since Express serves the Vite build (single-service pattern), cookies are automatic and no getToken() call is needed. This simplifies the api helper and avoids token refresh complexity.",
+        "Used has({ role: 'org:admin' }) from useAuth() for admin checks on the frontend, matching Andrei's ADJ-3 recommendation — avoids session token v1/v2 format differences with orgRole string comparison",
+        "Client-side plan gating reads from Clerk publicMetadata (useOrgPlan hook) for speed, but every section explicitly notes that server-side requirePlan() is the real authorization gate — defense in depth",
+        "BillingPage response field names match Jonah's backend exactly: { checkoutUrl } from POST /api/checkout and { portalUrl } from POST /api/billing/portal",
+        "usePollPlan uses organization.reload() from Clerk SDK rather than a custom API endpoint — keeps the polling simple and avoids adding a new backend route just for plan status checks",
+        "PlanGate returns null while isLoaded is false to prevent a flash of the fallback content on initial page load — better UX than showing an upgrade prompt that immediately disappears",
+        "Plan price IDs exposed via VITE_STRIPE_PRICE_* env vars on the client — the priceId is not secret (it is visible in Stripe Checkout URLs anyway) and avoids an extra API call to fetch available plans"
+      ]
+    },
+    {
+      "id": "doc-review",
+      "title": "Review skills doc for clarity and completeness",
+      "agent": "Nadia",
+      "role": "Technical Writer",
+      "status": "completed",
+      "subtasks": [
+        "Read the full 2,100-line skills doc, schema template, saas-stack.md cross-references, requirements, tech approach, and pipeline log for complete context",
+        "Fixed copy-paste-breaking bug: Section 6c billing portal used checkoutRouter.post() instead of billingRouter.post() — would crash at runtime",
+        "Fixed broken cross-reference: Section 5 organization.created handler referenced nonexistent 'Section 4d' — corrected to 'Section 6b'",
+        "Added 3 missing npm dependencies to Section 1c install command: cors (used in Section 4a), react-router-dom (used throughout Sections 9-10), @types/cors",
+        "Added 2 missing dev dependencies: tsx and concurrently (referenced in Section 8b package.json scripts but never installed)",
+        "Added missing client env vars to Section 2: VITE_STRIPE_PRICE_PRO_MONTHLY and VITE_STRIPE_PRICE_ENTERPRISE_MONTHLY (used by BillingPage in Section 10c but undocumented)",
+        "Added missing server/db/index.ts database connection file — every code example imports db from '../db/index.js' but this file was never shown",
+        "Added route mounting instructions showing how checkoutRouter and billingRouter connect to apiRouter — Sections 6b/6c defined sub-routers but never showed how to mount them",
+        "Added table of contents at the top of the document for navigation across 10 sections + troubleshooting",
+        "Updated troubleshooting entry for post-checkout delay to reference the specific usePollPlan hook in Section 10d instead of vague 'poll your API' advice",
+        "Added explanatory note after npm install command explaining why cors, react-router-dom, tsx, and concurrently are needed"
+      ],
+      "filesChanged": [
+        "skills/development/clerk-stripe-integration.md",
+        "data/work-items/clerk-auth.json",
+        "data/pipeline-log/clerk-auth.json"
+      ],
+      "decisions": [
+        "Kept the Webhook Event Reference table between Sections 8 and 9 as a quick-reference bridge between backend and frontend sections, rather than moving it to an appendix — its position is useful for developers transitioning from backend to frontend work",
+        "Added the db/index.ts connection file using @neondatabase/serverless (matching the npm install command) with a comment showing how to swap for node-postgres if preferred — did not change the driver choice, just documented it",
+        "Made the route mounting explicit in Section 4b rather than assuming developers would figure out how to connect checkoutRouter and billingRouter to apiRouter — this was the single biggest gap for a developer following the doc top-to-bottom",
+        "Did not restructure section numbering — the existing 1-10 numbering with subsections (4a, 4b, 6a, 6b, 6c, etc.) is clear and matches the pipeline log references"
+      ]
+    },
+    {
+      "id": "qa-review",
+      "title": "Validate integration patterns — idempotency, error handling, completeness",
+      "agent": "Enzo",
+      "role": "QA Engineer",
+      "status": "completed",
+      "subtasks": [
+        "Verified Express middleware ordering: webhook routes with express.raw() before express.json() before clerkMiddleware() with authorizedParties — correct per ADJ-2",
+        "Verified verifyWebhook from @clerk/express/webhooks used instead of raw Svix, with pin >= 1.7.4 documented — correct per ADJ-1",
+        "Verified auth.has({ role: 'org:admin' }) used for role checks on both backend (requireOrgAdmin middleware) and frontend (BillingPage) — correct per ADJ-3",
+        "Verified all 7 of Andrei's tech approach adjustments (ADJ-1 through ADJ-7) are incorporated in the skills doc",
+        "Verified webhook idempotency: processedEvents table dedup at top of both Clerk and Stripe handlers, plus onConflictDoUpdate on user/membership upserts and existence check on org creation",
+        "Verified Stripe webhook uses constructEvent with raw Buffer body and stripe-signature header for HMAC verification",
+        "Verified checkout endpoint validates priceId input (type check + existence check) and includes on-demand Stripe Customer fallback",
+        "Verified feature gating middleware returns correct HTTP status codes: 401 (unauth), 400 (no org), 404 (org not found), 402 (inactive sub), 403 (wrong plan tier)",
+        "Verified security: CLERK_SECRET_KEY never in client code, webhook routes not behind requireAuth(), CORS uses specific origin not wildcard, no real secrets in code examples",
+        "Verified frontend uses VITE_CLERK_PUBLISHABLE_KEY (not NEXT_PUBLIC_), same-origin cookie auth (no Bearer tokens), admin-only billing actions, error states in checkout/portal flows",
+        "Verified API contract consistency: endpoint paths, response field names (checkoutUrl, portalUrl), and env var names match between frontend and backend sections",
+        "Verified Drizzle schema template: 4 tables with serial PKs, camelCase columns, proper unique indexes, timestamp with timezone, InferSelectModel/InferInsertModel exports",
+        "Verified all 9 user story acceptance criteria from requirements doc are satisfied across the skills doc",
+        "Verified saas-stack.md cross-references to new integration doc in both Clerk and Stripe sections",
+        "Found one non-blocking issue: Section 6c billing portal uses checkoutRouter variable name instead of billingRouter — copy-paste error that would cause a ReferenceError if used verbatim in a separate file"
+      ],
+      "filesChanged": [
+        "data/work-items/clerk-auth.json",
+        "data/pipeline-log/clerk-auth.json"
+      ],
+      "decisions": [
+        "PASS verdict — all correctness, security, frontend, and consistency checks pass. All 7 of Andrei's adjustments are incorporated. All acceptance criteria from requirements are met.",
+        "Non-blocking observation: Section 6c billing portal code references checkoutRouter instead of billingRouter — cosmetic variable name mismatch, immediately obvious if copied. Does not block shipping because the section is marked optional and the error is self-evident.",
+        "Non-blocking observation: usePollPlan hook has organization object in dependency array which creates new references on each render — mitigated by the enabled flag in practice.",
+        "This is a documentation review, not functional testing — the patterns will be functionally tested when first used in a real product."
+      ]
+    }
+  ]
+}

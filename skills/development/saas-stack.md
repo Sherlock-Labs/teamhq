@@ -2,7 +2,7 @@
 
 **Category:** Development
 **Used by:** Andrei, Jonah, Alice, Howard, Marco, all
-**Last updated:** 2026-02-09
+**Last updated:** 2026-02-14
 
 ## Stack Overview
 
@@ -51,21 +51,22 @@ All services have MCP servers configured in `.mcp.json`:
 
 **Docs:** https://clerk.com/docs
 
+> **For full integration code** (Express middleware, webhook handlers, Drizzle schema, React components), see **`skills/development/clerk-stripe-integration.md`**. This section covers concepts and quick reference only.
+
 ### Key Concepts
 - Drop-in `<SignIn />`, `<SignUp />`, `<UserProfile />` React components
-- Middleware-based auth for Next.js (`clerkMiddleware()`)
-- `auth()` and `currentUser()` server-side helpers
+- `clerkMiddleware()` for Express (`@clerk/express >= 1.7.4`) — use `authorizedParties` in production
+- `getAuth(req)` and `requireAuth()` server-side helpers
+- `verifyWebhook` from `@clerk/express/webhooks` for webhook signature verification (not raw Svix)
 - Webhook events for syncing user/org data to your DB
 
 ### Organizations (Multi-Tenancy)
-This product uses **Clerk Organizations** for team-based access:
 - `<OrganizationSwitcher />` — lets users switch between teams
 - `<OrganizationProfile />` — team settings, member management, invites
 - `<CreateOrganization />` — team creation flow
 - **Roles**: default `admin` + `member`, custom roles available (up to 10)
-- **Role Sets**: gate available roles by pricing tier (e.g., Free = admin/member, Pro = custom roles)
+- **Role checks**: use `auth.has({ role: 'org:admin' })` — not string comparison on `orgRole`
 - **Permissions**: fine-grained access control via `has({ permission: 'org:posts:edit' })`
-- `auth().orgId` and `auth().orgRole` available server-side for data isolation
 - Enterprise SSO (SAML/OIDC) supported per-org for enterprise customers
 
 ### Data Model
@@ -73,23 +74,16 @@ This product uses **Clerk Organizations** for team-based access:
 Clerk User (1) ──→ (many) Org Memberships ──→ (many) Clerk Organizations
                                                         │
                                                         ├── maps to Stripe Customer (1:1)
-                                                        └── maps to your DB team record (1:1)
+                                                        └── maps to your DB organizations record (1:1)
 ```
-- Every org gets a Stripe Customer — billing is per-team, not per-user
-- Your DB stores `clerkOrgId` + `stripeCustomerId` on the team record
+- Every org gets a Stripe Customer — billing is per-org, not per-user
+- Your DB `organizations` table stores `clerkOrgId` + `stripeCustomerId`
 - Data isolation: always scope DB queries by `clerkOrgId`
 
-### Integration Pattern
-```
-User signs up via Clerk → Clerk webhook (user.created) → create local user record
-User creates org via Clerk → Clerk webhook (organization.created) → create local team record + Stripe Customer
-User invites teammate → Clerk handles invite flow → webhook (organizationMembership.created) → sync to DB
-```
-
 ### Environment Variables
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` — client-side
+- `VITE_CLERK_PUBLISHABLE_KEY` — client-side (use `VITE_` prefix, not `NEXT_PUBLIC_`)
 - `CLERK_SECRET_KEY` — server-side only
-- `CLERK_WEBHOOK_SECRET` — for webhook signature verification
+- `CLERK_WEBHOOK_SIGNING_SECRET` — for webhook signature verification
 
 ### MCP Usage
 - Use the `clerk` MCP for SDK snippets and implementation patterns
@@ -99,7 +93,9 @@ User invites teammate → Clerk handles invite flow → webhook (organizationMem
 
 **Docs:** https://docs.stripe.com/payments/managed-payments/how-it-works
 
-**Stripe Managed Payments is our default for all new products.** Stripe becomes the merchant of record, which means they handle tax compliance, fraud prevention, disputes, refunds, and customer transaction support. We don't have to worry about sales tax, VAT, or GST — Stripe calculates, collects, files, and remits automatically.
+> **For full integration code** (Checkout Sessions, webhook handlers, feature gating, Drizzle schema), see **`skills/development/clerk-stripe-integration.md`**. This section covers concepts and quick reference only.
+
+**Stripe Managed Payments is our default for all new products.** Stripe becomes the merchant of record, which means they handle tax compliance, fraud prevention, disputes, refunds, and customer transaction support.
 
 ### Why Managed Payments
 - **Global tax compliance handled** — no need to register for tax in every jurisdiction
@@ -114,31 +110,20 @@ User invites teammate → Clerk handles invite flow → webhook (organizationMem
 - **Stripe Checkout required** — must use hosted or embedded Checkout (no custom Elements)
 - **Checkout says "Sold through Link"** — customers manage subscriptions via Link app
 - **Seller location** — must be in US, CA, EU, or HK
-- **Tax codes required** — assign correct tax codes to every product
-
-### Integration Pattern
-```
-Clerk org created → create Stripe Customer for the org (store stripeCustomerId on team record)
-→ Stripe Checkout Session with Managed Payments enabled (tied to org, not user)
-→ Stripe handles tax calculation, payment processing, receipts
-→ webhook confirms payment → activate plan for the org
-```
-- Billing is per-org (team), not per-user
-- The org admin manages the subscription; members inherit the plan
-- Use Clerk `orgId` as the key to look up the Stripe Customer
-- Stripe sends receipts and subscription emails automatically
+- **Tax codes required** — assign correct tax codes to every product (SaaS: `txcd_10000000`)
+- **Do NOT pass `customer_update`** options in Checkout Sessions — Managed Payments auto-collects billing address
 
 ### Webhook Events to Handle
 - `checkout.session.completed` — initial purchase
-- `invoice.payment_succeeded` — recurring payment
+- `invoice.paid` — recurring payment succeeded
 - `invoice.payment_failed` — dunning / failed payment
 - `customer.subscription.updated` — plan changes
 - `customer.subscription.deleted` — cancellation
 
 ### Environment Variables
 - `STRIPE_SECRET_KEY` — server-side only
-- `STRIPE_PUBLISHABLE_KEY` — client-side
 - `STRIPE_WEBHOOK_SECRET` — for webhook signature verification
+- `STRIPE_PRICE_*` — Price IDs for each plan/interval combo
 
 ### MCP Usage
 - Use the `stripe` MCP to manage customers, products, prices, subscriptions, invoices
@@ -290,15 +275,16 @@ File storage: scope R2 keys by orgId → {clerkOrgId}/{fileType}/{fileId}
 All secrets go in Railway env vars (never in source):
 
 ```
-# Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
+# Clerk (use VITE_ prefix, not NEXT_PUBLIC_ — we use Vite, not Next.js)
+VITE_CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
-CLERK_WEBHOOK_SECRET=whsec_...
+CLERK_WEBHOOK_SIGNING_SECRET=whsec_...
 
 # Stripe
-STRIPE_PUBLISHABLE_KEY=pk_...
 STRIPE_SECRET_KEY=sk_...
 STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_PRO_MONTHLY=price_...
+STRIPE_PRICE_PRO_ANNUAL=price_...
 
 # PostHog
 NEXT_PUBLIC_POSTHOG_KEY=phc_...

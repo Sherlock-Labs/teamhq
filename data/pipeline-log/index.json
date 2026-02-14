@@ -30,5 +30,7 @@
   "task-detail",
   "bug-reporter",
   "tasks-multi-select",
-  "forge-visual-themes"
+  "forge-visual-themes",
+  "clerk-auth",
+  "forge-timeline-layout-bug"
 ]
