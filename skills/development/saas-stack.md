@@ -10,7 +10,7 @@
 |-------|------|-----------|
 | Hosting + DB | Railway (Postgres) | usage-based |
 | Auth | Clerk | < 10K MAU |
-| Payments | Stripe | % per txn |
+| Payments | Stripe Managed Payments | % per txn (Stripe is merchant of record) |
 | Product analytics | PostHog | < 1M events/mo |
 | Revenue metrics | Stripe dashboard | included |
 | Email (txn + marketing) | Loops | < 1K subs, 4K sends/mo |
@@ -95,26 +95,38 @@ User invites teammate → Clerk handles invite flow → webhook (organizationMem
 - Use the `clerk` MCP for SDK snippets and implementation patterns
 - Authenticates via browser login on first use
 
-## Stripe (Payments)
+## Stripe Managed Payments (Payments — Default)
 
-**Docs:** https://docs.stripe.com
+**Docs:** https://docs.stripe.com/payments/managed-payments/how-it-works
 
-### Key Concepts
-- Use **Payment Intents API** for one-time payments (not legacy Charges)
-- Use **Stripe Checkout** or **Elements** for PCI-compliant card collection
-- Use **Customer** objects to associate payments with users
-- Use **Subscriptions** with **Prices** and **Products** for recurring billing
-- Pin your API version — don't auto-upgrade
+**Stripe Managed Payments is our default for all new products.** Stripe becomes the merchant of record, which means they handle tax compliance, fraud prevention, disputes, refunds, and customer transaction support. We don't have to worry about sales tax, VAT, or GST — Stripe calculates, collects, files, and remits automatically.
+
+### Why Managed Payments
+- **Global tax compliance handled** — no need to register for tax in every jurisdiction
+- **Fraud prevention built-in** — AI monitoring, blocklists, no configuration needed
+- **Disputes auto-responded** — Smart Disputes submits evidence automatically
+- **Customer support delegated** — Stripe handles transaction-level support via Link
+- **Adaptive Pricing** — auto-converts to customer's local currency
+- **15+ payment methods** — cards, Apple Pay, Google Pay, Klarna, UPI, etc.
+
+### Key Constraints
+- **Digital products only** — SaaS, software, online courses, digital media. No physical goods.
+- **Stripe Checkout required** — must use hosted or embedded Checkout (no custom Elements)
+- **Checkout says "Sold through Link"** — customers manage subscriptions via Link app
+- **Seller location** — must be in US, CA, EU, or HK
+- **Tax codes required** — assign correct tax codes to every product
 
 ### Integration Pattern
 ```
 Clerk org created → create Stripe Customer for the org (store stripeCustomerId on team record)
-→ Checkout Session for subscription (tied to org, not user)
+→ Stripe Checkout Session with Managed Payments enabled (tied to org, not user)
+→ Stripe handles tax calculation, payment processing, receipts
 → webhook confirms payment → activate plan for the org
 ```
 - Billing is per-org (team), not per-user
 - The org admin manages the subscription; members inherit the plan
 - Use Clerk `orgId` as the key to look up the Stripe Customer
+- Stripe sends receipts and subscription emails automatically
 
 ### Webhook Events to Handle
 - `checkout.session.completed` — initial purchase
@@ -131,6 +143,9 @@ Clerk org created → create Stripe Customer for the org (store stripeCustomerId
 ### MCP Usage
 - Use the `stripe` MCP to manage customers, products, prices, subscriptions, invoices
 - Requires `STRIPE_SECRET_KEY` env var
+
+### When NOT to Use Managed Payments
+If a product sells physical goods, services, or is a marketplace — fall back to standard Stripe integration (Payment Intents + Elements). Check with Howard.
 
 ## PostHog (Product Analytics)
 
