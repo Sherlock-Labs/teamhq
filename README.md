@@ -1,103 +1,114 @@
 # TeamHQ
 
-TeamHQ is the central headquarters for **Sherlock Labs' AI agent product team** — a six-agent team that works together to build software, coordinated through [Claude Code](https://claude.ai/code).
+TeamHQ is the central headquarters for **Sherlock Labs' AI agent product team** — a 24-agent team that builds software together, coordinated through [Claude Code](https://claude.ai/code).
 
-The team consists of a Product Manager, Technical Architect, Product Designer, Front-End Developer, Back-End Developer, and QA Engineer. Each agent has a defined personality, role, and set of responsibilities. The CEO (you) sets the direction; the team does the rest.
+The CEO sets the direction. The team does the rest — from research and scoping through architecture, design, implementation, QA, and launch.
 
 ## The Team
 
-| Name | Role | What They Do |
-|------|------|-------------|
-| **Thomas** | Product Manager | Translates the CEO's vision into scoped, prioritized work. Writes requirements, defines acceptance criteria, decides who to involve. |
-| **Andrei** | Technical Architect | Makes tech stack decisions, defines system architecture, and guides the team toward simple, proven approaches. |
-| **Robert** | Product Designer | Designs user flows and interaction specs. Leads with usability over aesthetics. Writes implementation-ready design specs. |
-| **Alice** | Front-End Developer | Builds UIs with a craftsperson's eye for responsiveness, accessibility, and polish. Implements directly from Robert's specs. |
-| **Jonah** | Back-End Developer | Designs APIs, data models, and server-side logic. Thinks in systems and failure modes. |
-| **Enzo** | QA Engineer | The team's constructive skeptic. Tests what users actually do, not just the happy path. |
+| Name | Role | Focus |
+|------|------|-------|
+| **Thomas** | Product Manager | Scopes work, writes requirements, runs the pipeline end-to-end |
+| **Andrei** | Technical Architect | Tech stack decisions, system architecture, build-vs-buy |
+| **Robert** | Product Designer | User flows, wireframes, interaction specs |
+| **Alice** | Front-End Developer | UIs, components, client-side logic |
+| **Jonah** | Back-End Developer | APIs, data models, server-side logic |
+| **Sam** | Back-End Developer 2 | Parallel backend work, follows Jonah's patterns |
+| **Enzo** | QA Engineer | Testing, test plans, release gate |
+| **Morgan** | Visual QA | Pixel-perfect design reviews, responsiveness checks |
+| **Atlas** | Code Reviewer | Architecture, security, and maintainability reviews |
+| **Suki** | Market Researcher | Competitors, market trends, user patterns |
+| **Marco** | Technical Researcher | Library evaluation, API docs, technical briefs |
+| **Kai** | AI Engineer | Prompts, AI integrations, Claude CLI usage |
+| **Priya** | Product Marketer | Positioning, copy, feature announcements |
+| **Nadia** | Technical Writer | User guides, READMEs, documentation |
+| **Yuki** | Data Analyst | Retrospective analysis, metrics, patterns |
+| **Ravi** | Creative Strategist | Product ideas, business models, challenging assumptions |
+| **Nina** | FE Interactions | Animations, transitions, micro-interactions |
+| **Soren** | FE Responsive | Responsive layouts, CSS Grid/Flexbox, breakpoints |
+| **Amara** | FE Accessibility | WCAG compliance, keyboard nav, screen readers |
+| **Zara** | Mobile Developer | React Native/Expo — native feel, performance |
+| **Leo** | Mobile Developer 2 | React Native/Expo — animations, gestures |
+| **Howard** | Payments Engineer | Stripe, subscriptions, webhooks, PCI compliance |
+| **Derek** | Integrations | Third-party services, OAuth, webhooks, API syncs |
+| **Milo** | DevOps | CI/CD, Railway config, database migrations, monitoring |
 
-Agent definitions live in `.claude/agents/` — each file contains the agent's full personality, responsibilities, and working style.
+Agent definitions live in `.claude/agents/` — each file contains the agent's personality, responsibilities, and working style. All agents run on **Opus**.
 
 ## How It Works
 
-All work flows through **Thomas (PM) first**. The pipeline:
+All work flows through **Thomas (PM) first**. He scopes the work, then runs the full pipeline autonomously:
 
 ```
 CEO sets direction
-    → Thomas scopes requirements       → docs/{project}-requirements.md
-    → Andrei defines tech approach      → docs/{project}-tech-approach.md
-    → Robert writes design spec         → docs/{project}-design-spec.md
-    → Alice (FE) + Jonah (BE) build     → code changes
-    → Enzo validates                    → QA pass/fail
+  -> Suki + Marco research (if needed)
+  -> Thomas scopes requirements              -> docs/{project}-requirements.md
+  -> Andrei defines tech approach             -> docs/{project}-tech-approach.md
+  -> In parallel:
+     - Robert writes design spec             -> docs/{project}-design-spec.md
+     - Jonah + Sam build backend
+     - Priya writes messaging
+     - Derek / Milo / Howard (if needed)
+  -> Alice + Nina/Soren/Amara build frontend
+  -> Robert reviews implementation
+  -> Enzo validates (release gate)            -> pass/fail
+  -> Nadia writes docs
+  -> Yuki runs retrospective
 ```
 
-Each step produces a document in `docs/` that the next person reads. This creates a clean handoff chain where every agent has the context they need.
+Each step produces a document in `docs/` that downstream agents read. This creates a clean handoff chain where every agent has the context they need.
 
 ### Spawning Agents
 
 Agents are spawned as Claude Code teammates using the `Task` tool:
 
 ```
-TeamCreate → spawn Thomas first → Thomas recommends who's next
+subagent_type: "pm"    # or "fe", "be", "arch", "qa", "designer", etc.
+model: "opus"
 ```
 
-Thomas scopes the work, writes requirements, and decides which team members to involve and in what order. Never skip the PM.
-
-### Work Logging
-
-Every agent self-documents their work. When they finish, they update `data/tasks.json` with:
-- **subtasks** — what they specifically did
-- **filesChanged** — every file they touched
-- **decisions** — key trade-offs and why
-
-This gives the CEO a detailed audit trail of what happened on every project.
+Spawn Thomas first. He scopes the work, writes requirements, and decides which team members to involve and in what order. **Never skip the PM** — the only exception is single-file, cosmetic-only changes with no behavior change.
 
 ## Repository Structure
 
 ```
 teamhq/
-├── .claude/agents/          # Agent personality/role definitions
-│   ├── product-manager.md   # Thomas
-│   ├── technical-architect.md # Andrei
-│   ├── product-designer.md  # Robert
-│   ├── frontend-developer.md # Alice
-│   ├── backend-developer.md # Jonah
-│   ├── qa.md                # Enzo
-│   └── program-manager.md   # Dan (means well)
-│
-├── index.html               # Landing page
-├── css/styles.css           # Styles (dark theme, zinc/indigo tokens)
-├── js/projects.js           # Project management UI (vanilla JS)
-├── img/avatars/             # Pixel art SVG avatars
-│
-├── server/                  # Express API for project management
+├── .claude/agents/           # Agent personality/role definitions (24 agents)
+├── index.html                # Landing page
+├── css/styles.css            # Styles (light theme, royal jaguar green accent)
+├── js/                       # Landing page JS (projects, bug reporter)
+├── img/avatars/              # Pixel art SVG avatars for each agent
+├── server/                   # Express API for project management (port 3002)
 │   └── src/
-│       ├── index.ts         # Server entry (port 3002)
-│       ├── routes/projects.ts # REST CRUD endpoints
-│       ├── schemas/project.ts # Zod validation schemas
-│       ├── store/projects.ts  # JSON file-based storage
-│       └── migrate.ts       # One-time migration from tasks.json
-│
+│       ├── index.ts          # Server entry
+│       ├── routes/           # REST endpoints (projects, bugs, work items)
+│       └── schemas/          # Zod validation
 ├── data/
-│   ├── tasks.json           # Project history with detailed work logs
-│   └── projects/            # Individual project JSON files (API store)
-│
-├── docs/                    # Requirements, tech approach, design specs
-│   ├── {project}-requirements.md
-│   ├── {project}-tech-approach.md
-│   └── {project}-design-spec.md
-│
-├── ost-tool/                # Opportunity Solution Tree web app
-│   ├── client/              # Vite + React frontend
-│   └── server/              # Express backend + Claude CLI integration
-│
-├── vite.config.ts           # Vite config with /api proxy to Express
-├── package.json             # Root package with workspaces
-└── CLAUDE.md                # Instructions for Claude Code
+│   ├── projects/             # Individual project JSON files
+│   ├── pipeline-log/         # Agent work logs per project
+│   ├── work-items/           # Task tracking per project
+│   └── bug-screenshots/      # Bug reporter captures
+├── docs/                     # Planning docs per project (requirements, tech, design)
+│   └── adrs/                 # Architecture Decision Records
+├── skills/                   # Reusable reference docs for agents
+├── mobile/                   # React Native/Expo mobile app
+├── vite.config.ts            # Vite config with /api proxy to Express
+├── CLAUDE.md                 # Instructions for Claude Code
+└── package.json              # Root package
 ```
 
-## Running Locally
+## Product Repos
 
-### Landing Page + Project Management API
+Products live in their own repositories, not inside TeamHQ. Planning docs stay here in `docs/`.
+
+| Repo | What |
+|------|------|
+| [Sherlock-Labs/ost-tool](https://github.com/Sherlock-Labs/ost-tool) | Opportunity Solution Tree — Vite+React + Express |
+| [Sherlock-Labs/sherlockpdf](https://github.com/Sherlock-Labs/sherlockpdf) | SherlockPDF — PDF tools with Stripe billing |
+| [Sherlock-Labs/pdf-splitter](https://github.com/Sherlock-Labs/pdf-splitter) | Client-side PDF splitter |
+| [Sherlock-Labs/pdf-combiner](https://github.com/Sherlock-Labs/pdf-combiner) | Client-side PDF combiner |
+
+## Running Locally
 
 ```bash
 npm install
@@ -110,49 +121,22 @@ This starts both:
 
 Vite proxies `/api` requests to Express.
 
-### OST Tool
-
-```bash
-cd ost-tool
-npm install
-npm run dev
-```
-
-This starts:
-- **Vite** dev server for the OST frontend (port 5173)
-- **Express** API server for OST backend (port 3001)
-
-Requires Claude CLI installed locally for AI features (`claude -p`).
-
 ## Tech Stack
 
-**Landing page**: Plain HTML, CSS, and vanilla JavaScript. No frameworks, no build step beyond Vite's dev server. Dark theme using CSS custom properties (zinc/indigo color system).
+- **Landing page**: Plain HTML, CSS, vanilla JavaScript. No frameworks.
+- **API**: Express 5 + TypeScript, Zod validation, JSON file storage.
+- **SaaS stack**: Railway (hosting), Clerk (auth), Stripe (payments), PostHog (analytics), Loops (email), Cloudflare R2 (storage).
+- **Mobile**: React Native + Expo.
+- **Products**: Vite + React + TypeScript frontends, Express backends.
 
-**Project management API**: Express 5 + TypeScript, Zod for validation, JSON files on disk for storage. One file per project in `data/projects/`.
+## Operating Agreements
 
-**OST Tool**: Vite + React + TypeScript frontend, Express + TypeScript backend, Claude CLI for AI-powered tree generation and debate.
+Established in Charter Meeting #1:
 
-The team deliberately chose the simplest tech that fits each problem: plain HTML/CSS for a mostly-static page, React only where interactivity demands it (OST tree visualization), and file-based storage over a database for a single-user tool.
-
-## Projects Shipped
-
-| Project | What It Is |
-|---------|-----------|
-| **TeamHQ Landing Page** | The original static landing page introducing the team |
-| **OST Tool** | Full-stack Opportunity Solution Tree tool with AI-powered generation, debate, and recommendations |
-| **TeamHQ Redesign** | Dark theme, navigation bar, Tools section |
-| **Task History** | Expandable project cards with detailed agent work breakdowns |
-| **Detailed Work Logging** | Rich task schema + agent self-documentation |
-| **Project Management UI** | Web-based CRUD for creating and managing projects |
-| **OST Recommendation Redesign** | Simplified colors, expandable debater reasoning, improved hierarchy |
-
-## Design Philosophy
-
-- **Ship incrementally** — every project is phased. Phase 1 is always the minimum useful thing.
-- **The PM decides** — Thomas scopes work. The CEO sets direction, Thomas figures out how to get there.
-- **Docs are the handoff** — requirements → tech approach → design spec. Each agent reads the previous docs.
-- **Simple tech** — use the boring, proven approach. Only add complexity when the problem demands it.
-- **Agents self-document** — every agent logs what they did, what they changed, and what they decided.
+1. **QA is a release gate** — nothing ships without Enzo's pass/fail verdict
+2. **Design review before QA** — Robert checks implementation against design spec
+3. **API contract alignment** — Alice and Jonah define API shapes together before building
+4. **Trivial-fix boundary** — CEO can bypass the pipeline only for single-file, cosmetic-only, no-behavior-change fixes
 
 ## A Sherlock Labs Project
 

@@ -151,7 +151,15 @@ Each step produces a doc in `docs/` that downstream agents read. Don't skip step
 
 ## Conventions
 
-- **Separate repos for products**: Each new product or tool gets its own repository, not a subdirectory of TeamHQ. TeamHQ is the team's homepage and hub — it tracks projects, hosts the roster, and stores team docs. Product code lives in its own repo with its own README, dependencies, and deployment. The TeamHQ landing page links to products but doesn't contain them.
+- **Separate repos for products**: Each product or tool lives in its own repository under `Sherlock-Labs/`, not inside TeamHQ. TeamHQ is the team's homepage and hub — it tracks projects, hosts the roster, and stores planning docs. Product code lives in its own repo with its own README, dependencies, and deployment.
+
+  **Product repos:**
+  | Repo | What |
+  |------|------|
+  | [`Sherlock-Labs/ost-tool`](https://github.com/Sherlock-Labs/ost-tool) | Opportunity Solution Tree — Vite+React + Express |
+  | [`Sherlock-Labs/sherlockpdf`](https://github.com/Sherlock-Labs/sherlockpdf) | SherlockPDF — PDF tools with Stripe billing |
+  | [`Sherlock-Labs/pdf-splitter`](https://github.com/Sherlock-Labs/pdf-splitter) | Client-side PDF splitter (single HTML file) |
+  | [`Sherlock-Labs/pdf-combiner`](https://github.com/Sherlock-Labs/pdf-combiner) | Client-side PDF combiner (single HTML file) |
 - **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively. These planning docs live in TeamHQ even when the product code is in a separate repo.
 - **Pipeline log**: Every agent updates `data/pipeline-log/{project-slug}.json` with subtasks, filesChanged, and decisions when they finish. This is the retrospective record of what each agent did during the pipeline — separate from work items (which are the forward-looking task list). Each project has its own JSON file to avoid write collisions. Add new project IDs to `data/pipeline-log/index.json`.
 - **Work items are living documents**: Each project has work items in `data/work-items/{slug}.json` tracked via the Tasks page. Agents must keep them current:
@@ -162,7 +170,7 @@ Each step produces a doc in `docs/` that downstream agents read. Don't skip step
   - **Thomas (PM)** is responsible for creating the initial work items when scoping a project. Other agents update status and add items as they work.
 - **Landing page**: Plain HTML/CSS/vanilla JS — no frameworks. Light theme with royal jaguar green accent.
 - **SaaS stack**: Railway (hosting + Postgres), Clerk (auth + orgs), Stripe (payments), PostHog (analytics), Loops (email), Cloudflare R2 (file storage). See `skills/development/saas-stack.md` for full integration guide, env vars, and MCP usage. All agents building SaaS products should read this skill first.
-- **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `ost-tool/` for reference pattern — future tools should be separate repos)
+- **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `Sherlock-Labs/ost-tool` for reference pattern)
 - **Architecture Decision Records**: Cross-project technical decisions are documented in `docs/adrs/`. See `docs/adrs/README.md` for the index.
 - **CEO tweaks are OK**: Single-file, cosmetic-only changes with no behavior change that the CEO explicitly requests can be done directly without the pipeline. If it affects design tokens, give Robert a heads-up.
 - **Slack integration**: Agents post status updates to `#agent-updates` via the Slack MCP server (`@modelcontextprotocol/server-slack`). Each agent uses `chat:write.customize` to appear with their own name and pixel art avatar. See each agent's "Slack Communication" section for identity settings.
