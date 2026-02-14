@@ -562,22 +562,25 @@
     var existingError = this.screenshotThumb.querySelector('.bug-panel__screenshot-error');
     if (existingError) existingError.remove();
 
-    loadDomToImage().then(function (domtoimage) {
+    loadHtmlToImage().then(function (htmlToImage) {
       // Hide panel during capture
       self.panelEl.style.visibility = 'hidden';
 
-      // Use domtoimage to capture the body
-      // We filter out the bug reporter root itself so it doesn't appear in the shot
-      return domtoimage.toJpeg(document.body, {
+      // Use htmlToImage to capture the body
+      return htmlToImage.toJpeg(document.body, {
         quality: 0.7,
-        bgcolor: '#ffffff',
+        backgroundColor: '#ffffff',
+        canvasWidth: window.innerWidth,
+        canvasHeight: window.innerHeight,
         width: window.innerWidth,
         height: window.innerHeight,
         style: {
           transform: 'scale(1)',
-          left: 0,
-          top: 0
+          left: '0',
+          top: '0',
+          margin: '0'
         },
+        cacheBust: true,
         filter: function (node) {
           // Exclude the bug reporter widget and the preview overlay
           if (node.id === 'bug-reporter-root' || node.id === 'panel-preview-overlay') return false;
