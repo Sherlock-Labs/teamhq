@@ -70,31 +70,33 @@ This is the team's north star. Every decision — scoping, architecture, design,
 ## How the Team Operates
 
 1. **CEO** sets the vision and direction
-2. **Suki** (Market Researcher) and **Marco** (Technical Researcher) investigate the landscape (if applicable)
-3. **Thomas** (PM) breaks it into scoped, prioritized work with clear acceptance criteria
-4. **Andrei** (Arch) defines the technical approach; **Kai** (AI Engineer) advises on AI integration
-5. After Andrei, three tracks run **in parallel**:
+2. **Ravi** (Strategist) and **Priya** (Marketer) do a quick **divergence check** — Ravi asks "should we build this, and is there a wilder version?" Priya asks "can I explain why someone should care in one sentence?" This is a brief sanity check (not a gate), and either can flag concerns before the pipeline commits. Skip for trivial projects or when the CEO explicitly says the direction is final.
+3. **Suki** (Market Researcher) and **Marco** (Technical Researcher) investigate the landscape (if applicable)
+4. **Thomas** (PM) breaks it into scoped, prioritized work with clear acceptance criteria
+5. **Andrei** (Arch) defines the technical approach; **Kai** (AI Engineer) advises on AI integration
+6. After Andrei, three tracks run **in parallel**:
    - **Robert** (Designer) writes the design spec
    - **Jonah + Sam** (BE) build backend (APIs, schemas, business logic) — they need requirements + tech approach, not the design spec
    - **Priya** (Marketer) writes messaging/copy — she needs requirements, not working code
    - **Derek** (Integrations) wires up third-party services if needed — he needs the tech approach
    - **Milo** (DevOps) sets up infrastructure/CI if needed — he needs the tech approach
    - **Howard** (Payments) builds payment flows if needed — he needs requirements + tech approach
-6. **Alice** (FE) + **Zara & Leo** (Mobile) start frontend/mobile implementation once Robert's design spec AND the backend API are ready. **Nina** (Interactions), **Soren** (Responsive), and **Amara** (A11y) contribute during or after implementation for UI-heavy features.
-7. **Robert** (Designer) reviews implementation against design spec (lightweight visual check). For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
-8. **Enzo** (QA) gives a pass/fail verdict — QA is a release gate, nothing ships without a pass. **Nadia** (Writer) starts docs in parallel with QA (revises if QA causes changes).
-9. **Yuki** (Analyst) runs post-project retrospective analysis (can begin data collection during QA)
-10. **Ravi** (Strategist) is available at any point for creative direction, business model input, or challenging assumptions
+7. **Alice** (FE) + **Zara & Leo** (Mobile) start frontend/mobile implementation once Robert's design spec AND the backend API are ready. **Nina** (Interactions), **Soren** (Responsive), and **Amara** (A11y) contribute during or after implementation for UI-heavy features.
+8. **Robert** (Designer) reviews implementation against design spec (lightweight visual check). For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
+9. **Enzo** (QA) gives a pass/fail verdict — QA is a release gate, nothing ships without a pass. **Nadia** (Writer) starts docs in parallel with QA (revises if QA causes changes).
+10. **Yuki** (Analyst) runs post-project retrospective analysis (can begin data collection during QA)
+11. **Ravi** (Strategist) is available at any point for creative direction, business model input, or challenging assumptions
 
 ## Workflow Rules
 
 **All work flows through Thomas (PM) first.** When the CEO gives a direction or task:
 
+0. **Frame direction as problems, not solutions.** "Users need a faster way to capture ideas on mobile" gives Thomas more room to scope the right answer than "build a voicenote app." When relaying CEO direction to the team, restate it as the problem to solve, not the first solution that comes to mind. The CEO can still name a specific product — but pair it with the "why" so Thomas can push back on scope or suggest a better approach.
 1. **Spawn Thomas first** — he scopes the work, writes requirements, and defines acceptance criteria
 2. **Thomas runs the pipeline autonomously** — after writing requirements, he spawns the right agents in sequence (Arch → Designer → FE/BE → Design Review → QA), waiting for each to finish before spawning the next. He doesn't just scope and report back — he manages the full build chain.
 3. **Thomas reports to the CEO** when the pipeline completes or if it gets blocked and needs CEO input
 4. **Never skip the PM** — do not directly delegate tasks to other agents or implement features yourself without Thomas scoping the work first
-5. **The only exception** is trivial fixes the CEO explicitly asks to be done directly. The bright-line rule: **single-file, cosmetic-only, no behavior change**. If it touches more than one file or changes behavior, it goes through Thomas. If it affects design system tokens (color values, spacing units), give Robert a heads-up even if it's small.
+5. **The only exception** is trivial fixes the CEO explicitly asks to be done directly. The bright-line rule: **single-file, cosmetic-only, no behavior change**. If it touches more than one file or changes behavior, it goes through Thomas. **All direct tweaks notify Robert and Enzo** — a quick heads-up so Robert can keep the design spec in sync and Enzo can spot-check for regressions.
 
 This ensures work is properly scoped, prioritized, and has clear acceptance criteria before anyone starts building. Thomas owning the full pipeline means the CEO can kick off a project with a single spawn and get a complete result back.
 
@@ -103,13 +105,20 @@ This ensures work is properly scoped, prioritized, and has clear acceptance crit
 These were established in Charter Meeting #1 and are binding for all team operations:
 
 1. **QA is a release gate.** Nothing ships until Enzo gives a pass/fail verdict. Failures must be fixed before release — no exceptions, no deferrals.
-2. **Trivial-fix boundary.** CEO can bypass the pipeline only for changes that are: single-file, cosmetic-only, and have no behavior change. Everything else goes through Thomas. Design-system-affecting changes (token values, spacing units) get a heads-up to Robert even if small.
+2. **Trivial-fix boundary.** CEO can bypass the pipeline only for changes that are: single-file, cosmetic-only, and have no behavior change. Everything else goes through Thomas. **All direct tweaks get a heads-up to both Robert and Enzo** — not for approval, just notification so Robert can keep the design spec in sync and Enzo can spot-check for regressions (especially mobile/a11y breakage from CSS changes).
 3. **Design review before QA.** Robert does a lightweight visual review of implementations against the design spec before handoff to Enzo. Not a formal gate — a quick check to catch design drift early.
 4. **API contract alignment.** On full-stack projects, Alice and Jonah define API shapes together before building independently. Write it down, then build to that contract.
+5. **Lightweight iteration track.** Post-v1 improvements that are too big for the trivial-fix exception but too small for the full pipeline use a three-step fast path: **(1)** Thomas scopes it briefly (a paragraph, not a full requirements doc), **(2)** the relevant builder implements it, **(3)** Robert eyeballs it + Enzo spot-checks. Examples: adding a loading state, refining a responsive breakpoint, improving a micro-interaction, adding a missing empty state. This track skips research, architecture, full design spec, marketing, docs, and retrospective. If Thomas judges the change is bigger than a fast-path item, it goes through the full pipeline.
+6. **Architecture time floor.** Every project gets a deliberate architecture phase — even ones that look simple. Andrei gets a real pass at the tech approach, not a compressed "just pick Express and go." Simple projects produce short docs, but the thinking still happens. Skipping architecture to save time creates rework that costs more downstream. The only exception is the lightweight iteration track (Agreement #5), which skips architecture by design.
+7. **Backend quality parity.** Backend work gets the same explicit quality review that UI gets. After implementation and before QA, **Atlas (Code Reviewer)** reviews backend code for architecture, security, reliability, and performance concerns (missing indexes, error handling gaps, missing retry logic, observability blind spots). This runs in parallel with Robert's design review — Atlas reviews backend, Robert reviews frontend. Both feed into Enzo's QA pass.
+8. **One pipeline at a time.** Don't start a new project pipeline until the current one clears QA. The team's throughput is highest when focused on a single project through to ship. Parallel pipelines create dependency tangles and split attention. The CEO can queue up the next project direction, but Thomas doesn't begin scoping it until the active pipeline ships or is explicitly paused. Exception: the lightweight iteration track (Agreement #5) can run on a shipped product while a new project pipeline is active, since it's small and self-contained.
 
 ## Proven Pipeline
 
 The team has shipped 5+ projects. This pipeline exploits parallelism where dependencies allow:
+
+**Phase 0 — Divergence Check** (brief, not a gate)
+0. **Ravi + Priya** weigh in on the premise before the pipeline commits. Ravi: "Should we build this? Is there a wilder version?" Priya: "Can I explain why someone should care in one sentence?" If either flags a concern, the CEO decides whether to adjust or proceed. Skip for trivial projects or when the CEO says the direction is final.
 
 **Phase 1 — Research** (if applicable)
 1. **Suki + Marco** research the landscape in parallel → `docs/{project}-research.md`
@@ -133,19 +142,22 @@ After Andrei finishes, these run simultaneously — they don't depend on each ot
 **Phase 5 — Frontend/Mobile Implementation**
 5. **Alice (FE) + Zara & Leo (Mobile)** implement once Robert's design spec AND the backend API are ready. **Nina** (Interactions), **Soren** (Responsive), and **Amara** (A11y) contribute during or after implementation for UI-heavy features.
 
-**Phase 6 — Review**
-6. **Robert (Designer)** reviews implementation against design spec — lightweight visual check. For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
+**Phase 6 — Review (parallel)**
+6. **Robert (Designer)** reviews frontend implementation against design spec — lightweight visual check. For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
+7. **Atlas (Code Reviewer)** reviews backend code for architecture, security, reliability, and performance concerns. Runs in parallel with Robert's design review.
 
 **Phase 7 — QA + Docs (parallel)**
-7. **Enzo (QA)** gives pass/fail verdict — release gate, failures block shipping. If he received an early notification in step 4, he arrives with pre-planned regression cases.
-8. **Nadia (Writer)** starts documentation in parallel with QA → user guides, README updates. Revises if QA causes changes.
+8. **Enzo (QA)** gives pass/fail verdict — release gate, failures block shipping. If he received an early notification in step 4, he arrives with pre-planned regression cases.
+9. **Nadia (Writer)** starts documentation in parallel with QA → user guides, README updates. Revises if QA causes changes.
 
 **Phase 8 — Retrospective**
-9. **Yuki (Analyst)** runs retrospective analysis → `docs/{project}-retrospective.md`. Can begin data collection during QA.
+10. **Yuki (Analyst)** runs retrospective analysis → `docs/{project}-retrospective.md`. Can begin data collection during QA.
 
 **Ravi (Strategist)** is available at any phase for creative direction, business model input, or challenging assumptions.
 
-**Critical path:** Research → Thomas → Andrei → Robert → Alice → Robert review → Enzo → Ship. Jonah, Sam, Priya, Nadia, Derek, Milo, and Howard are off the critical path.
+**Critical path:** Divergence Check → Research → Thomas → Andrei → Robert → Alice → Robert review + Atlas review → Enzo → Ship. Jonah, Sam, Priya, Nadia, Derek, Milo, Howard, and Ravi are off the critical path.
+
+**One pipeline at a time.** Don't start a new project pipeline until the current one clears QA. The CEO can queue the next direction, but Thomas doesn't begin scoping it until the active pipeline ships or is explicitly paused.
 
 Each step produces a doc in `docs/` that downstream agents read. Don't skip steps — Andrei needs Thomas's scope, Robert needs both, and Alice needs all three. Jonah only needs requirements + tech approach.
 
@@ -172,7 +184,7 @@ Each step produces a doc in `docs/` that downstream agents read. Don't skip step
 - **SaaS stack**: Railway (hosting + Postgres), Clerk (auth + orgs), Stripe Managed Payments (payments — Stripe is merchant of record, handles tax/fraud/disputes), PostHog (analytics), Loops (email), Cloudflare R2 (file storage). **Stripe Managed Payments is the default for all new products** — it eliminates global tax compliance, fraud management, and dispute handling. Only fall back to standard Stripe for physical goods or marketplace models. See `skills/development/saas-stack.md` for full integration guide, env vars, and MCP usage. All agents building SaaS products should read this skill first.
 - **Full-stack tools**: Vite+React frontend, Express backend, npm workspaces (see `Sherlock-Labs/ost-tool` for reference pattern)
 - **Architecture Decision Records**: Cross-project technical decisions are documented in `docs/adrs/`. See `docs/adrs/README.md` for the index.
-- **CEO tweaks are OK**: Single-file, cosmetic-only changes with no behavior change that the CEO explicitly requests can be done directly without the pipeline. If it affects design tokens, give Robert a heads-up.
+- **CEO tweaks are OK**: Single-file, cosmetic-only changes with no behavior change that the CEO explicitly requests can be done directly without the pipeline. All direct tweaks notify Robert and Enzo (heads-up, not approval).
 - **Slack integration**: Agents post status updates to `#agent-updates` via the Slack MCP server (`@modelcontextprotocol/server-slack`). Each agent uses `chat:write.customize` to appear with their own name and pixel art avatar. See each agent's "Slack Communication" section for identity settings.
 - **Bug reporter widget**: A floating bug button appears on every TeamHQ page except index.html. It captures a screenshot, records voice with live AI transcription (ElevenLabs Scribe v2 Realtime), and files bugs as work items to the "Bugs" project. Open with the button or `Cmd/Ctrl+Shift+B`. Implementation: `js/bug-reporter.js` + `css/bug-reporter.css`. API: `GET /api/scribe-token`, `POST /api/bug-reports`. Screenshots stored in `data/bug-screenshots/`. See `docs/bug-reporter-user-guide.md` for usage.
 
