@@ -172,6 +172,7 @@ Each step produces a doc in `docs/` that downstream agents read. Don't skip step
   | [`Sherlock-Labs/sherlockpdf`](https://github.com/Sherlock-Labs/sherlockpdf) | SherlockPDF — PDF tools with Stripe billing |
   | [`Sherlock-Labs/pdf-splitter`](https://github.com/Sherlock-Labs/pdf-splitter) | Client-side PDF splitter (single HTML file) |
   | [`Sherlock-Labs/pdf-combiner`](https://github.com/Sherlock-Labs/pdf-combiner) | Client-side PDF combiner (single HTML file) |
+  | [`Sherlock-Labs/sitesnap`](https://github.com/Sherlock-Labs/sitesnap) | SiteSnap — job site photo auto-organizer, Expo + Express |
   | [`Sherlock-Labs/quotevoice`](https://github.com/Sherlock-Labs/quotevoice) | QuoteVoice — Voice-to-professional estimate for contractors (Expo + Express) |
   | [`Sherlock-Labs/voicenote-pro`](https://github.com/Sherlock-Labs/voicenote-pro) | VoiceNote Pro — Voice notes with AI structuring, RevenueCat IAP (Expo + Express) |
 - **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively. These planning docs live in TeamHQ even when the product code is in a separate repo.
