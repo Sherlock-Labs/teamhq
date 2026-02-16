@@ -172,6 +172,8 @@ Each step produces a doc in `docs/` that downstream agents read. Don't skip step
   | [`Sherlock-Labs/sherlockpdf`](https://github.com/Sherlock-Labs/sherlockpdf) | SherlockPDF — PDF tools with Stripe billing |
   | [`Sherlock-Labs/pdf-splitter`](https://github.com/Sherlock-Labs/pdf-splitter) | Client-side PDF splitter (single HTML file) |
   | [`Sherlock-Labs/pdf-combiner`](https://github.com/Sherlock-Labs/pdf-combiner) | Client-side PDF combiner (single HTML file) |
+  | [`Sherlock-Labs/quotevoice`](https://github.com/Sherlock-Labs/quotevoice) | QuoteVoice — Voice-to-professional estimate for contractors (Expo + Express) |
+  | [`Sherlock-Labs/voicenote-pro`](https://github.com/Sherlock-Labs/voicenote-pro) | VoiceNote Pro — Voice notes with AI structuring, RevenueCat IAP (Expo + Express) |
 - **Docs per project**: Every project gets `docs/{project}-requirements.md`, `docs/{project}-tech-approach.md`, and `docs/{project}-design-spec.md` written by Thomas, Andrei, and Robert respectively. These planning docs live in TeamHQ even when the product code is in a separate repo.
 - **Pipeline log**: Every agent updates `data/pipeline-log/{project-slug}.json` with subtasks, filesChanged, and decisions when they finish. This is the retrospective record of what each agent did during the pipeline — separate from work items (which are the forward-looking task list). Each project has its own JSON file to avoid write collisions. Add new project IDs to `data/pipeline-log/index.json`.
 - **Work items are living documents**: Each project has work items in `data/work-items/{slug}.json` tracked via the Tasks page. Agents must keep them current:
@@ -200,34 +202,55 @@ model: "opus" (all agents use Opus)
 
 All agents use **Opus** for maximum reasoning quality across all roles.
 
-## Team Memory
+## Team Memory (Dual-Memory System)
 
-Persistent team knowledge is stored in a vector-enabled SQLite database via the `mcp-memory-libsql` MCP server. This gives every agent semantic search over the team's accumulated knowledge — patterns, decisions, lessons learned, and component inventories.
+The team uses **two memory systems in parallel**. Both must be kept in sync.
 
-**MCP Tools available:**
-- `create_entities` — store knowledge as entities with a type, observations, and optional relations
-- `search_nodes` — semantic search across all stored knowledge (text query or vector)
-- `read_graph` — browse recent entities and their relations
-- `create_relations` — link entities together (e.g., project → uses → pattern)
-- `delete_entity` / `delete_relation` — remove outdated knowledge
+### 1. Auto-Memory (MEMORY.md)
 
-**Entity types to use:**
+Claude Code's built-in persistent memory at `~/.claude/projects/.../memory/MEMORY.md`. Loaded into the system prompt every session automatically.
+
+- **What goes here:** One-liner summaries, quick-reference facts (roster, workflow rules, key lessons). 200-line limit.
+- **When to update:** When stable patterns are confirmed, workflow rules change, or the CEO gives standing instructions.
+- **Who uses it:** The lead agent (Claude Code). Always in context — no search needed.
+
+### 2. MCP Team Memory (Semantic Search)
+
+Persistent team knowledge stored in a vector-enabled SQLite database via the `mcp-memory-libsql` MCP server. Gives every agent semantic search over accumulated knowledge.
+
+**MCP Tools:**
+- `mcp__memory__create_entities` — store knowledge as entities with a type, observations, and optional relations
+- `mcp__memory__search_nodes` — semantic search across all stored knowledge (text query or vector)
+- `mcp__memory__read_graph` — browse recent entities and their relations
+- `mcp__memory__create_relations` — link entities together (e.g., project → uses → pattern)
+- `mcp__memory__delete_entity` / `mcp__memory__delete_relation` — remove outdated knowledge
+
+**Entity types:**
 | Type | Examples | What to store |
 |------|----------|---------------|
 | `project` | OST Tool, SherlockPDF | stack, status, lessons learned, shipping date |
 | `component` | ProjectCard, AccordionList | location, who built it, reuse notes |
-| `pattern` | express-api-scaffold, dark-theme-tokens | what it is, when to use it, gotchas |
-| `decision` | json-over-database, client-side-pdf | rationale, alternatives rejected, outcome |
+| `pattern` | express-api-scaffold, elevenlabs-scribe-v2-pattern | what it is, when to use it, gotchas |
+| `decision` | json-over-database, voicenote-pro-scribe-v2-migration | rationale, alternatives rejected, outcome |
 | `lesson` | sse-reconnection-handling | what happened, what we learned, what to do differently |
-
-**When to use memory:**
-- **On project start:** `search_nodes` for relevant patterns, decisions, and lessons before beginning work.
-- **On project finish:** `create_entities` to record new patterns discovered, decisions made, components built, and lessons learned.
-- **When building something new:** Search first — if a similar component or pattern exists, reuse or extend it.
 
 **Relation types:** `uses`, `built_by`, `decided_in`, `replaced_by`, `related_to`, `depends_on`
 
 **Storage:** Local SQLite at `data/memory/team-memory.db` (gitignored, local per machine). Can be upgraded to remote Turso instance for shared access.
+
+### The Dual-Memory Rule
+
+**Store in both systems.** MEMORY.md gets the one-liner. MCP memory gets the full detail with relations.
+
+| When | MEMORY.md | MCP Memory |
+|------|-----------|------------|
+| **Project start** | Check existing notes | `search_nodes` for relevant patterns, decisions, lessons |
+| **Key decision made** | Add one-liner to Lessons section if broadly applicable | `create_entities` with full rationale, alternatives, outcome |
+| **New pattern discovered** | Add to relevant section if it affects workflow | `create_entities` as `pattern` type with usage notes and gotchas |
+| **Project finish** | Update if lessons change how we work | `create_entities` for all new patterns, decisions, components, lessons |
+| **Building something new** | Glance at relevant section | `search_nodes` first — reuse or extend existing patterns |
+
+**Why both:** MEMORY.md is always in context but shallow (200 lines, flat text). MCP memory is deep and searchable but requires explicit queries. Together they give fast recall + rich detail.
 
 ## SaaS Stack MCP Servers
 
