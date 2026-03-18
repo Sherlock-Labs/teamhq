@@ -117,17 +117,6 @@ teamhq/
 └── package.json              # Root package
 ```
 
-## Product Repos
-
-Products live in their own repositories, not inside TeamHQ. Planning docs stay here in `docs/`.
-
-| Repo | What |
-|------|------|
-| [Sherlock-Labs/ost-tool](https://github.com/Sherlock-Labs/ost-tool) | Opportunity Solution Tree — Vite+React + Express |
-| [Sherlock-Labs/sherlockpdf](https://github.com/Sherlock-Labs/sherlockpdf) | SherlockPDF — PDF tools with Stripe billing |
-| [Sherlock-Labs/pdf-splitter](https://github.com/Sherlock-Labs/pdf-splitter) | Client-side PDF splitter |
-| [Sherlock-Labs/pdf-combiner](https://github.com/Sherlock-Labs/pdf-combiner) | Client-side PDF combiner |
-
 ## Running Locally
 
 ```bash
