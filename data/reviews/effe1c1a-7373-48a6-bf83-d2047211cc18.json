@@ -1,0 +1,21 @@
+{
+  "id": "effe1c1a-7373-48a6-bf83-d2047211cc18",
+  "projectId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+  "projectSlug": "teamhq-platform-improvements",
+  "projectName": "TeamHQ Platform Improvements",
+  "gate": "afterRequirements",
+  "status": "pending",
+  "createdAt": "2026-03-18T15:50:55.236Z",
+  "updatedAt": "2026-03-18T15:50:55.236Z",
+  "resolvedAt": null,
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-autonomy-improvements.md",
+      "title": "TeamHQ Improvement Roadmap"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #42 — Stale Work Cleared + Next Priorities Set\n\nTeam held standup #42 (6 participants). Key outcomes:\n\n**Stale work resolved:**\n- TPI-2 (pipeline dashboard scoping): COMPLETED. Backend endpoint shipped, frontend task (TPI-2b) properly scoped for Alice with API shape and card layout.\n- RT-38c (command palette): Alice focus trap fix expanded to modal manager refactor (4-6h). Not stale — actively worked. Enzo QA immediately after.\n\n**Alice priority queue:**\n1. RT-38c — modal manager + command palette (today)\n2. TPI-6 — meetings page cards (next)\n3. TPI-2b — pipeline dashboard frontend\n4. TPI-3 — keyboard shortcuts\n\n**New:** TPI-9 (meetings search/filter) added as fast-follow to TPI-6.\n\n**Review gates:** 6 of 8 are batch-approvable (shipped Forge themes). RECOMMEND batch-approve to clear backlog.\n\n**Bug reporter deprioritized** behind stale task clearing.\n\n**Parallel:** TPI-7 (pipeline-log audit) ready for Andrei immediately.",
+  "feedback": null
+}

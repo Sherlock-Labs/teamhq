@@ -1,0 +1,21 @@
+{
+  "id": "9c61cb47-a9c6-4e24-8eb2-f409c534e390",
+  "projectId": "58f0c169-450e-489a-ae98-f7142b88f550",
+  "projectSlug": "workflow-state-patterns",
+  "projectName": "Workflow State Patterns",
+  "gate": "afterResearch",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:32:42.569Z",
+  "updatedAt": "2026-03-18T13:36:34.634Z",
+  "resolvedAt": "2026-03-18T13:36:34.634Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-workflow-state-patterns.md",
+      "title": "Workflow State Patterns Eval"
+    }
+  ],
+  "agent": "Marco",
+  "summary": "Marco evaluated 4 patterns (JSON state machine, saga, FSM libs, custom cursor). Recommends JSON state machine — simplest approach, no dependencies, fits our boring-tech philosophy. XState considered but rejected as overkill.",
+  "feedback": null
+}

@@ -1,0 +1,27 @@
+{
+  "id": "c689cc18-b11b-4347-9a0e-ff5da4a801bb",
+  "type": "custom",
+  "status": "failed",
+  "meetingNumber": 38,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T15:16:16.274Z",
+  "completedAt": "2026-03-18T15:19:20.482Z",
+  "durationMs": null,
+  "error": "Meeting was interrupted: server restart.",
+  "summary": null,
+  "keyTakeaways": [],
+  "transcript": [],
+  "decisions": [],
+  "actionItems": [],
+  "mood": null,
+  "nextMeetingTopics": [],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Quick standup #40. Context: TPI-1 (health endpoint) shipped and confirmed working. TPI-2 (pipeline status dashboard on index.html) is next priority. RT-38c (command palette) marked in-progress but stale 24h. Agenda: (1) RT-38c status — is Alice still active on it or blocked? (2) TPI-2 pipeline dashboard — scope check: what exactly should it show? Active pipelines, recent completions, pending reviews count. Should this be a lightweight card section on index.html or a separate page? (3) Any quick wins we can ship for TeamHQ today? (4) The 7 pending Forge review gates — what should we tell the CEO? Each person: one concrete suggestion for improving TeamHQ. Keep it to 5 minutes.",
+  "interviewConfig": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cec1c954-94a5-4511-a7db-6cabe3382cdb",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterQA",
+  "status": "changes-requested",
+  "createdAt": "2026-03-18T14:25:43.113Z",
+  "updatedAt": "2026-03-18T14:36:59.526Z",
+  "resolvedAt": null,
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/team-project-proposals-q1.md",
+      "title": "6 Team Project Proposals"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #32 summary + team proposals.\n\nSTATUS: 6 CEO review gates remain the sole bottleneck. Team is ready and pre-staging work:\n- Enzo: Regression suite ~70% done (timeline view), board view drag-and-drop complete. Full coverage by EOD tomorrow.\n- Alice: Queued for command palette (2-3 days once gates clear). Doing Forge a11y audit in downtime.\n- Andrei: Pre-writing CSS token hierarchy doc against worktree code.\n- Jonah: Idle on Forge. Picking up event log rotation (backend hygiene) and available for small product improvements.\n\nSEQUENCE REMINDER: (1) Approve visual themes gates → real QA (Enzo) → merge to main. (2) THEN approve command palette gates → Alice builds (2-3 days) → design review → QA. Merging themes first avoids style reconciliation issues.\n\nNEW: 6 project pitches from the team (see deliverable). CEO picks which to greenlight:\n1. Forge E2E test harness (Enzo) — Playwright suite for automated regression\n2. Shared component library (Andrei) — Extract common patterns across products\n3. Forge offline mode (Alice) — IndexedDB cache for offline viewing/editing\n4. Cross-product event/notification system (Jonah) — Webhook bus across all products\n5. Forge onboarding flow (Robert) — 3-step guided setup for new users\n6. Cross-product analytics dashboard (Thomas) — PostHog data across all 5 products\n\nAlso discussed: SherlockPDF needs drag-and-drop upload + mobile responsiveness. QuoteVoice could use session history search. VoiceNote Pro has no retry logic on RevenueCat receipt validation (reliability fix, not feature).",
+  "feedback": "No offline mode. I don't think that's necessary."
+}

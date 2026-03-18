@@ -1,0 +1,21 @@
+{
+  "id": "1dd92a1c-6bbc-4266-a59f-2623a38df316",
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "projectSlug": "review-gates",
+  "projectName": "Pipeline Review Gates",
+  "gate": "afterRequirements",
+  "status": "approved",
+  "createdAt": "2026-03-17T22:18:10.272Z",
+  "updatedAt": "2026-03-18T02:54:40.112Z",
+  "resolvedAt": "2026-03-18T02:54:40.112Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/pipeline-review-gates-requirements.md",
+      "title": "Requirements Document"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Requirements doc defines 6 configurable review gates (after each pipeline phase), a reviews page with inline deliverable viewing, and CEO feedback/chat flow. Scoped to vanilla JS + existing Express API. 10 work items created covering the full pipeline.",
+  "feedback": null
+}

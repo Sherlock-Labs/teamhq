@@ -1,0 +1,2627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleetio Pricing & Packaging Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-warm: #fafbfc;
+    --surface: #f4f6f8;
+    --surface-alt: #eef1f5;
+    --border: #e2e6eb;
+    --border-subtle: #edf0f3;
+    --text: #0f1729;
+    --text-2: #3d4f65;
+    --text-3: #6b7d94;
+    --text-4: #94a3b8;
+    --blue: #68c5ed;
+    --blue-deep: #2d9ece;
+    --blue-soft: #e6f4fc;
+    --blue-glow: rgba(104,197,237,0.12);
+    --green: #067749;
+    --green-soft: #e8f5ee;
+    --green-glow: rgba(6,119,73,0.08);
+    --amber: #d97a0b;
+    --amber-soft: #fef3e2;
+    --red: #c53d3d;
+    --red-soft: #fdf0f0;
+    --purple: #6d4fc0;
+    --purple-soft: #f0ecfa;
+    --r: 14px;
+    --r-lg: 20px;
+    --shadow-1: 0 1px 2px rgba(15,23,41,0.04), 0 1px 3px rgba(15,23,41,0.06);
+    --shadow-2: 0 4px 16px rgba(15,23,41,0.06), 0 1px 3px rgba(15,23,41,0.04);
+    --shadow-3: 0 12px 40px rgba(15,23,41,0.08), 0 2px 8px rgba(15,23,41,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+  }
+
+  /* ─── Navigation ─── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0 48px;
+  }
+  .nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 56px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    white-space: nowrap;
+    letter-spacing: -0.3px;
+  }
+  .nav-brand span { color: var(--blue-deep); }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-3);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav-link:hover { color: var(--text); background: var(--surface); }
+
+  /* ─── Layout ─── */
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+  .wrap-narrow { max-width: 960px; margin: 0 auto; padding: 0 48px; }
+
+  /* ─── Hero ─── */
+  .hero {
+    padding: 100px 48px 80px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--blue-soft) 0%, var(--bg) 70%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(104,197,237,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.8);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 28px;
+    backdrop-filter: blur(8px);
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.08;
+    margin-bottom: 20px;
+    color: var(--text);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero p {
+    font-size: 19px;
+    color: var(--text-2);
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ─── Sections ─── */
+  .section {
+    padding: 88px 0;
+    position: relative;
+  }
+  .section + .section { border-top: 1px solid var(--border-subtle); }
+  .section-eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue-deep);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -1.2px;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .section-desc {
+    font-size: 17px;
+    color: var(--text-2);
+    max-width: 600px;
+    margin-bottom: 48px;
+    line-height: 1.6;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-2);
+    border-color: var(--border);
+    transform: translateY(-1px);
+  }
+  .grid { display: grid; gap: 20px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  /* ─── Stats ─── */
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .stat-val {
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 14px;
+    color: var(--text-3);
+    font-weight: 500;
+  }
+
+  /* ─── Feature table ─── */
+  .feat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .feat-table thead th {
+    text-align: left;
+    padding: 14px 20px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+  }
+  .feat-table thead th:first-child { border-radius: var(--r) 0 0 0; }
+  .feat-table thead th:last-child { border-radius: 0 var(--r) 0 0; }
+  .feat-table td {
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-2);
+  }
+  .feat-table tr:last-child td { border-bottom: none; }
+  .feat-table td:first-child { font-weight: 500; color: var(--text); }
+  .feat-table .yes { color: var(--green); font-weight: 600; }
+  .feat-table .no { color: var(--text-4); }
+  .feat-table .warn { color: var(--amber); font-weight: 500; font-size: 13px; }
+
+  /* ─── Issue cards ─── */
+  .issue {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .issue-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .issue-num.critical { background: var(--red-soft); color: var(--red); }
+  .issue-num.warning { background: var(--amber-soft); color: var(--amber); }
+  .issue-num.info { background: var(--blue-soft); color: var(--blue-deep); }
+  .issue h4 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .issue p {
+    font-size: 15px;
+    color: var(--text-2);
+    line-height: 1.65;
+  }
+
+  /* ─── Bar chart ─── */
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    height: 280px;
+    padding: 20px 0;
+  }
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .bar {
+    width: 100%;
+    max-width: 72px;
+    border-radius: 10px 10px 4px 4px;
+    position: relative;
+    min-height: 6px;
+  }
+  .bar-val {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: -0.3px;
+  }
+  .bar-name {
+    font-size: 13px;
+    color: var(--text-3);
+    text-align: center;
+    margin-top: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* ─── Pricing cards ─── */
+  .price-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .price-card:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+  .price-card.pop {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 1px var(--blue), var(--shadow-2);
+  }
+  .price-card.pop::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 16px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .price-tier {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-3);
+    margin-bottom: 10px;
+  }
+  .price-amt {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .price-amt span {
+    font-size: 16px;
+    color: var(--text-3);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .price-desc {
+    font-size: 15px;
+    color: var(--text-2);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .price-list { list-style: none; flex-grow: 1; }
+  .price-list li {
+    padding: 7px 0;
+    font-size: 15px;
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .price-list li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  .price-list li.em { color: var(--text); font-weight: 600; }
+
+  /* ─── Plus Packs ─── */
+  .pack {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .pack:hover { box-shadow: var(--shadow-2); transform: translateY(-1px); }
+  .pack::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .pack.green::after { background: linear-gradient(90deg, var(--green), #2ecc71); }
+  .pack.blue::after { background: linear-gradient(90deg, var(--blue-deep), var(--blue)); }
+  .pack.amber::after { background: linear-gradient(90deg, var(--amber), #f0ad4e); }
+  .pack-name {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .pack-price {
+    font-size: 15px;
+    color: var(--blue-deep);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .pack-tag {
+    font-size: 14px;
+    color: var(--text-3);
+    font-style: italic;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .pack ul { list-style: none; }
+  .pack li {
+    padding: 5px 0;
+    font-size: 14px;
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pack li::before {
+    content: '+';
+    color: var(--green);
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  /* ─── Tabs ─── */
+  .tabs {
+    display: inline-flex;
+    gap: 4px;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 40px;
+  }
+  .tab-btn {
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .tab-btn.on {
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: var(--shadow-1);
+  }
+  .tab-btn:hover:not(.on) { color: var(--text-2); }
+  .tab-pane { display: none; }
+  .tab-pane.on { display: block; }
+
+  /* ─── Callout ─── */
+  .callout {
+    background: var(--blue-soft);
+    border: 1px solid rgba(104,197,237,0.2);
+    border-radius: var(--r);
+    padding: 28px 32px;
+    margin: 36px 0;
+  }
+  .callout-head {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--blue-deep);
+    margin-bottom: 8px;
+  }
+  .callout p { font-size: 15px; color: var(--text-2); line-height: 1.6; }
+
+  /* ─── Scenarios ─── */
+  .scenario {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    border: 1px solid var(--border-subtle);
+  }
+  .scenario h4 { font-size: 17px; font-weight: 700; margin-bottom: 4px; color: var(--text); letter-spacing: -0.3px; }
+  .scenario .meta { font-size: 14px; color: var(--text-3); margin-bottom: 20px; }
+  .row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; font-size: 15px; border-bottom: 1px solid var(--border-subtle);
+  }
+  .row:last-of-type { border-bottom: none; }
+  .row .lbl { color: var(--text-2); }
+  .row .val { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+  .row-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0 0; margin-top: 10px; font-size: 16px;
+    border-top: 2px solid var(--border);
+  }
+  .row-total .val { font-size: 22px; font-weight: 800; color: var(--green); letter-spacing: -0.5px; }
+
+  /* ─── Feature blocks ─── */
+  .feat-block {
+    background: var(--surface);
+    border-radius: var(--r);
+    padding: 24px;
+    border: 1px solid var(--border-subtle);
+  }
+  .feat-block-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+  }
+  .feat-block-title .pip {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .feat-block ul { list-style: none; }
+  .feat-block li {
+    font-size: 14px;
+    color: var(--text-2);
+    padding: 3px 0;
+    line-height: 1.5;
+  }
+
+  /* ─── Compare table ─── */
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .cmp-table th {
+    padding: 16px 24px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border);
+    background: var(--surface);
+  }
+  .cmp-table th:first-child { border-radius: var(--r) 0 0 0; }
+  .cmp-table th:last-child { border-radius: 0 var(--r) 0 0; }
+  .cmp-table td {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-2);
+  }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .cmp-table td:first-child { font-weight: 500; color: var(--text); }
+  .cmp-table .win { color: var(--green); font-weight: 700; }
+  .cmp-table .dim { color: var(--text-4); }
+
+  /* ─── Migration ─── */
+  .mig {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    gap: 12px;
+    align-items: center;
+  }
+  .mig-box {
+    border-radius: var(--r);
+    padding: 18px;
+    text-align: center;
+  }
+  .mig-from { background: var(--surface); border: 1px solid var(--border); }
+  .mig-to { background: var(--blue-soft); border: 1px solid rgba(104,197,237,0.3); }
+  .mig-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-4); margin-bottom: 4px; font-weight: 600; }
+  .mig-val { font-size: 15px; font-weight: 700; color: var(--text); }
+  .mig-arrow { text-align: center; font-size: 24px; color: var(--blue-deep); }
+
+  /* ─── Bold play cards ─── */
+  .bold-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .bold-card:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+  .bold-card.feat {
+    background: linear-gradient(135deg, var(--green-soft) 0%, var(--bg) 60%);
+    border-color: rgba(6,119,73,0.2);
+  }
+  .bold-card.feat-blue {
+    background: linear-gradient(135deg, var(--blue-soft) 0%, var(--bg) 60%);
+    border-color: rgba(45,158,206,0.2);
+  }
+  .bold-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    color: white;
+  }
+  .bold-card h3 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 14px 0 4px;
+    color: var(--text);
+  }
+  .bold-card .model {
+    font-size: 14px;
+    color: var(--blue-deep);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .bold-card .body {
+    font-size: 15px;
+    color: var(--text-2);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+  .rev-grid {
+    display: flex;
+    gap: 24px;
+    background: rgba(255,255,255,0.7);
+    border-radius: var(--r);
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-subtle);
+  }
+  .rev-item .rev-num {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .rev-item .rev-label { font-size: 12px; color: var(--text-3); }
+  .bold-card .seq {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .bold-card .seq strong { color: var(--text); }
+
+  .mini-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 28px;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .mini-card:hover { box-shadow: var(--shadow-2); transform: translateY(-1px); }
+  .mini-card h4 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .mini-card .model {
+    font-size: 13px;
+    color: var(--blue-deep);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .mini-card .body {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .mini-card .bottom {
+    font-size: 13px;
+    font-weight: 600;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .mini-card .bottom .meta { font-size: 12px; color: var(--text-4); font-weight: 500; margin-top: 4px; }
+
+  /* ─── Roadmap timeline ─── */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 48px;
+    right: 48px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  .tl-phase { text-align: center; position: relative; padding: 0 12px; }
+  .tl-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    margin: 18px auto 20px;
+    position: relative;
+    z-index: 1;
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--border);
+  }
+  .tl-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    padding: 6px 16px;
+    border-radius: var(--r);
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+  .tl-items { list-style: none; margin-top: 8px; }
+  .tl-items li {
+    font-size: 13px;
+    color: var(--text-2);
+    padding: 4px 0;
+    font-weight: 500;
+  }
+
+  /* ─── Combo cards ─── */
+  .combo {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .combo:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+  .combo-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .combo h4 {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .combo p {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+  .combo-stat {
+    padding: 16px;
+    border-radius: var(--r);
+    text-align: center;
+  }
+  .combo-stat .num {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+  .combo-stat .sub { font-size: 12px; margin-top: 2px; }
+
+  /* ─── Big quote ─── */
+  .bigquote {
+    text-align: center;
+    padding: 56px 32px;
+    border-radius: var(--r-lg);
+    margin-top: 56px;
+  }
+  .bigquote .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .bigquote .quote {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ─── Footer ─── */
+  .foot {
+    padding: 56px 0;
+    text-align: center;
+    color: var(--text-4);
+    font-size: 13px;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 40px;
+    line-height: 1.6;
+  }
+
+  /* ─── Horizontal bars ─── */
+  .hbar-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 80px;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+  }
+  .hbar-row + .hbar-row { border-top: 1px solid var(--border-subtle); }
+  .hbar-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .hbar-track {
+    height: 32px;
+    background: var(--surface);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .hbar-fill {
+    height: 100%;
+    border-radius: 8px;
+    min-width: 4px;
+    transition: width 0.6s ease;
+  }
+  .hbar-val {
+    font-size: 14px;
+    font-weight: 700;
+    text-align: right;
+    letter-spacing: -0.3px;
+  }
+
+  /* ─── Before/After bars ─── */
+  .ba-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 2px;
+  }
+  .ba-bar {
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    min-width: 24px;
+  }
+  .ba-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-3);
+    padding: 8px 0 4px;
+  }
+
+  /* ─── Risk/Impact matrix ─── */
+  .matrix {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .matrix-axis-y {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 0;
+    align-items: center;
+  }
+  .matrix-axis-y span {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .matrix-axis-x {
+    position: absolute;
+    left: 48px;
+    right: 0;
+    bottom: 0;
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+  }
+  .matrix-axis-x span {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .matrix-grid {
+    position: absolute;
+    left: 48px;
+    top: 0;
+    right: 0;
+    bottom: 32px;
+  }
+  .matrix-grid::before, .matrix-grid::after {
+    content: '';
+    position: absolute;
+    background: var(--border-subtle);
+  }
+  .matrix-grid::before { left: 50%; top: 0; bottom: 0; width: 1px; }
+  .matrix-grid::after { top: 50%; left: 0; right: 0; height: 1px; }
+  .matrix-quadrant {
+    position: absolute;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-4);
+    opacity: 0.5;
+    letter-spacing: 0.3px;
+  }
+  .matrix-dot {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: white;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+    z-index: 2;
+  }
+  .matrix-dot:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    box-shadow: var(--shadow-3);
+    z-index: 10;
+  }
+  .matrix-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .matrix-dot:hover .matrix-tooltip { opacity: 1; }
+
+  /* ─── Revenue waterfall ─── */
+  .waterfall {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    height: 300px;
+    padding: 40px 0 0;
+  }
+  .wf-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .wf-bar {
+    width: 100%;
+    max-width: 100px;
+    border-radius: 10px 10px 4px 4px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 12px;
+  }
+  .wf-val {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: white;
+  }
+  .wf-sub {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    margin-top: 2px;
+  }
+  .wf-label {
+    font-size: 12px;
+    color: var(--text-3);
+    text-align: center;
+    margin-top: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  /* ─── Provocation tabs ─── */
+  .prov-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .prov-tab {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-3);
+    font-family: inherit;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .prov-tab:hover { border-color: var(--blue); color: var(--text); }
+  .prov-tab.on {
+    background: var(--text);
+    border-color: var(--text);
+    color: white;
+    box-shadow: var(--shadow-1);
+  }
+  .prov-tab .num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    background: var(--surface);
+    color: var(--text-3);
+  }
+  .prov-tab.on .num { background: rgba(255,255,255,0.2); color: white; }
+  .prov-pane { display: none; }
+  .prov-pane.on { display: block; }
+
+  .prov-hero {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 40px;
+    margin-bottom: 32px;
+  }
+  .prov-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .prov-meta-item {
+    background: var(--surface);
+    border-radius: var(--r);
+    padding: 14px 16px;
+    border: 1px solid var(--border-subtle);
+  }
+  .prov-meta-item .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-4); margin-bottom: 4px; }
+  .prov-meta-item .value { font-size: 15px; font-weight: 700; color: var(--text); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .why-col h5 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .why-col ul {
+    list-style: none;
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .why-col li { padding: 4px 0; padding-left: 16px; position: relative; }
+  .why-col li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .why-col.wins li::before { background: var(--green); }
+  .why-col.risks li::before { background: var(--amber); }
+  .verdict-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 20px 24px;
+    margin-top: 24px;
+  }
+  .verdict-box h5 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .verdict-box p { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 900px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 36px; letter-spacing: -1px; }
+    .section-title { font-size: 28px; }
+    .wrap, .wrap-narrow, .hero, .nav { padding-left: 24px; padding-right: 24px; }
+    .bars { gap: 8px; height: 200px; }
+    .timeline { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .timeline::before { display: none; }
+    .mig { grid-template-columns: 1fr; }
+    .mig-arrow { transform: rotate(90deg); }
+    .prov-hero { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+    .waterfall { height: 220px; gap: 6px; }
+    .hbar-row { grid-template-columns: 90px 1fr 60px; gap: 8px; }
+    .matrix { aspect-ratio: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Fleetio <span>Strategy</span></div>
+    <div class="nav-links">
+      <a class="nav-link" href="#current">Current State</a>
+      <a class="nav-link" href="#diagnosis">Diagnosis</a>
+      <a class="nav-link" href="#competitive">Competitive</a>
+      <a class="nav-link" href="#options">Options</a>
+      <a class="nav-link" href="#revenue">Revenue</a>
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#compare">Compare</a>
+      <a class="nav-link" href="#migration">Migration</a>
+      <a class="nav-link" href="#recommendation">Recommendation</a>
+      <a class="nav-link" href="#bold">Bold Plays</a>
+      <a class="nav-link" href="#combos">Combos</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge"><div class="dot"></div> Strategic Analysis &middot; March 2026</div>
+  <h1>Pricing & Packaging Redesign</h1>
+  <p>A data-driven analysis of Fleetio's product, competitive landscape, and strategic options for better monetization across SMB to enterprise.</p>
+</section>
+
+<!-- Current State -->
+<section class="section" id="current">
+  <div class="wrap">
+    <div class="section-eyebrow">Current State</div>
+    <div class="section-title">Fleetio Today</div>
+    <div class="section-desc">8,000+ fleets. 8M+ vehicles. A $4&ndash;$10/vehicle product in a $27B+ market.</div>
+
+    <div class="grid grid-4" style="margin-bottom: 28px;">
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--blue-deep);">$4&ndash;10</div>
+        <div class="stat-label">Per vehicle / month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--green);">3</div>
+        <div class="stat-label">Plan tiers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--amber);">1</div>
+        <div class="stat-label">Add-on (tools only)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--red);">0</div>
+        <div class="stat-label">Enterprise tier</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table class="feat-table">
+        <thead>
+          <tr>
+            <th style="width: 35%;">Capability</th>
+            <th style="width: 20%;">Essential ($4)</th>
+            <th style="width: 20%;">Professional ($7)</th>
+            <th style="width: 25%;">Premium ($10)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Vehicle / Asset Tracking</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Driver Management</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Inspections & DVIR</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Fuel Management</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Work Orders</td><td class="no">&mdash;</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Automations</td><td class="no">&mdash;</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Shop Network (110K+ shops)</td><td class="no">&mdash;</td><td class="yes">Free</td><td class="yes">Free</td></tr>
+          <tr><td>Telematics Integration</td><td class="no">&mdash;</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>API Access</td><td class="no">&mdash;</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Parts & Inventory</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">Yes</td></tr>
+          <tr><td>Tire Management</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">Yes</td></tr>
+          <tr><td>Warranty Management</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">Yes</td></tr>
+          <tr><td>Purchase Orders</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">Yes</td></tr>
+          <tr><td>Quoting & Invoicing</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">Yes</td></tr>
+          <tr><td>Advanced Analytics</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">Yes</td></tr>
+          <tr><td>Smart Uploads (AI)</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">Yes</td></tr>
+          <tr><td>Vehicle Limit</td><td class="warn">100 max</td><td>Unlimited</td><td>Unlimited</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Diagnosis -->
+<section class="section" id="diagnosis">
+  <div class="wrap">
+    <div class="section-eyebrow">Diagnosis</div>
+    <div class="section-title">Five Structural Issues</div>
+    <div class="section-desc">The product has outgrown its packaging. Stage 4 complexity in a Stage 2 pricing wrapper.</div>
+
+    <div class="grid" style="grid-template-columns: 1fr; gap: 20px;">
+      <div class="card issue">
+        <div class="issue-num critical">1</div>
+        <div>
+          <h4>Premium is overloaded</h4>
+          <p>Premium bundles 10+ capabilities for 3 different buyers (ops manager, maintenance director, CFO). A customer who needs AI analytics must pay for tire management. A customer who needs parts inventory pays for everything else.</p>
+        </div>
+      </div>
+      <div class="card issue">
+        <div class="issue-num critical">2</div>
+        <div>
+          <h4>Essential isn't a real product</h4>
+          <p>No work orders, no shop network, no API, no telematics, capped at 100 vehicles. It's a lead qualifier, not fleet management software. The real entry price is $7 (Professional), making the $4 anchor misleading.</p>
+        </div>
+      </div>
+      <div class="card issue">
+        <div class="issue-num warning">3</div>
+        <div>
+          <h4>Shop network generates $0 incremental revenue</h4>
+          <p>110,000 shops, 14M+ repair orders, 12% cost savings. Fleetio's most differentiated asset, included free. Even at $0.50/transaction, that's $7M/year. The play may be to keep it free (moat) but monetize the depth built on top.</p>
+        </div>
+      </div>
+      <div class="card issue">
+        <div class="issue-num warning">4</div>
+        <div>
+          <h4>No enterprise differentiation</h4>
+          <p>A 20-vehicle fleet and a 2,000-vehicle fleet get the same tiers, features, and support. Enterprise buyers get volume discounts, so effective rate <em>decreases</em> when willingness-to-pay is highest. No SSO, SLA, or dedicated CSM in current packaging.</p>
+        </div>
+      </div>
+      <div class="card issue">
+        <div class="issue-num info">5</div>
+        <div>
+          <h4>Only 2 expansion vectors</h4>
+          <p>Today: add more vehicles, or upgrade tier. No module add-ons (except tools at $0.50/tool), no usage-based components, no premium support, no professional services. This caps net revenue retention.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Competitive -->
+<section class="section" id="competitive">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitive Context</div>
+    <div class="section-title">Fleetio Competes in a Different Band</div>
+    <div class="section-desc">Software-only at $4&ndash;10/vehicle vs. telematics+hardware at $25&ndash;60. This is a strength, not a weakness.</div>
+
+    <div class="card" style="margin-bottom: 28px; padding: 36px;">
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 20px;">Per Vehicle / Month Pricing</div>
+
+      <div style="display: flex; flex-direction: column; gap: 0;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--blue-deep); padding: 12px 0 4px;">Software-Only</div>
+        <div class="hbar-row">
+          <div class="hbar-name" style="color: var(--blue-deep);">Fleetio</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 8%; background: linear-gradient(90deg, var(--blue), var(--blue-deep));"></div></div>
+          <div class="hbar-val" style="color: var(--blue-deep);">$4&ndash;10</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-name">Whip Around</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 7%; background: linear-gradient(90deg, #cbd5e1, #94a3b8);"></div></div>
+          <div class="hbar-val" style="color: var(--text-3);">$5&ndash;9</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-name">RTA Fleet</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 6%; background: linear-gradient(90deg, #cbd5e1, #94a3b8);"></div></div>
+          <div class="hbar-val" style="color: var(--text-3);">$6&ndash;8</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-name">Geotab</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 8%; background: linear-gradient(90deg, #cbd5e1, #94a3b8);"></div></div>
+          <div class="hbar-val" style="color: var(--text-3);">$10+</div>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--amber); padding: 20px 0 4px; border-top: 1px solid var(--border-subtle); margin-top: 8px;">Hardware + Software</div>
+        <div class="hbar-row">
+          <div class="hbar-name">Motive</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 27%; background: linear-gradient(90deg, #fbbf24, var(--amber));"></div></div>
+          <div class="hbar-val" style="color: var(--amber);">$25&ndash;35</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-name">EROAD</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 27%; background: linear-gradient(90deg, #fbbf24, var(--amber));"></div></div>
+          <div class="hbar-val" style="color: var(--amber);">$25&ndash;35</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-name">Samsara</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 45%; background: linear-gradient(90deg, #f87171, var(--red));"></div></div>
+          <div class="hbar-val" style="color: var(--red);">$27&ndash;60</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-name">Verizon Conn.</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 80%; background: linear-gradient(90deg, #f87171, var(--red));"></div></div>
+          <div class="hbar-val" style="color: var(--red);">$35&ndash;200</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-name">Lytx</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 65%; background: linear-gradient(90deg, #f87171, var(--red));"></div></div>
+          <div class="hbar-val" style="color: var(--red);">$79&ndash;129</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-4);">
+        Fleetio is 3&ndash;10x cheaper than hardware-bundled competitors while offering comparable software depth
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card" style="padding: 28px;">
+        <div style="font-size: 14px; font-weight: 700; color: var(--green); margin-bottom: 14px;">Fleetio Advantages</div>
+        <ul style="list-style: none; font-size: 14px; color: var(--text-2); line-height: 2;">
+          <li>Published transparent pricing</li>
+          <li>No long-term contracts</li>
+          <li>Unlimited users on all plans</li>
+          <li>No hardware lock-in</li>
+          <li>110K+ shop network (unique)</li>
+        </ul>
+      </div>
+      <div class="card" style="padding: 28px;">
+        <div style="font-size: 14px; font-weight: 700; color: var(--amber); margin-bottom: 14px;">Competitor Pain Points</div>
+        <ul style="list-style: none; font-size: 14px; color: var(--text-2); line-height: 2;">
+          <li>36-month contract lock-in</li>
+          <li>Hidden fees inflate costs 20&ndash;40%</li>
+          <li>Opaque quote-based pricing</li>
+          <li>Hardware return requirements</li>
+          <li>Feature bloat / paying for unused</li>
+        </ul>
+      </div>
+      <div class="card" style="padding: 28px;">
+        <div style="font-size: 14px; font-weight: 700; color: var(--blue-deep); margin-bottom: 14px;">Market Trends</div>
+        <ul style="list-style: none; font-size: 14px; color: var(--text-2); line-height: 2;">
+          <li>$27B+ market, 16.9% CAGR</li>
+          <li>Software &gt; hardware value shift</li>
+          <li>AI features becoming table stakes</li>
+          <li>Hybrid approaches growing fastest</li>
+          <li>Enterprise segment: 21.4% CAGR</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Strategic Options -->
+<section class="section" id="options">
+  <div class="wrap">
+    <div class="section-eyebrow">Strategic Options</div>
+    <div class="section-title">Three Packaging Architectures</div>
+    <div class="section-desc">From evolutionary to transformational. Each viable; they differ in risk, complexity, and revenue upside.</div>
+
+    <div class="tabs">
+      <button class="tab-btn on" onclick="switchTab('tabA', this)">A: Enhanced Tiering</button>
+      <button class="tab-btn" onclick="switchTab('tabB', this)">B: Platform + Modules</button>
+      <button class="tab-btn" onclick="switchTab('tabC', this)">C: Editions + Plus Packs</button>
+    </div>
+
+    <!-- Tab A -->
+    <div class="tab-pane on" id="tabA">
+      <div class="grid grid-4" style="margin-bottom: 24px;">
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px; color: var(--green);">Low</div><div class="stat-label">Risk</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px; color: var(--amber);">Moderate</div><div class="stat-label">Revenue Impact</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px;">2&ndash;3 mo</div><div class="stat-label">Implementation</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px;">Zendesk</div><div class="stat-label">Analogous To</div></div>
+      </div>
+
+      <p style="font-size: 16px; color: var(--text-2); margin-bottom: 32px; max-width: 720px; line-height: 1.65;">
+        Keep the familiar tier model but restructure tiers to match value delivery, add an enterprise tier, and introduce 2&ndash;3 targeted add-ons. Evolutionary, not revolutionary.
+      </p>
+
+      <div class="grid grid-3" style="margin-bottom: 28px;">
+        <div class="price-card">
+          <div class="price-tier">Starter</div>
+          <div class="price-amt">$5<span>/vehicle/mo</span></div>
+          <div class="price-desc">Everything a small fleet needs. Up to 200 vehicles.</div>
+          <ul class="price-list">
+            <li>Vehicle & asset tracking</li>
+            <li>Driver management</li>
+            <li>Digital inspections</li>
+            <li>Fuel tracking & cards</li>
+            <li>Basic reporting</li>
+            <li>Mobile app (Fleetio Go)</li>
+            <li>Email support</li>
+          </ul>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Professional</div>
+          <div class="price-amt">$9<span>/vehicle/mo</span></div>
+          <div class="price-desc">Full fleet management. Unlimited vehicles.</div>
+          <ul class="price-list">
+            <li class="em">Everything in Starter</li>
+            <li>Work orders</li>
+            <li>Workflow automations</li>
+            <li>Shop network (110K+ shops)</li>
+            <li>Telematics integrations</li>
+            <li>API access & webhooks</li>
+            <li>Recall management</li>
+            <li>Custom fields & dashboards</li>
+            <li>Phone support</li>
+          </ul>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Enterprise</div>
+          <div class="price-amt">$14<span>/vehicle/mo</span></div>
+          <div class="price-desc">For large fleets. Custom volume pricing.</div>
+          <ul class="price-list">
+            <li class="em">Everything in Professional</li>
+            <li>SSO / SAML</li>
+            <li>SLA guarantee</li>
+            <li>Dedicated CSM</li>
+            <li>Advanced audit logs</li>
+            <li>Sandbox environment</li>
+            <li>Priority support</li>
+            <li>Early access program</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Add-ons (Professional+)</div>
+      <div class="grid grid-3">
+        <div class="card" style="padding: 24px;">
+          <div style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 2px;">Maintenance Pro</div>
+          <div style="font-size: 15px; color: var(--blue-deep); font-weight: 600; margin-bottom: 10px;">+$3/vehicle/mo</div>
+          <div style="font-size: 14px; color: var(--text-2); line-height: 1.6;">Parts inventory, tire management, warranty tracking, purchase orders, labor tracking, quoting & invoicing</div>
+        </div>
+        <div class="card" style="padding: 24px;">
+          <div style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 2px;">Analytics & AI</div>
+          <div style="font-size: 15px; color: var(--blue-deep); font-weight: 600; margin-bottom: 10px;">+$3/vehicle/mo</div>
+          <div style="font-size: 14px; color: var(--text-2); line-height: 1.6;">Advanced Analytics, Smart Uploads AI, lifecycle optimization, predictive maintenance, custom reports</div>
+        </div>
+        <div class="card" style="padding: 24px;">
+          <div style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 2px;">Equipment</div>
+          <div style="font-size: 15px; color: var(--blue-deep); font-weight: 600; margin-bottom: 10px;">+$0.50/tool/mo</div>
+          <div style="font-size: 14px; color: var(--text-2); line-height: 1.6;">Tool tracking, barcode check-in/out, tool service entries, utilization reporting</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab B -->
+    <div class="tab-pane" id="tabB">
+      <div class="grid grid-4" style="margin-bottom: 24px;">
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px; color: var(--red);">High</div><div class="stat-label">Risk</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px; color: var(--green);">Highest</div><div class="stat-label">Revenue Impact</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px;">6&ndash;12 mo</div><div class="stat-label">Implementation</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px;">HubSpot</div><div class="stat-label">Analogous To</div></div>
+      </div>
+
+      <p style="font-size: 16px; color: var(--text-2); margin-bottom: 32px; max-width: 720px; line-height: 1.65;">
+        Reframe Fleetio as a fleet management platform with purchasable capability modules. Maximum extraction, maximum complexity. The HubSpot play.
+      </p>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Platform Tiers</div>
+      <div class="grid grid-3" style="margin-bottom: 32px;">
+        <div class="price-card">
+          <div class="price-tier">Starter Platform</div>
+          <div class="price-amt">$99<span>/mo base</span></div>
+          <div class="price-desc">Vehicle registry, driver mgmt, basic reporting, mobile app, unlimited users.</div>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Pro Platform</div>
+          <div class="price-amt">$249<span>/mo base</span></div>
+          <div class="price-desc">Everything in Starter + advanced permissions, phone support, API access.</div>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Enterprise Platform</div>
+          <div class="price-amt">$499<span>/mo base</span></div>
+          <div class="price-desc">Everything in Pro + SSO, SLA, dedicated CSM, sandbox, 24/7 support.</div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Capability Modules (per vehicle/mo)</div>
+      <div class="grid" style="grid-template-columns: repeat(5, 1fr);">
+        <div class="card" style="padding: 20px; text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Fleet Ops</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; letter-spacing: -0.5px;">$3</div>
+          <div style="font-size: 12px; color: var(--text-3); line-height: 1.4;">Inspections, fuel, telematics, geofencing</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Maintenance</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; letter-spacing: -0.5px;">$4</div>
+          <div style="font-size: 12px; color: var(--text-3); line-height: 1.4;">Work orders, shop network, parts, POs</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Compliance</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; letter-spacing: -0.5px;">$2</div>
+          <div style="font-size: 12px; color: var(--text-3); line-height: 1.4;">DVIR, recalls, docs, audit trails</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Intelligence</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; letter-spacing: -0.5px;">$3</div>
+          <div style="font-size: 12px; color: var(--text-3); line-height: 1.4;">Analytics, AI, lifecycle, predictive</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Shop Ops</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; letter-spacing: -0.5px;">$3</div>
+          <div style="font-size: 12px; color: var(--text-3); line-height: 1.4;">Labor, tires, warranty, quoting, invoicing</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-head">Why this is probably premature</div>
+        <p>HubSpot has 200K+ customers and a massive sales org to sell modular pricing. Fleetio at 8K customers would face buyer confusion, sales complexity, and engineering overhead for entitlement management. This makes sense at 2&ndash;3x Fleetio's current scale. Consider it the long-term north star.</p>
+      </div>
+    </div>
+
+    <!-- Tab C -->
+    <div class="tab-pane" id="tabC">
+      <div class="grid grid-4" style="margin-bottom: 24px;">
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px; color: var(--amber);">Medium</div><div class="stat-label">Risk</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px; color: var(--green);">High</div><div class="stat-label">Revenue Impact</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px;">3&ndash;5 mo</div><div class="stat-label">Implementation</div></div>
+        <div class="stat-card"><div class="stat-val" style="font-size: 28px;">Procore</div><div class="stat-label">Analogous To</div></div>
+      </div>
+
+      <p style="font-size: 16px; color: var(--text-2); margin-bottom: 32px; max-width: 720px; line-height: 1.65;">
+        Clean editions for SMB-to-enterprise + "Plus Packs" for depth monetization. Simple enough for the plumber, powerful enough for the enterprise.
+      </p>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Editions</div>
+      <div class="grid grid-3" style="margin-bottom: 36px;">
+        <div class="price-card">
+          <div class="price-tier">Starter</div>
+          <div class="price-amt">$6<span>/vehicle/mo</span></div>
+          <div class="price-desc">Everything a small fleet needs. Up to 100 vehicles.</div>
+          <ul class="price-list">
+            <li>Vehicle & asset tracking</li>
+            <li>Driver management</li>
+            <li>Digital inspections (DVIR)</li>
+            <li>Fuel tracking & fuel cards</li>
+            <li>Basic service entries</li>
+            <li>Standard reporting</li>
+            <li>Mobile app (Fleetio Go)</li>
+            <li>Email support</li>
+          </ul>
+        </div>
+        <div class="price-card pop">
+          <div class="price-tier">Business</div>
+          <div class="price-amt">$10<span>/vehicle/mo</span></div>
+          <div class="price-desc">The full fleet management platform. Unlimited vehicles.</div>
+          <ul class="price-list">
+            <li class="em">Everything in Starter</li>
+            <li>Work orders & service programs</li>
+            <li>Workflow automations</li>
+            <li>Shop network (110K+ shops)</li>
+            <li>Telematics integrations (20+)</li>
+            <li>API access & webhooks</li>
+            <li>Recall management</li>
+            <li>Custom fields & dashboards</li>
+            <li>Lifecycle management</li>
+            <li>Priority phone support</li>
+          </ul>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Enterprise</div>
+          <div class="price-amt">$12+<span>/vehicle/mo</span></div>
+          <div class="price-desc">For large, complex operations. Custom pricing.</div>
+          <ul class="price-list">
+            <li class="em">Everything in Business</li>
+            <li>SSO / SAML authentication</li>
+            <li>Advanced audit logs</li>
+            <li>SLA guarantee</li>
+            <li>Dedicated CSM</li>
+            <li>Sandbox environment</li>
+            <li>Custom integrations</li>
+            <li>Early access program</li>
+            <li>24/7 support, named contact</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Plus Packs (add to Business or Enterprise)</div>
+      <div class="grid grid-3" style="margin-bottom: 36px;">
+        <div class="pack green">
+          <div class="pack-name">Maintenance Plus</div>
+          <div class="pack-price">+$4/vehicle/mo</div>
+          <div class="pack-tag">"Turn Fleetio into your full maintenance command center"</div>
+          <ul>
+            <li>Parts inventory management</li>
+            <li>Tire management & tracking</li>
+            <li>Warranty management</li>
+            <li>Purchase orders & automation</li>
+            <li>Labor clock in / clock out</li>
+            <li>Markups, quoting & invoicing</li>
+          </ul>
+        </div>
+        <div class="pack blue">
+          <div class="pack-name">Intelligence Plus</div>
+          <div class="pack-price">+$4/vehicle/mo</div>
+          <div class="pack-tag">"Let AI surface what your fleet data is trying to tell you"</div>
+          <ul>
+            <li>Advanced Analytics dashboards</li>
+            <li>Smart Uploads AI</li>
+            <li>AI Service Advisor</li>
+            <li>Lifecycle optimization</li>
+            <li>Predictive maintenance scoring</li>
+            <li>Custom report builder</li>
+            <li>Automated threshold alerts</li>
+          </ul>
+        </div>
+        <div class="pack amber">
+          <div class="pack-name">Equipment Plus</div>
+          <div class="pack-price">+$0.50/tool/mo + $49/mo base</div>
+          <div class="pack-tag">"Track every asset, not just the ones with wheels"</div>
+          <ul>
+            <li>Tool & equipment tracking</li>
+            <li>Barcode check-in / check-out</li>
+            <li>Tool service entries</li>
+            <li>Equipment utilization reporting</li>
+            <li>Assignment audit trail</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-head">The key insight: monetize depth, not access</div>
+        <p>The shop network stays free in Business (preserving the competitive moat). Maintenance Plus monetizes the <em>depth</em> built on top: parts, tires, warranties, POs. Give away the platform, charge for the power tools. The "All-In Bundle" at ~$16.40/vehicle captures 64% more revenue than current Premium at $10, through better packaging of the same product.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Revenue Impact -->
+<section class="section" id="revenue">
+  <div class="wrap">
+    <div class="section-eyebrow">Revenue Impact</div>
+    <div class="section-title">What This Means in Dollars</div>
+    <div class="section-desc">Illustrative scenarios at different fleet sizes. Option C (Editions + Plus Packs) shown.</div>
+
+    <div class="grid grid-2">
+      <div class="scenario">
+        <h4>Small Plumbing Company</h4>
+        <div class="meta">15 vehicles / needs basics + inspections</div>
+        <div class="row"><span class="lbl">Today: Essential @ $4/vehicle</span><span class="val">$60/mo</span></div>
+        <div class="row"><span class="lbl">New: Starter @ $6/vehicle</span><span class="val">$90/mo</span></div>
+        <div class="row-total"><span class="lbl" style="font-weight: 700;">Revenue change</span><span class="val">+50% (+$30/mo)</span></div>
+      </div>
+      <div class="scenario">
+        <h4>Regional Waste Management</h4>
+        <div class="meta">75 vehicles / needs work orders + shop network</div>
+        <div class="row"><span class="lbl">Today: Professional @ $7/vehicle</span><span class="val">$525/mo</span></div>
+        <div class="row"><span class="lbl">New: Business @ $10/vehicle</span><span class="val">$750/mo</span></div>
+        <div class="row-total"><span class="lbl" style="font-weight: 700;">Revenue change</span><span class="val">+43% (+$225/mo)</span></div>
+      </div>
+      <div class="scenario">
+        <h4>Construction Fleet</h4>
+        <div class="meta">200 vehicles / needs full maintenance depth + AI</div>
+        <div class="row"><span class="lbl">Today: Premium @ $10/vehicle</span><span class="val">$2,000/mo</span></div>
+        <div class="row"><span class="lbl">New: Business @ $10</span><span class="val">$2,000/mo</span></div>
+        <div class="row"><span class="lbl" style="padding-left: 16px;">+ Maintenance Plus @ $4</span><span class="val">$800/mo</span></div>
+        <div class="row"><span class="lbl" style="padding-left: 16px;">+ Intelligence Plus @ $4</span><span class="val">$800/mo</span></div>
+        <div class="row-total"><span class="lbl" style="font-weight: 700;">Revenue change</span><span class="val">+80% (+$1,600/mo)</span></div>
+      </div>
+      <div class="scenario">
+        <h4>National Enterprise Fleet</h4>
+        <div class="meta">2,000 vehicles / full suite + enterprise features</div>
+        <div class="row"><span class="lbl">Today: Premium @ ~$8 (volume disc.)</span><span class="val">$16,000/mo</span></div>
+        <div class="row"><span class="lbl">New: Enterprise @ $12</span><span class="val">$24,000/mo</span></div>
+        <div class="row"><span class="lbl" style="padding-left: 16px;">+ Maintenance Plus @ $4</span><span class="val">$8,000/mo</span></div>
+        <div class="row"><span class="lbl" style="padding-left: 16px;">+ Intelligence Plus @ $4</span><span class="val">$8,000/mo</span></div>
+        <div class="row-total"><span class="lbl" style="font-weight: 700;">Revenue change</span><span class="val">+150% (+$24,000/mo)</span></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 28px;">
+      <div class="callout-head">These aren't price increases</div>
+      <p>Current Professional customers get <em>more</em> in Business (lifecycle management, better dashboards, more integrations). Plus Packs are new premium capabilities. Customers who only need the core pay the same or slightly more for a better product. The revenue increase comes from better value capture, not from charging more for less.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Mapping -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-eyebrow">Feature Architecture</div>
+    <div class="section-title">Where Every Feature Lives</div>
+    <div class="section-desc">Option C: editions handle breadth, Plus Packs handle depth.</div>
+
+    <div class="grid grid-2">
+      <div class="feat-block">
+        <div class="feat-block-title"><div class="pip" style="background: var(--text-4);"></div> Starter ($6)</div>
+        <ul>
+          <li>Vehicle/asset inventory & groups</li>
+          <li>Driver management & assignments</li>
+          <li>Inspections & DVIR (including offline)</li>
+          <li>Fuel entries & fuel card integration</li>
+          <li>Basic service entries & reminders</li>
+          <li>Standard reports & XLSX export</li>
+          <li>Document uploads & renewal reminders</li>
+          <li>Mobile app (Fleetio Go)</li>
+          <li>Unlimited users</li>
+        </ul>
+      </div>
+      <div class="feat-block">
+        <div class="feat-block-title"><div class="pip" style="background: var(--blue);"></div> Business ($10) adds...</div>
+        <ul>
+          <li>Work orders & line items</li>
+          <li>Service programs (PM schedules)</li>
+          <li>Workflow automations</li>
+          <li>Shop Network access (110K+ shops)</li>
+          <li>Telematics integrations (20+ providers)</li>
+          <li>API access & webhooks (50+ events)</li>
+          <li>Recall management (NHTSA)</li>
+          <li>Custom fields (up to 100) & subgroups</li>
+          <li>Custom dashboards</li>
+          <li>Lifecycle management & utilization</li>
+        </ul>
+      </div>
+      <div class="feat-block">
+        <div class="feat-block-title"><div class="pip" style="background: var(--green);"></div> Maintenance Plus (+$4) adds...</div>
+        <ul>
+          <li>Parts inventory (aisle/row/bin)</li>
+          <li>Low inventory notifications</li>
+          <li>Purchase orders & auto-approval</li>
+          <li>Tire management (tread, rotation, position)</li>
+          <li>Warranty management (standard + extended)</li>
+          <li>Labor clock in / clock out</li>
+          <li>Markups (% or fixed)</li>
+          <li>Quoting & invoicing</li>
+          <li>Enhanced service tasks</li>
+        </ul>
+      </div>
+      <div class="feat-block">
+        <div class="feat-block-title"><div class="pip" style="background: var(--blue-deep);"></div> Intelligence Plus (+$4) adds...</div>
+        <ul>
+          <li>Advanced Analytics dashboards</li>
+          <li>Custom chart/visualization builder</li>
+          <li>Smart Uploads AI (invoice scanning)</li>
+          <li>AI Service Advisor</li>
+          <li>Lifecycle optimization tools</li>
+          <li>Predictive maintenance scoring</li>
+          <li>Automated threshold alerts</li>
+          <li>Report scheduling & sharing</li>
+          <li>Sensor data snapshots</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison -->
+<section class="section" id="compare">
+  <div class="wrap">
+    <div class="section-eyebrow">Option Comparison</div>
+    <div class="section-title">Side-by-Side Assessment</div>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>A: Enhanced Tiering</th>
+            <th>B: Platform + Modules</th>
+            <th>C: Editions + Plus</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Buyer simplicity</td><td class="win">High</td><td class="dim">Low</td><td>Medium-High</td></tr>
+          <tr><td>Revenue potential</td><td class="dim">Moderate</td><td class="win">Highest</td><td>High</td></tr>
+          <tr><td>Migration risk</td><td class="win">Low</td><td class="dim">High</td><td>Medium</td></tr>
+          <tr><td>Implementation time</td><td class="win">2&ndash;3 months</td><td class="dim">6&ndash;12 months</td><td>3&ndash;5 months</td></tr>
+          <tr><td>Enterprise capture</td><td>Good</td><td>Good</td><td class="win">Good</td></tr>
+          <tr><td>Expansion vectors</td><td class="dim">3&ndash;4</td><td class="win">6&ndash;8</td><td>4&ndash;5</td></tr>
+          <tr><td>Sales complexity</td><td class="win">Low</td><td class="dim">High</td><td>Medium</td></tr>
+          <tr><td>Max per-vehicle revenue</td><td>$15</td><td class="win">$15 + $249 base</td><td>$18</td></tr>
+          <tr><td style="font-weight: 700;">Overall fit for Fleetio now</td><td>Good starting point</td><td class="dim">Premature</td><td class="win">Best balance</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Migration -->
+<section class="section" id="migration">
+  <div class="wrap">
+    <div class="section-eyebrow">Migration Strategy</div>
+    <div class="section-title">How Existing Customers Transition</div>
+    <div class="section-desc">No one loses features. Everyone gets a clear, value-positive migration path.</div>
+
+    <div class="grid" style="grid-template-columns: 1fr; gap: 20px;">
+      <div class="card">
+        <div class="mig">
+          <div class="mig-box mig-from"><div class="mig-label">Current</div><div class="mig-val">Essential @ $4/vehicle</div></div>
+          <div class="mig-arrow">&rarr;</div>
+          <div class="mig-box mig-to"><div class="mig-label">New</div><div class="mig-val">Starter @ $6/vehicle</div></div>
+        </div>
+        <p style="font-size: 14px; color: var(--text-3); margin-top: 14px; text-align: center; line-height: 1.6;">Grandfather at $4 for 12 months. Gets more features (service entries, better reporting). Natural upgrade when ready.</p>
+      </div>
+      <div class="card">
+        <div class="mig">
+          <div class="mig-box mig-from"><div class="mig-label">Current</div><div class="mig-val">Professional @ $7/vehicle</div></div>
+          <div class="mig-arrow">&rarr;</div>
+          <div class="mig-box mig-to"><div class="mig-label">New</div><div class="mig-val">Business @ $10/vehicle</div></div>
+        </div>
+        <p style="font-size: 14px; color: var(--text-3); margin-top: 14px; text-align: center; line-height: 1.6;">Grandfather at $7 for 12 months. Business includes lifecycle management, better dashboards &mdash; a value-positive move. Plus Packs are optional new capabilities.</p>
+      </div>
+      <div class="card">
+        <div class="mig">
+          <div class="mig-box mig-from"><div class="mig-label">Current</div><div class="mig-val">Premium @ $10/vehicle</div></div>
+          <div class="mig-arrow">&rarr;</div>
+          <div class="mig-box mig-to"><div class="mig-label">New</div><div class="mig-val">Business + both Plus Packs @ $16.40</div></div>
+        </div>
+        <p style="font-size: 14px; color: var(--text-3); margin-top: 14px; text-align: center; line-height: 1.6;"><strong style="color: var(--text-2);">The critical migration.</strong> Premium customers keep all features at $10 indefinitely (grandfathered). New premium features (AI Advisor, predictive maintenance) only on new packaging. Value gap drives natural migration over 12&ndash;24 months.</p>
+      </div>
+      <div class="card">
+        <div class="mig">
+          <div class="mig-box mig-from"><div class="mig-label">Current</div><div class="mig-val">Legacy (Pro/Advanced/Enterprise)</div></div>
+          <div class="mig-arrow">&rarr;</div>
+          <div class="mig-box mig-to"><div class="mig-label">New</div><div class="mig-val">Mapped to closest new edition</div></div>
+        </div>
+        <p style="font-size: 14px; color: var(--text-3); margin-top: 14px; text-align: center; line-height: 1.6;">Use this as the opportunity to sunset legacy plans. Offer incentives: early adopter pricing, free Plus Pack trial, or locked-in rate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recommendation -->
+<section class="section" id="recommendation">
+  <div class="wrap">
+    <div class="section-eyebrow">Recommendation</div>
+    <div class="section-title">Option C: Editions + Plus Packs</div>
+    <div class="section-desc">The right architecture for Fleetio's current scale and growth trajectory.</div>
+
+    <div class="card" style="padding: 40px;">
+      <div class="grid grid-2" style="gap: 48px;">
+        <div>
+          <h4 style="font-size: 18px; font-weight: 800; margin-bottom: 24px; color: var(--text); letter-spacing: -0.3px;">Why this wins</h4>
+          <div style="display: grid; gap: 20px;">
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--text); font-size: 15px;">1. Matches Fleetio's maturity</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Not complex enough to confuse small buyers, structured enough to capture enterprise value. The Goldilocks option.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--text); font-size: 15px;">2. "Plus Packs" frame value correctly</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Additive, not reductive. Customers don't feel features were taken away &mdash; they see new premium capabilities for purchase.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--text); font-size: 15px;">3. Editions solve SMB/enterprise split</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Starter for the plumber. Business for mid-market. Enterprise for 500+ vehicles with SSO, SLAs, dedicated CSM.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--text); font-size: 15px;">4. 80% more per-vehicle ceiling</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Max goes from $10 to $18/vehicle through packaging, not price increases. Same product, better value capture.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--text); font-size: 15px;">5. Natural expansion conversations</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">"Would you like to add Maintenance Plus?" is a revenue motion that doesn't exist today.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--text); font-size: 15px;">6. Protects the moat</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Shop network stays free. Transparent pricing stays. No contracts stays. All competitive advantages preserved.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size: 18px; font-weight: 800; margin-bottom: 24px; color: var(--text); letter-spacing: -0.3px;">What to watch for</h4>
+          <div style="display: grid; gap: 20px;">
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--amber); font-size: 15px;">Premium customer migration</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Current Premium users get all features at $10. New equivalent is $18. Grandfathering essential. New-feature-only-on-new-plans drives natural migration.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--amber); font-size: 15px;">Plus Pack perceived value</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Each must feel substantial enough to justify $4/vehicle. Market as coherent capabilities, not feature lists.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--amber); font-size: 15px;">Pricing page simplicity</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">3 editions + 3 Plus Packs = 6 items. Under the jam study threshold. Lead with editions, secondary Plus Packs.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--amber); font-size: 15px;">Competitive messaging</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Still 3&ndash;10x cheaper than Samsara/Motive at max packaging. Lead with total cost of ownership comparisons.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 4px; color: var(--amber); font-size: 15px;">Sales enablement</div>
+              <div style="color: var(--text-2); font-size: 14px; line-height: 1.6;">Clear playbooks needed: which Plus Packs to recommend by industry, fleet size, and use case.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bigquote" style="background: linear-gradient(135deg, var(--blue-soft), var(--green-soft));">
+      <div class="eyebrow" style="color: var(--text-3);">The bottom line</div>
+      <div class="quote" style="color: var(--text);">Give away the platform.<br><span style="color: var(--blue-deep);">Charge for the power tools.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Bold Plays -->
+<section class="section" id="bold" style="background: var(--bg-warm);">
+  <div class="wrap">
+    <div class="section-eyebrow">Bold Plays</div>
+    <div class="section-title">Seven Provocations Beyond Core + Add-Ons</div>
+    <div class="section-desc">What if Fleetio isn't a fleet management app with pricing tiers &mdash; but something else entirely? Each play is grounded in a real company that made the leap.</div>
+
+    <!-- Risk / Impact Matrix -->
+    <div class="card" style="margin-bottom: 40px; padding: 36px;">
+      <h4 style="font-size: 18px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px;">Risk vs. Impact Matrix</h4>
+      <p style="font-size: 14px; color: var(--text-3); margin-bottom: 24px;">Hover over each dot to identify the play. Position reflects implementation risk (x-axis) vs. revenue impact (y-axis).</p>
+
+      <div class="matrix">
+        <div class="matrix-axis-y"><span>High Impact</span><span>Low Impact</span></div>
+        <div class="matrix-axis-x"><span>Low Risk</span><span>High Risk</span></div>
+        <div class="matrix-grid">
+          <div class="matrix-quadrant" style="top: 8px; right: 12px;">High Impact / High Risk</div>
+          <div class="matrix-quadrant" style="top: 8px; left: 12px;">High Impact / Low Risk</div>
+          <div class="matrix-quadrant" style="bottom: 40px; left: 12px;">Low Impact / Low Risk</div>
+
+          <!-- 1. Multi-Product: Very High impact, High risk -->
+          <div class="matrix-dot" style="left: 82%; top: 12%; background: var(--red);">1<div class="matrix-tooltip">Multi-Product (HubSpot)</div></div>
+          <!-- 2. Shop Network: Very High impact, Medium risk -->
+          <div class="matrix-dot" style="left: 52%; top: 8%; background: var(--green); width: 56px; height: 56px; font-size: 13px;">2<div class="matrix-tooltip">Shop Network (Toast)</div></div>
+          <!-- 3. Industry Editions: High impact, Medium risk -->
+          <div class="matrix-dot" style="left: 48%; top: 28%; background: var(--purple);">3<div class="matrix-tooltip">Industry Editions (Veeva)</div></div>
+          <!-- 4. Outcome Pricing: Medium impact, Low risk -->
+          <div class="matrix-dot" style="left: 18%; top: 55%; background: var(--amber);">4<div class="matrix-tooltip">Performance Guarantee (Riskified)</div></div>
+          <!-- 5. Marketplace: High impact (long), Very High risk -->
+          <div class="matrix-dot" style="left: 78%; top: 25%; background: var(--blue-deep);">5<div class="matrix-tooltip">Fleet Marketplace (Shopify)</div></div>
+          <!-- 6. Data Product: High impact, Medium risk -->
+          <div class="matrix-dot" style="left: 44%; top: 22%; background: var(--blue-deep);">6<div class="matrix-tooltip">Fleetio Intelligence (ADP)</div></div>
+          <!-- 7. Fleetio OS: Very High impact, Very High risk -->
+          <div class="matrix-dot" style="left: 88%; top: 10%; background: var(--green);">7<div class="matrix-tooltip">Fleetio OS (Procore)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Provocation tabs -->
+    <div class="prov-tabs">
+      <button class="prov-tab on" onclick="switchProv('prov2', this)"><span class="num">2</span> Shop Network</button>
+      <button class="prov-tab" onclick="switchProv('prov6', this)"><span class="num">6</span> Intelligence</button>
+      <button class="prov-tab" onclick="switchProv('prov3', this)"><span class="num">3</span> Industry Editions</button>
+      <button class="prov-tab" onclick="switchProv('prov4', this)"><span class="num">4</span> Performance Guarantee</button>
+      <button class="prov-tab" onclick="switchProv('prov5', this)"><span class="num">5</span> Marketplace</button>
+      <button class="prov-tab" onclick="switchProv('prov1', this)"><span class="num">1</span> Multi-Product</button>
+      <button class="prov-tab" onclick="switchProv('prov7', this)"><span class="num">7</span> Fleetio OS</button>
+    </div>
+
+    <!-- Prov 2: Shop Network -->
+    <div class="prov-pane on" id="prov2">
+      <div class="prov-hero">
+        <div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+            <div class="bold-badge" style="background: var(--green);">HIGHEST IMPACT</div>
+          </div>
+          <h3 style="font-size: 28px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 6px;">The Shop Network as a Business</h3>
+          <div style="font-size: 16px; color: var(--blue-deep); font-weight: 600; margin-bottom: 16px;">The Toast Play &mdash; SaaS &rarr; Marketplace &rarr; Fintech</div>
+          <p style="font-size: 16px; color: var(--text-2); line-height: 1.7;">110K shops, 14M repair orders, $0 in transaction revenue. Fleetio is running a $0-revenue OpenTable for auto repair. Toast generates 82% of its $2B+ revenue from embedded payments, not SaaS subscriptions. ServiceTitan follows the same playbook in home services ($577M revenue).</p>
+        </div>
+        <div>
+          <div class="prov-meta">
+            <div class="prov-meta-item"><div class="label">Revenue Impact</div><div class="value" style="color: var(--green);">Very High</div></div>
+            <div class="prov-meta-item"><div class="label">Effort</div><div class="value">Medium-High</div></div>
+            <div class="prov-meta-item"><div class="label">Risk</div><div class="value" style="color: var(--amber);">Medium</div></div>
+            <div class="prov-meta-item"><div class="label">Time to Revenue</div><div class="value">6&ndash;12 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue scenarios -->
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Three Revenue Models</div>
+      <div class="grid grid-3" style="margin-bottom: 28px;">
+        <div class="card" style="text-align: center; border-top: 4px solid var(--green);">
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-3); margin-bottom: 8px;">A: Transaction Fees</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--green); letter-spacing: -1px;">$28&ndash;84M</div>
+          <div style="font-size: 13px; color: var(--text-3); margin-top: 4px;">14M orders &times; $400 avg &times; 0.5&ndash;1.5%</div>
+        </div>
+        <div class="card" style="text-align: center; border-top: 4px solid var(--blue-deep);">
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-3); margin-bottom: 8px;">B: Shop-Side SaaS</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--blue-deep); letter-spacing: -1px;">$26M</div>
+          <div style="font-size: 13px; color: var(--text-3); margin-top: 4px;">11K shops &times; $199/mo avg</div>
+        </div>
+        <div class="card" style="text-align: center; border-top: 4px solid var(--purple);">
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-3); margin-bottom: 8px;">C: Embedded Payments</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--purple); letter-spacing: -1px;">$140&ndash;168M</div>
+          <div style="font-size: 13px; color: var(--text-3); margin-top: 4px;">$5.6B repair volume &times; 2.5&ndash;3%</div>
+        </div>
+      </div>
+
+      <!-- Sequence -->
+      <div class="card" style="padding: 28px; margin-bottom: 24px; background: var(--green-soft); border-color: rgba(6,119,73,0.15);">
+        <div style="font-size: 14px; font-weight: 700; color: var(--green); margin-bottom: 12px;">Sequenced Approach</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+          <div><div style="font-size: 12px; font-weight: 700; color: var(--green);">Phase 1 (Now)</div><div style="font-size: 13px; color: var(--text-2); margin-top: 4px;">Premium Vendor Portal tiers. $99&ndash;199/shop/mo. Target: 5K shops, $12M ARR.</div></div>
+          <div><div style="font-size: 12px; font-weight: 700; color: var(--green);">Phase 2 (6&ndash;12mo)</div><div style="font-size: 13px; color: var(--text-2); margin-top: 4px;">Optional payment processing. "Pay your shop through Fleetio." 2&ndash;3% fee.</div></div>
+          <div><div style="font-size: 12px; font-weight: 700; color: var(--green);">Phase 3 (12&ndash;24mo)</div><div style="font-size: 13px; color: var(--text-2); margin-top: 4px;">Payments as default for network. Faster payouts for shops, auto-reconciliation for fleets.</div></div>
+          <div><div style="font-size: 12px; font-weight: 700; color: var(--green);">Phase 4 (24mo+)</div><div style="font-size: 13px; color: var(--text-2); margin-top: 4px;">Financial services: fleet maintenance financing, working capital loans, BNPL, insurance.</div></div>
+        </div>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-col wins">
+          <h5 style="color: var(--green);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block;"></span> Why This Could Win</h5>
+          <ul>
+            <li>14M repair orders is enormous transaction volume (Toast processes ~100M restaurant txns/month; Fleetio does ~1.2M/month)</li>
+            <li>The Vendor Portal (March 2025) is the Trojan horse &mdash; shops are already logging in</li>
+            <li>Fleet maintenance is a pain-to-pay category. One-click payments would drive adoption</li>
+            <li>Entirely new revenue stream that doesn't cannibalize SaaS pricing</li>
+            <li>Locks in shops: getting paid through Fleetio + receiving leads = deep lock-in</li>
+          </ul>
+        </div>
+        <div class="why-col risks">
+          <h5 style="color: var(--amber);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: inline-block;"></span> Why This Could Fail</h5>
+          <ul>
+            <li>Shops operate on thin margins (10&ndash;15% net). Even 1&ndash;2% fee cuts profitability</li>
+            <li>Embedded payments is a massive technical and regulatory lift (PCI, money transmitter licenses)</li>
+            <li>Fleet customers may resist &mdash; many have existing AP processes and fleet fuel cards</li>
+            <li>Changes Fleetio's identity from "fleet management software" to "fleet payments platform"</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict-box">
+        <h5>Verdict: The single highest-impact opportunity</h5>
+        <p>The shop network is Fleetio's most defensible asset and its most undermonetized. Even a modest transaction fee on 14M repair orders = tens of millions in annual revenue. The Toast model proves this works in vertical SaaS. The sequenced approach manages risk while building toward the transformative outcome. This single move could add 30&ndash;50% to revenue without touching core SaaS pricing.</p>
+      </div>
+    </div>
+
+    <!-- Prov 6: Intelligence -->
+    <div class="prov-pane" id="prov6">
+      <div class="prov-hero">
+        <div>
+          <div class="bold-badge" style="background: var(--blue-deep);">SECOND PRIORITY</div>
+          <h3 style="font-size: 28px; font-weight: 800; letter-spacing: -0.8px; margin: 8px 0 6px;">Fleetio Intelligence</h3>
+          <div style="font-size: 16px; color: var(--blue-deep); font-weight: 600; margin-bottom: 16px;">The ADP DataCloud Play &mdash; Data as a Product</div>
+          <p style="font-size: 16px; color: var(--text-2); line-height: 1.7;">8M+ vehicles, 14M+ repair orders, 110K+ shops with performance data. This is the largest fleet operations dataset in the world. ADP turned payroll processing into a $2B+ data analytics business. Mastercard Advisors generates $2B+ from anonymized transaction intelligence. Fleetio's data is equally unique and equally undermonetized.</p>
+        </div>
+        <div>
+          <div class="prov-meta">
+            <div class="prov-meta-item"><div class="label">Revenue Impact</div><div class="value" style="color: var(--green);">High</div></div>
+            <div class="prov-meta-item"><div class="label">Effort</div><div class="value">Medium</div></div>
+            <div class="prov-meta-item"><div class="label">Risk</div><div class="value" style="color: var(--amber);">Medium</div></div>
+            <div class="prov-meta-item"><div class="label">Time to Revenue</div><div class="value">9&ndash;15 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">What The Data Could Power</div>
+      <div class="grid grid-4" style="margin-bottom: 24px;">
+        <div class="card" style="padding: 20px;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">Fleet Benchmarking</div>
+          <div style="font-size: 13px; color: var(--text-2); line-height: 1.5;">"Your maintenance cost/mile is 23% higher than peer fleets in the Southeast"</div>
+        </div>
+        <div class="card" style="padding: 20px;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">Predictive Maintenance</div>
+          <div style="font-size: 13px; color: var(--text-2); line-height: 1.5;">"Ford F-150s in your usage pattern need transmission service at 87K, not 100K"</div>
+        </div>
+        <div class="card" style="padding: 20px;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">TCO Intelligence</div>
+          <div style="font-size: 13px; color: var(--text-2); line-height: 1.5;">"5-year cost of Ford Transit: $47K vs $52K RAM ProMaster in your profile"</div>
+        </div>
+        <div class="card" style="padding: 20px;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">Shop Ratings</div>
+          <div style="font-size: 13px; color: var(--text-2); line-height: 1.5;">"Yelp for fleet maintenance" powered by real transaction data from 110K shops</div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Four Revenue Models</div>
+      <div class="grid grid-2" style="margin-bottom: 24px;">
+        <div class="card" style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--blue-deep); letter-spacing: -1px; min-width: 90px;">$5&ndash;8M</div>
+          <div><div style="font-weight: 700; margin-bottom: 2px;">A: Intelligence Tier (Fleetio customers)</div><div style="font-size: 13px; color: var(--text-2);">$3&ndash;5/vehicle/mo add-on. 20% attach across 8M vehicles.</div></div>
+        </div>
+        <div class="card" style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--blue-deep); letter-spacing: -1px; min-width: 90px;">$15M</div>
+          <div><div style="font-weight: 700; margin-bottom: 2px;">B: Standalone Product (anyone)</div><div style="font-size: 13px; color: var(--text-2);">1,000 customers at $15K/year avg. Consultants, OEMs, insurers.</div></div>
+        </div>
+        <div class="card" style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--blue-deep); letter-spacing: -1px; min-width: 90px;">$12.5M</div>
+          <div><div style="font-weight: 700; margin-bottom: 2px;">C: Data Licensing (B2B)</div><div style="font-size: 13px; color: var(--text-2);">50 enterprise licenses at $250K/year. Vehicle OEMs, insurers, parts cos.</div></div>
+        </div>
+        <div class="card" style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--green); letter-spacing: -1px; min-width: 90px;">Free</div>
+          <div><div style="font-weight: 700; margin-bottom: 2px;">D: Fleet Health Score (give away)</div><div style="font-size: 13px; color: var(--text-2);">Monthly score comparing peers. Drives engagement, retention, upsells. Start here.</div></div>
+        </div>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-col wins">
+          <h5 style="color: var(--green);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block;"></span> Why This Could Win</h5>
+          <ul>
+            <li>Data is genuinely unique. Nobody else has 14M repair orders with line-item detail across 110K shops</li>
+            <li>Sells to a different buyer (CFO/VP Ops) than the core product &mdash; expands addressable budget</li>
+            <li>Near-zero marginal cost once analytics infra is built. Each additional customer is almost pure profit</li>
+            <li>Flywheel: more vehicles on Fleetio = better data = more valuable Intelligence = more reason to use Fleetio</li>
+            <li>Future-proofs against AI commoditization. Features are replicable. 14M repair orders are not</li>
+          </ul>
+        </div>
+        <div class="why-col risks">
+          <h5 style="color: var(--amber);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: inline-block;"></span> Why This Could Fail</h5>
+          <ul>
+            <li>Privacy and data rights. Do Fleetio's ToS allow benchmarking products? Legal review required</li>
+            <li>Data quality may not be sufficient. 14M orders sounds great, but is categorization consistent across 110K shops?</li>
+            <li>Building data products requires data science, visualization, enterprise sales &mdash; different capabilities</li>
+            <li>Standalone data market may be smaller than it appears. Long sales cycles for enterprise licensing</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict-box">
+        <h5>Verdict: Start building now, monetize in layers</h5>
+        <p>Start with Option D (free Fleet Health Score) &mdash; costs almost nothing, proves data value. Then launch Option A ($3&ndash;5/vehicle add-on) for existing customers. Then Option C (data licensing to OEMs, insurers). The standalone product comes last. This is Fleetio's long-term strategic moat &mdash; the transition from "fleet management software" to "fleet intelligence platform."</p>
+      </div>
+    </div>
+
+    <!-- Prov 3: Industry Editions -->
+    <div class="prov-pane" id="prov3">
+      <div class="prov-hero">
+        <div>
+          <h3 style="font-size: 28px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 6px;">Industry Editions</h3>
+          <div style="font-size: 16px; color: var(--blue-deep); font-weight: 600; margin-bottom: 16px;">The Veeva Play &mdash; Vertical over Horizontal</div>
+          <p style="font-size: 16px; color: var(--text-2); line-height: 1.7;">Instead of tiering by feature depth, tier by industry. A 500-vehicle construction fleet and a 500-vehicle delivery fleet have completely different needs, budgets, and willingness to pay. Veeva dominates life sciences with this exact approach. Procore owns construction the same way.</p>
+        </div>
+        <div>
+          <div class="prov-meta">
+            <div class="prov-meta-item"><div class="label">Revenue Impact</div><div class="value" style="color: var(--green);">High</div></div>
+            <div class="prov-meta-item"><div class="label">Effort</div><div class="value">Medium</div></div>
+            <div class="prov-meta-item"><div class="label">Risk</div><div class="value" style="color: var(--amber);">Medium</div></div>
+            <div class="prov-meta-item"><div class="label">Time to Revenue</div><div class="value">6&ndash;9 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Willingness to Pay by Vertical</div>
+      <div class="card" style="padding: 28px; margin-bottom: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          <div class="hbar-row">
+            <div class="hbar-name">Construction</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width: 83%; background: linear-gradient(90deg, var(--purple), #9b7de8);"></div></div>
+            <div class="hbar-val" style="color: var(--purple);">$20&ndash;30</div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-name">Transport</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width: 58%; background: linear-gradient(90deg, var(--blue-deep), var(--blue));"></div></div>
+            <div class="hbar-val" style="color: var(--blue-deep);">$15&ndash;25</div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-name">Government</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width: 50%; background: linear-gradient(90deg, var(--green), #2ecc71);"></div></div>
+            <div class="hbar-val" style="color: var(--green);">$10&ndash;20</div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-name">Delivery</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width: 33%; background: linear-gradient(90deg, var(--amber), #f0ad4e);"></div></div>
+            <div class="hbar-val" style="color: var(--amber);">$8&ndash;12</div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-name">Field Services</div>
+            <div class="hbar-track"><div class="hbar-fill" style="width: 33%; background: linear-gradient(90deg, #94a3b8, #cbd5e1);"></div></div>
+            <div class="hbar-val" style="color: var(--text-3);">$8&ndash;15</div>
+          </div>
+        </div>
+        <div style="font-size: 12px; color: var(--text-4); margin-top: 12px; text-align: center;">Per vehicle/asset/month. Construction is highest because $500K excavator downtime = $2K&ndash;5K/day.</div>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-col wins">
+          <h5 style="color: var(--green);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block;"></span> Why This Could Win</h5>
+          <ul>
+            <li>Fleetio already builds industry-specific features (OEM templates, "Assets" toggle, construction service programs)</li>
+            <li>Unlocks higher WTP. $25/asset for construction-specific edition is more defensible than $10/vehicle generic Premium</li>
+            <li>Simplifies buying: "I'm a construction company, I need Fleetio for Construction"</li>
+            <li>Creates moat against Samsara/Motive who are hardware-first and industry-agnostic</li>
+          </ul>
+        </div>
+        <div class="why-col risks">
+          <h5 style="color: var(--amber);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: inline-block;"></span> Why This Could Fail</h5>
+          <ul>
+            <li>Segments may not be different enough. If 80% of features are shared, it's marketing lipstick</li>
+            <li>Fragments the product team &mdash; each edition needs its own roadmap and feedback loops</li>
+            <li>Cross-selling harder: customer with both construction and delivery fleets needs two editions</li>
+            <li>No major fleet competitor does this. Either they're all wrong, or fleet buyers don't think this way</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict-box">
+        <h5>Verdict: Launch one edition as a premium overlay</h5>
+        <p><strong>"Fleetio for Construction"</strong> is the obvious first move: highest WTP, Fleetio has already built construction features, and the segment is 18% of the market. Price at $20&ndash;25/asset/month. At 5% capture of 1.44M construction vehicles = <strong>$19M+ ARR</strong>.</p>
+      </div>
+    </div>
+
+    <!-- Prov 4: Performance Guarantee -->
+    <div class="prov-pane" id="prov4">
+      <div class="prov-hero">
+        <div>
+          <div class="bold-badge" style="background: var(--amber);">QUICK WIN</div>
+          <h3 style="font-size: 28px; font-weight: 800; letter-spacing: -0.8px; margin: 8px 0 6px;">Performance Guarantee</h3>
+          <div style="font-size: 16px; color: var(--blue-deep); font-weight: 600; margin-bottom: 16px;">The Riskified Play &mdash; Outcome-Based Sales Weapon</div>
+          <p style="font-size: 16px; color: var(--text-2); line-height: 1.7;">Fleetio claims 12% maintenance cost savings. What if they put money behind it? "If you don't save at least 10% on maintenance costs in your first year, we refund 50% of your subscription." Riskified does this with a 100% chargeback guarantee and it's their #1 sales differentiator. Only 9% of SaaS companies have implemented outcome-based pricing, but 47% are actively exploring it.</p>
+        </div>
+        <div>
+          <div class="prov-meta">
+            <div class="prov-meta-item"><div class="label">Revenue Impact</div><div class="value">Medium</div></div>
+            <div class="prov-meta-item"><div class="label">Effort</div><div class="value" style="color: var(--green);">Low</div></div>
+            <div class="prov-meta-item"><div class="label">Risk</div><div class="value" style="color: var(--green);">Low</div></div>
+            <div class="prov-meta-item"><div class="label">Time to Revenue</div><div class="value" style="color: var(--green);">1&ndash;3 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-3" style="margin-bottom: 24px;">
+        <div class="card" style="border-top: 4px solid var(--amber);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">Option A: Savings Share</div>
+          <div style="font-size: 13px; color: var(--text-2); line-height: 1.6;">$5/vehicle base + 15% of YoY maintenance savings. Aligns incentives but introduces revenue volatility. Hard to attribute savings.</div>
+          <div style="font-size: 12px; color: var(--text-4); margin-top: 8px;">Verdict: Too complex for now</div>
+        </div>
+        <div class="card" style="border-top: 4px solid var(--green); background: var(--green-soft);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">Option B: Money-Back Guarantee</div>
+          <div style="font-size: 13px; color: var(--text-2); line-height: 1.6;">"Save 10% or 50% refund." Not really outcome-based pricing &mdash; it's outcome-based <em>marketing</em>. Near-zero cost (data shows 12% avg). Devastating in sales conversations.</div>
+          <div style="font-size: 12px; color: var(--green); font-weight: 600; margin-top: 8px;">Recommended: Launch in Q1</div>
+        </div>
+        <div class="card" style="border-top: 4px solid var(--blue-deep);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">Option C: Tiered Success Fees</div>
+          <div style="font-size: 13px; color: var(--text-2); line-height: 1.6;">Base subscription + 10&ndash;15% of savings above baseline. Protects base revenue while capturing upside from high performers.</div>
+          <div style="font-size: 12px; color: var(--text-4); margin-top: 8px;">Verdict: Explore for v2</div>
+        </div>
+      </div>
+
+      <div class="verdict-box" style="background: var(--amber-soft); border-color: rgba(217,122,11,0.15);">
+        <h5>Verdict: Don't change the pricing &mdash; weaponize the sales pitch</h5>
+        <p>Option B is a sales nuclear weapon at near-zero cost. "We're so confident Fleetio saves you money that we guarantee it." Every fleet manager's objection evaporates. The boldest version: money-back guarantee on the shop network module specifically. Low risk (12% average savings), high impact (demolishes competitors in every conversation).</p>
+      </div>
+    </div>
+
+    <!-- Prov 5: Marketplace -->
+    <div class="prov-pane" id="prov5">
+      <div class="prov-hero">
+        <div>
+          <h3 style="font-size: 28px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 6px;">Fleet Marketplace</h3>
+          <div style="font-size: 16px; color: var(--blue-deep); font-weight: 600; margin-bottom: 16px;">The Shopify Play &mdash; Platform Economy</div>
+          <p style="font-size: 16px; color: var(--text-2); line-height: 1.7;">Fleetio already has 20+ telematics integrations and an API with 50+ webhook events. Formalize this into a marketplace where telematics providers, parts suppliers, insurance companies, and service providers build on top of Fleetio. Shopify App Store: 11K+ apps, 87% of merchants use apps. Salesforce AppExchange: 4,300+ apps, projected $10B ISV revenue by 2026.</p>
+        </div>
+        <div>
+          <div class="prov-meta">
+            <div class="prov-meta-item"><div class="label">Revenue Impact</div><div class="value">High (long-term)</div></div>
+            <div class="prov-meta-item"><div class="label">Effort</div><div class="value" style="color: var(--red);">Very High</div></div>
+            <div class="prov-meta-item"><div class="label">Risk</div><div class="value" style="color: var(--amber);">Medium</div></div>
+            <div class="prov-meta-item"><div class="label">Time to Revenue</div><div class="value">24&ndash;36 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">Marketplace Revenue Streams</div>
+      <div class="card" style="padding: 28px; margin-bottom: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          <div class="hbar-row"><div class="hbar-name">Parts GMV</div><div class="hbar-track"><div class="hbar-fill" style="width: 70%; background: linear-gradient(90deg, var(--green), #2ecc71);"></div></div><div class="hbar-val" style="color: var(--green);">Significant</div></div>
+          <div class="hbar-row"><div class="hbar-name">App Rev Share</div><div class="hbar-track"><div class="hbar-fill" style="width: 50%; background: linear-gradient(90deg, var(--blue-deep), var(--blue));"></div></div><div class="hbar-val" style="color: var(--blue-deep);">15% take</div></div>
+          <div class="hbar-row"><div class="hbar-name">Referral Fees</div><div class="hbar-track"><div class="hbar-fill" style="width: 35%; background: linear-gradient(90deg, var(--purple), #9b7de8);"></div></div><div class="hbar-val" style="color: var(--purple);">$50&ndash;200/lead</div></div>
+          <div class="hbar-row"><div class="hbar-name">Premium API</div><div class="hbar-track"><div class="hbar-fill" style="width: 25%; background: linear-gradient(90deg, var(--amber), #f0ad4e);"></div></div><div class="hbar-val" style="color: var(--amber);">$299&ndash;999/mo</div></div>
+        </div>
+        <div style="font-size: 12px; color: var(--text-4); margin-top: 16px;">Key insight from Procore/Salesforce: 50% less churn when customers use marketplace apps. The marketplace is a retention engine.</div>
+      </div>
+
+      <div class="verdict-box">
+        <h5>Verdict: Strong long-term play, start small</h5>
+        <p>Don't build a full marketplace &mdash; formalize existing integration partnerships with a lightweight partner program. Charge listing/connection fees (like ServiceTitan). Introduce parts ordering with 1&ndash;2 suppliers with referral fees. Use the developer API as the foundation. The marketplace grows organically. Takes 5&ndash;10 years to reach meaningful scale but creates an enormous retention moat.</p>
+      </div>
+    </div>
+
+    <!-- Prov 1: Multi-Product -->
+    <div class="prov-pane" id="prov1">
+      <div class="prov-hero">
+        <div>
+          <h3 style="font-size: 28px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 6px;">Multi-Product Company</h3>
+          <div style="font-size: 16px; color: var(--blue-deep); font-weight: 600; margin-bottom: 16px;">The HubSpot / Atlassian Play &mdash; Multiple Products, Multiple Buyers</div>
+          <p style="font-size: 16px; color: var(--text-2); line-height: 1.7;">Split Fleetio into 3&ndash;5 standalone products (Maintain, Track, Intelligence, Comply, Connect), each with its own pricing, buyer persona, and onboarding. HubSpot hit $3.13B revenue with 62% of customers buying multiple hubs. Atlassian: 90%+ of $50K+ customers own 3+ products. Different budget holders = bigger total deal size.</p>
+        </div>
+        <div>
+          <div class="prov-meta">
+            <div class="prov-meta-item"><div class="label">Revenue Impact</div><div class="value" style="color: var(--green);">Very High</div></div>
+            <div class="prov-meta-item"><div class="label">Effort</div><div class="value" style="color: var(--red);">Very High</div></div>
+            <div class="prov-meta-item"><div class="label">Risk</div><div class="value" style="color: var(--red);">High</div></div>
+            <div class="prov-meta-item"><div class="label">Time to Revenue</div><div class="value">18&ndash;24 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 16px;">The Five Products</div>
+      <div class="grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 24px;">
+        <div class="card" style="padding: 20px; text-align: center; border-top: 3px solid var(--green);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Maintain</div>
+          <div style="font-size: 20px; font-weight: 800; color: var(--green); margin-bottom: 4px;">$5</div>
+          <div style="font-size: 11px; color: var(--text-3);">Work orders, parts, tires, warranties, POs</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center; border-top: 3px solid var(--blue-deep);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Track</div>
+          <div style="font-size: 20px; font-weight: 800; color: var(--blue-deep); margin-bottom: 4px;">$5</div>
+          <div style="font-size: 11px; color: var(--text-3);">Vehicle registry, inspections, telematics, fuel</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center; border-top: 3px solid var(--purple);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Intelligence</div>
+          <div style="font-size: 20px; font-weight: 800; color: var(--purple); margin-bottom: 4px;">$4</div>
+          <div style="font-size: 11px; color: var(--text-3);">Analytics, AI, dashboards, lifecycle</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center; border-top: 3px solid var(--amber);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Comply</div>
+          <div style="font-size: 20px; font-weight: 800; color: var(--amber); margin-bottom: 4px;">$3</div>
+          <div style="font-size: 11px; color: var(--text-3);">DVIR, recalls, documents, audit trails</div>
+        </div>
+        <div class="card" style="padding: 20px; text-align: center; border-top: 3px solid var(--text-3);">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Connect</div>
+          <div style="font-size: 20px; font-weight: 800; color: var(--text-3); margin-bottom: 4px;">$99+</div>
+          <div style="font-size: 11px; color: var(--text-3);">API, webhooks, automations, workflows</div>
+        </div>
+      </div>
+      <div style="text-align: center; font-size: 14px; color: var(--text-2); margin-bottom: 24px;">Suite bundle (all products): <strong>~$14&ndash;15/vehicle</strong> at 25&ndash;30% discount. Max a la carte: <strong>$22/vehicle</strong> (2.2x current Premium).</div>
+
+      <div class="verdict-box" style="background: var(--red-soft); border-color: rgba(197,61,61,0.15);">
+        <h5>Verdict: Bold but risky for Fleetio today</h5>
+        <p>The strongest version isn't "split into five products" &mdash; it's "build one new standalone product and test the multi-product motion." The candidate: <strong>Fleetio Intelligence</strong>, because it sells to a different buyer (CFO/VP Ops), justifies premium pricing through ROI, and could eventually serve non-Fleetio customers. 47% of Fleetio's customers are SMB where the fleet manager IS the maintenance manager &mdash; multi-product confuses this buyer.</p>
+      </div>
+    </div>
+
+    <!-- Prov 7: Fleetio OS -->
+    <div class="prov-pane" id="prov7">
+      <div class="prov-hero">
+        <div>
+          <h3 style="font-size: 28px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 6px;">Fleetio OS</h3>
+          <div style="font-size: 16px; color: var(--blue-deep); font-weight: 600; margin-bottom: 16px;">The Procore Play &mdash; Composable Platform</div>
+          <p style="font-size: 16px; color: var(--text-2); line-height: 1.7;">A thin core layer (vehicle registry, users, mobile app) with everything else as pluggable modules &mdash; including modules built by third parties. Procore hit $1B+ ARR with this model. Nobody in fleet management has built the composable OS yet. Every competitor sells a monolithic bundle.</p>
+        </div>
+        <div>
+          <div class="prov-meta">
+            <div class="prov-meta-item"><div class="label">Revenue Impact</div><div class="value" style="color: var(--green);">Very High</div></div>
+            <div class="prov-meta-item"><div class="label">Effort</div><div class="value" style="color: var(--red);">Very High</div></div>
+            <div class="prov-meta-item"><div class="label">Risk</div><div class="value" style="color: var(--red);">High</div></div>
+            <div class="prov-meta-item"><div class="label">Time to Revenue</div><div class="value">24&ndash;36 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-3" style="margin-bottom: 24px;">
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Core OS</div>
+          <div style="font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -1px;">$3&ndash;4</div>
+          <div style="font-size: 12px; color: var(--text-3);">/vehicle/mo &mdash; the foundation</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">14 First-Party Modules</div>
+          <div style="font-size: 28px; font-weight: 800; color: var(--blue-deep); letter-spacing: -1px;">$1&ndash;4</div>
+          <div style="font-size: 12px; color: var(--text-3);">each/vehicle/mo &mdash; a la carte</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">All Modules</div>
+          <div style="font-size: 28px; font-weight: 800; color: var(--green); letter-spacing: -1px;">~$22</div>
+          <div style="font-size: 12px; color: var(--text-3);">/vehicle/mo bundled at 30% discount</div>
+        </div>
+      </div>
+
+      <div class="verdict-box">
+        <h5>Verdict: The 5-year vision, not the 12-month play</h5>
+        <p>Don't announce Fleetio OS &mdash; build toward it incrementally. (1) Make existing features more modular internally. (2) Launch 2&ndash;3 Plus Packs to test module purchasing behavior. (3) Open the API platform with a lightweight partner program. (4) Over 2&ndash;3 years, Plus Packs become modules, partner integrations become marketplace apps, and the OS positioning emerges organically. "The operating system for fleet operations" is the strongest positioning claim in the market.</p>
+      </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="card" style="padding: 40px; background: var(--bg); margin-top: 40px;">
+      <h4 style="font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 36px; letter-spacing: -0.5px;">Recommended Sequencing</h4>
+      <div class="timeline">
+        <div class="tl-phase">
+          <div class="tl-label" style="background: var(--green);">Q1</div>
+          <div class="tl-dot" style="background: var(--green); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--green);"></div>
+          <div style="font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Quick Wins</div>
+          <ul class="tl-items">
+            <li>Performance guarantee</li>
+            <li>Fleet Health Score (free)</li>
+            <li>Premium Vendor Portal</li>
+          </ul>
+        </div>
+        <div class="tl-phase">
+          <div class="tl-label" style="background: var(--blue-deep);">Q2&ndash;3</div>
+          <div class="tl-dot" style="background: var(--blue-deep); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--blue-deep);"></div>
+          <div style="font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Medium Bets</div>
+          <ul class="tl-items">
+            <li>Fleetio Intelligence add-on</li>
+            <li>Fleetio for Construction</li>
+            <li>Integration partner program</li>
+          </ul>
+        </div>
+        <div class="tl-phase">
+          <div class="tl-label" style="background: var(--purple);">Q4&ndash;6</div>
+          <div class="tl-dot" style="background: var(--purple); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--purple);"></div>
+          <div style="font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Strategic</div>
+          <ul class="tl-items">
+            <li>Optional payment processing</li>
+            <li>Enterprise data licensing</li>
+            <li>Codebase modularization</li>
+          </ul>
+        </div>
+        <div class="tl-phase">
+          <div class="tl-label" style="background: var(--text);">Year 2+</div>
+          <div class="tl-dot" style="background: var(--text); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--text);"></div>
+          <div style="font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Transform</div>
+          <ul class="tl-items">
+            <li>Full marketplace launch</li>
+            <li>Embedded payments default</li>
+            <li>More industry editions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- One thing -->
+    <div class="bigquote" style="background: linear-gradient(135deg, var(--green-soft), var(--blue-soft));">
+      <div class="eyebrow" style="color: var(--green);">If You Only Do One Thing</div>
+      <div class="quote" style="color: var(--text);">Monetize the shop network.<br>14M orders &times; $400 avg &times; 0.5% = <span style="color: var(--green);">$28M/year</span><br><span style="font-size: 18px; font-weight: 500; color: var(--text-2);">Fleetio is giving it away for free today.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Combination Plays -->
+<section class="section" id="combos">
+  <div class="wrap">
+    <div class="section-eyebrow">Power Combos</div>
+    <div class="section-title">Where the Real Money Is</div>
+    <div class="section-desc">The seven provocations are strongest in combination. Three plays that layer for maximum impact.</div>
+
+    <!-- Revenue Waterfall -->
+    <div class="card" style="padding: 36px; margin-bottom: 36px;">
+      <h4 style="font-size: 18px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px;">Cumulative Revenue Potential</h4>
+      <p style="font-size: 14px; color: var(--text-3); margin-bottom: 28px;">Each layer stacks on top of current SaaS revenue without cannibalizing it.</p>
+      <div class="waterfall">
+        <div class="wf-col">
+          <div class="wf-bar" style="height: 25%; background: var(--text-3);">
+            <div class="wf-val">~$100M</div>
+            <div class="wf-sub">est. ARR</div>
+          </div>
+          <div class="wf-label">Current SaaS</div>
+        </div>
+        <div class="wf-col">
+          <div class="wf-bar" style="height: 12%; background: var(--amber);">
+            <div class="wf-val">+$12M</div>
+          </div>
+          <div class="wf-label">Vendor Portal<br>Tiers</div>
+        </div>
+        <div class="wf-col">
+          <div class="wf-bar" style="height: 18%; background: var(--blue-deep);">
+            <div class="wf-val">+$19M</div>
+          </div>
+          <div class="wf-label">Intelligence<br>Add-on</div>
+        </div>
+        <div class="wf-col">
+          <div class="wf-bar" style="height: 18%; background: var(--purple);">
+            <div class="wf-val">+$19M</div>
+          </div>
+          <div class="wf-label">Construction<br>Edition</div>
+        </div>
+        <div class="wf-col">
+          <div class="wf-bar" style="height: 28%; background: var(--green);">
+            <div class="wf-val">+$28M</div>
+          </div>
+          <div class="wf-label">Transaction<br>Fees (0.5%)</div>
+        </div>
+        <div class="wf-col">
+          <div class="wf-bar" style="height: 12%; background: var(--blue-deep);">
+            <div class="wf-val">+$13M</div>
+          </div>
+          <div class="wf-label">Data<br>Licensing</div>
+        </div>
+        <div class="wf-col">
+          <div class="wf-bar" style="height: 65%; background: linear-gradient(180deg, var(--green), var(--blue-deep));">
+            <div class="wf-val">~$191M</div>
+            <div class="wf-sub">total potential</div>
+          </div>
+          <div class="wf-label" style="color: var(--text); font-weight: 700;">Combined</div>
+        </div>
+      </div>
+      <div style="text-align: center; font-size: 13px; color: var(--text-4); margin-top: 8px;">Conservative estimates. Embedded payments endgame ($140M+) not shown &mdash; that's a 3&ndash;5 year play.</div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="combo" style="border-top: 4px solid var(--blue-deep);">
+        <div class="combo-label" style="color: var(--blue-deep);">Combo A</div>
+        <h4>Intelligence + Data + Guarantee</h4>
+        <p>Launch Intelligence as a standalone premium add-on with a performance guarantee: "If it doesn't identify 8%+ in savings, we refund the subscription." Targets CFO/VP Ops &mdash; a new buyer. Buildable in 3&ndash;6 months because the underlying features already exist in Premium.</p>
+        <div class="combo-stat" style="background: var(--blue-soft);">
+          <div class="num" style="color: var(--blue-deep);">$19&ndash;77M</div>
+          <div class="sub" style="color: var(--text-3);">incremental ARR (5&ndash;20% attach)</div>
+        </div>
+      </div>
+      <div class="combo" style="border-top: 4px solid var(--green);">
+        <div class="combo-label" style="color: var(--green);">Combo B</div>
+        <h4>Shop Network + Marketplace + Payments</h4>
+        <p>Three-layer revenue engine: premium Vendor Portal &rarr; parts ordering with referral fees &rarr; embedded payment processing. The Toast playbook: SaaS &rarr; marketplace &rarr; fintech. None of it requires changing core SaaS pricing.</p>
+        <div class="combo-stat" style="background: var(--green-soft);">
+          <div class="num" style="color: var(--green);">$137M</div>
+          <div class="sub" style="color: var(--text-3);">total potential at scale (3&ndash;5yr)</div>
+        </div>
+      </div>
+      <div class="combo" style="border-top: 4px solid var(--purple);">
+        <div class="combo-label" style="color: var(--purple);">Combo C</div>
+        <h4>Editions + OS + Third-Party Modules</h4>
+        <p>"Fleetio for Construction" at $20&ndash;25/asset on a modular architecture. Each edition = curated module bundle with industry defaults. Third-party modules fill gaps Fleetio doesn't build. 18% of the fleet market is construction.</p>
+        <div class="combo-stat" style="background: var(--purple-soft);">
+          <div class="num" style="color: var(--purple);">$19M+</div>
+          <div class="sub" style="color: var(--text-3);">at 5% construction segment capture</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Next Steps -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Next Steps</div>
+    <div class="section-title">What Happens From Here</div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text); letter-spacing: -0.3px;">Validate</h4>
+        <ul style="list-style: none; font-size: 15px; color: var(--text-2); line-height: 2.2;">
+          <li>Run willingness-to-pay research with 20&ndash;30 customers across segments</li>
+          <li>Interview 5&ndash;10 enterprise prospects about SSO, SLA, and support needs</li>
+          <li>Test Plus Pack naming and positioning with A/B on the pricing page</li>
+          <li>Model revenue impact using actual customer distribution data</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text); letter-spacing: -0.3px;">Execute</h4>
+        <ul style="list-style: none; font-size: 15px; color: var(--text-2); line-height: 2.2;">
+          <li>Build entitlement/feature-flag system for Plus Packs</li>
+          <li>Design pricing page for new architecture</li>
+          <li>Create migration playbook and grandfathering rules</li>
+          <li>Train sales team on new packaging and conversation guides</li>
+          <li>Launch to new customers first, migrate existing over 12&ndash;24 months</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    Fleetio Pricing & Packaging Analysis &middot; March 2026 &middot; Confidential<br>
+    Based on public data from fleetio.com, competitor websites, G2, Capterra, and industry publications.
+  </div>
+</footer>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+function switchProv(id, btn) {
+  document.querySelectorAll('.prov-pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.prov-tab').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+</script>
+</body>
+</html>

@@ -3,137 +3,612 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TeamHQ — Your AI Product Team</title>
-  <meta name="description" content="TeamHQ is the central headquarters for a seventeen-agent AI team that researches, scopes, designs, builds, tests, and ships software together.">
+  <title>Sherlock Labs | Dashboard</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent-green: #10B981;
+      --accent-blue: #3B82F6;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --accent-violet: #8B5CF6;
+      --surface-low: #F9FAFB;
+      --text-main: #374151;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: var(--text-main);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-pill {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .metric-card {
+      background: white;
+      border: 1px solid #F3F4F6;
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+
+    .metric-card:hover {
+      border-color: #E5E7EB;
+    }
+
+    .chart-bar {
+      border-radius: 1px 1px 0 0;
+      min-height: 2px;
+      transition: opacity 150ms ease;
+    }
+
+    .chart-bar:hover {
+      opacity: 0.8;
+    }
+
+    .activity-row {
+      transition: background-color 100ms ease;
+    }
+
+    .activity-row:hover {
+      background-color: #F9FAFB;
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid white;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6px;
+      font-weight: 700;
+      color: #6B7280;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .pulse { animation: pulse-dot 2s ease-in-out infinite; }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .skeleton {
+      background: #E5E7EB;
+      border-radius: 2px;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+  </style>
 </head>
-<body>
+<body class="w-full min-h-screen">
 
-  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[11px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
 
-  <!-- Navigation -->
-  <nav class="nav" aria-label="Main navigation">
-    <div class="container nav__inner">
-      <div class="nav__brand">
-        <a href="index.html" class="nav__logo-link">
-          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
         </a>
-      </div>
-      <div class="nav__links">
-        <a href="tools.html" class="nav__link">Tools</a>
-        <a href="projects.html" class="nav__link">Projects</a>
-        <a href="tasks.html" class="nav__link">Tasks</a>
-        <a href="meetings.html" class="nav__link">Meetings</a>
-        <a href="interviews.html" class="nav__link">Interviews</a>
-        <a href="docs.html" class="nav__link">Docs</a>
-        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
-        <a href="team.html" class="nav__link">Team</a>
-      </div>
-    </div>
-  </nav>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
 
-  <!-- Hero -->
-  <header class="hero">
-    <div class="container">
-      <span class="hero__badge">TeamHQ</span>
-      <h1 class="hero__headline">Your AI product team, <span class="hero__headline-accent">assembled and ready</span></h1>
-      <p class="hero__subhead">Twenty-two specialized agents that research, scope, design, build, test, and ship software together.</p>
-    </div>
-  </header>
-
-  <main id="main-content">
-
-    <!-- Hub Navigation Grid -->
-    <section class="hub" aria-labelledby="hub-heading">
-      <div class="container">
-        <h2 id="hub-heading" class="section-title">Explore</h2>
-        <div class="hub__grid">
-          <a href="tools.html" class="hub__card">
-            <h3 class="hub__card-name">Tools</h3>
-            <p class="hub__card-desc">Products and utilities built by the team.</p>
-          </a>
-          <a href="projects.html" class="hub__card">
-            <h3 class="hub__card-name">Projects</h3>
-            <p class="hub__card-desc">Create and manage product builds.</p>
-          </a>
-          <a href="tasks.html" class="hub__card">
-            <h3 class="hub__card-name">Tasks</h3>
-            <p class="hub__card-desc">Track all work items across every project.</p>
-          </a>
-          <a href="meetings.html" class="hub__card">
-            <h3 class="hub__card-name">Meetings</h3>
-            <p class="hub__card-desc">Simulated round-table discussions with the full team.</p>
-          </a>
-          <a href="interviews.html" class="hub__card">
-            <h3 class="hub__card-name">Interviews</h3>
-            <p class="hub__card-desc">AI-powered audio interviews on any topic.</p>
-          </a>
-          <a href="docs.html" class="hub__card">
-            <h3 class="hub__card-name">Docs</h3>
-            <p class="hub__card-desc">Project documentation and architecture records.</p>
-          </a>
-          <a href="spreadsheets.html" class="hub__card">
-            <h3 class="hub__card-name">Spreadsheets</h3>
-            <p class="hub__card-desc">Tabular data across all projects.</p>
-          </a>
-          <a href="team.html" class="hub__card">
-            <h3 class="hub__card-name">Team</h3>
-            <p class="hub__card-desc">Meet the twenty-two-agent AI team.</p>
-          </a>
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
         </div>
       </div>
-    </section>
+    </aside>
 
-    <!-- How It Works -->
-    <section class="how-it-works" id="how" aria-labelledby="how-heading">
-      <div class="container">
-        <h2 id="how-heading" class="section-title">How It Works</h2>
-        <p class="section-subtitle">A structured workflow from direction to delivery.</p>
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
 
-        <div class="steps">
-
-          <div class="step">
-            <div class="step__number" aria-hidden="true">1</div>
-            <h3 class="step__title">CEO Sets Direction</h3>
-            <p class="step__desc">You define the vision and goals. The team takes it from there.</p>
+      <!-- Top Status Bar -->
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">Pipeline</span>
+            <span class="text-[12px] font-bold flex items-center gap-1.5" id="header-pipeline">
+              <span class="status-dot bg-gray-300"></span>
+              <span>LOADING</span>
+            </span>
           </div>
-
-          <div class="step">
-            <div class="step__number" aria-hidden="true">2</div>
-            <h3 class="step__title">PM Scopes the Work</h3>
-            <p class="step__desc">Requirements are clarified, prioritized, and broken into shippable pieces.</p>
+          <div class="flex flex-col">
+            <span class="subtle-label">Active Project</span>
+            <span class="text-[12px] font-bold" id="header-project">---</span>
           </div>
-
-          <div class="step">
-            <div class="step__number" aria-hidden="true">3</div>
-            <h3 class="step__title">Team Builds in Parallel</h3>
-            <p class="step__desc">Architect, Designer, and Developers work simultaneously on their domains.</p>
+          <div class="flex flex-col">
+            <span class="subtle-label">Team</span>
+            <span class="text-[12px] font-bold text-emerald-500" id="header-team">24 AGENTS</span>
           </div>
-
-          <div class="step">
-            <div class="step__number" aria-hidden="true">4</div>
-            <h3 class="step__title">QA Validates</h3>
-            <p class="step__desc">Every feature is tested against acceptance criteria before it ships.</p>
-          </div>
-
         </div>
-      </div>
-    </section>
+        <div class="flex gap-3 items-center">
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+          <a href="workflow.html" class="text-[11px] font-medium text-gray-400 hover:text-black uppercase tracking-wide transition-colors">Pipeline →</a>
+          <span class="text-[11px] text-gray-400" id="last-updated">---</span>
+        </div>
+      </header>
 
-  </main>
+      <main>
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-4 gap-3 mb-5" id="metrics-grid">
+          <div class="metric-card premium-shadow">
+            <div class="subtle-label mb-2">Pipeline Phase</div>
+            <div class="text-lg font-bold text-black flex items-center gap-2" id="metric-phase">
+              <span class="status-dot bg-gray-300"></span>
+              <span class="skeleton w-16 h-5 inline-block"></span>
+            </div>
+            <div class="text-[11px] text-gray-400 mt-1" id="metric-phase-project"></div>
+          </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
-      <p class="footer__attribution">Built with Claude Code</p>
+          <div class="metric-card premium-shadow">
+            <div class="subtle-label mb-2">Shipped</div>
+            <div class="text-2xl font-bold text-black tabular-nums" id="metric-shipped">
+              <span class="skeleton w-8 h-6 inline-block"></span>
+            </div>
+            <div class="text-[11px] text-gray-400 mt-1">products completed</div>
+          </div>
+
+          <div class="metric-card premium-shadow">
+            <div class="subtle-label mb-2">In Progress</div>
+            <div class="text-2xl font-bold text-black tabular-nums" id="metric-progress">
+              <span class="skeleton w-6 h-6 inline-block"></span>
+            </div>
+            <div class="text-[11px] text-gray-400 mt-1">active tasks</div>
+          </div>
+
+          <a href="reviews.html" class="metric-card premium-shadow block no-underline" id="metric-reviews-card">
+            <div class="subtle-label mb-2">Pending Reviews</div>
+            <div class="text-2xl font-bold text-black tabular-nums" id="metric-reviews">
+              <span class="skeleton w-6 h-6 inline-block"></span>
+            </div>
+            <div class="text-[11px] text-gray-400 mt-1">awaiting CEO</div>
+          </a>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-3 gap-3 mb-5">
+          <!-- Activity Chart -->
+          <div class="bg-white border border-gray-100 rounded-lg p-4 premium-shadow">
+            <div class="flex justify-between items-baseline mb-3">
+              <span class="text-[12px] font-semibold text-black">Activity</span>
+              <span class="text-[11px] text-gray-400">14 DAYS</span>
+            </div>
+            <div class="h-16 flex items-end gap-[3px]" id="chart-activity">
+              <!-- bars injected by JS -->
+            </div>
+          </div>
+
+          <!-- Agent Activity Chart -->
+          <div class="bg-white border border-gray-100 rounded-lg p-4 premium-shadow">
+            <div class="flex justify-between items-baseline mb-3">
+              <span class="text-[12px] font-semibold text-black">Agent Utilization</span>
+              <span class="text-[11px] text-gray-400">14 DAYS</span>
+            </div>
+            <div class="h-16 flex items-end gap-[3px]" id="chart-agents">
+              <!-- bars injected by JS -->
+            </div>
+          </div>
+
+          <!-- Tasks by Status -->
+          <div class="bg-white border border-gray-100 rounded-lg p-4 premium-shadow">
+            <div class="flex justify-between items-baseline mb-3">
+              <span class="text-[12px] font-semibold text-black">Tasks</span>
+              <span class="text-[11px] text-gray-400">CURRENT</span>
+            </div>
+            <div class="flex items-end gap-4 h-16" id="chart-tasks">
+              <!-- status bars injected by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Pipelines -->
+        <div class="grid grid-cols-2 gap-3 mb-5" id="pipelines-section" style="display:none">
+          <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center">
+              <span class="text-[12px] font-bold text-black">Active Pipelines</span>
+              <a href="projects.html" class="text-[11px] text-gray-400 hover:text-black font-medium uppercase tracking-wide">All Projects</a>
+            </div>
+            <div id="pipelines-list" class="divide-y divide-gray-50"></div>
+          </div>
+          <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center">
+              <span class="text-[12px] font-bold text-black">Recently Shipped</span>
+              <span class="text-[11px] text-gray-400">LAST 5</span>
+            </div>
+            <div id="completions-list" class="divide-y divide-gray-50"></div>
+          </div>
+        </div>
+
+        <!-- Two Column: Activity Feed + Recent Tasks -->
+        <div class="grid grid-cols-5 gap-3">
+
+          <!-- Activity Feed (wider) -->
+          <div class="col-span-3 bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center">
+              <span class="text-[12px] font-bold text-black">Recent Activity</span>
+              <a href="#" class="text-[11px] text-gray-400 hover:text-black font-medium uppercase tracking-wide">View All</a>
+            </div>
+            <div id="activity-feed" class="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
+              <!-- rows injected by JS -->
+              <div class="px-4 py-3"><span class="skeleton w-full h-3 block mb-2"></span><span class="skeleton w-2/3 h-2 block"></span></div>
+              <div class="px-4 py-3"><span class="skeleton w-full h-3 block mb-2"></span><span class="skeleton w-1/2 h-2 block"></span></div>
+              <div class="px-4 py-3"><span class="skeleton w-3/4 h-3 block mb-2"></span><span class="skeleton w-2/5 h-2 block"></span></div>
+            </div>
+          </div>
+
+          <!-- Recent Tasks -->
+          <div class="col-span-2 bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center">
+              <span class="text-[12px] font-bold text-black">Active Tasks</span>
+              <a href="tasks.html" class="text-[11px] text-gray-400 hover:text-black font-medium uppercase tracking-wide">All Tasks</a>
+            </div>
+            <div id="tasks-list" class="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
+              <!-- rows injected by JS -->
+              <div class="px-4 py-2.5"><span class="skeleton w-full h-3 block mb-1.5"></span><span class="skeleton w-1/3 h-2 block"></span></div>
+              <div class="px-4 py-2.5"><span class="skeleton w-3/4 h-3 block mb-1.5"></span><span class="skeleton w-1/4 h-2 block"></span></div>
+              <div class="px-4 py-2.5"><span class="skeleton w-5/6 h-3 block mb-1.5"></span><span class="skeleton w-2/5 h-2 block"></span></div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
     </div>
-  </footer>
+  </div>
 
+  <script>
+    const API_BASE = '/api';
+    const PHASE_COLORS = {
+      'Idle': '#9CA3AF', 'Starting': '#3B82F6', 'Scope': '#6366F1',
+      'Architecture': '#8B5CF6', 'Design': '#A855F7', 'Backend': '#10B981',
+      'Frontend': '#EC4899', 'Review': '#F59E0B', 'QA': '#EF4444',
+      'Shipped': '#10B981', 'In Progress': '#3B82F6',
+    };
+
+    const STATUS_COLORS = {
+      planned: '#9CA3AF', 'in-progress': '#3B82F6',
+      completed: '#10B981', blocked: '#EF4444',
+    };
+
+    function timeAgo(ts) {
+      const diff = Date.now() - new Date(ts).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      const days = Math.floor(hrs / 24);
+      return days + 'd ago';
+    }
+
+    const AVATAR_NAMES = new Set([
+      'alice','amara','andrei','derek','enzo','howard','jonah','kai','leo',
+      'marco','milo','nadia','nina','priya','ravi','robert','sam','soren',
+      'suki','thomas','yuki','zara'
+    ]);
+
+    function agentAvatar(name) {
+      if (!name) return '<div class="avatar mt-0.5 flex-shrink-0">??</div>';
+      const slug = name.toLowerCase();
+      if (AVATAR_NAMES.has(slug)) {
+        return '<img src="img/avatars/' + slug + '.svg" alt="' + name + '" width="24" height="24" class="rounded-full flex-shrink-0 mt-0.5" style="width:24px;height:24px">';
+      }
+      return '<div class="avatar mt-0.5 flex-shrink-0">' + name.slice(0,2).toUpperCase() + '</div>';
+    }
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch(API_BASE + '/dashboard');
+        const data = await res.json();
+        try { renderHeader(data.metrics); } catch (e) { console.error('renderHeader failed:', e); }
+        try { renderMetrics(data.metrics); } catch (e) { console.error('renderMetrics failed:', e); }
+        try { renderCharts(data.charts); } catch (e) { console.error('renderCharts failed:', e); }
+        try { renderPipelines(data.activeProjects, data.recentCompletions); } catch (e) { console.error('renderPipelines failed:', e); }
+        try { renderActivity(data.recentActivity); } catch (e) { console.error('renderActivity failed:', e); }
+        try { renderTasks(data.recentTasks); } catch (e) { console.error('renderTasks failed:', e); }
+        document.getElementById('last-updated').textContent = 'UPDATED ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      } catch (err) {
+        console.error('Dashboard load failed:', err);
+      }
+    }
+
+    function renderHeader(metrics) {
+      const phase = metrics.pipeline.phase;
+      const color = PHASE_COLORS[phase] || '#9CA3AF';
+      document.getElementById('header-pipeline').innerHTML =
+        `<span class="status-dot" style="background:${color}"></span><span>${phase.toUpperCase()}</span>`;
+      document.getElementById('header-project').textContent =
+        metrics.pipeline.project ? metrics.pipeline.project.toUpperCase().replace(/\s+/g, '_') : 'NO_ACTIVE';
+    }
+
+    function renderMetrics(metrics) {
+      const phase = metrics.pipeline.phase;
+      const color = PHASE_COLORS[phase] || '#9CA3AF';
+      document.getElementById('metric-phase').innerHTML =
+        `<span class="status-dot" style="background:${color}"></span><span>${phase}</span>`;
+      document.getElementById('metric-phase-project').textContent =
+        metrics.pipeline.project || 'no active project';
+      document.getElementById('metric-shipped').textContent = metrics.shipped;
+      document.getElementById('metric-progress').textContent = metrics.inProgress;
+      var reviewsEl = document.getElementById('metric-reviews');
+      reviewsEl.textContent = metrics.pendingReviews;
+      var navBadge = document.getElementById('nav-review-badge');
+      if (metrics.pendingReviews > 0) {
+        reviewsEl.style.color = '#EF4444';
+        document.getElementById('metric-reviews-card').style.borderColor = '#FEE2E2';
+        if (navBadge) { navBadge.style.display = 'flex'; navBadge.textContent = metrics.pendingReviews; }
+      } else {
+        reviewsEl.style.color = '#10B981';
+        document.getElementById('metric-reviews-card').style.borderColor = '#F3F4F6';
+        if (navBadge) { navBadge.style.display = 'none'; }
+      }
+    }
+
+    function renderCharts(charts) {
+      // Activity bar chart
+      const actEl = document.getElementById('chart-activity');
+      const maxAct = Math.max(...charts.activity.map(d => d.count), 1);
+      actEl.innerHTML = charts.activity.map(d => {
+        const h = Math.max((d.count / maxAct) * 100, 3);
+        return `<div class="chart-bar flex-1" style="height:${h}%;background:#10B981" title="${d.date}: ${d.count}"></div>`;
+      }).join('');
+
+      // Agent activity chart
+      const agEl = document.getElementById('chart-agents');
+      const maxAg = Math.max(...charts.agentActivity.map(d => d.count), 1);
+      agEl.innerHTML = charts.agentActivity.map(d => {
+        const h = Math.max((d.count / maxAg) * 100, 3);
+        return `<div class="chart-bar flex-1" style="height:${h}%;background:#3B82F6" title="${d.date}: ${d.count} agents"></div>`;
+      }).join('');
+
+      // Tasks by status
+      const tsEl = document.getElementById('chart-tasks');
+      const ts = charts.tasksByStatus;
+      const total = ts.planned + ts.inProgress + ts.completed + ts.blocked;
+      if (total === 0) {
+        tsEl.innerHTML = '<span class="text-[11px] text-gray-400 self-center">No task data</span>';
+        return;
+      }
+      const statuses = [
+        { label: 'PLANNED', count: ts.planned, color: '#9CA3AF' },
+        { label: 'ACTIVE', count: ts.inProgress, color: '#3B82F6' },
+        { label: 'DONE', count: ts.completed, color: '#10B981' },
+        { label: 'BLOCKED', count: ts.blocked, color: '#EF4444' },
+      ];
+      const maxCount = Math.max(...statuses.map(s => s.count), 1);
+      const barMaxPx = 48;
+      tsEl.innerHTML = statuses.map(s => {
+        const h = Math.max(Math.round((s.count / maxCount) * barMaxPx), 3);
+        return `<div class="flex flex-col items-center flex-1 gap-1">
+          <div class="w-full rounded-sm" style="height:${h}px;background:${s.color}"></div>
+          <span class="text-[10px] font-bold" style="color:${s.color}">${s.count}</span>
+          <span class="text-[9px] text-gray-400 font-medium">${s.label}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderActivity(events) {
+      var el = document.getElementById('activity-feed');
+      if (!events || events.length === 0) {
+        el.innerHTML = '<div class="px-4 py-6 text-center text-[12px] text-gray-400">No recent activity</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < events.length; i++) {
+        var e = events[i];
+        var avatar = agentAvatar(e.actor);
+        var detail = e.detail ? '<div class="text-[11px] text-gray-500 mt-1 leading-relaxed">' + e.detail + '</div>' : '';
+        var decisions = '';
+        if (e.decisions && e.decisions.length > 0) {
+          decisions = '<div class="mt-1.5 flex flex-col gap-0.5">';
+          for (var j = 0; j < e.decisions.length; j++) {
+            var d = e.decisions[j];
+            var sc = d.status === 'executed' ? '#10B981' : d.status === 'skipped' ? '#EF4444' : '#9CA3AF';
+            decisions += '<div class="flex items-center gap-1.5">' +
+              '<span style="width:4px;height:4px;border-radius:50%;background:' + sc + ';display:inline-block;flex-shrink:0"></span>' +
+              '<span class="text-[11px] text-gray-500">' + d.action + '</span></div>';
+          }
+          decisions += '</div>';
+        }
+        var project = e.project ? '<span class="tag-pill text-violet-600 bg-violet-50">' + e.project + '</span>' : '';
+        var entityTag = (e.entityType && e.entityType !== 'agent') ? '<span class="tag-pill text-gray-500 bg-gray-100">' + e.entityType + '</span>' : '';
+
+        html += '<div class="activity-row px-4 py-3 flex items-start gap-3">' +
+          avatar +
+          '<div class="min-w-0 flex-1">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="text-[12px] font-bold text-black">' + e.actor + '</span>' +
+              '<span class="text-[12px] text-gray-500 font-normal">' + e.action + '</span>' +
+            '</div>' +
+            detail +
+            decisions +
+            '<div class="flex items-center gap-2 mt-1">' +
+              project + entityTag +
+              '<span class="text-[10px] text-gray-400">' + timeAgo(e.timestamp) + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+      el.innerHTML = html;
+    }
+
+    function renderPipelines(activeProjects, recentCompletions) {
+      var section = document.getElementById('pipelines-section');
+      if ((!activeProjects || activeProjects.length === 0) && (!recentCompletions || recentCompletions.length === 0)) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = '';
+
+      // Active pipelines
+      var plEl = document.getElementById('pipelines-list');
+      if (!activeProjects || activeProjects.length === 0) {
+        plEl.innerHTML = '<div class="px-4 py-4 text-center text-[11px] text-gray-400">No active pipelines</div>';
+      } else {
+        plEl.innerHTML = activeProjects.map(function(p) {
+          var total = p.tasks.total || 1;
+          var pct = Math.round((p.tasks.completed / total) * 100);
+          var phaseColor = PHASE_COLORS[p.phase] || '#9CA3AF';
+          return '<div class="px-4 py-3">' +
+            '<div class="flex items-center justify-between mb-1.5">' +
+              '<span class="text-[12px] font-medium text-black truncate">' + p.name + '</span>' +
+              '<span class="tag-pill" style="color:' + phaseColor + ';background:' + phaseColor + '11">' + p.phase.toUpperCase() + '</span>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">' +
+                '<div class="h-full rounded-full" style="width:' + pct + '%;background:' + phaseColor + '"></div>' +
+              '</div>' +
+              '<span class="text-[10px] text-gray-400 tabular-nums flex-shrink-0">' + p.tasks.completed + '/' + total + '</span>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Recent completions
+      var clEl = document.getElementById('completions-list');
+      if (!recentCompletions || recentCompletions.length === 0) {
+        clEl.innerHTML = '<div class="px-4 py-4 text-center text-[11px] text-gray-400">No recent completions</div>';
+      } else {
+        clEl.innerHTML = recentCompletions.map(function(p) {
+          var when = p.completedAt ? timeAgo(p.completedAt) : '';
+          return '<div class="activity-row px-4 py-2.5 flex items-center gap-3">' +
+            '<span class="status-dot flex-shrink-0" style="background:#10B981"></span>' +
+            '<div class="min-w-0 flex-1">' +
+              '<div class="text-[12px] font-medium text-black truncate">' + p.name + '</div>' +
+              '<span class="text-[10px] text-gray-400">' + when + '</span>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+
+    function renderTasks(tasks) {
+      const el = document.getElementById('tasks-list');
+      if (!tasks || tasks.length === 0) {
+        el.innerHTML = '<div class="px-4 py-6 text-center text-[11px] text-gray-400">No active tasks</div>';
+        return;
+      }
+      el.innerHTML = tasks.map(t => {
+        const color = STATUS_COLORS[t.status] || '#9CA3AF';
+        const statusLabel = t.status.replace('-', '_').toUpperCase();
+        return `
+          <div class="activity-row px-4 py-2.5 flex items-center gap-3">
+            <span class="status-dot flex-shrink-0" style="background:${color}"></span>
+            <div class="min-w-0 flex-1">
+              <div class="text-[12px] font-medium text-black truncate">${t.title}</div>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="tag-pill" style="color:${color};background:${color}11">${statusLabel}</span>
+                ${t.owner ? `<span class="text-[10px] text-gray-400">${t.owner}</span>` : ''}
+                <span class="text-[10px] text-gray-400">${t.project}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Initial load
+    console.log('Dashboard JS loaded, calling loadDashboard...');
+    loadDashboard().then(() => console.log('loadDashboard complete')).catch(e => console.error('loadDashboard error:', e));
+
+    // Auto-refresh every 60s
+    setInterval(loadDashboard, 60000);
+  </script>
 </body>
 </html>

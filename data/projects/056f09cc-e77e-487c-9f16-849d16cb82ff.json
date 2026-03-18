@@ -1,0 +1,28 @@
+{
+  "id": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "slug": "review-gates",
+  "name": "Pipeline Review Gates",
+  "description": "Configurable CEO review checkpoints in the pipeline — pause at any phase, view deliverables, provide feedback or chat with agents before approving the next phase.",
+  "status": "completed",
+  "createdAt": "2026-03-17T16:20:27.992Z",
+  "updatedAt": "2026-03-18T13:17:13.883Z",
+  "completedAt": "2026-03-18T13:17:13.883Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Add review gates to the pipeline so the CEO can specify which phases require their review, view deliverables inline, and provide feedback before the pipeline continues.\n\nOwner: Thomas\nPriority: high\nSource: CEO directive (2026-03-17)",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

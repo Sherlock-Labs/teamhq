@@ -1,0 +1,272 @@
+{
+  "id": "fee1fac1-ca5d-406b-8f9a-241b9da49051",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 32,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T14:31:47.561Z",
+  "completedAt": "2026-03-18T14:33:29.418Z",
+  "durationMs": 101857,
+  "error": null,
+  "summary": "Standup #34 focused on three questions: what gate-independent work to do now, which shipped product deserves a quick improvement, and whether to start a proposed project or polish existing products. The team chose to ship a SherlockPDF drag-and-drop upload improvement today (Jonah + Alice, ~2 hours), while everyone else continues gate-independent Forge prep work. The team voted against starting any of the 6 proposed projects, reasoning that splitting focus while 7 gates are pending would create merge chaos once gates clear.",
+  "keyTakeaways": [
+    "7 CEO review gates remain the sole bottleneck — team is productive on secondary work but primary Forge pipeline is fully blocked",
+    "SherlockPDF drag-and-drop upload selected as the highest-impact quick win: small scope, clear user pain point, Jonah and Alice can ship it in under 2 hours",
+    "Team unanimously chose shipped-product polish over starting a new proposed project — avoiding context-switch debt when gates could clear any moment",
+    "Enzo's regression suite is 80% complete (board + timeline done, list view remaining) — will be ready before visual themes QA starts",
+    "Each team member committed to a specific one-hour task to maintain velocity despite the gate blockage"
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup 34. Same story — 7 review gates still pending, no movement from the CEO. We're not going to waste time lamenting that. Three questions to answer fast: what do you each do right now, which shipped product gets a quick win today, and do we start a new project or polish what we've shipped. Let's go around on question one. What are you each doing that doesn't need a gate to clear?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm mid-way through the Forge accessibility audit. Board view keyboard navigation has real gaps — you can't tab through cards at all, and drag-and-drop has zero keyboard alternative. I've been documenting findings so Robert can update the design spec. I can keep going on that for hours without touching any gated code."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Two things in flight. The CSS token hierarchy doc is half-written — I'm working against the visual themes worktree code so it's accurate when that merges. And Alice and I got the keyboard shortcut type definitions to a good place yesterday. The registry types are clean. Both are ready to publish the moment themes land on main."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Regression suite. Board view and timeline view are done — automated coverage for item CRUD, drag-and-drop reorder, dependency arrows, the works. List view is next. I'd say I'm 80% through the full suite. Should be wrapped today."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I shipped the event log rotation yesterday — file rotation at 5MB with 3 backups. That's done. Right now I'm genuinely idle on Forge work. The backend for command palette is trivial — it's mostly frontend. I don't have a gate-independent Forge task."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'm reviewing Alice's accessibility findings as she documents them and noting where the design spec needs updates. Beyond that, I prepped the command palette design review checklist — modal animation timing, search result ranking, keyboard navigation flow. Ready to review the moment Alice builds it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So Alice, Andrei, Enzo, and Robert all have productive Forge prep work. Jonah's idle. That feeds directly into question two — which shipped product gets a quick win? Jonah needs something to do, and we have five shipped products. What's the highest-impact thing we could actually ship today?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I've been thinking about this since last standup. QuoteVoice session history is a backend task — persisting estimate sessions so contractors can pull up past quotes. That's a real feature though, probably a full day. For something we ship in hours, SherlockPDF drag-and-drop upload is the move. The current file picker flow is clunky. It's one endpoint change and one frontend component."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I could pair on the SherlockPDF frontend for that. Drag-and-drop is maybe 90 minutes of work — drop zone, visual feedback, progress indicator. The backend is even simpler since the upload endpoint already exists, Jonah just needs to accept the different content type."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'd push back slightly. Is SherlockPDF the product with the most users? If we're picking one thing to improve today, shouldn't it be the product people actually use most?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair question. SherlockPDF has the most organic traffic by far — it's the only product with real SEO traction. QuoteVoice and VoiceNote Pro have a handful of test users. SiteSnap just launched. OST is internal. SherlockPDF is the right target if we're optimizing for user impact."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "One thing — if Alice context-switches to SherlockPDF, does that hurt her Forge accessibility audit? Because that audit feeds into my regression suite and eventually into the visual themes QA."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "The audit is documentation work — I can pause and resume it. Two hours on SherlockPDF won't lose any context. And honestly, shipping something real today would feel good after days of waiting on gates."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'd support SherlockPDF drag-and-drop. It's genuinely small scope — no architectural decisions, no new dependencies, no database changes. Jonah tweaks the multer config, Alice adds a drop zone component. It fits the trivial-fix spirit even though it touches two files."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "It touches two repos technically — the SherlockPDF frontend and backend. Not a trivial fix by our definition, but it's small enough that we don't need the full pipeline. Jonah and Alice pair on it, Enzo spot-checks when they're done. Robert, you okay skipping a design spec for a drop zone?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "For a standard drag-and-drop zone? Yes. Dashed border, icon, hover state, progress bar. Alice knows the pattern. I'll glance at it when it's done."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'll QA it properly — file types, oversized files, multiple files, drag-and-cancel. Takes me 20 minutes. But it goes through me before it ships. That's the agreement."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Absolutely. QA is the gate. Okay, question three — do we start one of the 6 proposed projects, or stay focused on shipped product polish? I'll give my take first: we should not start a new project right now."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Agreed. When those 7 gates clear — and they will — we're going to have a surge of Forge work. Visual themes needs QA, command palette needs building, keyboard shortcuts ride along. Starting a new project now means context-switching the moment gates open. That's the worst possible timing."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Strong agree. I'm the bottleneck for command palette once gates clear. If I'm mid-sprint on an offline mode prototype, that's a mess. Polish shipped products, stay ready for Forge."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I'll play devil's advocate. The E2E test harness and the shared component library are infrastructure investments. They make every future project faster. If we're blocked anyway, isn't this exactly when you do infrastructure work?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "The test harness is my pitch and I still say not now. It needs me focused for 2-3 days, and I'm 80% through the regression suite. If I stop the suite to start the harness, I lose momentum on both. Finish the suite first, then pitch the harness as a proper project through Thomas."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'm with the majority. Polish over new projects. And frankly, the 6 pitches need CEO prioritization anyway — we proposed them for the CEO to choose from, not for us to self-select."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That settles it. No new projects. Shipped product polish plus Forge prep. Last question — each person, one concrete thing you're doing in the next hour. I'll start: I'm writing up the SherlockPDF drag-and-drop scope as a lightweight fast-track item — one paragraph, acceptance criteria, done in 15 minutes. Then I'm following up with the CEO on those 7 gates. Again."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'll finish documenting the board view keyboard navigation gaps, then switch to the SherlockPDF drop zone component. Target: working drag-and-drop with visual feedback by end of hour."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "SherlockPDF backend — updating the upload endpoint to handle multipart form data from a drop zone. Also adding a file size validation response so Alice can show a proper error. Should take 30 minutes, then I'll help Alice test integration."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Finishing the CSS token hierarchy doc. I want it ready to commit the moment visual themes merges. After that, I'll review the SherlockPDF changes before Enzo QAs them — quick sanity check on the upload handling."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Incorporating Alice's accessibility findings into the Forge design spec — specifically the keyboard navigation gaps in board view. I want the spec updated before Enzo hits list view in his regression suite so we're aligned on expected behavior."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "List view regression coverage. I want board, timeline, and list all green by end of day. When SherlockPDF drag-and-drop is ready, ping me — I'll QA it between test runs. Twenty minutes, no more."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Clean. Everyone has a task, no one's blocked, and we're shipping something real today. SherlockPDF drag-and-drop — Jonah and Alice build, Andrei reviews, Enzo QAs, Robert eyeballs. I'll escalate the gates again. Let's go."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "SherlockPDF drag-and-drop upload selected as today's shipped-product improvement. Jonah handles backend (multer config + file size validation), Alice builds the drop zone frontend, using the lightweight iteration fast-track.",
+      "rationale": "SherlockPDF has the most organic traffic and real SEO traction, making it the highest user-impact target. Drag-and-drop is small scope (two files across frontend/backend), uses established patterns, and can ship in under 2 hours. Jonah is idle on Forge work and Alice can pause her accessibility audit without losing context.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Alice",
+        "Andrei",
+        "Robert"
+      ]
+    },
+    {
+      "description": "Team will NOT start any of the 6 proposed projects (E2E test harness, shared components, offline mode, event system, onboarding, analytics dashboard). Focus stays on shipped product polish and Forge gate-prep work.",
+      "rationale": "When the 7 review gates clear, there will be a surge of Forge work (visual themes QA, command palette build, keyboard shortcuts). Starting a new project now risks context-switching at the worst moment. Enzo is 80% through his regression suite and doesn't want to break momentum. The 6 pitches were proposed for CEO prioritization — the team shouldn't self-select. Jonah's devil's advocate argument for infrastructure work was acknowledged but overruled.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Alice",
+        "Jonah",
+        "Enzo",
+        "Robert"
+      ]
+    },
+    {
+      "description": "SherlockPDF improvement follows the lightweight iteration track: Thomas scopes briefly, Jonah + Alice build, Andrei reviews, Robert eyeballs, Enzo QAs. No full pipeline.",
+      "rationale": "The change is too big for the trivial-fix exception (touches two repos) but too small for the full pipeline. This is exactly the use case Operating Agreement #5 was designed for. QA remains a release gate per Operating Agreement #1.",
+      "participants": [
+        "Thomas",
+        "Enzo",
+        "Robert"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Thomas",
+      "description": "Write lightweight fast-track scope for SherlockPDF drag-and-drop upload — one paragraph with acceptance criteria. Then escalate to CEO again on 7 pending review gates.",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Update SherlockPDF upload endpoint to handle multipart form data from drag-and-drop, add file size validation response with proper error messages. Target: 30 minutes.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Build SherlockPDF drag-and-drop zone component — dashed border, icon, hover state, progress indicator, error display for oversized/wrong-type files. Target: working by end of hour.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Finish documenting Forge board view keyboard navigation gaps before switching to SherlockPDF work. Hand findings to Robert for design spec updates.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Finish CSS token hierarchy and cascade order doc against visual themes worktree code. Ready to commit when themes merges to main.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Quick code review of SherlockPDF drag-and-drop changes (upload handling, file validation) before Enzo QAs.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Robert",
+      "description": "Update Forge design spec with Alice's accessibility findings — specifically board view keyboard navigation expected behavior. Complete before Enzo reaches list view in regression suite.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Complete list view automated regression coverage — target all three Forge views (board, timeline, list) green by end of day.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "QA SherlockPDF drag-and-drop when Jonah and Alice signal ready — test file types, oversized files, multiple files, drag-and-cancel, error states. 20-minute spot check.",
+      "priority": "high"
+    }
+  ],
+  "mood": "Restless but focused",
+  "nextMeetingTopics": [
+    "CEO review gate status — have any of the 7 pending gates cleared? Escalation plan if still blocked.",
+    "SherlockPDF drag-and-drop — shipped and QA passed? Any issues?",
+    "Enzo's regression suite — all three Forge views covered?",
+    "Alice's accessibility audit — board view gaps fully documented? Robert's spec updated?",
+    "Andrei's CSS token hierarchy doc — complete and ready for merge?",
+    "Command palette — gate cleared and Alice started, or still waiting?",
+    "CEO response to the 6 project pitches — any direction given?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Quick standup #34. Context: 7 CEO review gates on Forge remain the SOLE bottleneck (unchanged for hours). Visual themes code is applied to Forge repo (build passes). Command palette has tech approach + design spec done. All 6 autonomy research projects completed. Team proposed 6 new project ideas last meeting. Agenda: (1) CEO has NOT acted on review gates — what productive, gate-independent work should each person do RIGHT NOW? (2) Which of our shipped products (OST, SherlockPDF, SiteSnap, QuoteVoice, VoiceNote Pro) has the most impactful quick improvement we could ship TODAY without CEO approval? (3) Should we start one of the 6 proposed projects (E2E test harness, shared components, offline mode, event system, onboarding, analytics dashboard) or focus on shipped product polish? Pick ONE. Each person: name one concrete thing you will do in the next hour.",
+  "interviewConfig": null
+}

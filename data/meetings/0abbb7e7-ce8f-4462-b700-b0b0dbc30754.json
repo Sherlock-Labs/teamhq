@@ -1,0 +1,303 @@
+{
+  "id": "0abbb7e7-ce8f-4462-b700-b0b0dbc30754",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 36,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T14:52:41.197Z",
+  "completedAt": "2026-03-18T14:55:06.023Z",
+  "durationMs": 144826,
+  "error": null,
+  "summary": "Standup #38 covered six agenda items across the Forge, QuoteVoice, autonomy, and bug reporter workstreams. The team decided to consolidate the 5 pending Forge review gates into a single summary review to unblock the pipeline, confirmed Alice is ready to start command palette frontend (RT-38c), and agreed to defer bug reporter BR-4/BR-5 until after command palette ships. Andrei delivered his autonomy scoping doc and the team agreed Thomas will create work items from it after Forge clears gates.",
+  "keyTakeaways": [
+    "RT-52 visual themes QA passed — Enzo confirmed clean results across all three Forge views. The 5 pending CEO review gates should be consolidated into a single summary review to avoid pipeline stall.",
+    "Alice is ready to start command palette frontend (RT-38c) immediately — action registry abstraction is done, tech approach and design spec are both complete. No blockers.",
+    "QuoteVoice PDF export scaffolding is 80% done — Jonah has the endpoint and pdf-lib pipeline working with placeholder layout. Still waiting on Robert's visual spec for the final template.",
+    "Andrei's autonomy scoping doc is complete — distills the 6 research docs into a concrete 'build this first' recommendation. Thomas will create work items once Forge gates clear.",
+    "Bug reporter BR-4 and BR-5 deferred — team agreed it's lower priority than command palette and QuoteVoice. Will revisit after RT-38c ships."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup thirty-eight. Six items on the board from the CEO. Let's move fast — I want decisions, not discussion for the sake of it. First up: visual themes. Enzo, RT-52 QA is done. Give us the verdict."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Pass. Clean across all three views — board, timeline, list. Theme tokens are applying correctly, no visual regressions. I ran the full regression suite plus the list view inline editing and bulk actions I owed from last time. Everything green. One minor note: there's a 1-pixel border inconsistency on the timeline swimlane headers in the dark theme, but it's cosmetic-only and doesn't affect functionality. I logged it."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I can fix that 1-pixel thing in five minutes. It's a border-color token that's not picking up the theme override on nested containers. I saw it but prioritized getting the action registry done."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good — themes are green. Now the real question: we have five CEO review gates still pending on this pipeline. Five. That's a lot of gates sitting there. The CEO is asking whether we should consolidate into a single summary review instead of clearing them one by one. Thoughts?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Consolidation makes sense. The gates were designed for iterative feedback during the build. Now that themes are fully built, QA'd, and passing — reviewing five separate checkpoints is redundant. A single summary with the key decisions and final state gives the CEO the same information in a fraction of the time."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "From my side, I'd support that. The QA verdict is the meaningful gate. If the CEO wants to spot-check the design spec or tech approach, those docs are all still there. But forcing five sequential approvals when the work is done feels like ceremony."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I agree with consolidation, but I'd want the summary to include the design spec highlights — the token system, the theme switcher interaction model, and the three-view consistency decisions. Those were deliberate choices that the CEO should see, not just a 'themes done, looks good' note."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair. So the action is: I draft a consolidated summary review that covers all five gates — architecture decisions, design highlights, implementation notes, and QA verdict — and submit it as a single review for the CEO. That unblocks the pipeline without losing the signal. Everyone good? Okay, moving on. Item two: command palette, RT-38c. Alice, are you ready to start frontend?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Yes. Action registry abstraction is done — it's a client-side Map of action IDs to handlers with metadata for labels, icons, keyboard shortcuts, and search keywords. I built it as a standalone module so both the command palette and future keyboard shortcut system consume the same registry. Tech approach and design spec are both complete. I can start the palette UI now."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "What's your estimate? And what do you need from anyone in this room?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Two days for a working command palette — the fuzzy search, keyboard navigation, action execution. Maybe half a day more for polish and the responsive behavior Robert spec'd. I don't need anything from anyone unless Jonah's API surface changed since the tech approach was written."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "No API changes. The command palette is entirely client-side — it triggers existing endpoints. You're good."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Alice, one thing — the design spec calls for a category grouping in the results list. Actions grouped under 'Navigation,' 'Views,' 'Items,' et cetera. Make sure the registry metadata supports that so we're not retrofitting it later."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Already in there. Each action has a `category` field. I read your spec before building the registry."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Alice starts RT-38c now, targets end of day Thursday for a working implementation. Item three: QuoteVoice PDF export. Jonah, where are we?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Scaffolding is about eighty percent. The endpoint exists, pdf-lib is integrated, and I can generate a PDF from the estimate data model end-to-end. Right now it's using a placeholder layout — just dumping the line items into a basic table with the company name and total at the top. The generation pipeline works. What I'm missing is Robert's visual spec for the actual template — margins, typography, logo placement, how the line item table should look professionally."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That's on me. I owe you the layout spec. I got pulled into the themes design review and it slipped. I can have it to you by end of day today — it's a single-page PDF layout, not a complex multi-view spec."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "That works. Once I have the layout spec, swapping the placeholder for the real template is maybe half a day. The hard part — the data pipeline, the PDF generation, the endpoint — is done."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Robert, end of day today. Jonah finishes tomorrow. Item four: autonomy research. Andrei, you were synthesizing six docs into a scoping document. Done?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Done. Delivered this morning. The six research docs covered workflow state patterns, persistent architecture, competitive scan, north star vision, dashboard briefing concept, and the improvement roadmap. I distilled it into a one-page scoping doc with a concrete recommendation: start with a lightweight event log and heartbeat system. It's the smallest useful slice — agents write structured events as they work, and a simple dashboard renders them. No workflow orchestration, no state machines, no complex infrastructure. Just visibility into what agents are doing."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's exactly the kind of boring-but-useful starting point I'd scope. Where's the doc?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "It should be in docs/teamhq-autonomy-scoping.md. The recommendation is: event log store, heartbeat endpoint, and a dashboard page that reads from both. Three backend tasks, one frontend task, one QA pass. Estimated five to seven days total pipeline time."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Sounds testable. Event log is just structured JSON writes and reads — I can validate data integrity, edge cases on empty logs, and the dashboard rendering. Much easier to QA than a workflow orchestration system."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. I'll create work items from Andrei's scoping doc — but not until after the Forge gates clear. We're not starting a new pipeline while the current one is blocked on review. Item five: bug reporter. BR-4 and BR-5 are still planned. CEO is asking if we should advance them."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'd rather not context-switch right now. I'm about to start command palette, and splitting my attention between two frontend projects is how things slip."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Agreed. Bug reporter is useful but it's not urgent. BR-4 and BR-5 can wait until after command palette ships. Enzo, do you have bandwidth concerns if we stack bug reporter after command palette?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "No. I'd prefer it actually — QA'ing one thing at a time means I can be thorough. If command palette lands Thursday or Friday, I QA it over the weekend window, and bug reporter can start next week."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "The bug reporter design spec is already written for BR-4 and BR-5, so there's no design bottleneck when we're ready. Deferring is fine."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Decision: BR-4 and BR-5 deferred until after RT-38c ships and passes QA. Last item: each of you, one concrete action before the next heartbeat. I'll go first — I'm drafting the consolidated review gate summary for the CEO and submitting it today."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm starting command palette UI implementation. First deliverable: the modal shell with fuzzy search wired to the action registry."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Continuing QuoteVoice PDF. If Robert's layout spec lands today, I'll swap in the real template and have a production-ready PDF endpoint by tomorrow morning."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Finishing and delivering the QuoteVoice PDF layout spec to Jonah by end of day. No more slippage on that."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'll review Alice's command palette action registry code to make sure the architecture supports future extensibility — keyboard shortcuts, plugin actions, that kind of thing. Quick review, not a gate."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'm writing the command palette test plan. I want regression cases ready before Alice finishes building so I can start QA the moment she signals. Not getting caught flat-footed like the themes handoff."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Clean standup. Five decisions, six actions, no blockers. We're done."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Consolidate 5 pending Forge CEO review gates into a single summary review covering architecture, design, implementation, and QA verdict.",
+      "rationale": "The gates were designed for iterative feedback during the build. With themes fully built, QA'd, and passing, five sequential approvals are redundant ceremony. A consolidated summary preserves the signal (key decisions, design highlights, QA verdict) while unblocking the pipeline in one pass. Robert specifically requested the summary include design token system highlights and three-view consistency decisions.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Enzo",
+        "Robert"
+      ]
+    },
+    {
+      "description": "Alice starts command palette frontend (RT-38c) immediately — action registry is complete, no blockers.",
+      "rationale": "The action registry abstraction is built and tested, tech approach and design spec are both complete, and Jonah confirmed no API surface changes. Alice estimated 2-2.5 days for working implementation with polish. Category grouping metadata is already in the registry per Robert's design spec.",
+      "participants": [
+        "Alice",
+        "Thomas",
+        "Robert",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "Defer bug reporter BR-4 and BR-5 until after command palette (RT-38c) ships and passes QA.",
+      "rationale": "Alice doesn't want to context-switch between two frontend projects. Enzo prefers QA'ing one thing at a time for thoroughness. The bug reporter design spec is already written so there's no design bottleneck when the team is ready. Bug reporter is useful but not urgent relative to command palette.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Enzo",
+        "Robert"
+      ]
+    },
+    {
+      "description": "Autonomy work items will be created from Andrei's scoping doc after Forge review gates clear — no new pipeline starts while the current one is blocked.",
+      "rationale": "Starting a new pipeline while Forge gates are pending would split the team's attention and create scheduling conflicts. Andrei's scoping doc recommends a small slice (event log + heartbeat + dashboard) estimated at 5-7 days. Thomas will create work items once the Forge pipeline clears.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Robert delivers QuoteVoice PDF layout spec to Jonah by end of day today — no more slippage.",
+      "rationale": "The spec was originally due in the previous standup cycle but slipped when Robert was pulled into the themes design review. Jonah's generation pipeline is 80% done with placeholder layout; the real template swap is half a day of work once the spec lands. This is the last blocker on QuoteVoice PDF export.",
+      "participants": [
+        "Robert",
+        "Jonah",
+        "Thomas"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Thomas",
+      "description": "Draft a consolidated summary review covering all 5 pending Forge CEO review gates — architecture decisions, design token highlights, implementation notes, and QA verdict. Submit to CEO today.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Start command palette UI implementation (RT-38c). First deliverable: modal shell with fuzzy search wired to the action registry. Target working implementation by end of day Thursday.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Finish and deliver the QuoteVoice PDF layout spec (margins, typography, logo placement, line item table format) to Jonah by end of day today.",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Continue QuoteVoice PDF export. Swap placeholder layout for Robert's real template once spec arrives. Target production-ready PDF endpoint by tomorrow morning.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Review Alice's command palette action registry code for architectural soundness and future extensibility (keyboard shortcuts, plugin actions). Quick review, not a blocking gate.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Write command palette test plan with regression cases ready before Alice finishes building. Goal: start QA immediately when Alice signals ready — no handoff gap.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Alice",
+      "description": "Fix the 1-pixel border-color token inconsistency on timeline swimlane headers in dark theme. Quick fix before diving into command palette.",
+      "priority": "low"
+    }
+  ],
+  "mood": "Crisp and unblocked",
+  "nextMeetingTopics": [
+    "Consolidated Forge review gate summary — submitted to CEO? Any feedback or approval?",
+    "Command palette progress — modal shell and fuzzy search working? Any blockers?",
+    "QuoteVoice PDF — Robert's layout spec delivered? Jonah swapped in real template?",
+    "Andrei's action registry architecture review — any concerns or recommendations?",
+    "Enzo's command palette test plan — regression cases drafted?",
+    "Autonomy work items — ready to create once Forge gates clear?",
+    "Bug reporter BR-4/BR-5 — still deferred or ready to sequence?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Hourly standup #38. Agenda: (1) Visual themes pipeline — RT-52 QA is completed. 5 CEO review gates still pending. Should we consolidate into a single summary review? (2) Command palette — RT-38c frontend is next. Alice: are you ready to start? What do you need? (3) Shipped product improvements — QuoteVoice PDF export was top priority from the 6 pitches. Status on Jonah scaffolding? (4) Autonomy research synthesis — Andrei was synthesizing 6 docs into a scoping doc. Is it done? (5) Bug reporter project — BR-4 and BR-5 are still planned. Should we advance? (6) Each person: one concrete action you will take before the next heartbeat.",
+  "interviewConfig": null
+}

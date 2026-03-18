@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIPLE (A2) Exam — All Centers & Dates</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--card:#161b22;--border:#21262d;--text:#e6edf3;--muted:#8b949e;--accent:#68c5ed;--green:#3fb950;--amber:#d29922;--red:#f85149;--purple:#bc8cff}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* Header */
+header{max-width:1100px;margin:0 auto;padding:2.5rem 2rem 1rem}
+h1{font-size:2rem;font-weight:800;letter-spacing:-.03em}
+h1 span{color:var(--accent)}
+.subtitle{color:var(--muted);font-size:.9rem;margin-top:.35rem}
+.subtitle a{color:var(--accent);text-decoration:none}
+
+/* Stats bar */
+.stats{display:flex;gap:1.5rem;margin-top:1.25rem;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.75rem 1.25rem;display:flex;align-items:baseline;gap:.5rem}
+.stat .n{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.stat .l{font-size:.78rem;color:var(--muted)}
+
+/* Filters */
+.filters{max-width:1100px;margin:0 auto;padding:1rem 2rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.filters label{font-size:.75rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.filters select, .filters input{background:var(--card);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:.82rem;padding:.45rem .75rem;border-radius:8px;outline:none}
+.filters select:focus, .filters input:focus{border-color:var(--accent)}
+.filters input{width:180px}
+
+/* Main grid */
+main{max-width:1100px;margin:0 auto;padding:1rem 2rem 4rem}
+
+/* Country section */
+.country{margin-bottom:1.5rem}
+.country-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;cursor:pointer;user-select:none}
+.country-header h2{font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+.country-header .count{font-size:.72rem;color:var(--muted);background:rgba(104,197,237,.08);padding:.2rem .6rem;border-radius:99px}
+.country-header .flag{font-size:1.1rem}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{text-align:left;padding:.5rem .75rem;color:var(--muted);font-weight:500;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:.55rem .75rem;border-bottom:1px solid rgba(33,38,45,.5);vertical-align:top}
+tbody tr:hover{background:rgba(104,197,237,.03)}
+tbody tr.soon{background:rgba(63,185,80,.04)}
+tbody tr.closed{opacity:.45}
+td.city{font-weight:600;white-space:nowrap}
+td.center{color:var(--muted)}
+td.date{white-space:nowrap;font-variant-numeric:tabular-nums}
+.badge-soon{display:inline-block;background:rgba(63,185,80,.12);color:var(--green);font-size:.65rem;font-weight:600;padding:.15rem .5rem;border-radius:99px;margin-left:.4rem}
+.badge-closed{display:inline-block;background:rgba(248,81,73,.1);color:var(--red);font-size:.65rem;font-weight:600;padding:.15rem .5rem;border-radius:99px;margin-left:.4rem}
+.badge-open{display:inline-block;background:rgba(104,197,237,.1);color:var(--accent);font-size:.65rem;font-weight:600;padding:.15rem .5rem;border-radius:99px;margin-left:.4rem}
+
+/* Exam windows summary */
+.windows{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+.window{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem}
+.window h3{font-size:.82rem;font-weight:600;margin-bottom:.25rem}
+.window .date{font-size:1.15rem;font-weight:700;color:var(--accent)}
+.window .detail{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+.window.highlight{border-color:var(--green);background:rgba(63,185,80,.04)}
+
+/* No CIPLE note */
+.no-ciple{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;margin-top:2rem}
+.no-ciple h3{font-size:.9rem;font-weight:600;margin-bottom:.4rem;color:var(--muted)}
+.no-ciple p{font-size:.82rem;color:var(--muted);line-height:1.7}
+
+/* Responsive */
+@media(max-width:700px){
+  .stats{gap:.75rem}
+  .stat{padding:.5rem .75rem}
+  .stat .n{font-size:1.1rem}
+  .windows{grid-template-columns:1fr}
+  table{font-size:.75rem}
+  thead th,tbody td{padding:.4rem .5rem}
+  .filters{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CIPLE <span>(A2)</span> Exam Grid</h1>
+  <p class="subtitle">All available centers and dates worldwide &middot; €95 &middot; Scraped from <a href="https://caple.letras.ulisboa.pt/inscricao" target="_blank">CAPLE registration</a> on 2026-03-12</p>
+  <div class="stats">
+    <div class="stat"><span class="n">52</span><span class="l">exam centers</span></div>
+    <div class="stat"><span class="n">25</span><span class="l">countries</span></div>
+    <div class="stat"><span class="n">90</span><span class="l">scheduled sessions</span></div>
+    <div class="stat"><span class="n">3</span><span class="l">exam windows</span></div>
+  </div>
+</header>
+
+<div class="filters">
+  <label>Filter:</label>
+  <select id="fWindow" onchange="applyFilters()">
+    <option value="">All windows</option>
+    <option value="spring">Spring — May 14</option>
+    <option value="summer">Summer — Jul 16</option>
+    <option value="fall">Fall — Nov 5</option>
+    <option value="portugal">Portugal — Apr 18</option>
+  </select>
+  <select id="fStatus" onchange="applyFilters()">
+    <option value="">All statuses</option>
+    <option value="open">Registration open</option>
+    <option value="upcoming">Upcoming (not yet open)</option>
+    <option value="closed">Registration closed</option>
+  </select>
+  <input type="text" id="fSearch" placeholder="Search city or center..." oninput="applyFilters()">
+</div>
+
+<main>
+
+<div class="windows">
+  <div class="window" id="w-spring">
+    <h3>Spring</h3>
+    <div class="date">May 14, 2026</div>
+    <div class="detail">Registration closes Apr 27</div>
+  </div>
+  <div class="window" id="w-summer">
+    <h3>Summer</h3>
+    <div class="date">Jul 16, 2026</div>
+    <div class="detail">Registration closes Jun 30</div>
+  </div>
+  <div class="window" id="w-fall">
+    <h3>Fall</h3>
+    <div class="date">Nov 5, 2026</div>
+    <div class="detail">Registration closes Oct 20</div>
+  </div>
+</div>
+
+<div id="grid"></div>
+
+<div class="no-ciple">
+  <h3>Countries with exam centers but no CIPLE (A2) dates</h3>
+  <p>Alemanha, Argentina, Canada, Chile, Coreia do Sul, Estados Unidos, Franca, Guinea-Bissau, Panama, Reino Unido, Uruguai — these countries have CAPLE centers for other levels. Check back; new seasons are added periodically.</p>
+</div>
+
+</main>
+
+<script>
+const DATA = [
+  // [country, city, center, examDate, enrollStart, enrollEnd, resultsDate]
+  ["Angola","Luanda","Alliance Française de Luanda","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Angola","Luanda","Alliance Française de Luanda","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Angola","Luanda","Alliance Française de Luanda","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Australia","Sydney","Consulado Geral de Portugal","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Bulgaria","Sofia","Embaixada de Portugal","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Bulgaria","Sofia","Embaixada de Portugal","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Bulgaria","Sofia","Embaixada de Portugal","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Belgium","Brussels","Centro de Lingua Portuguesa Camoes / ULB","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Cabo Verde","Cidade da Praia","Centro de Lingua Portuguesa","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Cabo Verde","Cidade da Praia","Centro de Lingua Portuguesa","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Cabo Verde","Cidade da Praia","Centro de Lingua Portuguesa","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["China","Beijing","Beijing Foreign Studies University (BFSU)","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["China","Beijing","Universidade de Estudos Internacionais de Pequim (BISU)","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["China","Beijing","Universidade de Estudos Internacionais de Pequim (BISU)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["China","Beijing","Universidade Jiaotong de Pequim","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["China","Macau","Instituto Portugues do Oriente (IPOR)","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["China","Macau","Universidade de Macau","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["China","Macau","Instituto Portugues do Oriente (IPOR)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["China","Xi'an","Universidade de Estudos Internacionais de Xi'an (XISU)","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Colombia","Bogota","Universidad de los Andes","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Spain","Caceres","Universidad de Extremadura","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Spain","Caceres","Universidad de Extremadura","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Leon","Universidade de Leon","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Madrid","Agoralingua","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Madrid","Portuguesalia","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Palma de Mallorca","Universitat de Les Illes Balears","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Spain","Palma de Mallorca","Universitat de Les Illes Balears","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Spain","Palma de Mallorca","Universitat de Les Illes Balears","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Salamanca","Universidade de Salamanca (USAL)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Tenerife","Univ. de La Laguna","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Spain","Santiago de Compostela","Universidade de Santiago de Compostela (USC)","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Spain","Santiago de Compostela","Universidade de Santiago de Compostela (USC)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Seville","Universidad de Sevilla","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Spain","Seville","Universidad de Sevilla","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Valencia","Universitat de Valencia","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Vigo","Centro Cultural Portugues — Camoes, I.P.","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Zamora","Fundacion Rei Afonso Henriques","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Spain","Zamora","Fundacion Rei Afonso Henriques","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Spain","Zaragoza","Universidad de Zaragoza","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Greece","Athens","Escolas de Linguas Estrangeiras Kapatou","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Greece","Athens","Escolas de Linguas Estrangeiras Kapatou","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Greece","Athens","Escolas de Linguas Estrangeiras Kapatou","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Greece","Thessaloniki","ACADE CULTURAL","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Greece","Thessaloniki","ACADE CULTURAL","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Hungary","Budapest","Embaixada de Portugal","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Hungary","Budapest","Embaixada de Portugal","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Italy","Perugia","Universita degli Studi di Perugia (UNIPG)","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Italy","Perugia","Universita degli Studi di Perugia (UNIPG)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Italy","Pisa","Universidade de Pisa","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Italy","Pisa","Universidade de Pisa","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Italy","Padua","AISPAL","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Italy","Padua","AISPAL","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Italy","Padua","AISPAL","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Italy","Rome","Universita degli Studi Internazionali di Roma (UNINT)","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Italy","Rome","Universita degli Studi Internazionali di Roma (UNINT)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Italy","Turin","Universita di Torino — Dip. Lingue","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Japan","Kyoto","Kyoto University of Foreign Studies (KUFS)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Japan","Tokyo","Centro Cultural Portugues em Toquio","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Japan","Tokyo","Centro Cultural Portugues em Toquio","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Japan","Tokyo","Centro Cultural Portugues em Toquio","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Luxembourg","Luxembourg","Institut National des Langues","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Morocco","Rabat","Embaixada de Portugal","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Morocco","Rabat","Embaixada de Portugal","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Mozambique","Maputo","Centro Cultural Portugues","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Mozambique","Maputo","Centro Cultural Portugues","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Mexico","Monterrey","CECLE — Centro de Certificacion de Lenguas","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Mexico","Monterrey","CECLE — Centro de Certificacion de Lenguas","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Mexico","Mexico City","ENALLT-UNAM","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Mexico","Mexico City","ENALLT-UNAM","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Mexico","Guadalajara","Universidad de Guadalajara","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Namibia","Windhoek","Embaixada de Portugal — Centro Diogo Cao","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Namibia","Windhoek","Embaixada de Portugal — Centro Diogo Cao","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Paraguay","Asuncion","ILPOR","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Paraguay","Asuncion","ILPOR","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Paraguay","Asuncion","ILPOR","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Poland","Krakow","Jagiellonian University","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Poland","Krakow","Jagiellonian University","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Poland","Lublin","Universidade Marie Curie Sklodowska (UMCS)","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Poland","Lublin","Universidade Marie Curie Sklodowska (UMCS)","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Poland","Warsaw","ALMATUGA — Escola de Lingua Portuguesa","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Portugal","Funchal (Madeira)","Academia de Linguas da Madeira","2026-04-18","2026-03-02","2026-04-06","2026-06-11"],
+  ["South Africa","Pretoria","Embaixada de Portugal","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["South Africa","Pretoria","Embaixada de Portugal","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Switzerland","Bern","Embaixada de Portugal","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["Switzerland","Bern","Embaixada de Portugal","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Turkey","Ankara","Ankara University","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["India","Panjim, Goa","Consulado Geral de Portugal","2026-07-16","2026-01-07","2026-06-30","2026-09-14"],
+  ["India","Panjim, Goa","Consulado Geral de Portugal","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+  ["Venezuela","Caracas","Universidad Central de Venezuela","2026-05-14","2026-01-07","2026-04-27","2026-07-10"],
+  ["Venezuela","Caracas","Universidad Central de Venezuela","2026-11-05","2026-01-07","2026-10-20","2027-01-14"],
+];
+
+const TODAY = new Date('2026-03-12');
+
+function getWindow(d) {
+  if (d === '2026-04-18') return 'portugal';
+  if (d === '2026-05-14') return 'spring';
+  if (d === '2026-07-16') return 'summer';
+  if (d === '2026-11-05') return 'fall';
+  return '';
+}
+
+function getStatus(enrollStart, enrollEnd) {
+  const start = new Date(enrollStart);
+  const end = new Date(enrollEnd);
+  if (TODAY < start) return 'upcoming';
+  if (TODAY > end) return 'closed';
+  return 'open';
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
+}
+
+function statusBadge(status) {
+  if (status === 'open') return '<span class="badge-open">Open</span>';
+  if (status === 'closed') return '<span class="badge-closed">Closed</span>';
+  return '';
+}
+
+function applyFilters() {
+  const fw = document.getElementById('fWindow').value;
+  const fs = document.getElementById('fStatus').value;
+  const fq = document.getElementById('fSearch').value.toLowerCase();
+  render(fw, fs, fq);
+}
+
+function render(filterWindow='', filterStatus='', filterSearch='') {
+  // Filter data
+  let filtered = DATA.filter(r => {
+    if (filterWindow && getWindow(r[3]) !== filterWindow) return false;
+    if (filterStatus && getStatus(r[4], r[5]) !== filterStatus) return false;
+    if (filterSearch) {
+      const hay = (r[0]+' '+r[1]+' '+r[2]).toLowerCase();
+      if (!hay.includes(filterSearch)) return false;
+    }
+    return true;
+  });
+
+  // Group by country
+  const grouped = {};
+  filtered.forEach(r => {
+    if (!grouped[r[0]]) grouped[r[0]] = [];
+    grouped[r[0]].push(r);
+  });
+
+  const countries = Object.keys(grouped).sort();
+  let html = '';
+
+  if (countries.length === 0) {
+    html = '<p style="color:var(--muted);padding:2rem 0;text-align:center">No results match your filters.</p>';
+  }
+
+  countries.forEach(country => {
+    const rows = grouped[country];
+    html += `<div class="country">`;
+    html += `<div class="country-header"><h2>${country}</h2><span class="count">${rows.length} session${rows.length>1?'s':''}</span></div>`;
+    html += `<table><thead><tr><th>City</th><th>Center</th><th>Exam Date</th><th>Reg. Opens</th><th>Reg. Closes</th><th>Results</th><th></th></tr></thead><tbody>`;
+
+    rows.forEach(r => {
+      const status = getStatus(r[4], r[5]);
+      const cls = status === 'closed' ? ' class="closed"' : (status === 'open' ? ' class="soon"' : '');
+      html += `<tr${cls}>`;
+      html += `<td class="city">${r[1]}</td>`;
+      html += `<td class="center">${r[2]}</td>`;
+      html += `<td class="date">${fmtDate(r[3])}</td>`;
+      html += `<td class="date">${fmtDate(r[4])}</td>`;
+      html += `<td class="date">${fmtDate(r[5])}</td>`;
+      html += `<td class="date">${fmtDate(r[6])}</td>`;
+      html += `<td>${statusBadge(status)}</td>`;
+      html += `</tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+  });
+
+  document.getElementById('grid').innerHTML = html;
+}
+
+// Highlight current window
+(function() {
+  const windows = [
+    { id: 'w-spring', close: '2026-04-27' },
+    { id: 'w-summer', close: '2026-06-30' },
+    { id: 'w-fall', close: '2026-10-20' },
+  ];
+  windows.forEach(w => {
+    const end = new Date(w.close);
+    if (TODAY <= end) {
+      document.getElementById(w.id).classList.add('highlight');
+    }
+  });
+})();
+
+render();
+</script>
+</body>
+</html>

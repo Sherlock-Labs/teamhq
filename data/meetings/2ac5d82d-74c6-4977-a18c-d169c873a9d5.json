@@ -1,0 +1,68 @@
+{
+  "id": "2ac5d82d-74c6-4977-a18c-d169c873a9d5",
+  "type": "interview",
+  "status": "completed",
+  "meetingNumber": 20,
+  "scheduledAt": null,
+  "startedAt": "2026-03-17T01:19:04.309Z",
+  "completedAt": "2026-03-17T01:20:07.132Z",
+  "durationMs": 40000,
+  "error": "Page closed during interview",
+  "summary": "The CEO expressed broad frustration with team velocity, stating that nothing ships on time and deliverables are consistently buggy. The interview was brief and the CEO did not drill into specific root causes or projects, instead characterizing the issue as systemic across all projects.",
+  "keyTakeaways": [
+    "CEO perceives team velocity as too slow across all projects, not isolated to one area",
+    "On-time delivery is a major pain point — the CEO feels nothing ships when expected",
+    "Quality is a concern alongside speed — deliverables are described as 'always buggy'",
+    "The CEO is looking for concrete strategies to improve team speed and output quality"
+  ],
+  "transcript": [
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Hey! I'd like to dig into Team Velocity with you today. What's top of mind for you on this?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "I'd like to be in the same velocity with you today. Okay, I don't think the team's moving very fast. How do we get them to move faster?"
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "I see. When you say they aren't moving very fast, is there a specific project or recent milestone where you felt that [slow] drag the most? I'm curious if this feels like a [thinking] systemic slowdown or if it's tied to the complexity of something like the Forge visual themes. What's the main thing [fast] holding them back in your eyes?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "All of them. They're lazy. Nothing gets shipped on time. It's always buggy. How do we improve this? You're so triggered right now."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "I see. [slow] I'm not triggered, just trying to [fast] pinpoint the root cause..."
+    }
+  ],
+  "decisions": [],
+  "actionItems": [
+    {
+      "owner": "CEO",
+      "description": "Identify specific root causes of velocity issues — whether process overhead, scope creep, technical debt, or pipeline bottlenecks — to move from general frustration to targeted fixes",
+      "priority": "high"
+    }
+  ],
+  "mood": "Frustrated and impatient",
+  "nextMeetingTopics": [
+    "Root cause analysis of delivery delays — identify which pipeline phases are taking longest",
+    "Quality issues — why are deliverables consistently buggy and what QA process changes could help",
+    "Specific project post-mortems to pinpoint where time is lost"
+  ],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "Team Velocity",
+    "durationSeconds": 40
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "id": "paperclip-migration",
+  "name": "Paperclip Migration",
+  "description": "Migrate TeamHQ's agent orchestration to Paperclip, an open-source control plane for AI agent companies. Preserves our pipeline workflow, agent personas, and institutional knowledge while gaining automated execution, cost tracking, and session persistence.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "agent": "thomas",
+      "role": "Product Manager",
+      "task": "Write Paperclip migration requirements",
+      "status": "completed",
+      "subtasks": [
+        "Read Marco's technical research brief on Paperclip (architecture, adapter system, heartbeat model, database schema)",
+        "Analyzed Paperclip's flat ticketing model vs. our sequential pipeline — identified Thomas-as-orchestrator as the v0.1 approach",
+        "Scoped v0.1 to 5 core agents (Thomas, Andrei, Robert, Alice, Enzo) — minimum viable pipeline",
+        "Defined agent configuration table with adapter types, instruction file paths, and heartbeat schedules",
+        "Designed persona porting strategy: thin wrapper files that include original personas + Paperclip API overrides",
+        "Documented gains (autonomous execution, cost tracking, session persistence, audit trail) vs. losses (simplicity, direct control, bus factor risk)",
+        "Identified 6 risks with severity ratings and mitigations",
+        "Defined 3 migration phases: v0.1 proof of concept, v0.2 full team, v0.3 operational maturity",
+        "Recommended non-standard pipeline (Andrei + Kai -> Milo -> Enzo) — no design/frontend/backend work needed",
+        "Raised 4 open questions for CEO decision"
+      ],
+      "filesChanged": [
+        "docs/paperclip-migration-requirements.md",
+        "data/pipeline-log/paperclip-migration.json",
+        "data/pipeline-log/index.json"
+      ],
+      "decisions": [
+        "Thomas-as-orchestrator over custom plugin for pipeline sequencing — simpler to implement, leverages existing persona, can be replaced by plugin in v0.3 if unreliable",
+        "5 core agents for v0.1 instead of all 24 — proves the concept without configuration overhead",
+        "Only Thomas gets a scheduled heartbeat; all others are event-triggered — mirrors current CEO-driven model with Thomas replacing the CEO as dispatcher",
+        "Thin wrapper instruction files over modifying existing persona files — preserves TeamHQ as source of truth, avoids divergence",
+        "PGlite acceptable for v0.1 — real Postgres deferred to v0.2, not worth the setup overhead for proof of concept",
+        "Artifacts stay in docs/ on disk, not in Paperclip's issue documents — agents need to write files, not just update DB records",
+        "Pin to commit 7034ea5 for v0.1 — avoid upstream instability during proof of concept"
+      ]
+    },
+    {
+      "agent": "andrei",
+      "role": "Technical Architect",
+      "task": "Write tech approach for Paperclip setup — adapter config, instruction file structure, workspace config, Thomas orchestration loop design",
+      "status": "planned",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "agent": "kai",
+      "role": "AI Engineer",
+      "task": "Write Thomas's orchestration prompt — teach Thomas to use Paperclip API to drive the pipeline (create tasks, check status, assign agents, detect completion)",
+      "status": "planned",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "agent": "milo",
+      "role": "DevOps",
+      "task": "Set up Paperclip locally — clone, install, configure, create TeamHQ company, register 5 agents per tech approach",
+      "status": "planned",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    },
+    {
+      "agent": "enzo",
+      "role": "QA Engineer",
+      "task": "Validate end-to-end pipeline execution — create test task, observe 5-agent sequential execution, verify output quality and pipeline correctness",
+      "status": "planned",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    }
+  ]
+}

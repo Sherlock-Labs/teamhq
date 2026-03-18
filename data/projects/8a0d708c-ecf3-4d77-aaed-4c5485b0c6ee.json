@@ -1,0 +1,28 @@
+{
+  "id": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+  "slug": "teamhq-platform-improvements",
+  "name": "TeamHQ Platform Improvements",
+  "description": "Incremental improvements to TeamHQ UI, agent workflows, and internal tooling. Lightweight iteration track — no full pipeline needed.",
+  "status": "in-progress",
+  "createdAt": "2026-03-18T15:09:03.664Z",
+  "updatedAt": "2026-03-18T15:14:42.862Z",
+  "completedAt": null,
+  "goals": "Improve TeamHQ visibility, reliability, and CEO experience. Pipeline dashboard, health checks, keyboard nav.",
+  "constraints": "Lightweight iteration only. Plain HTML/CSS/vanilla JS. No frameworks.",
+  "brief": "Collection of small-to-medium improvements to TeamHQ itself. Each item goes through lightweight iteration: Thomas scopes, builder implements, Robert eyeballs, Enzo spot-checks.",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": true,
+    "afterArchitecture": true,
+    "afterDesign": true,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "projectSlug": "write-a-prioritized-improvement-roadmap-document-docs-te",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "AIR-1",
+      "title": "Write prioritized improvement roadmap for TeamHQ autonomy",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Thomas",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    }
+  ]
+}

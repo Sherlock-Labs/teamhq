@@ -1,0 +1,21 @@
+{
+  "id": "19fd720e-6b25-49db-9cf4-8f249ed27d35",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterQA",
+  "status": "approved",
+  "createdAt": "2026-03-18T14:34:35.930Z",
+  "updatedAt": "2026-03-18T14:36:20.466Z",
+  "resolvedAt": "2026-03-18T14:36:20.466Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/sherlockpdf-drag-drop-scope.md",
+      "title": "SherlockPDF Drag-and-Drop Scope (Fast-Track)"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #34 summary + SherlockPDF fast-track scope.\n\nFORGE STATUS: 7 CEO review gates STILL pending (unchanged for hours). Team is productive but primary Forge pipeline is fully blocked.\n\nDECISIONS:\n1. SherlockPDF drag-and-drop upload selected as quick win — highest user-impact improvement. Lightweight iteration track. BUT: SherlockPDF repo not cloned locally. Need CEO to clone Sherlock-Labs/sherlockpdf before Jonah + Alice can build.\n2. Team voted AGAINST starting any of the 6 proposed projects — focus on polish until gates clear.\n3. Enzo regression suite 80% done. Full coverage before visual themes QA.\n\nBLOCKER ESCALATION: 7 pending Forge review gates are the sole bottleneck. Team has been waiting multiple heartbeats. Please review gates to unblock.\n\nRECOMMENDED SEQUENCE: (1) Approve visual themes gates → real QA → merge. (2) Then command palette gates → Alice builds → review → QA.",
+  "feedback": null
+}

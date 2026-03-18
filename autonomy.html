@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sherlock Labs | Autonomy</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'JetBrains Mono', monospace; background: #FAFAFA; color: #374151; line-height: 1.4; -webkit-font-smoothing: antialiased; }
+    .premium-shadow { box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03); }
+    .subtle-label { color: #9CA3AF; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+    .tag-pill { padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .pulse { animation: pulse-dot 1.5s ease-in-out infinite; }
+    @keyframes skeleton-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+    .skeleton { background: #E5E7EB; border-radius: 2px; animation: skeleton-pulse 1.5s ease-in-out infinite; }
+    .decision-card { background: white; border: 1px solid #F3F4F6; border-radius: 6px; padding: 12px 16px; transition: border-color 100ms ease; }
+    .decision-card:hover { border-color: #E5E7EB; }
+    .raw-output { max-height: 400px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.5; font-family: 'JetBrains Mono', monospace; color: #4B5563; background: #F9FAFB; border: 1px solid #F3F4F6; border-radius: 6px; padding: 12px; }
+    .live-stream { background: #111827; color: #D1D5DB; border-radius: 6px; padding: 12px; font-size: 10px; font-family: 'JetBrains Mono', monospace; max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+    .live-stream .cursor { display: inline-block; width: 6px; height: 12px; background: #10B981; animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .config-input { background: white; border: 1px solid #E5E7EB; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-family: 'JetBrains Mono', monospace; width: 80px; text-align: center; }
+    .config-input:focus { outline: none; border-color: #9CA3AF; }
+  </style>
+</head>
+<body class="w-full min-h-screen">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[10px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[9px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">System</span>
+            <span class="text-[12px] font-bold">AUTONOMOUS_OPS</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Interval</span>
+            <div class="flex items-center gap-1">
+              <input type="number" id="interval-input" class="config-input" min="1" step="1" value="5">
+              <select id="interval-unit" class="config-input" style="width:60px">
+                <option value="m">min</option>
+                <option value="h">hrs</option>
+              </select>
+              <button onclick="updateInterval()" class="text-[10px] text-gray-400 hover:text-black font-bold px-1">SET</button>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Last Run</span>
+            <span class="text-[12px] font-bold" id="header-last-run">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Success Rate</span>
+            <span class="text-[12px] font-bold text-emerald-500" id="header-success-rate">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Avg Duration</span>
+            <span class="text-[12px] font-bold" id="header-avg-duration">---</span>
+          </div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <input type="checkbox" id="cron-enabled" checked onchange="toggleCron()" class="w-3 h-3 accent-black">
+            <span class="text-[11px] text-gray-500 font-medium">AUTO</span>
+          </label>
+          <button onclick="triggerHeartbeat()" id="trigger-btn"
+            class="bg-black text-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-wide rounded hover:opacity-85 transition-opacity">
+            Run Now
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-xl font-bold text-black tracking-tight">Autonomous Operations</h1>
+          <span class="text-[11px] text-gray-400" id="last-updated">---</span>
+        </div>
+
+        <p class="text-[12px] text-gray-500 mb-5">
+          Thomas (PM) runs a heartbeat every 2 hours — assessing team state, making decisions, and advancing work autonomously.
+          The CEO sets direction; Thomas runs the pipeline.
+        </p>
+
+        <!-- CEO Inbox -->
+        <div class="bg-white border border-gray-100 rounded-lg premium-shadow mb-5">
+          <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center">
+            <span class="text-[12px] font-bold text-black">CEO Inbox</span>
+            <span class="text-[11px] text-gray-400">Directives for Thomas's next heartbeat</span>
+          </div>
+          <div class="p-4">
+            <div class="flex gap-2">
+              <input type="text" id="ceo-directive-input"
+                class="flex-1 bg-white border border-gray-200 px-3 py-2 text-[12px] rounded focus:outline-none focus:border-gray-400"
+                placeholder="e.g. Start scoping a new PDF annotation tool...">
+              <button onclick="addDirective()"
+                class="bg-black text-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-wide rounded hover:opacity-85">
+                Add
+              </button>
+            </div>
+            <div id="directives-list" class="mt-3 divide-y divide-gray-50"></div>
+          </div>
+        </div>
+
+        <!-- Live Stream (visible when heartbeat is running) -->
+        <div id="live-stream-container" class="mb-5" style="display:none">
+          <div class="bg-white border border-gray-100 rounded-lg premium-shadow">
+            <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <span class="status-dot bg-blue-500 pulse"></span>
+                <span class="text-[12px] font-bold text-black">Live Output</span>
+              </div>
+              <span class="text-[11px] text-gray-400" id="live-stream-status">Waiting for output...</span>
+            </div>
+            <div class="p-3">
+              <div class="live-stream" id="live-stream-output"><span class="cursor"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heartbeat Log -->
+        <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden">
+          <div class="px-4 py-3 border-b border-gray-50">
+            <span class="text-[12px] font-bold text-black">Heartbeat Log</span>
+          </div>
+          <div id="heartbeat-list" class="divide-y divide-gray-50">
+            <div class="px-4 py-4"><span class="skeleton w-full h-4 block mb-2"></span><span class="skeleton w-2/3 h-3 block"></span></div>
+            <div class="px-4 py-4"><span class="skeleton w-3/4 h-4 block mb-2"></span><span class="skeleton w-1/2 h-3 block"></span></div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Heartbeat Detail Panel -->
+  <div id="detail-backdrop" class="fixed inset-0 bg-black/10 z-40 opacity-0 pointer-events-none transition-opacity"></div>
+  <div id="detail-panel" class="fixed top-0 right-0 bottom-0 w-[600px] max-w-[90vw] bg-white border-l border-gray-200 z-50 transform translate-x-full transition-transform duration-200 overflow-y-auto">
+    <div class="p-5" id="detail-content"></div>
+  </div>
+
+  <script>
+    const API = '/api';
+
+    function timeAgo(ts) {
+      if (!ts) return '---';
+      const diff = Date.now() - new Date(ts).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      return Math.floor(hrs / 24) + 'd ago';
+    }
+
+    function formatDuration(ms) {
+      if (!ms) return '---';
+      const secs = Math.round(ms / 1000);
+      if (secs < 60) return secs + 's';
+      return Math.floor(secs / 60) + 'm ' + (secs % 60) + 's';
+    }
+
+    function statusPill(status) {
+      const colors = {
+        completed: { color: '#10B981', bg: '#10B98111' },
+        running: { color: '#3B82F6', bg: '#3B82F611' },
+        failed: { color: '#EF4444', bg: '#EF444411' },
+      };
+      const c = colors[status] || colors.failed;
+      return `<span class="tag-pill" style="color:${c.color};background:${c.bg}">${status.toUpperCase()}</span>`;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // --- Config ---
+    async function loadConfig() {
+      try {
+        const res = await fetch(API + '/heartbeats/config');
+        const config = await res.json();
+        const ms = config.intervalMs || 300000;
+        if (ms >= 3600000) {
+          document.getElementById('interval-input').value = Math.round(ms / 3600000);
+          document.getElementById('interval-unit').value = 'h';
+        } else {
+          document.getElementById('interval-input').value = Math.round(ms / 60000);
+          document.getElementById('interval-unit').value = 'm';
+        }
+        document.getElementById('cron-enabled').checked = config.enabled !== false;
+      } catch {}
+    }
+
+    async function updateInterval() {
+      const val = parseInt(document.getElementById('interval-input').value);
+      const unit = document.getElementById('interval-unit').value;
+      if (!val || val < 1) return;
+      const ms = unit === 'h' ? val * 3600000 : val * 60000;
+      try {
+        await fetch(API + '/heartbeats/config', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ intervalMs: ms }),
+        });
+      } catch {}
+    }
+
+    async function toggleCron() {
+      const enabled = document.getElementById('cron-enabled').checked;
+      try {
+        await fetch(API + '/heartbeats/config', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled }),
+        });
+      } catch {}
+    }
+
+    // --- Stats ---
+    async function loadStats() {
+      try {
+        const res = await fetch(API + '/heartbeats/stats');
+        const stats = await res.json();
+        document.getElementById('header-success-rate').textContent =
+          stats.successRate != null ? stats.successRate + '%' : '---';
+        document.getElementById('header-avg-duration').textContent =
+          stats.avgDurationMs ? formatDuration(stats.avgDurationMs) : '---';
+        // Color the success rate
+        const el = document.getElementById('header-success-rate');
+        if (stats.successRate != null) {
+          el.className = 'text-[12px] font-bold ' +
+            (stats.successRate >= 80 ? 'text-emerald-500' : stats.successRate >= 50 ? 'text-amber-500' : 'text-red-500');
+        }
+      } catch {}
+    }
+
+    // --- SSE Live Streaming ---
+    let sseSource = null;
+    let liveBuffer = '';
+
+    function startSSE() {
+      if (sseSource) return;
+      sseSource = new EventSource(API + '/heartbeats/stream');
+
+      sseSource.addEventListener('output', (e) => {
+        const data = JSON.parse(e.data);
+        liveBuffer += data.chunk;
+        const el = document.getElementById('live-stream-output');
+        el.innerHTML = escapeHtml(liveBuffer) + '<span class="cursor"></span>';
+        el.scrollTop = el.scrollHeight;
+        document.getElementById('live-stream-status').textContent =
+          `${liveBuffer.length} chars received`;
+      });
+
+      sseSource.addEventListener('status', (e) => {
+        const data = JSON.parse(e.data);
+        if (data.status === 'running') {
+          liveBuffer = '';
+          showLiveStream(true);
+        } else if (data.status === 'completed' || data.status === 'failed') {
+          document.getElementById('live-stream-status').textContent =
+            data.status === 'completed' ? 'Completed' : 'Failed';
+          // Remove cursor
+          const el = document.getElementById('live-stream-output');
+          el.innerHTML = escapeHtml(liveBuffer);
+          // Auto-hide after a few seconds, refresh list
+          setTimeout(() => showLiveStream(false), 5000);
+          loadHeartbeats();
+          loadStats();
+          resetTriggerBtn();
+        }
+      });
+
+      sseSource.onerror = () => {
+        // Reconnect silently after a delay
+        sseSource.close();
+        sseSource = null;
+        setTimeout(startSSE, 5000);
+      };
+    }
+
+    function showLiveStream(visible) {
+      document.getElementById('live-stream-container').style.display = visible ? 'block' : 'none';
+    }
+
+    function resetTriggerBtn() {
+      const btn = document.getElementById('trigger-btn');
+      btn.textContent = 'RUN NOW';
+      btn.disabled = false;
+    }
+
+    // --- Heartbeat List ---
+    async function loadHeartbeats() {
+      try {
+        const res = await fetch(API + '/heartbeats?limit=20');
+        const runs = await res.json();
+        renderHeartbeats(runs);
+        if (runs.length > 0) {
+          document.getElementById('header-last-run').textContent = timeAgo(runs[0].startedAt).toUpperCase();
+          // Show live stream if latest is running
+          if (runs[0].status === 'running') {
+            showLiveStream(true);
+          }
+        }
+        document.getElementById('last-updated').textContent = 'UPDATED ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      } catch {
+        document.getElementById('heartbeat-list').innerHTML = '<div class="px-4 py-6 text-center text-[11px] text-gray-400">Failed to load heartbeats</div>';
+      }
+    }
+
+    function renderHeartbeats(runs) {
+      const el = document.getElementById('heartbeat-list');
+      if (!runs.length) {
+        el.innerHTML = `
+          <div class="px-4 py-8 text-center">
+            <p class="text-[12px] text-gray-400 mb-2">No heartbeats yet</p>
+            <p class="text-[11px] text-gray-400">Click <span class="font-bold text-black">Run Now</span> to trigger Thomas's first assessment.</p>
+          </div>`;
+        return;
+      }
+
+      el.innerHTML = runs.map(run => {
+        const decisionCount = (run.decisions || []).length;
+        return `
+          <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors" onclick="showDetail('${run.id}')">
+            <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center gap-2">
+                ${run.status === 'running' ? '<span class="status-dot bg-blue-500 pulse"></span>' : ''}
+                <span class="text-[12px] font-bold text-black">${new Date(run.startedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${new Date(run.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                ${statusPill(run.status)}
+                <span class="tag-pill" style="color:#6366F1;background:#6366F111">${run.trigger.toUpperCase()}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                ${decisionCount ? `<span class="text-[11px] text-gray-500">${decisionCount} decisions</span>` : ''}
+                <span class="text-[11px] text-gray-400">${formatDuration(run.durationMs)}</span>
+              </div>
+            </div>
+            ${run.assessment ? `<p class="text-[11px] text-gray-500 line-clamp-2">${escapeHtml(run.assessment)}</p>` : ''}
+          </div>`;
+      }).join('');
+    }
+
+    // --- Detail Panel ---
+    async function showDetail(id) {
+      const panel = document.getElementById('detail-panel');
+      const backdrop = document.getElementById('detail-backdrop');
+      const content = document.getElementById('detail-content');
+
+      content.innerHTML = '<div class="py-8 text-center text-[11px] text-gray-400">Loading...</div>';
+      panel.classList.remove('translate-x-full');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+
+      try {
+        const res = await fetch(API + '/heartbeats/' + id);
+        const run = await res.json();
+        renderDetail(run);
+      } catch {
+        content.innerHTML = '<div class="py-8 text-center text-[11px] text-red-400">Failed to load</div>';
+      }
+    }
+
+    function closeDetail() {
+      document.getElementById('detail-panel').classList.add('translate-x-full');
+      const backdrop = document.getElementById('detail-backdrop');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    document.getElementById('detail-backdrop').addEventListener('click', closeDetail);
+
+    function renderDetail(run) {
+      const content = document.getElementById('detail-content');
+      const snap = run.stateSnapshot || {};
+      const decisions = run.decisions || [];
+      const actions = run.actionsLog || [];
+      const hasRawOutput = run.rawOutput && run.rawOutput.length > 0;
+
+      content.innerHTML = `
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-3">
+            <img src="img/avatars/thomas.svg" alt="Thomas" class="w-7 h-7 rounded-full">
+            <div>
+              <div class="text-[13px] font-bold text-black">Thomas's Assessment</div>
+              <div class="text-[11px] text-gray-500">${new Date(run.startedAt).toLocaleString()}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            ${statusPill(run.status)}
+            <button onclick="closeDetail()" class="text-gray-400 hover:text-black p-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- State Snapshot -->
+        <div class="grid grid-cols-4 gap-2 mb-5">
+          <div class="bg-gray-50 rounded p-2.5 text-center">
+            <div class="text-lg font-bold text-black">${snap.activeProjects ?? '?'}</div>
+            <div class="subtle-label">Projects</div>
+          </div>
+          <div class="bg-gray-50 rounded p-2.5 text-center">
+            <div class="text-lg font-bold text-black">${snap.inProgressTasks ?? '?'}</div>
+            <div class="subtle-label">Active</div>
+          </div>
+          <div class="bg-gray-50 rounded p-2.5 text-center">
+            <div class="text-lg font-bold ${(snap.blockedTasks > 0) ? 'text-red-500' : 'text-black'}">${snap.blockedTasks ?? '?'}</div>
+            <div class="subtle-label">Blocked</div>
+          </div>
+          <div class="bg-gray-50 rounded p-2.5 text-center">
+            <div class="text-lg font-bold ${(snap.staleTasks > 0) ? 'text-amber-500' : 'text-black'}">${snap.staleTasks ?? '?'}</div>
+            <div class="subtle-label">Stale</div>
+          </div>
+        </div>
+
+        <!-- Assessment -->
+        ${run.assessment ? `
+        <div class="mb-5">
+          <div class="subtle-label mb-2">Assessment</div>
+          <div class="bg-gray-50 rounded-lg p-4 text-[12px] text-gray-700 leading-relaxed">${escapeHtml(run.assessment)}</div>
+        </div>` : ''}
+
+        <!-- Decisions -->
+        ${decisions.length ? `
+        <div class="mb-5">
+          <div class="subtle-label mb-2">Decisions (${decisions.length})</div>
+          <div class="flex flex-col gap-2">
+            ${decisions.map(d => {
+              const isString = typeof d === 'string';
+              const action = isString ? d : d.action;
+              const status = isString ? null : d.status;
+              const reasoning = isString ? null : d.reasoning;
+              const agent = isString ? null : d.agent;
+              const statusColor = status === 'executed' ? '#10B981' : status === 'skipped' ? '#9CA3AF' : '#3B82F6';
+              const statusBg = status === 'executed' ? '#10B98111' : status === 'skipped' ? '#9CA3AF11' : '#3B82F611';
+              return `
+              <div class="decision-card">
+                <div class="flex items-start justify-between gap-2 mb-1">
+                  <span class="text-[11px] font-bold text-black">${escapeHtml(action || '')}</span>
+                  ${status ? `<span class="tag-pill" style="color:${statusColor};background:${statusBg}">${status}</span>` : ''}
+                </div>
+                ${reasoning ? `<p class="text-[11px] text-gray-500">${escapeHtml(reasoning)}</p>` : ''}
+                ${agent ? `<div class="mt-1 text-[10px] text-gray-400">Agent: <span class="font-bold">${escapeHtml(agent)}</span></div>` : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>` : ''}
+
+        <!-- Actions Log -->
+        ${actions.length ? `
+        <div class="mb-5">
+          <div class="subtle-label mb-2">Actions Log</div>
+          <div class="bg-gray-50 rounded-lg p-3">
+            ${actions.map(a => `<div class="text-[11px] text-gray-600 py-0.5 font-mono">${escapeHtml(a)}</div>`).join('')}
+          </div>
+        </div>` : ''}
+
+        <!-- Raw Output (collapsible) -->
+        ${hasRawOutput ? `
+        <div class="mb-5">
+          <button onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'; this.querySelector('span').textContent = this.nextElementSibling.style.display === 'none' ? 'Show' : 'Hide'"
+            class="subtle-label mb-2 cursor-pointer hover:text-gray-600 flex items-center gap-1">
+            Raw Output (${(run.rawOutput.length / 1024).toFixed(1)}KB) — <span>Show</span>
+          </button>
+          <div style="display:none">
+            <div class="raw-output">${escapeHtml(run.rawOutput)}</div>
+          </div>
+        </div>` : ''}
+
+        <!-- Error -->
+        ${run.error ? `
+        <div class="mb-5">
+          <div class="subtle-label mb-2 text-red-500">Error</div>
+          <div class="bg-red-50 border border-red-100 rounded-lg p-3 text-[11px] text-red-600 font-mono">${escapeHtml(run.error)}</div>
+        </div>` : ''}
+
+        <!-- Meta -->
+        <div class="border-t border-gray-100 pt-3 mt-5">
+          <div class="grid grid-cols-3 gap-3 text-[11px]">
+            <div><span class="text-gray-400">Trigger:</span> <span class="font-bold">${run.trigger}</span></div>
+            <div><span class="text-gray-400">Duration:</span> <span class="font-bold">${formatDuration(run.durationMs)}</span></div>
+            <div><span class="text-gray-400">ID:</span> <span class="font-mono text-gray-400">${run.id.slice(0, 8)}</span></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- Trigger ---
+    async function triggerHeartbeat() {
+      const btn = document.getElementById('trigger-btn');
+      btn.disabled = true;
+      btn.textContent = 'RUNNING...';
+      liveBuffer = '';
+      showLiveStream(true);
+      document.getElementById('live-stream-output').innerHTML = '<span class="cursor"></span>';
+      document.getElementById('live-stream-status').textContent = 'Waiting for output...';
+      try {
+        const res = await fetch(API + '/heartbeats/trigger', { method: 'POST' });
+        if (res.status === 409) {
+          btn.textContent = 'ALREADY RUNNING';
+          setTimeout(() => { btn.textContent = 'RUN NOW'; btn.disabled = false; }, 3000);
+          return;
+        }
+        btn.textContent = 'RUNNING...';
+        // SSE will handle completion — fall back to polling just in case
+        pollForCompletion();
+      } catch {
+        btn.textContent = 'FAILED';
+        showLiveStream(false);
+        setTimeout(() => { btn.textContent = 'RUN NOW'; btn.disabled = false; }, 3000);
+      }
+    }
+
+    function pollForCompletion() {
+      let attempts = 0;
+      const poll = setInterval(async () => {
+        attempts++;
+        if (attempts > 180) { // 15 min max (5s intervals)
+          clearInterval(poll);
+          resetTriggerBtn();
+          loadHeartbeats();
+          return;
+        }
+        try {
+          const res = await fetch(API + '/heartbeats/latest');
+          const latest = await res.json();
+          if (latest && latest.status !== 'running') {
+            clearInterval(poll);
+            resetTriggerBtn();
+            showLiveStream(false);
+            loadHeartbeats();
+            loadStats();
+          }
+        } catch {}
+      }, 5000);
+    }
+
+    // --- CEO Inbox ---
+    async function loadDirectives() {
+      try {
+        const res = await fetch(API + '/heartbeats/directives');
+        if (!res.ok) return;
+        const directives = await res.json();
+        renderDirectives(directives);
+      } catch {}
+    }
+
+    function renderDirectives(directives) {
+      const el = document.getElementById('directives-list');
+      if (!directives.length) {
+        el.innerHTML = '<div class="text-[11px] text-gray-400 py-2">No pending directives. Thomas will assess team state on his own.</div>';
+        return;
+      }
+      el.innerHTML = directives.map((d, i) => `
+        <div class="flex items-center justify-between py-2">
+          <div class="flex items-center gap-2">
+            <span class="status-dot bg-blue-500"></span>
+            <span class="text-[11px] text-gray-700">${escapeHtml(d.text || d)}</span>
+          </div>
+          <button onclick="removeDirective(${i})" class="text-[10px] text-gray-400 hover:text-red-500">REMOVE</button>
+        </div>
+      `).join('');
+    }
+
+    async function addDirective() {
+      const input = document.getElementById('ceo-directive-input');
+      const text = input.value.trim();
+      if (!text) return;
+      try {
+        await fetch(API + '/heartbeats/directives', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
+        });
+        input.value = '';
+        loadDirectives();
+      } catch {}
+    }
+
+    // Submit directive on Enter key
+    document.getElementById('ceo-directive-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addDirective();
+    });
+
+    async function removeDirective(index) {
+      try {
+        await fetch(API + '/heartbeats/directives/' + index, { method: 'DELETE' });
+        loadDirectives();
+      } catch {}
+    }
+
+    // --- Init ---
+    loadHeartbeats();
+    loadDirectives();
+    loadConfig();
+    loadStats();
+    startSSE();
+
+    // Smart poll: fast while running, slow otherwise
+    let lastStatus = null;
+    async function smartPoll() {
+      await loadHeartbeats();
+      try {
+        const res = await fetch(API + '/heartbeats/latest');
+        const latest = await res.json();
+        lastStatus = latest?.status;
+      } catch {}
+      setTimeout(smartPoll, lastStatus === 'running' ? 5000 : 30000);
+    }
+    smartPoll();
+  </script>
+</body>
+</html>

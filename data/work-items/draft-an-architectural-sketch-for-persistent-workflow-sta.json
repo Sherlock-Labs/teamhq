@@ -1,0 +1,18 @@
+{
+  "projectSlug": "draft-an-architectural-sketch-for-persistent-workflow-sta",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "PWS-1",
+      "title": "Draft architectural sketch for persistent workflow state across heartbeats",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Andrei",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "0760f903-dc15-430c-92e8-1772355517c4",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterArchitecture",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:47:34.568Z",
+  "updatedAt": "2026-03-18T14:40:00.186Z",
+  "resolvedAt": "2026-03-18T14:40:00.186Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/forge-command-palette-tech-approach.md",
+      "title": "Command Palette Tech Approach"
+    }
+  ],
+  "agent": "Andrei",
+  "summary": "Command Palette (RT-38a) tech approach complete. Key decisions: module-level Map for action registry (not Zustand — not reactive state), substring matching (not fuzzy lib — 20 commands + 500 items is trivial), single global keydown handler in AppShell, item search from React Query cache (no server endpoint). 7 new files, 3 extended, zero Restructure classifications — no regression risk. Palette mounted at AppShell level, z-index 60. No backend changes, no new dependencies. Robert now writing design spec (RT-38b).",
+  "feedback": null
+}

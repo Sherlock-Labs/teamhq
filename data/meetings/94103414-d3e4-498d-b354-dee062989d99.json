@@ -1,0 +1,301 @@
+{
+  "id": "94103414-d3e4-498d-b354-dee062989d99",
+  "type": "weekly",
+  "status": "completed",
+  "meetingNumber": 19,
+  "scheduledAt": null,
+  "startedAt": "2026-03-17T00:24:01.834Z",
+  "completedAt": "2026-03-17T00:26:55.205Z",
+  "durationMs": 173370,
+  "error": null,
+  "summary": "Weekly status meeting covering Forge v2 progress (visual themes actively building, Sprint E planning), Bug Reporter status, post-mortem on AI Interviews shipping, and a debate about whether to prioritize the command palette or keyboard shortcuts next in Forge. The team aligned on shipping visual themes this week and batching command palette + keyboard shortcuts into a single sprint.",
+  "keyTakeaways": [
+    "Forge v2 visual themes/styling is in active build and on track to ship by end of week — Alice reports the theme engine is functional, just needs polish and edge cases.",
+    "Bug Reporter is in-progress but blocked on R2 configuration for screenshot uploads — Jonah needs to coordinate with Milo on the storage setup.",
+    "AI Interviews shipped successfully with Gemini Live API — the team should capture patterns from that build (WebSocket + Web Audio) as reusable for future real-time features.",
+    "The team decided to batch command palette and keyboard shortcuts into a single Forge sprint rather than treating them as separate efforts, since they share the same action registry.",
+    "Enzo flagged that QA coverage on Forge is getting harder as feature surface grows — he wants a lightweight smoke test suite before the next sprint starts."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's get through this quickly. Three things on the board: Forge v2 visual themes — that's the active build. Bug Reporter status. And then we need to talk about what's next in the Forge backlog. Alice, where are we on themes?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Theme engine is working. You can switch between light, dark, and the three accent color presets. The CSS custom properties cascade correctly, and I've got the theme persistence saving to localStorage. What's left is edge cases — the Kanban cards have some contrast issues in dark mode, and the dependency lines in timeline view need color adjustments per theme. I'd say two more days of polish."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I reviewed Alice's build yesterday. The token system is clean — she followed the spec closely. My one concern is the dark mode contrast on secondary text. Some of the muted labels drop below 4.5:1. I sent Alice the specific values. It's a small fix but it's a blocker for me — we don't ship with contrast failures."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Yeah, I've got Robert's list. It's six elements. I'll knock those out today. They're all just token value swaps, nothing structural."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So themes ship by end of week. Enzo, are you ready to QA that when Alice hands it off?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I can start Thursday if Alice and Robert are done by Wednesday night. But I want to flag something broader — Forge's feature surface is getting big. We've got three views, drag-and-drop, dependencies, sub-items, comments, CSV, portfolios, collections, buckets, templates... every new feature I QA, I'm also regression testing all of that. I need a lightweight smoke test suite I can run quickly, or QA is going to become the bottleneck."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a fair point. How much time would you need to write a basic smoke suite?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Half a day if Jonah gives me stable API endpoints to test against. I'd cover the three views loading, CRUD on items, and drag-and-drop. That handles maybe 70% of regressions automatically, and I can focus manual testing on the new stuff."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The API endpoints are stable. I haven't changed the item or view contracts since Sprint C. I can write you a seed script that populates test data so your smoke tests have something to work with."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Let's do it. Enzo, carve out time after themes QA to write the smoke suite. Jonah, get him the seed script. This pays for itself immediately. Now — Bug Reporter. Jonah, where does that stand?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The API is done — POST endpoint for bug reports, GET for the scribe token. The bug report gets filed as a work item in the Bugs project. What's blocking us is the R2 integration for screenshot storage. I need Milo to set up the R2 bucket and give me the credentials. Without that, screenshots just... don't persist."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Can we ship Bug Reporter without screenshots as a v1? The voice description plus text should be enough to file useful bug reports. Screenshots are nice-to-have."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I actually agree with that. The core value is 'report a bug fast.' Voice transcription plus a text field gets you 80% of the way there. Screenshots can be a fast-follow once Milo sets up R2."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "The design spec already handles graceful degradation — when R2 isn't configured, the screenshot zone disappears entirely. So the UI works either way. I'd be fine shipping without it."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "The frontend code already handles that conditional. If the screenshot upload endpoint returns a 501, it just hides the zone. So yeah, we can ship without it — no code changes needed on my side."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'd want to test both paths though — with and without R2. Even if we ship without screenshots, I want to make sure the degradation actually works and doesn't leave broken UI elements."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Agreed. Let's ship Bug Reporter without screenshots. Enzo tests the degraded path. Jonah, file a follow-up task for the R2 integration. Okay, last topic — Forge backlog. We've got a long list for v2: command palette, keyboard shortcuts, embeddable views, status updates, changelog, AI features, threaded comments, mentions, Slack integration, goals. What should Sprint E be?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Command palette and keyboard shortcuts should be one sprint. They share the same underlying concept — an action registry that maps commands to handlers. If you build the command palette first, keyboard shortcuts are just alternate bindings into the same registry. Building them separately means duplicating that infrastructure."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I agree with Andrei. I've been thinking about this. The command palette needs a searchable list of actions — create item, switch view, toggle sidebar, navigate to project. Keyboard shortcuts need the same list. If we build the registry once, both features fall out of it naturally."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "How big is that? I don't want another four-sprint monster."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "The palette UI itself is maybe two days. The action registry is another day. Keyboard shortcut binding is a day. So call it a week of FE work, assuming Robert's spec is tight."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I can have the command palette spec done in a day. It's a well-understood pattern — Linear, Notion, VS Code all do it the same way. Overlay, search input, filtered list, keyboard navigation. I don't need to reinvent anything here."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Does the command palette need any backend work? Or is this purely client-side?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Purely client-side. The actions are all things the frontend already knows how to do — we're just giving them a unified invocation point."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Good. Then I can use that sprint to work on the status updates API. That's been sitting in the backlog and it's independent of the command palette work. Status updates need a new data model and endpoints — I can build that in parallel while Alice does the palette."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I like that. Sprint E: command palette plus keyboard shortcuts on the frontend, status updates API on the backend. They're independent tracks that can run in parallel. Andrei, any architectural concerns?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "One thing — the action registry should be extensible. When we add AI features later, we'll want to register AI actions into the same palette. Don't build it as a hardcoded list. Use a registration pattern where features can add their own commands. It's five minutes of extra thought now that saves a refactor later."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Yeah, that's the plan. A simple register/unregister API. Each feature module registers its own actions. The palette just renders whatever's in the registry."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "For QA on the command palette — I'll need a list of every registered action and its expected behavior. If there are thirty actions in the registry, I need to test all thirty. Can we agree that Alice documents the action list as she builds it?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I can export the registry as a JSON manifest during development. You'd get action name, keyboard shortcut if any, and a description. That doubles as your test matrix."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Perfect. That's exactly what I need."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "One more thing before we wrap. AI Interviews shipped last week. That was our first real-time WebSocket plus Web Audio build. Andrei, should we be capturing patterns from that for reuse?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Absolutely. The WebSocket reconnection handling, the audio worklet setup, the ephemeral token pattern — those are all reusable if we build anything else with real-time audio or streaming. I'll write it up as a pattern in MCP memory and add a one-liner to MEMORY.md."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "The audio visualization component is reusable too. The waveform display, the status indicators — if we ever do voice features in other products, that's a ready-made UI kit."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Andrei captures the technical patterns, Robert notes the reusable design components. Alright, let's lock it in. Themes ship this week. Bug Reporter ships without screenshots, R2 follow-up filed. Sprint E is command palette plus shortcuts plus status updates API. Enzo writes a smoke test suite after themes QA. Anything else? No? Good. Let's go build."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Ship Bug Reporter without screenshot support as v1, with R2/screenshot integration as a fast-follow",
+      "rationale": "The core value is fast bug reporting via voice + text. Screenshots require R2 infrastructure setup that's blocking the release. The frontend already handles graceful degradation when R2 isn't configured.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Robert",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Batch command palette and keyboard shortcuts into a single Sprint E, sharing an action registry",
+      "rationale": "Both features need the same underlying infrastructure — a registry of actions mapped to handlers. Building them together avoids duplicating the registry. Estimated at ~1 week of FE work.",
+      "participants": [
+        "Andrei",
+        "Alice",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "Run status updates API as a parallel backend track during Sprint E",
+      "rationale": "Status updates need new data models and endpoints that are independent of the command palette frontend work. Jonah can build them in parallel while Alice works on the palette.",
+      "participants": [
+        "Jonah",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "Enzo to build a lightweight smoke test suite for Forge after themes QA",
+      "rationale": "Forge's feature surface has grown large enough that manual regression testing on every sprint is becoming a bottleneck. An automated smoke suite covering three views, CRUD, and drag-and-drop handles ~70% of regressions.",
+      "participants": [
+        "Enzo",
+        "Thomas",
+        "Jonah"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Alice",
+      "description": "Fix six dark mode contrast issues Robert identified (token value swaps) and finish theme edge cases for Kanban cards and timeline dependency lines",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Final review of themes implementation after Alice's contrast fixes — confirm all elements meet 4.5:1 contrast ratio",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "QA visual themes build starting Thursday, including all three views across light/dark/accent presets",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "File a follow-up task for R2 bucket setup and screenshot integration in Bug Reporter",
+      "priority": "medium"
+    },
+    {
+      "owner": "Enzo",
+      "description": "QA Bug Reporter in degraded mode (no screenshots) — verify graceful degradation works cleanly",
+      "priority": "medium"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Write a seed script for Enzo's smoke test suite with representative test data",
+      "priority": "medium"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Build lightweight smoke test suite for Forge (three views loading, CRUD, drag-and-drop) after themes QA",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write Sprint E requirements: command palette + keyboard shortcuts + status updates API",
+      "priority": "medium"
+    },
+    {
+      "owner": "Robert",
+      "description": "Write command palette design spec (overlay, search, filtered list, keyboard nav)",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Document reusable patterns from AI Interviews build (WebSocket reconnection, audio worklet, ephemeral tokens) in MCP memory",
+      "priority": "low"
+    },
+    {
+      "owner": "Robert",
+      "description": "Note reusable audio visualization components (waveform, status indicators) from AI Interviews for future voice features",
+      "priority": "low"
+    }
+  ],
+  "mood": "Productive and aligned",
+  "nextMeetingTopics": [
+    "Sprint E progress check — command palette action registry and status updates API",
+    "Smoke test suite results and coverage assessment",
+    "Bug Reporter screenshot integration status (R2 setup)",
+    "Forge v2 backlog prioritization beyond Sprint E — embeddable views vs. AI features vs. threaded comments"
+  ],
+  "participants": [],
+  "instructions": null,
+  "interviewConfig": null
+}

@@ -1,0 +1,26 @@
+{
+  "id": "1882fc71-c179-4086-bc0e-fffbcd7c064c",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterBackend",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:42:03.115Z",
+  "updatedAt": "2026-03-18T14:40:06.001Z",
+  "resolvedAt": "2026-03-18T14:40:06.001Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-backend-notes.md",
+      "title": "Visual Themes Backend Notes (applying now)"
+    },
+    {
+      "type": "doc",
+      "path": "docs/forge-command-palette-requirements.md",
+      "title": "Command Palette Requirements (RT-38)"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "CRITICAL GAP: Visual themes code never applied to Forge repo. Both backend and frontend implementation notes say 'Ready to apply (repo not available locally)'. QA pass was doc-based, not running code. Repo now at /home/jeff/forge-app. Spawned Jonah to apply backend (migration, schema, validation) and Alice for frontend next. Real QA needed on running code before themes truly ship. Meanwhile, Command Palette (RT-38) advancing — Andrei writing tech approach now.",
+  "feedback": null
+}

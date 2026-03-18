@@ -1,0 +1,295 @@
+{
+  "id": "b3cd7427-a754-46b0-a6db-8d174d078494",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 28,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T13:26:18.370Z",
+  "completedAt": "2026-03-18T13:28:07.517Z",
+  "durationMs": 109147,
+  "error": null,
+  "summary": "Hourly standup covering four agenda items: celebrated Review Gates shipping, flagged Robert's stale Forge visual themes design review (RT-37e) for immediate completion, briefed the team on six new parallel autonomy improvement projects approved by the CEO, and surfaced blockers including Alice's dependency on Robert's design review and Andrei's concern about coordination overhead across parallel workstreams.",
+  "keyTakeaways": [
+    "Review Gates is shipped and in production — team acknowledged the clean pipeline execution across all roles.",
+    "Robert's Forge visual themes design review (RT-37e) is blocking the pipeline — he committed to completing it today so Enzo can start QA.",
+    "Six new parallel autonomy improvement projects are approved — all are small deliverables (docs, research, sketches) assigned to specific owners outside this meeting's participants, plus Robert (dashboard sketch), Andrei (workflow state arch), and Thomas (roadmap doc).",
+    "Team agreed the six parallel projects should not disrupt the Forge v2 pipeline — visual themes QA and command palette scoping take priority for this group.",
+    "Enzo flagged that he needs Robert's design review findings before he can finalize his QA test plan for visual themes — the two are sequentially dependent."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, quick standup. Four items: Review Gates shipped, Forge visual themes design review status, six new parallel projects the CEO just approved, and open blockers. Let's keep it tight."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "First — Review Gates is in production. Fifteen out of fifteen tasks, clean QA pass. Jonah, Enzo, Alice — that was a solid pipeline run. Nice work."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Appreciated. I'll say the concurrent approval edge case was the one that almost got us — glad I tested that early. The reject-then-approve flow was also non-obvious. But it's clean now."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The backend was straightforward once the API contract was locked. No surprises in production so far — the endpoints are holding up fine."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "One thing — there's still that 12-hour vs 24-hour timestamp formatting inconsistency in the review history. It's cosmetic and single-file, so it qualifies as a trivial fix. I can knock it out today."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Do it. Moving on — item two. Robert, the Forge visual themes design review, RT-37e. It's stale. Alice finished the frontend implementation and you were supposed to review against the design spec. Where are we?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I know, and I apologize. I got pulled into the autonomy dashboard brainstorm yesterday and didn't circle back. I have the design spec open and I've seen Alice's implementation in passing — it looks close — but I haven't done the systematic token-by-token check yet."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's the one that matters. 'Looks close' isn't a design review. When can you have it done?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Today. I'll block out the next two hours for it. I need to check theme token cascade across all three views — timeline, board, and list — and verify the SVG dependency lines picked up the custom properties correctly. That's the area most likely to have drift."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I migrated most of the SVG stroke colors to CSS custom properties, but there were two edge cases in the dependency arrow rendering where I had to keep hardcoded values because the SVG gradient definitions don't support var() in all browsers. I documented those in the pipeline log. So when you see those, they're intentional, not drift."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Good to know. I'll check those specifically and confirm the fallback approach is visually acceptable across themes."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I need Robert's findings before I finalize my QA test plan. If he flags token issues, those become additional test cases. Can I get your review by end of day so I can start QA tomorrow morning?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "You'll have it by 4pm. If I find issues, I'll flag them in the pipeline log with specific file and line references so Alice can act on them quickly."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. That unblocks Enzo for tomorrow. Let's not let this slip again — design review is on the critical path. Item three."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "The CEO approved six new parallel projects for TeamHQ autonomy improvements. These came out of Meeting 26. All small deliverables — docs, research, sketches. The owners are: Ravi has the north star vision doc, Marco is evaluating workflow state patterns, Suki is doing a competitive scan on agent transparency, Robert has the morning briefing dashboard sketch, Andrei has the persistent workflow state architectural sketch, and I have the improvement roadmap doc."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "So three of us in this room — Robert, me, and Thomas — have autonomy project deliverables on top of the Forge v2 pipeline. What's the priority call? Because Robert just committed to finishing the visual themes review today, and I'm supposed to be drafting the command palette tech approach."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Forge v2 takes priority for this sprint. The autonomy projects are parallel but lower urgency — they're planning docs, not blocking any build. Robert, finish the visual themes review first, then start the dashboard sketch. Andrei, finish the command palette tech approach first, then do the workflow state sketch. I'll write the roadmap doc after I finish command palette requirements."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That works for me. The dashboard sketch is a conceptual exercise — layout, information hierarchy, what the CEO sees on first load. I can do that in a focused afternoon once the themes review is behind me."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "The workflow state sketch is more involved than it sounds. I need to figure out how the state cursor persists between heartbeats, what changes in heartbeatRunner.ts, and what the migration path looks like from stateless to stateful. That's not a one-hour doc. But I agree — command palette tech approach comes first."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Andrei, when you get to the workflow state sketch, loop me in. If we're adding persistence to the heartbeat runner, that's server-side state management and I should understand the data model early. I don't want to discover a new JSON schema after you've already specced it."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Agreed. I'll share a draft with you before I finalize. The current thinking from Meeting 26 was lightweight JSON state machine — no Temporal, no external orchestration. But I want your input on where the state file lives and how it handles concurrent writes."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Question on the six parallel projects — do any of them produce code that needs QA, or are they all docs and research?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "All docs and research for now. These are planning deliverables. When we actually build the autonomy dashboard or the workflow persistence, those will go through the full pipeline with QA. Right now, nothing to test."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Perfect. Then my focus stays on Forge visual themes QA once Robert's review lands, and prepping the command palette test plan after that."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "One blocker to flag — I'm effectively idle on Forge v2 until the command palette requirements and tech approach are ready. Visual themes frontend is done pending Robert's review. If Robert or Enzo find issues, I'll fix those, but otherwise I'm waiting on Thomas and Andrei for command palette specs before I can start building."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Understood. I'll have command palette requirements done by tomorrow. Scoped to 15-20 essential commands as we agreed in Meeting 27 — view switching, item creation, search, theme toggle. Andrei, can you turn around the tech approach within a day of getting my requirements?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Yes. The action registry pattern is straightforward — a Map of action IDs to handlers with metadata. I sketched the concept in my head during the last meeting. Once your requirements lock the command list, I can have the tech approach done same day."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Good. So realistic timeline: Thomas requirements tomorrow, Andrei tech approach day after, Robert design spec after that, then I build. That puts me starting command palette implementation in about three days. In the meantime, I'll fix any visual themes issues that come out of Robert's review and knock out that timestamp formatting fix."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That tracks. Last item — any other blockers or concerns? Quick round."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "No blockers from me. Command palette is mostly frontend — minimal backend work needed. I'll stay available for the QuoteVoice reconnection fix from last meeting's action items and for Andrei's workflow state discussion when he's ready."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "No blockers beyond the themes review I already committed to. One thought — when I sketch the autonomy dashboard, I'd like to pull in the competitive scan findings from Suki. If her research lands before I start the sketch, I can incorporate real patterns instead of inventing from scratch."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a reasonable dependency but don't block on it. If Suki's scan isn't done when you start, sketch from first principles and iterate when her findings come in."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "No blockers. Just reiterating — I need Robert's design review by 4pm today to start visual themes QA tomorrow. That's my only dependency."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright. Clear priorities: Robert finishes visual themes design review by 4pm, Enzo starts QA tomorrow, I write command palette requirements tomorrow, Andrei turns around the tech approach same day, Alice fixes the timestamp issue and stands by for visual themes fixes or command palette. Autonomy projects are secondary to Forge v2 for everyone in this room. We're done."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Forge v2 pipeline takes priority over autonomy improvement projects for all participants in this meeting — visual themes QA and command palette scoping come first.",
+      "rationale": "The autonomy projects are planning deliverables (docs, research, sketches) with no build dependency. Forge v2 visual themes is on the critical path with a stale design review blocking QA. Command palette is the next committed feature. Sequencing Forge first avoids context-switching and keeps the shipping pipeline moving.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Robert",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Robert will complete the Forge visual themes design review (RT-37e) by 4pm today, unblocking Enzo to start QA tomorrow morning.",
+      "rationale": "The design review is a pipeline prerequisite for QA. It's been stale since Alice completed the frontend implementation. Robert acknowledged the delay and committed to a specific deadline. Enzo confirmed he needs the review findings to finalize his QA test plan.",
+      "participants": [
+        "Robert",
+        "Enzo",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "Autonomy improvement projects assigned to this meeting's participants (Robert's dashboard sketch, Andrei's workflow state arch, Thomas's roadmap doc) will be tackled after their current Forge v2 deliverables are complete.",
+      "rationale": "All six autonomy projects are small planning deliverables with no build dependencies. Interleaving them with active Forge v2 pipeline work would risk slipping the visual themes QA and command palette timeline.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Robert"
+      ]
+    },
+    {
+      "description": "Jonah will be looped in on Andrei's workflow state persistence sketch before it's finalized, to provide input on data model and concurrent write handling.",
+      "rationale": "Workflow state persistence involves server-side state management in heartbeatRunner.ts. Jonah needs to understand the data model early to avoid discovering schema decisions after the fact. This follows the team's API contract alignment agreement.",
+      "participants": [
+        "Andrei",
+        "Jonah"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Robert",
+      "description": "Complete Forge v2 visual themes design review (RT-37e) by 4pm today — systematic token-by-token check across timeline, board, and list views, verify SVG dependency line custom property migration, document any findings with specific file and line references in the pipeline log.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Start Forge v2 visual themes QA tomorrow morning once Robert's design review lands — execute pre-planned test plan covering full regression across all three views with each theme active, plus any additional test cases from Robert's findings.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write Forge v2 command palette requirements by tomorrow — scope to 15-20 essential commands (view switching, item creation, search, theme toggle), include keyboard shortcut bindings.",
+      "priority": "high"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Draft command palette tech approach (action registry pattern) same day Thomas's requirements land — Map of action IDs to handlers with metadata (label, shortcut, icon, category).",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Fix 12h vs 24h timestamp formatting inconsistency in Review Gates review history — single-file cosmetic fix, notify Robert and Enzo per trivial-fix protocol.",
+      "priority": "low"
+    },
+    {
+      "owner": "Alice",
+      "description": "Address any visual themes issues flagged by Robert's design review, then stand by for command palette implementation once requirements, tech approach, and design spec are ready.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Draft persistent workflow state architectural sketch (autonomy project) after command palette tech approach is complete — share draft with Jonah before finalizing for input on data model and concurrent write handling.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Robert",
+      "description": "Sketch autonomy dashboard 'morning briefing' concept after visual themes review is complete — layout, information hierarchy, what the CEO sees on first load. Incorporate Suki's competitive scan findings if available, but don't block on them.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write prioritized autonomy improvement roadmap document (docs/teamhq-autonomy-improvements.md) after command palette requirements are complete.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Focused and productive",
+  "nextMeetingTopics": [
+    "Robert's visual themes design review findings — any token cascade or SVG issues flagged?",
+    "Enzo's QA verdict on Forge v2 visual themes — pass or fail?",
+    "Thomas's command palette requirements — are they done and scoped to 15-20 commands?",
+    "Andrei's command palette tech approach — action registry pattern ready for Robert and Alice?",
+    "Progress on autonomy improvement projects — have Robert, Andrei, and Thomas started their deliverables?",
+    "QuoteVoice reconnection bug fix — has the lightweight iteration track kicked off with Jonah?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Hourly standup. Quick agenda: (1) Pipeline Review Gates just shipped — nice work team. (2) Forge visual themes design review (RT-37e) is stale — Robert needs to complete this. (3) CEO approved 6 new parallel projects for TeamHQ autonomy improvements: north star vision doc (Ravi), workflow state patterns eval (Marco), competitive scan of autonomous agent transparency (Suki), morning briefing dashboard sketch (Robert), persistent workflow state arch sketch (Andrei), improvement roadmap doc (Thomas). These are all small deliverables — docs, research, sketches. (4) Any blockers or concerns? Each person gives quick perspective.",
+  "interviewConfig": null
+}

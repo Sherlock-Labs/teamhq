@@ -1,0 +1,23 @@
+{
+  "id": "e967cc0b-4657-4110-8ddd-e2ebc2b67e6e",
+  "startedAt": "2026-03-18T14:40:59.959Z",
+  "completedAt": "2026-03-18T14:41:32.689Z",
+  "status": "failed",
+  "trigger": "cron",
+  "stateSnapshot": {
+    "activeProjects": 2,
+    "totalTasks": 125,
+    "inProgressTasks": 0,
+    "blockedTasks": 1,
+    "staleTasks": 0,
+    "recentEvents": 50,
+    "agentsActive": 6
+  },
+  "assessment": null,
+  "decisions": [],
+  "actionsLog": [
+    "State gathered, spawning Thomas as full agent session"
+  ],
+  "error": "Heartbeat was interrupted: server restart.",
+  "durationMs": null
+}

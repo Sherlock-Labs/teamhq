@@ -1,0 +1,21 @@
+{
+  "id": "546ae12a-3320-4e61-bed4-31de62775641",
+  "projectId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+  "projectSlug": "teamhq-platform-improvements",
+  "projectName": "TeamHQ Platform Improvements",
+  "gate": "afterRequirements",
+  "status": "approved",
+  "createdAt": "2026-03-18T15:30:32.669Z",
+  "updatedAt": "2026-03-18T15:41:38.222Z",
+  "resolvedAt": "2026-03-18T15:41:38.222Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-autonomy-improvements.md",
+      "title": "TeamHQ Improvements Roadmap (reference)"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #40 — Pipeline Dashboard Scoped + Quick Wins Assigned.\n\nTeam held standup #40 (6 participants). Key decisions:\n\n1. Pipeline Dashboard (TPI-2): Three read-only cards on index.html above team roster — active pipelines, recent completions, pending reviews. Dedicated GET /api/pipeline-status endpoint (Andrei recommendation).\n2. RT-38c (command palette): Alice targeting EOD March 19 for QA handoff. One day behind due to keyboard shortcut conflict (resolved).\n3. Quick wins: Jonah builds pipeline-status endpoint, Enzo writes health smoke test, Robert audits spacing tokens, Andrei documents pipeline-log schema.\n4. Forge review gates: 7 gates pending. Team requests CEO batch-approve to unblock.",
+  "feedback": null
+}

@@ -15,7 +15,10 @@ import { getRecentMeetings } from "../store/meetings.js";
 import { getSignedUrl } from "../interviews/signed-url.js";
 import {
   buildInterviewSystemInstruction,
+  buildAgentConversationInstruction,
   buildFirstMessage,
+  buildAgentFirstMessage,
+  loadAgentProfile,
   formatProjectSummaries,
   formatMeetingSummaries,
 } from "../interviews/prompt.js";
@@ -59,33 +62,55 @@ router.post("/interviews/start", async (req, res) => {
       // Non-fatal: proceed without meeting context
     }
 
-    // Build the system instruction for prompt override
-    const promptOverride = buildInterviewSystemInstruction(
-      parsed.topic,
-      parsed.context,
-      projectSummaries,
-      meetingSummaries,
-    );
+    // Check if this is an agent conversation or a standard interview
+    const isAgentChat = !!parsed.agentName;
+    let promptOverride: string;
+    let firstMessage: string;
+
+    if (isAgentChat) {
+      const agentProfile = await loadAgentProfile(parsed.agentName!);
+      if (!agentProfile) {
+        res.status(400).json({ error: `Agent "${parsed.agentName}" not found` });
+        return;
+      }
+      promptOverride = buildAgentConversationInstruction(
+        parsed.agentName!,
+        agentProfile,
+        parsed.topic,
+        parsed.context,
+        projectSummaries,
+      );
+      firstMessage = buildAgentFirstMessage(parsed.agentName!, parsed.topic);
+    } else {
+      promptOverride = buildInterviewSystemInstruction(
+        parsed.topic,
+        parsed.context,
+        projectSummaries,
+        meetingSummaries,
+      );
+      firstMessage = buildFirstMessage(parsed.topic);
+    }
 
     // Generate ElevenLabs signed URL
     const signedUrl = await getSignedUrl();
 
-    // Generate topic-specific first message
-    const firstMessage = buildFirstMessage(parsed.topic);
-
     // Create meeting record in "running" state
+    const participants = isAgentChat
+      ? ["ceo", parsed.agentName!.toLowerCase()]
+      : ["ceo", "ai-interviewer"];
     const meeting = await createMeeting(
       "interview",
-      ["ceo", "ai-interviewer"],
+      participants,
       null,
       {
         topic: parsed.topic,
         context: parsed.context,
-      },
+        agentName: isAgentChat ? parsed.agentName : undefined,
+      } as import("../schemas/meeting.js").InterviewConfig,
     );
 
     console.log(
-      `[interviews] Started interview #${meeting.meetingNumber} (${meeting.id}) — topic: "${parsed.topic}"`,
+      `[interviews] Started ${isAgentChat ? 'agent chat with ' + parsed.agentName : 'interview'} #${meeting.meetingNumber} (${meeting.id}) — topic: "${parsed.topic}"`,
     );
 
     // Return signed URL, prompt override, and first message for the frontend

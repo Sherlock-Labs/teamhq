@@ -3,176 +3,804 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projects — TeamHQ</title>
-  <meta name="description" content="Create and manage product builds.">
+  <title>Sherlock Labs | Projects</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-grid.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-theme-quartz.css">
-  <link rel="stylesheet" href="css/spreadsheet.css">
-  <link rel="stylesheet" href="css/bug-reporter.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent-green: #10B981;
+      --accent-blue: #3B82F6;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --accent-violet: #8B5CF6;
+      --surface-low: #F9FAFB;
+      --text-main: #374151;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: var(--text-main);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-pill {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid white;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6px;
+      font-weight: 700;
+      color: #6B7280;
+    }
+
+    .project-row {
+      transition: background-color 100ms ease;
+    }
+
+    .project-row:hover {
+      background-color: #F9FAFB;
+    }
+
+    .project-row:hover .row-actions {
+      opacity: 1;
+    }
+
+    .row-actions {
+      opacity: 0;
+      transition: opacity 100ms ease;
+    }
+
+    .filter-tab {
+      padding: 3px 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 3px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 100ms ease;
+    }
+
+    .filter-tab:hover {
+      color: var(--text-main);
+    }
+
+    .filter-tab.active {
+      background: #F3F4F6;
+      color: var(--text-main);
+    }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .skeleton {
+      background: #E5E7EB;
+      border-radius: 2px;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Toggle switch for review gates */
+    .toggle-switch {
+      position: relative;
+      width: 28px;
+      height: 16px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: #E5E7EB;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      border: none;
+      outline: none;
+      flex-shrink: 0;
+    }
+    .toggle-switch:checked {
+      background: #10B981;
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 150ms ease;
+    }
+    .toggle-switch:checked::after {
+      transform: translateX(12px);
+    }
+    .toggle-switch:focus-visible {
+      outline: 2px solid #006B3F;
+      outline-offset: 2px;
+    }
+    .toggle-switch:hover {
+      background: #D1D5DB;
+    }
+    .toggle-switch:checked:hover {
+      background: #059669;
+    }
+    .gate-toggle:hover {
+      background: #F9FAFB;
+    }
+    .gate-saved-indicator {
+      font-size: 9px;
+      color: #10B981;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    .gate-saved-indicator.visible {
+      opacity: 1;
+    }
+
+    .review-nav-badge {
+      background: #EF4444;
+      color: white;
+      font-size: 8px;
+      font-weight: 700;
+      min-width: 14px;
+      height: 14px;
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      margin-left: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toggle-switch, .toggle-switch::after, .gate-saved-indicator {
+        transition: none;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="w-full min-h-screen">
 
-  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[11px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
 
-  <!-- Navigation -->
-  <nav class="nav" aria-label="Main navigation">
-    <div class="container nav__inner">
-      <div class="nav__brand">
-        <a href="index.html" class="nav__logo-link">
-          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
         </a>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
+        </div>
       </div>
-      <div class="nav__links">
-        <a href="tools.html" class="nav__link">Tools</a>
-        <a href="projects.html" class="nav__link nav__link--active" aria-current="page">Projects</a>
-        <a href="tasks.html" class="nav__link">Tasks</a>
-        <a href="meetings.html" class="nav__link">Meetings</a>
-        <a href="interviews.html" class="nav__link">Interviews</a>
-        <a href="docs.html" class="nav__link">Docs</a>
-        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
-        <a href="team.html" class="nav__link">Team</a>
-      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
+
+      <!-- Top Status Bar -->
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">Section</span>
+            <span class="text-[12px] font-bold flex items-center gap-1.5">
+              <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+              PROJECTS
+            </span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Total</span>
+            <span class="text-[12px] font-bold" id="header-total">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Active</span>
+            <span class="text-[12px] font-bold text-blue-500" id="header-active">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Shipped</span>
+            <span class="text-[12px] font-bold text-emerald-500" id="header-shipped">---</span>
+          </div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <span class="text-[11px] text-gray-400" id="last-updated">---</span>
+        </div>
+      </header>
+
+      <main>
+        <!-- Title + New Project -->
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-xl font-bold text-black tracking-tight">Projects</h1>
+          <button class="bg-black text-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-wide rounded hover:opacity-85 transition-opacity" onclick="document.getElementById('new-project-modal').classList.toggle('hidden')">+ New Project</button>
+        </div>
+
+        <!-- New Project Modal -->
+        <div id="new-project-modal" class="hidden mb-4 bg-white border border-gray-100 rounded-lg p-5 premium-shadow">
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="subtle-label block mb-1">Name</label>
+              <input type="text" id="np-name" class="w-full bg-white border border-gray-200 px-3 py-1.5 text-[12px] rounded focus:outline-none focus:border-gray-400" placeholder="Project name">
+            </div>
+            <div>
+              <label class="subtle-label block mb-1">Status</label>
+              <select id="np-status" class="w-full bg-white border border-gray-200 px-3 py-1.5 text-[12px] rounded focus:outline-none focus:border-gray-400">
+                <option value="planned">Planned</option>
+                <option value="in-progress">In Progress</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="subtle-label block mb-1">Description</label>
+            <input type="text" id="np-desc" class="w-full bg-white border border-gray-200 px-3 py-1.5 text-[12px] rounded focus:outline-none focus:border-gray-400" placeholder="Short description">
+          </div>
+          <div class="mb-3">
+            <label class="subtle-label block mb-1">Brief</label>
+            <textarea id="np-brief" rows="2" class="w-full bg-white border border-gray-200 px-3 py-1.5 text-[12px] rounded focus:outline-none focus:border-gray-400 resize-none" placeholder="Project brief / CEO direction"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="subtle-label block mb-2">Review Gates <span class="text-gray-400 normal-case tracking-normal">(pause pipeline for CEO review)</span></label>
+            <div class="flex flex-wrap gap-3">
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="np-gate-req" class="w-3 h-3 accent-black">
+                <span class="text-[11px] text-gray-600">After Requirements</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="np-gate-arch" class="w-3 h-3 accent-black">
+                <span class="text-[11px] text-gray-600">After Architecture</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="np-gate-design" class="w-3 h-3 accent-black" checked>
+                <span class="text-[11px] text-gray-600">After Design</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="np-gate-backend" class="w-3 h-3 accent-black">
+                <span class="text-[11px] text-gray-600">After Backend</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="np-gate-frontend" class="w-3 h-3 accent-black" checked>
+                <span class="text-[11px] text-gray-600">After Frontend</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="np-gate-qa" class="w-3 h-3 accent-black" checked>
+                <span class="text-[11px] text-gray-600">After QA</span>
+              </label>
+            </div>
+          </div>
+          <div class="flex justify-end gap-2">
+            <button class="px-3 py-1.5 text-[11px] font-medium text-gray-500 border border-gray-200 rounded hover:text-black" onclick="document.getElementById('new-project-modal').classList.add('hidden')">Cancel</button>
+            <button class="bg-black text-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-wide rounded hover:opacity-85" onclick="createProject()">Create</button>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-1" id="filter-tabs">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="in-progress">Active</button>
+            <button class="filter-tab" data-filter="completed">Shipped</button>
+            <button class="filter-tab" data-filter="planned">Planned</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-gray-400 font-medium uppercase tracking-wide">Sort: Recent</span>
+          </div>
+        </div>
+
+        <!-- Project Table -->
+        <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden">
+          <!-- Table Header -->
+          <div class="grid grid-cols-12 gap-2 px-4 py-2 border-b border-gray-50">
+            <div class="col-span-1 subtle-label">ID</div>
+            <div class="col-span-5 subtle-label">Project</div>
+            <div class="col-span-2 subtle-label">Status</div>
+            <div class="col-span-2 subtle-label">Pipeline</div>
+            <div class="col-span-2 subtle-label text-right">Updated</div>
+          </div>
+
+          <!-- Project Rows -->
+          <div id="projects-list" class="divide-y divide-gray-50">
+            <!-- Skeleton loading -->
+            <div class="px-4 py-3"><span class="skeleton w-full h-3 block mb-2"></span><span class="skeleton w-2/3 h-2 block"></span></div>
+            <div class="px-4 py-3"><span class="skeleton w-3/4 h-3 block mb-2"></span><span class="skeleton w-1/2 h-2 block"></span></div>
+            <div class="px-4 py-3"><span class="skeleton w-5/6 h-3 block mb-2"></span><span class="skeleton w-2/5 h-2 block"></span></div>
+            <div class="px-4 py-3"><span class="skeleton w-full h-3 block mb-2"></span><span class="skeleton w-1/3 h-2 block"></span></div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
     </div>
-  </nav>
+  </div>
 
-  <main id="main-content">
+  <script>
+    const API_BASE = '/api';
 
-    <!-- Projects -->
-    <section class="projects" id="projects" aria-labelledby="projects-heading">
-      <div class="container">
-        <h2 id="projects-heading" class="section-title">Projects</h2>
-        <div class="projects__toolbar">
-          <p class="projects__subtitle">Create and manage projects.</p>
-          <button class="projects__new-btn" type="button">+ New Project</button>
-        </div>
-        <div class="projects__stats" id="projects-stats" aria-label="Project summary statistics"></div>
-        <div id="projects-list">
-          <noscript>
-            <p class="projects__noscript">Enable JavaScript to manage projects.</p>
-          </noscript>
-        </div>
-      </div>
-    </section>
+    const STATUS_MAP = {
+      'in-progress': { label: 'ACTIVE', color: '#3B82F6', bg: '#3B82F611' },
+      'completed': { label: 'SHIPPED', color: '#10B981', bg: '#10B98111' },
+      'planned': { label: 'PLANNED', color: '#9CA3AF', bg: '#9CA3AF11' },
+    };
 
-    <!-- Modal: Create/Edit Project -->
-    <div class="modal-overlay" id="project-modal-overlay" aria-hidden="true">
-      <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
-        <div class="modal__header">
-          <h3 class="modal__title" id="modal-title">New Project</h3>
-          <button class="modal__close" type="button" aria-label="Close">&times;</button>
-        </div>
-        <form class="modal__form" id="project-form" novalidate>
-          <!-- Simple mode fields -->
-          <div class="modal__field">
-            <label class="modal__label" for="project-name">Project Name <span class="modal__required">*</span></label>
-            <input class="modal__input" type="text" id="project-name" name="name"
-                   placeholder="e.g. User Authentication" required autocomplete="off">
-            <p class="modal__error" aria-live="polite"></p>
-          </div>
-          <div class="modal__field">
-            <label class="modal__label" for="project-brief">Describe your project</label>
-            <textarea class="modal__textarea modal__textarea--brief" id="project-brief" name="brief"
-                      placeholder="What do you want built? Include as much detail as you'd like — goals, constraints, context. The team will figure out the rest." rows="6"></textarea>
-          </div>
+    function timeAgo(ts) {
+      if (!ts) return '---';
+      const diff = Date.now() - new Date(ts).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      const days = Math.floor(hrs / 24);
+      return days + 'd ago';
+    }
 
-          <!-- Advanced toggle -->
-          <button class="modal__advanced-toggle" type="button" id="advanced-toggle">
-            <span class="modal__advanced-chevron" aria-hidden="true"></span>
-            <span class="modal__advanced-label">Advanced options</span>
-          </button>
+    function projectInitials(name) {
+      if (!name) return '??';
+      const words = name.split(/[\s\-_]+/).filter(w => w.length > 0);
+      if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+      return name.slice(0, 2).toUpperCase();
+    }
 
-          <!-- Advanced fields (hidden by default) -->
-          <div class="modal__advanced" id="advanced-fields" aria-hidden="true">
-            <div class="modal__advanced-inner">
-              <div class="modal__field">
-                <label class="modal__label" for="project-description">Description</label>
-                <textarea class="modal__textarea" id="project-description" name="description"
-                          placeholder="Short summary for the project card" rows="2"></textarea>
+    let allProjects = [];
+    let currentFilter = 'all';
+
+    async function loadProjects() {
+      try {
+        const res = await fetch(API_BASE + '/projects');
+        const data = await res.json();
+        allProjects = (data.projects || []).sort((a, b) =>
+          new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)
+        );
+
+        const active = allProjects.filter(p => p.status === 'in-progress').length;
+        const shipped = allProjects.filter(p => p.status === 'completed').length;
+
+        document.getElementById('header-total').textContent = allProjects.length;
+        document.getElementById('header-active').textContent = active;
+        document.getElementById('header-shipped').textContent = shipped;
+        document.getElementById('last-updated').textContent = 'UPDATED ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        renderProjects();
+      } catch (err) {
+        console.error('Failed to load projects:', err);
+        document.getElementById('projects-list').innerHTML =
+          '<div class="px-4 py-8 text-center text-[11px] text-gray-400">Failed to load projects</div>';
+      }
+    }
+
+    function renderProjects() {
+      const filtered = currentFilter === 'all'
+        ? allProjects
+        : allProjects.filter(p => p.status === currentFilter);
+
+      const el = document.getElementById('projects-list');
+
+      if (filtered.length === 0) {
+        el.innerHTML = '<div class="px-4 py-8 text-center text-[11px] text-gray-400">No projects found</div>';
+        return;
+      }
+
+      el.innerHTML = filtered.map(p => {
+        const s = STATUS_MAP[p.status] || STATUS_MAP['planned'];
+        const initials = projectInitials(p.name);
+        const wi = p.workItems || {};
+        const taskCount = wi.total || 0;
+        const agentCount = (wi.owners || []).length;
+
+        return `
+          <div class="project-row-wrapper" data-project-id="${p.id}">
+            <div class="project-row grid grid-cols-12 gap-2 px-4 py-2.5 items-center cursor-pointer" onclick="toggleProject('${p.id}')">
+              <div class="col-span-1">
+                <div class="w-7 h-7 rounded bg-gray-50 border border-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500">${initials}</div>
               </div>
-              <div class="modal__field">
-                <label class="modal__label" for="project-goals">Goals</label>
-                <textarea class="modal__textarea" id="project-goals" name="goals"
-                          placeholder="What does success look like?" rows="2"></textarea>
+              <div class="col-span-5 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="status-dot flex-shrink-0" style="background:${s.color}"></span>
+                  <span class="text-[12px] font-medium text-black truncate">${p.name}</span>
+                  <svg class="w-3 h-3 text-gray-400 chevron-icon flex-shrink-0 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+                <div class="text-[11px] text-gray-400 mt-0.5 truncate ml-[13px]">${p.description ? p.description.slice(0, 80) + (p.description.length > 80 ? '...' : '') : 'No description'}</div>
               </div>
-              <div class="modal__field">
-                <label class="modal__label" for="project-constraints">Constraints</label>
-                <textarea class="modal__textarea" id="project-constraints" name="constraints"
-                          placeholder="Any boundaries or limitations?" rows="2"></textarea>
+              <div class="col-span-2">
+                <span class="tag-pill" style="color:${s.color};background:${s.bg}">${s.label}</span>
               </div>
-              <div class="modal__field">
-                <label class="modal__label" for="project-status">Status</label>
-                <select class="modal__select" id="project-status" name="status">
-                  <option value="planned">Planned</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
+              <div class="col-span-2">
+                <div class="flex items-center gap-3">
+                  <span class="text-[11px] text-gray-500">${taskCount} tasks</span>
+                  <span class="text-[11px] text-gray-400">${agentCount} agents</span>
+                </div>
+              </div>
+              <div class="col-span-2 text-right">
+                <span class="text-[11px] text-gray-400">${timeAgo(p.updatedAt || p.createdAt)}</span>
+              </div>
+            </div>
+            <div class="project-detail hidden" id="detail-${p.id}">
+              <div class="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                <div class="flex items-center gap-1.5 mb-2">
+                  <span class="skeleton w-4 h-4 inline-block rounded-full"></span>
+                  <span class="text-[11px] text-gray-400">Loading details...</span>
+                </div>
               </div>
             </div>
           </div>
+        `;
+      }).join('');
+    }
 
-          <div class="modal__actions">
-            <button class="modal__cancel" type="button">Cancel</button>
-            <button class="modal__submit" type="submit">Create Project</button>
+    // Filter tab clicks
+    document.getElementById('filter-tabs').addEventListener('click', (e) => {
+      const tab = e.target.closest('.filter-tab');
+      if (!tab) return;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter = tab.dataset.filter;
+      renderProjects();
+    });
+
+    async function createProject() {
+      const name = document.getElementById('np-name').value.trim();
+      const desc = document.getElementById('np-desc').value.trim();
+      const brief = document.getElementById('np-brief').value.trim();
+      const status = document.getElementById('np-status').value;
+      if (!name) return alert('Name is required');
+
+      const reviewGates = {
+        afterRequirements: document.getElementById('np-gate-req').checked,
+        afterArchitecture: document.getElementById('np-gate-arch').checked,
+        afterDesign: document.getElementById('np-gate-design').checked,
+        afterBackend: document.getElementById('np-gate-backend').checked,
+        afterFrontend: document.getElementById('np-gate-frontend').checked,
+        afterQA: document.getElementById('np-gate-qa').checked,
+      };
+
+      try {
+        const res = await fetch(API_BASE + '/projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description: desc, status, goals: '', constraints: '', brief, reviewGates }),
+        });
+        if (!res.ok) { const err = await res.json(); alert(err.error || 'Failed'); return; }
+        document.getElementById('new-project-modal').classList.add('hidden');
+        document.getElementById('np-name').value = '';
+        document.getElementById('np-desc').value = '';
+        document.getElementById('np-brief').value = '';
+        loadProjects();
+      } catch (err) { alert('Failed to create project'); }
+    }
+
+    let expandedProjectId = null;
+    const projectDetailCache = {};
+
+    async function toggleProject(id) {
+      const wrapper = document.querySelector(`[data-project-id="${id}"]`);
+      if (!wrapper) return;
+      const detail = wrapper.querySelector('.project-detail');
+      const chevron = wrapper.querySelector('.chevron-icon');
+
+      // If already expanded, collapse
+      if (expandedProjectId === id) {
+        detail.classList.add('hidden');
+        chevron.style.transform = '';
+        expandedProjectId = null;
+        return;
+      }
+
+      // Collapse previously expanded
+      if (expandedProjectId) {
+        const prev = document.querySelector(`[data-project-id="${expandedProjectId}"]`);
+        if (prev) {
+          prev.querySelector('.project-detail')?.classList.add('hidden');
+          const prevChevron = prev.querySelector('.chevron-icon');
+          if (prevChevron) prevChevron.style.transform = '';
+        }
+      }
+
+      expandedProjectId = id;
+      detail.classList.remove('hidden');
+      chevron.style.transform = 'rotate(180deg)';
+
+      // Load details if not cached
+      if (!projectDetailCache[id]) {
+        try {
+          const res = await fetch(API_BASE + '/projects/' + id);
+          if (!res.ok) throw new Error('Failed');
+          projectDetailCache[id] = await res.json();
+        } catch (err) {
+          detail.innerHTML = `<div class="px-4 py-3 bg-gray-50 border-t border-gray-100"><span class="text-[11px] text-red-400">Failed to load project details</span></div>`;
+          return;
+        }
+      }
+
+      renderProjectDetail(id, detail);
+    }
+
+    function renderProjectDetail(id, container) {
+      const p = projectDetailCache[id];
+      if (!p) return;
+
+      const sections = [];
+
+      if (p.description) {
+        sections.push(`
+          <div class="mb-3">
+            <div class="subtle-label mb-1">Description</div>
+            <div class="text-[11px] text-gray-600 leading-relaxed">${escapeHtml(p.description)}</div>
           </div>
-        </form>
-      </div>
-    </div>
+        `);
+      }
 
-    <!-- Modal: Delete Confirmation -->
-    <div class="modal-overlay" id="delete-modal-overlay" aria-hidden="true">
-      <div class="modal modal--confirm" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-desc" aria-modal="true">
-        <div class="modal__header">
-          <h3 class="modal__title" id="confirm-title">Delete Project</h3>
-          <button class="modal__close" type="button" aria-label="Close">&times;</button>
-        </div>
-        <div class="modal__body">
-          <p class="modal__confirm-text" id="confirm-desc">
-            Are you sure you want to delete <strong id="delete-project-name"></strong>? This action cannot be undone.
-          </p>
-        </div>
-        <div class="modal__actions">
-          <button class="modal__cancel" type="button">Cancel</button>
-          <button class="modal__delete" type="button">Delete</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal: Kickoff Prompt -->
-    <div class="modal-overlay" id="kickoff-modal-overlay" aria-hidden="true">
-      <div class="modal modal--kickoff" role="dialog" aria-labelledby="kickoff-title" aria-modal="true">
-        <div class="modal__header">
-          <h3 class="modal__title" id="kickoff-title">Kickoff Prompt</h3>
-          <button class="modal__close" type="button" aria-label="Close">&times;</button>
-        </div>
-        <div class="kickoff__body">
-          <div class="kickoff__prompt-area">
-            <pre class="kickoff__prompt"><code id="kickoff-prompt-text"></code></pre>
+      if (p.brief) {
+        sections.push(`
+          <div class="mb-3">
+            <div class="subtle-label mb-1">Brief</div>
+            <div class="text-[11px] text-gray-600 leading-relaxed">${escapeHtml(p.brief)}</div>
           </div>
-          <div class="kickoff__actions">
-            <button class="kickoff__copy-btn" type="button">Copy to Clipboard</button>
+        `);
+      }
+
+      if (p.goals) {
+        sections.push(`
+          <div class="mb-3">
+            <div class="subtle-label mb-1">Goals</div>
+            <div class="text-[11px] text-gray-600 leading-relaxed">${escapeHtml(p.goals)}</div>
           </div>
+        `);
+      }
+
+      if (p.constraints) {
+        sections.push(`
+          <div class="mb-3">
+            <div class="subtle-label mb-1">Constraints</div>
+            <div class="text-[11px] text-gray-600 leading-relaxed">${escapeHtml(p.constraints)}</div>
+          </div>
+        `);
+      }
+
+      // Pipeline tasks
+      if (p.pipeline && p.pipeline.tasks && p.pipeline.tasks.length > 0) {
+        const taskRows = p.pipeline.tasks.map(t => {
+          const statusColors = { planned: '#9CA3AF', 'in-progress': '#3B82F6', completed: '#10B981', blocked: '#EF4444' };
+          const c = statusColors[t.status] || '#9CA3AF';
+          return `<div class="flex items-center gap-2 py-1">
+            <span class="status-dot flex-shrink-0" style="background:${c}"></span>
+            <span class="text-[11px] text-gray-600 flex-1 truncate">${escapeHtml(t.agent || '')} - ${escapeHtml(t.title || t.role || '')}</span>
+            <span class="tag-pill" style="color:${c};background:${c}11">${(t.status || 'planned').replace('-','_').toUpperCase()}</span>
+          </div>`;
+        }).join('');
+
+        sections.push(`
+          <div class="mb-2">
+            <div class="subtle-label mb-1">Pipeline Tasks</div>
+            <div class="divide-y divide-gray-100">${taskRows}</div>
+          </div>
+        `);
+      }
+
+      if (sections.length === 0) {
+        sections.push(`<div class="text-[11px] text-gray-400">No additional details available</div>`);
+      }
+
+      // Review Gates section
+      const gateConfig = buildGateConfigHTML(p);
+
+      // Links
+      const links = `
+        <div class="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100">
+          <a href="tasks.html" class="text-[11px] text-blue-500 hover:text-blue-600 font-medium">VIEW TASKS</a>
         </div>
-      </div>
-    </div>
+      `;
 
-  </main>
+      container.innerHTML = `
+        <div class="px-4 py-3 bg-gray-50 border-t border-gray-100">
+          ${sections.join('')}
+          ${gateConfig}
+          ${links}
+        </div>
+      `;
+    }
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
-      <p class="footer__attribution">Built with Claude Code</p>
-    </div>
-  </footer>
+    function escapeHtml(str) {
+      if (!str) return '';
+      const d = document.createElement('div');
+      d.appendChild(document.createTextNode(str));
+      return d.innerHTML;
+    }
 
-  <script src="js/projects.js" defer></script>
-  <div id="bug-reporter-root"></div>
-  <script src="js/bug-reporter.js" defer></script>
+    // --- Review Gates Configuration ---
+    const GATE_DEFS = [
+      { key: 'afterResearch',      label: 'After Research',      agent: 'Suki, Marco',  dot: '#38BDF8' },
+      { key: 'afterRequirements',  label: 'After Requirements',  agent: 'Thomas',        dot: '#818CF8' },
+      { key: 'afterArchitecture',  label: 'After Architecture',  agent: 'Andrei',        dot: '#A78BFA' },
+      { key: 'afterDesign',        label: 'After Design',        agent: 'Robert',        dot: '#C084FC' },
+      { key: 'afterBackend',       label: 'After Backend',       agent: 'Jonah, Sam',    dot: '#34D399' },
+      { key: 'afterFrontend',      label: 'After Frontend',      agent: 'Alice',         dot: '#F472B6' },
+      { key: 'afterQA',            label: 'After QA',            agent: 'Enzo',          dot: '#FBBF24' },
+    ];
+
+    function buildGateConfigHTML(project) {
+      const gates = project.reviewGates || {};
+      const rows = GATE_DEFS.map(g => {
+        const checked = gates[g.key] ? 'checked' : '';
+        return `
+          <div class="gate-toggle flex items-center justify-between px-2 py-2 rounded">
+            <div class="flex items-center gap-2.5">
+              <span style="width:6px;height:6px;border-radius:50%;background:${g.dot};display:inline-block;flex-shrink:0;"></span>
+              <span class="text-[11px] font-medium" style="color:#374151">${g.label}</span>
+              <span class="text-[11px]" style="color:#9CA3AF">${g.agent}</span>
+            </div>
+            <input type="checkbox" class="toggle-switch" ${checked}
+              role="switch" aria-checked="${!!gates[g.key]}" aria-label="Review gate: ${g.label}"
+              onchange="toggleGate('${project.id}', '${g.key}', this)">
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="gate-config border-t border-gray-100 pt-3 mt-3">
+          <div class="flex items-center justify-between mb-3">
+            <span class="subtle-label">REVIEW GATES</span>
+            <div class="flex items-center gap-2">
+              <span class="gate-saved-indicator" id="gate-saved-${project.id}">Saved</span>
+              <span class="text-[11px]" style="color:#9CA3AF">Pipeline pauses for your review at enabled gates</span>
+            </div>
+          </div>
+          <div class="flex flex-col">${rows}</div>
+        </div>`;
+    }
+
+    async function toggleGate(projectId, gateKey, checkbox) {
+      const project = projectDetailCache[projectId];
+      if (!project) return;
+
+      const gates = { ...(project.reviewGates || {}) };
+      gates[gateKey] = checkbox.checked;
+      checkbox.setAttribute('aria-checked', checkbox.checked);
+
+      try {
+        const res = await fetch(API_BASE + '/projects/' + projectId, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reviewGates: gates }),
+        });
+
+        if (!res.ok) throw new Error('Save failed');
+
+        // Update cache
+        project.reviewGates = gates;
+
+        // Show saved indicator
+        const indicator = document.getElementById('gate-saved-' + projectId);
+        if (indicator) {
+          indicator.classList.add('visible');
+          setTimeout(() => indicator.classList.remove('visible'), 1500);
+        }
+      } catch (err) {
+        // Revert toggle
+        checkbox.checked = !checkbox.checked;
+        checkbox.setAttribute('aria-checked', checkbox.checked);
+
+        // Show error next to toggle
+        const errSpan = document.createElement('span');
+        errSpan.className = 'text-[11px] ml-2';
+        errSpan.style.color = '#DC2626';
+        errSpan.textContent = 'Save failed';
+        checkbox.parentElement.appendChild(errSpan);
+        setTimeout(() => errSpan.remove(), 2000);
+      }
+    }
+
+    // --- Review Nav Badge ---
+    async function loadReviewBadge() {
+      try {
+        const res = await fetch(API_BASE + '/reviews');
+        const data = await res.json();
+        const pending = (data.reviews || []).filter(r => r.status === 'pending').length;
+        const badge = document.getElementById('nav-review-badge');
+        if (badge) {
+          if (pending > 0) {
+            badge.textContent = pending;
+            badge.style.display = '';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+      } catch (e) { /* silent */ }
+    }
+
+    loadProjects();
+    loadReviewBadge();
+  </script>
 </body>
 </html>

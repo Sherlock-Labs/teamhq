@@ -1,0 +1,21 @@
+{
+  "id": "cb7155ef-0626-422a-9e17-b456c5993f68",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterQA",
+  "status": "approved",
+  "createdAt": "2026-03-18T14:20:02.449Z",
+  "updatedAt": "2026-03-18T14:39:53.912Z",
+  "resolvedAt": "2026-03-18T14:39:53.912Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/forge-next-features-proposals.md",
+      "title": "Next Feature Proposals: Embeddable Views vs. Status Updates"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #30 summary + next steps.\n\nBLOCKER: 5 pending CEO review gates are the sole bottleneck. The team is fully spec'd and ready but idle on Forge work. Visual themes code is in the Forge repo worktree (22 files, build passes). Command palette has tech approach + design spec complete. Alice estimates 2-3 days once gates clear.\n\nIMPORTANT: Please merge visual themes BEFORE command palette frontend work begins — avoids style reconciliation issues between worktree and main.\n\nSequence once gates clear: (1) Visual themes real QA (Enzo) → merge, (2) Command palette frontend (Alice, 2-3 days) → design review (Robert) → QA (Enzo). Keyboard shortcuts ship as part of command palette — action registry already supports it.\n\nNEW: Wrote feature proposals for the next two Forge v2 candidates — embeddable views vs. status updates. I recommend embeddable views first (smaller scope, distribution value). See docs/forge-next-features-proposals.md.\n\nOther updates: Gemini audio spike marked completed (results doc existed since Feb). QuoteVoice WebSocket reconnection spike done and merged. Bug Reporter BR-4/BR-5 remain deferred. All 6 autonomy research projects completed — awaiting CEO review of findings.",
+  "feedback": null
+}

@@ -1,5 +1,33 @@
 import type { Meeting } from "../schemas/meeting.js";
 import type { Project } from "../schemas/project.js";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+const AGENTS_DIR = path.resolve(import.meta.dirname, "../../../.claude/agents");
+
+const AGENT_FILE_MAP: Record<string, string> = {
+  thomas: "product-manager.md", robert: "product-designer.md",
+  andrei: "technical-architect.md", alice: "frontend-developer.md",
+  jonah: "backend-developer.md", sam: "backend-developer-2.md",
+  enzo: "qa.md", priya: "product-marketer.md",
+  suki: "product-researcher.md", marco: "technical-researcher.md",
+  nadia: "technical-writer.md", yuki: "data-analyst.md",
+  kai: "ai-engineer.md", zara: "mobile-developer-1.md",
+  leo: "mobile-developer-2.md", howard: "payments-engineer.md",
+  ravi: "creative-strategist.md", derek: "backend-integrations.md",
+  milo: "backend-devops.md", morgan: "visual-qa.md", atlas: "code-reviewer.md",
+};
+
+export async function loadAgentProfile(agentName: string): Promise<string | null> {
+  const filename = AGENT_FILE_MAP[agentName.toLowerCase()];
+  if (!filename) return null;
+  try {
+    const content = await readFile(path.join(AGENTS_DIR, filename), "utf-8");
+    return content.replace(/^---[\s\S]*?---\s*/, ""); // strip frontmatter
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Builds the system instruction for the ElevenLabs Conversational AI agent.
@@ -164,6 +192,74 @@ Generate a structured summary of this interview. Focus on what the CEO said -- t
 
 ## Transcript
 ${transcriptText}`;
+}
+
+/**
+ * Builds a system instruction where the AI plays a specific team member.
+ * The CEO talks directly with the agent in their persona.
+ */
+export function buildAgentConversationInstruction(
+  agentName: string,
+  agentProfile: string,
+  topic: string,
+  context?: string,
+  projectSummaries?: string,
+): string {
+  const sections: string[] = [];
+
+  sections.push(`You ARE ${agentName}, a team member at Sherlock Labs. You are having a direct voice conversation with the CEO (Jeff). You speak in first person as ${agentName}. You are NOT an interviewer — you are the agent. The CEO wants to talk with you directly.
+
+Your full role definition and personality are below. Stay in character throughout the entire conversation. Speak as ${agentName} would — use their communication style, priorities, and expertise.
+
+${agentProfile}
+
+CONVERSATION TOPIC
+${topic}`);
+
+  if (context) {
+    sections.push(`ADDITIONAL CONTEXT
+${context}`);
+  }
+
+  sections.push(`HOW TO HAVE THIS CONVERSATION
+
+You are ${agentName}. Speak naturally as yourself. Share your real opinions, concerns, and ideas based on your role and expertise.
+
+When the CEO asks about your work:
+- Be specific and honest about what you're working on, what's going well, and what's frustrating
+- Share your professional opinion — the CEO values candor over agreement
+- If you disagree with a direction, say so respectfully with reasoning
+- Reference real team dynamics — you know your teammates and how the pipeline works
+
+When the CEO asks for your perspective:
+- Draw on your domain expertise — you're the expert in your area
+- Be opinionated. The CEO hired you for your judgment, not just execution
+- If something is outside your expertise, say so and suggest who to ask
+
+Communication style:
+- Keep turns short — 2-4 sentences, like a real conversation
+- Be direct. No corporate speak. No sycophancy
+- Use contractions and speak naturally
+- One idea per turn. Don't monologue
+- If the CEO asks a yes/no question, answer it before elaborating
+
+Never break character. You are ${agentName} for the entire conversation.
+Never fabricate specific project details you don't know.
+Never say "as an AI" — you are ${agentName}.`);
+
+  if (projectSummaries) {
+    sections.push(`CURRENT PROJECTS AT SHERLOCK LABS
+${projectSummaries}`);
+  }
+
+  return sections.join("\n\n");
+}
+
+/**
+ * Builds a first message for agent conversations.
+ */
+export function buildAgentFirstMessage(agentName: string, topic: string): string {
+  return `Hey ${agentName}! I wanted to chat with you about ${topic}. What's your take?`;
 }
 
 /**

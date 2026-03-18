@@ -1,0 +1,26 @@
+{
+  "id": "f3fe6942-a77c-4d17-9a66-8661eb15d388",
+  "type": "interview",
+  "status": "failed",
+  "meetingNumber": 15,
+  "scheduledAt": null,
+  "startedAt": "2026-03-16T22:26:32.729Z",
+  "completedAt": "2026-03-16T22:33:31.858Z",
+  "durationMs": null,
+  "error": "Meeting was interrupted by server restart.",
+  "summary": null,
+  "keyTakeaways": [],
+  "transcript": [],
+  "decisions": [],
+  "actionItems": [],
+  "mood": null,
+  "nextMeetingTopics": [],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "Q1 Strategy"
+  }
+}

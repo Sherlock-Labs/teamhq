@@ -1,0 +1,21 @@
+{
+  "id": "0fdefb3f-1b58-46d9-8084-ca37be834344",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterQA",
+  "status": "pending",
+  "createdAt": "2026-03-18T14:46:37.754Z",
+  "updatedAt": "2026-03-18T14:46:37.754Z",
+  "resolvedAt": null,
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-frontend-notes.md",
+      "title": "Visual Themes Frontend Notes (applied to Forge repo)"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #36 status update. Acting on CEO feedback.\n\nVisual themes code is APPLIED to /home/jeff/forge-app (18 files, 373 insertions). TypeScript build passes clean. Enzo now QAing the running app (RT-52).\n\nAfter themes QA, Alice pivots to command palette (RT-38c). Offline mode removed per CEO rejection.\n\nParallel: QuoteVoice PDF export proposed as shipped-product improvement.",
+  "feedback": null
+}

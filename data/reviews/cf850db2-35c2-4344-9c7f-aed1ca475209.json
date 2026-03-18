@@ -1,0 +1,26 @@
+{
+  "id": "cf850db2-35c2-4344-9c7f-aed1ca475209",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterQA",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:28:05.704Z",
+  "updatedAt": "2026-03-18T13:36:59.298Z",
+  "resolvedAt": "2026-03-18T13:36:59.298Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-design-review.md",
+      "title": "Design Review (Robert) — APPROVED WITH NOTES"
+    },
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-code-review.md",
+      "title": "Code Review (Atlas) — APPROVED WITH NOTES"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Review phase complete — both APPROVED WITH NOTES. Robert: all 6 theme definitions match spec token-for-token, two minor a11y gaps for Enzo to verify, one implementation win (Alice added ARIA live region for theme changes, not in spec). Atlas: migration clean, hex validation solid, Socket.IO broadcast safe, RG-15 fix quality good — one note about adding explicit test for the Zod fix. Enzo now running QA pass (RT-37f — release gate).",
+  "feedback": null
+}

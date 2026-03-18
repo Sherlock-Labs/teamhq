@@ -1,0 +1,18 @@
+{
+  "projectSlug": "quick-competitive-scan-3-5-examples-of-how-autonomous-a",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "ACS-1",
+      "title": "Competitive scan of autonomous agent transparency patterns",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Suki",
+      "priority": "medium",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    }
+  ]
+}

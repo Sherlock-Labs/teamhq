@@ -47,11 +47,24 @@ export async function runMeeting(
       `[meeting-runner] Prompt built (${prompt.length} chars), calling Claude...`
     );
 
-    // Call Claude with structured output
-    const output = (await runClaude(prompt, {
-      jsonSchema: MeetingOutputJsonSchema,
-      timeoutMs: 600_000, // 10 minute timeout — meetings take a while
-    })) as {
+    // Call Claude with structured output — Opus first, Sonnet fallback
+    let output: unknown;
+    try {
+      output = await runClaude(prompt, {
+        model: "claude-opus-4-6",
+        jsonSchema: MeetingOutputJsonSchema,
+        timeoutMs: 600_000,
+      });
+    } catch (opusErr) {
+      const errMsg = opusErr instanceof Error ? opusErr.message : String(opusErr);
+      console.log(`[meeting-runner] Opus failed (${errMsg.slice(0, 80)}), retrying with Sonnet...`);
+      output = await runClaude(prompt, {
+        model: "claude-sonnet-4-6",
+        jsonSchema: MeetingOutputJsonSchema,
+        timeoutMs: 600_000,
+      });
+    }
+    const typedOutput = output as {
       summary: string;
       keyTakeaways: string[];
       transcript: Array<{ speaker: string; role: string; text: string }>;
@@ -80,13 +93,13 @@ export async function runMeeting(
       status: "completed",
       completedAt: new Date().toISOString(),
       durationMs,
-      summary: output.summary,
-      keyTakeaways: output.keyTakeaways,
-      transcript: output.transcript,
-      decisions: output.decisions,
-      actionItems: output.actionItems,
-      mood: output.mood,
-      nextMeetingTopics: output.nextMeetingTopics,
+      summary: typedOutput.summary,
+      keyTakeaways: typedOutput.keyTakeaways,
+      transcript: typedOutput.transcript,
+      decisions: typedOutput.decisions,
+      actionItems: typedOutput.actionItems,
+      mood: typedOutput.mood,
+      nextMeetingTopics: typedOutput.nextMeetingTopics,
     });
   } catch (err) {
     const durationMs = Date.now() - startTime;

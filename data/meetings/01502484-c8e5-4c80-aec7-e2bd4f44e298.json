@@ -1,0 +1,257 @@
+{
+  "id": "01502484-c8e5-4c80-aec7-e2bd4f44e298",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 30,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T14:16:44.617Z",
+  "completedAt": "2026-03-18T14:18:25.930Z",
+  "durationMs": 101313,
+  "error": null,
+  "summary": "Hourly standup #31 covering five agenda items: confirmed visual themes code is in the Forge worktree with build passing (22 files, blocked by 5 CEO review gates), command palette tech approach and design spec are both complete and waiting on CEO review before Alice begins implementation, acknowledged all 6 autonomy research projects are done, debated what to propose next (consensus on keyboard shortcuts as the next Forge feature after command palette, plus Enzo's regression suite), and confirmed Bug Reporter BR-4/BR-5 remain deferred until after command palette ships.",
+  "keyTakeaways": [
+    "Five CEO review gates are the sole blocker across visual themes, command palette, and autonomy projects — the team is idle on those fronts until gates clear.",
+    "Command palette is fully spec'd (tech approach + design spec) and Alice is ready to start the moment the CEO approves — estimated 2-3 day build.",
+    "Team consensus: keyboard shortcuts should be the next Forge v2 feature after command palette, since the action registry architecture already supports it with minimal incremental work.",
+    "Enzo is building an automated regression suite for Forge's shipped features — currently covering visual themes and dependency lines, aiming for all three views by end of week.",
+    "Jonah's QuoteVoice WebSocket reconnection spike is complete — exponential backoff with session resume token landed and tested."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup #31. Five items on the board. Let's keep it tight — updates plus one recommendation each. Starting with item one: visual themes. The code is applied to the Forge worktree, build passes, 22 files in place. But we have 5 CEO review gates blocking pipeline advancement. That's the bottleneck. Nothing we can do there except wait for the CEO to work through the queue. Andrei, anything on your end?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Build is clean. I pulled the worktree and verified — all 22 files are where they should be, no merge conflicts with main. The theme token cascade is solid. My only note: once the review gate clears, we should fast-track the merge. There's no technical risk sitting in that worktree, but the longer it sits, the higher the chance of drift if anyone touches shared styles on main."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Agreed. I wrote those 22 files and they're self-contained — the theme tokens, the CSS custom properties, the view-specific overrides. No conflicts right now. But if we start command palette work on main while themes sits in a worktree, I'll need to reconcile styles. Not a dealbreaker, just worth noting."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good flag. Let's make sure the CEO knows: merging visual themes before starting command palette frontend work avoids unnecessary reconciliation. Moving to item two — command palette. Tech approach is done, design spec is done. Both waiting on CEO review gate. Alice, where does that leave you?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm ready to go. I've read both docs. Andrei's action registry pattern is clean — a Map of action IDs to handlers with metadata. Robert's design spec covers the modal, search input, keyboard nav, grouping, empty states. I've already sketched the component structure in my head. The moment the gate clears, I estimate 2-3 days for the full implementation including keyboard shortcut bindings."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "One thing I want to call out — the design spec has a specific animation for the modal entrance. 150ms scale-up with opacity fade from the center of the viewport. Alice, make sure you don't skip that. It's what makes the palette feel responsive rather than just appearing."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Noted. I'll use transform scale with opacity, hardware-accelerated. And I'll respect prefers-reduced-motion — instant show for users who've opted out."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Quick question on command palette — are we planning to QA it as a standalone feature, or bundle it with visual themes QA? Because if both gates clear at the same time, I'd rather test themes first, get that shipped, then test command palette separately. Mixing them muddies the regression baseline."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Sequential. Themes QA first, merge, then command palette build, then command palette QA. No bundling. That's the clean path."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Perfect. That's what I was hoping. On the regression suite — I've got automated coverage for visual themes across all three views and dependency line rendering. Working on board view drag-and-drop next. Should have all three views covered by end of week."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Nice. Item three — autonomy research. All six projects are completed. North star doc, workflow state patterns, architectural sketch, competitive scan, dashboard concept, improvement roadmap. All sitting behind review gates. Same story: CEO needs to review before any of it turns into build work. Nobody should start building autonomy features until those gates clear."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'll add — the persistent workflow state sketch I wrote is deliberately lightweight. It's a JSON state file pattern, not a database migration. If the CEO likes the direction, Jonah and I can have a working prototype in a day. But if he wants a different approach, we haven't over-invested."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I reviewed Andrei's sketch. The concurrent write handling is the tricky part — multiple agents updating state simultaneously. I have thoughts on optimistic locking with a version field, but I'm holding those until the CEO gives a green light. No point over-engineering something that might get redirected."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Exactly. Item four — what should we propose next? This is the forward-looking question. Everyone, give me your one recommendation. I'll go first: keyboard shortcuts as the next Forge feature after command palette. The action registry Andrei designed already supports shortcut bindings. It's incremental work on top of command palette, not a new system. High user value, low effort."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'll second that. The registry already stores shortcut metadata per action. The global keyboard listener is already part of the command palette architecture. Adding standalone shortcuts — Cmd+N for new item, Cmd+1/2/3 for view switching — is maybe half a day of Alice's time once command palette is in. It's the obvious next domino."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'd push for status updates and changelog next. Not keyboard shortcuts — those are developer-facing polish. Status updates let users communicate progress on roadmap items to stakeholders without leaving Forge. That's a new capability, not just a convenience feature. It expands who Forge is useful for."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I see Robert's point, but keyboard shortcuts are a week of work max, and status updates are a full pipeline project — new data model, new UI, new API. If we're talking about what to do while waiting on review gates, shortcuts win on velocity. Ship the quick thing, then tackle status updates as a proper project."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "My recommendation is different — I think we should look at embeddable views. Read-only iframes of roadmaps that users can drop into Notion, Confluence, or internal wikis. That's a distribution play. It gets Forge in front of people who don't have Forge accounts. And from a backend perspective, it's a new read-only API endpoint with a signed token. Straightforward."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'll be practical. My recommendation: finish the regression suite before we add more features. Every new feature without automated test coverage makes future QA slower. Let me get solid coverage on the shipped baseline — themes, views, CRUD, dependencies, drag-and-drop — and then new features get tested faster because I'm not manually re-checking everything."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good spread of opinions. Here's how I'd sequence it: keyboard shortcuts ships as part of the command palette work — it's essentially free. Enzo continues the regression suite in parallel. Then we propose embeddable views and status updates as the next two full-pipeline projects for the CEO to prioritize between. Robert, does that address your concern?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "As long as status updates doesn't keep getting pushed behind polish items, yes. I want it on the CEO's radar as a real feature proposal, not a someday-maybe."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair. I'll write a one-paragraph pitch for both embeddable views and status updates so the CEO has something concrete to react to. Last item — Bug Reporter BR-4 and BR-5. Drag-to-reorder screenshots and recent bugs quick-view. Still deferred. No change from last standup. Command palette takes priority, and bug reporter core flow is working fine in production. Anyone disagree?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "No objection. The bug reporter works. Those are nice-to-haves."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "One quick update outside the agenda — the QuoteVoice WebSocket reconnection spike is done. Exponential backoff with session resume token. Tested on flaky connections. Landed and merged."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Great, that clears the action item from last standup. Alright, wrapping up. The theme of this standup is clear: we're blocked on CEO review gates across three workstreams. The team is spec'd, ready, and waiting. In the meantime — Enzo builds regression coverage, Jonah is free for the next task, Alice is prepped for command palette. I'll write the feature proposals for the CEO. Anything else?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "One more thing. When visual themes merges, I want to do a quick pass on the Forge CSS architecture. Not a refactor — just documenting the token hierarchy so Alice and future contributors know the cascade order. Fifteen minutes of writing, saves hours of debugging later."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Do it. That's exactly the kind of low-effort documentation that pays for itself. Alright, we're done. Everyone knows what they're doing. Let's go."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Visual themes and command palette QA will be sequential, not bundled — themes QA first, merge, then command palette build and QA separately.",
+      "rationale": "Mixing QA for two features muddies the regression baseline. Sequential testing gives Enzo a clean before/after for each feature. The clean path is: themes QA → merge → command palette build → command palette QA.",
+      "participants": [
+        "Thomas",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Keyboard shortcuts will ship as part of the command palette work, not as a separate pipeline project.",
+      "rationale": "Andrei's action registry already stores shortcut metadata and the global keyboard listener is already architected. Adding standalone shortcuts (Cmd+N, Cmd+1/2/3) is approximately half a day of incremental work on top of command palette. It's essentially free additional user value.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Thomas will write one-paragraph feature proposals for both embeddable views and status updates for the CEO to prioritize between as the next full-pipeline Forge features.",
+      "rationale": "Jonah proposed embeddable views as a distribution play (read-only iframes for Notion/Confluence). Robert pushed for status updates as a capability expansion (stakeholder communication without leaving Forge). Both are legitimate full-pipeline projects. Rather than the team picking, Thomas will frame both for the CEO to decide.",
+      "participants": [
+        "Thomas",
+        "Robert",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "Bug Reporter BR-4 (drag-to-reorder screenshots) and BR-5 (recent bugs quick-view) remain deferred until after command palette ships.",
+      "rationale": "Bug reporter core flow is working in production. Both items are polish, not blocking anyone. Command palette is higher priority.",
+      "participants": [
+        "Thomas",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "No build work begins on autonomy features until the CEO reviews and clears the 6 completed research deliverables through review gates.",
+      "rationale": "Review gates exist to prevent engineering investment before the CEO validates the direction. Building on unreviewed research risks wasted work if the CEO wants a different approach.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Jonah"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Thomas",
+      "description": "Write one-paragraph feature proposals for embeddable views and status updates as candidate next Forge v2 features, framed for CEO prioritization decision.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Communicate to CEO that merging visual themes before command palette frontend work begins avoids style reconciliation issues between worktree and main.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Continue building automated regression suite — finish board view drag-and-drop coverage, target all three Forge views covered by end of week.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Alice",
+      "description": "Begin command palette implementation (2-3 day estimate including keyboard shortcuts) as soon as CEO review gate clears on tech approach and design spec.",
+      "priority": "high"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Document Forge CSS token hierarchy and cascade order after visual themes merges — lightweight architecture doc, not a refactor.",
+      "priority": "low"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Stand by for next assignment — QuoteVoice reconnection spike is complete and merged. Available for embeddable views backend or other work once CEO prioritizes.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Robert",
+      "description": "Prepare to do lightweight design review of command palette implementation once Alice builds it — verify modal animation, search UX, and keyboard navigation against design spec.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Ready but gate-blocked",
+  "nextMeetingTopics": [
+    "CEO review gate status — have any of the 5 pending gates (visual themes, command palette, autonomy batch) cleared?",
+    "Alice's command palette implementation — started, in progress, or still waiting on gate?",
+    "Enzo's regression suite — all three Forge views covered?",
+    "Thomas's feature proposals for embeddable views and status updates — written and sent to CEO?",
+    "Andrei's CSS token hierarchy documentation — complete after visual themes merge?",
+    "Visual themes worktree merge status — merged to main or still waiting?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Hourly standup #30. Agenda: (1) Visual themes code is applied to Forge repo worktree — build passes, 22 files in place. 5 pending CEO review gates block pipeline advancement. (2) Command palette has tech approach + design spec complete, waiting on CEO review before Alice starts frontend. (3) Autonomy research batch (6 projects) all completed. (4) What improvements or new features should we propose next? (5) Bug Reporter BR-4/BR-5 still deferred. Each person: give your update and one concrete recommendation for what to work on next.",
+  "interviewConfig": null
+}

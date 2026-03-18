@@ -1,0 +1,255 @@
+{
+  "id": "f6e36691-9939-4eed-8baf-a31068ffc100",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 39,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T15:27:49.519Z",
+  "completedAt": "2026-03-18T15:29:22.570Z",
+  "durationMs": 93051,
+  "error": null,
+  "summary": "Standup #40 covered four items: RT-38c command palette status (Alice hit a keyboard event conflict that stalled her for a day — now unblocked, targeting end of day tomorrow), TPI-2 pipeline dashboard scope (team aligned on a three-card layout showing active pipelines, recent completions, and pending review count), Forge review gates backlog (7 gates pending — Thomas to bundle into one CEO review), and quick wins each person can ship today.",
+  "keyTakeaways": [
+    "RT-38c command palette stalled due to a keyboard shortcut conflict with the bug reporter (Cmd+Shift+K vs Cmd+K) — Alice resolved it, targeting EOD tomorrow for QA handoff.",
+    "TPI-2 pipeline dashboard will be a three-card section on index.html reading from existing pipeline-log JSON files — no new backend endpoints needed for v1.",
+    "7 Forge review gates are piling up — Thomas will bundle them into a single consolidated CEO review to unblock the pipeline.",
+    "Quick wins committed: Jonah adds pipeline-log list endpoint, Robert audits spacing tokens on meetings.html, Alice fixes command palette focus trap, Enzo writes smoke test for health endpoint, Andrei documents the pipeline-log JSON schema, Thomas creates TPI-2 work items.",
+    "The team is frustrated by the Forge review gate backlog — it's blocking downstream work and creating idle time."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup 40. Four items, let's keep it tight. First — Alice, RT-38c. Command palette. Last check you had the modal and fuzzy search working. Then it went quiet for over 24 hours. What happened?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Yeah, I owe everyone an update on that. The modal shell and fuzzy search are solid — that part's done. I hit a wall yesterday with keyboard event handling. The bug reporter widget registers Cmd+Shift+B globally, and my command palette uses Cmd+K. When I added category grouping with arrow key navigation inside the modal, the keydown listeners started fighting with each other. Events were bubbling through the modal backdrop and triggering page shortcuts."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Are you stopping propagation on the modal's keydown handler?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I am now. The issue was subtler than that — the bug reporter registers on window at capture phase, so stopPropagation on the modal's bubble handler didn't help. I had to refactor the event registration order. It's fixed. I lost most of yesterday to it, but the arrow key navigation and category grouping are working now."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "So where does that leave the timeline? I've got my test plan 80% done. I was expecting handoff yesterday."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I need today for polish — result highlighting, the empty state when no commands match, and making sure Escape closes cleanly from every state. I can hand off to you end of day tomorrow."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a day behind. Acceptable given the bug, but let's not let it slip further. Alice, EOD tomorrow is the deadline. Enzo, finish your test plan today so there's zero handoff gap. Good?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Works for me. I'll have the plan done today."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Next — TPI-2, the pipeline dashboard on the TeamHQ homepage. This was the top-priority improvement from last standup. The CEO wants a card section on index.html showing active pipelines, recent completions, and pending review count. Robert, you have thoughts on what this looks like?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I've been thinking about this. Three cards in a row, consistent with the existing section rhythm on index.html. Card one: active pipelines — project name, current phase, which agent is working. Card two: recently completed — last 3-5 shipped projects with completion date. Card three: a count of items pending CEO review, which right now means those Forge gates. Clean, scannable, no interactions beyond maybe clicking through to the project."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The data's all there already. pipeline-log JSON files have status, task entries with agent names and statuses. I can expose a lightweight GET endpoint that reads the index and returns active vs. completed counts. Or — do we even need an endpoint? The frontend could fetch the JSON files directly."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Don't have the frontend parse raw pipeline-log files. That's coupling the UI to the storage format. A simple endpoint that aggregates the data is cleaner — if we ever change how pipeline logs are stored, the frontend doesn't break. But keep it dead simple. One GET that returns active projects, recent completions, and pending review count."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Agreed on the endpoint approach. For the cards themselves — I want to keep them read-only for v1. No filtering, no sorting, no expanding. Just the status at a glance. The CEO opens TeamHQ, sees what's moving, what shipped, and what's waiting on them. Ten-second scan."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "That's straightforward. Once Jonah has the endpoint and Robert has the card specs, I can build it in a couple hours. It's just fetch, render, done. My only question — where on index.html does it go? Above the team roster or below?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Above. It's the first thing the CEO wants to see. Pipeline status, then team roster, then everything else."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. This fits the lightweight iteration track — no full pipeline needed. Robert specs the cards, Jonah builds the endpoint, Alice implements, Enzo spot-checks. I'll create the work items today. Moving on — the Forge review gates. We've got 7-plus sitting there waiting for CEO approval. This is becoming a bottleneck."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "It's more than a bottleneck — it's blocking the entire Forge v2 pipeline. Robert's design spec for visual themes is done. My tech approach is done. Everything downstream is idle because the gates haven't been reviewed."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "From my side, I can't even plan QA for Forge v2 until the implementation happens, and the implementation can't start until the gates clear. I've been filling time with test plans for other projects, but this is dead time on Forge."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I hear you. The review gates feature is working as designed — it's supposed to give the CEO checkpoints. But 7 pending gates means the CEO hasn't had time to review, not that they're blocking intentionally. Here's what I'll do: I'll bundle all 7 into a single consolidated review with a summary of what each gate contains and what's being approved. One decision instead of seven. That should be faster for the CEO to process."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That's the right move. A single summary with 'approve all' or 'flag specific concerns' is much more respectful of the CEO's time than seven individual reviews."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Last item. Quick wins — each of you, one thing you can ship today. No pipeline, no ceremony. Jonah, you first."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I'll build the GET /api/pipeline-status endpoint for TPI-2. It reads the pipeline-log index, aggregates active vs. completed vs. pending-review, and returns a clean JSON response. Thirty minutes, maybe an hour with tests."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'll finish the spacing token audit on meetings.html. I started it last session but got pulled into QuoteVoice. Two hours max — normalizing padding and margin values to the shared scale in styles.css."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "My quick win is fixing the command palette focus trap. Right now if you Tab past the last result, focus escapes the modal. That's a bug I noticed during the keyboard event refactor. Quick fix."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'll write a smoke test for Jonah's health endpoint — hit GET /api/health, verify the response shape, check that it returns 200. Simple but it starts our automated test coverage for the API layer."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'll document the pipeline-log JSON schema properly. Right now the format is implicit — agents write to it but there's no schema definition. I'll add a schema file so Jonah's new endpoint and Alice's frontend are building against a contract, not guessing."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good list. Mine is creating the TPI-2 work items and bundling the Forge review gates for the CEO. That's the standup. Alice — EOD tomorrow on RT-38c, no more slips. Everyone else, ship your quick wins today. We'll check progress tomorrow."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "TPI-2 pipeline dashboard will be three read-only cards on index.html (active pipelines, recent completions, pending reviews), positioned above the team roster.",
+      "rationale": "Highest-priority TeamHQ improvement from standup #37. Read-only cards are the minimum useful version — gives the CEO a ten-second status scan without adding interactive complexity. Above the roster because pipeline status is the first thing the CEO wants to see.",
+      "participants": [
+        "Thomas",
+        "Robert",
+        "Alice",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "Pipeline dashboard will use a dedicated GET endpoint rather than having the frontend parse raw pipeline-log JSON files.",
+      "rationale": "Andrei's recommendation: decouples the UI from the storage format. If pipeline-log structure changes, only the endpoint needs updating. Simple aggregation endpoint keeps the frontend clean.",
+      "participants": [
+        "Andrei",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "Thomas will bundle all 7 pending Forge review gates into a single consolidated CEO review to unblock the pipeline.",
+      "rationale": "Seven individual review gates are creating a bottleneck — the CEO hasn't had time to review them individually, causing idle time for Andrei, Robert, and Enzo on Forge v2. A single bundled review with summary is faster to process.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Enzo",
+        "Robert"
+      ]
+    },
+    {
+      "description": "RT-38c command palette deadline is EOD tomorrow (March 19) for QA handoff to Enzo.",
+      "rationale": "One day behind original target due to keyboard event conflict with bug reporter widget. Alice resolved the root cause and needs one more day for polish. No further slippage acceptable.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Enzo"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Alice",
+      "description": "Complete RT-38c command palette polish (result highlighting, empty state, Escape behavior, focus trap fix) and hand off to Enzo for QA by EOD March 19.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Bundle all 7 pending Forge review gates into a single consolidated CEO review with summary of each gate's contents. Submit today.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Finish RT-38c command palette test plan (remaining 20%) today. Be ready for immediate QA when Alice hands off.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Create TPI-2 pipeline dashboard work items in data/work-items/ — scope the three cards, endpoint, and frontend implementation as separate tasks.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Build GET /api/pipeline-status endpoint — reads pipeline-log index, returns active projects, recent completions, and pending review count. Ship today.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Document the pipeline-log JSON schema as a formal schema file so the new endpoint and frontend build against a contract.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Robert",
+      "description": "Finish spacing token audit on meetings.html — normalize padding/margin values to shared scale in styles.css. Ping Enzo before and after.",
+      "priority": "low"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Write smoke test for GET /api/health endpoint — verify 200 response and response shape. Ship today.",
+      "priority": "low"
+    }
+  ],
+  "mood": "Pragmatic and slightly impatient",
+  "nextMeetingTopics": [
+    "RT-38c command palette — Alice handed off to Enzo? QA started? Any issues found?",
+    "Forge consolidated review gate — submitted to CEO? Approved? Pipeline unblocked?",
+    "TPI-2 pipeline dashboard — work items created? Jonah's endpoint shipped? Andrei's schema done? Robert's card spec ready?",
+    "Quick wins — did everyone ship theirs? Robert's meetings.html token audit, Enzo's health endpoint smoke test?",
+    "Pipeline dashboard frontend — ready for Alice to pick up after command palette clears QA?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Standup #40. Context: TPI-1 (health endpoint) shipped. Meeting #38 failed (server restart). RT-38c (command palette) stale >24h. Agenda: (1) RT-38c — Alice, status update? Modal + fuzzy search were working last check. (2) TeamHQ Platform Improvements — TPI-2 pipeline dashboard is next. What should it show? Card section on index.html with active pipelines, recent completions, pending review count. (3) 7+ Forge review gates still pending CEO approval. (4) Each person: one quick win you could ship today. Keep it tight.",
+  "interviewConfig": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "36454a75-9aaa-44fc-a844-c2751470c9de",
+  "projectId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+  "projectSlug": "teamhq-platform-improvements",
+  "projectName": "TeamHQ Platform Improvements",
+  "gate": "afterRequirements",
+  "status": "approved",
+  "createdAt": "2026-03-18T15:08:24.184Z",
+  "updatedAt": "2026-03-18T15:41:41.466Z",
+  "resolvedAt": "2026-03-18T15:41:41.466Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-autonomy-improvements.md",
+      "title": "TeamHQ Autonomy Improvements Roadmap"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #39 — TeamHQ Improvement Priorities + RT-38c Status\n\nTeam held standup #39. Each member pitched one concrete TeamHQ improvement.\n\n**Decided (ranked):**\n1. Pipeline status dashboard on TeamHQ homepage — reads existing pipeline-log data, no new backend. First slice of autonomy dashboard.\n2. GET /api/health endpoint — 30-minute quick win. Jonah builds today.\n3. Keyboard shortcuts for meetings/projects — after RT-38c ships.\n4. Design token audit — Robert as lightweight iteration.\n\n**RT-38c:** Alice actively building. Modal + fuzzy search working. On track for Thursday.\n\n**Next:** Scoping pipeline dashboard now (lightweight iteration). Jonah starts health endpoint. Both parallel with Forge.",
+  "feedback": null
+}

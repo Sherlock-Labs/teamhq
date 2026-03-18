@@ -1,0 +1,61 @@
+{
+  "id": "bb22af74-2a4e-4401-a459-2987c60b77dc",
+  "type": "interview",
+  "status": "completed",
+  "meetingNumber": 21,
+  "scheduledAt": null,
+  "startedAt": "2026-03-17T21:55:11.564Z",
+  "completedAt": "2026-03-17T21:56:07.972Z",
+  "durationMs": 39000,
+  "error": "Page closed during interview",
+  "summary": "This was a brief, incomplete interview that never reached substantive discussion. The CEO (Jeff) appeared to join late and spent the short exchange clarifying the interviewer's identity rather than discussing the intended topic (\"test\").",
+  "keyTakeaways": [
+    "The interview never reached its intended topic — no substantive content was discussed.",
+    "The CEO appeared to have connectivity or attention issues at the start, resulting in silence.",
+    "The only exchange was the CEO confirming the interviewer's identity (Derek, the integrations engineer).",
+    "The interview format and AI interviewer persona appeared to be functioning, but the session ended before any real discussion."
+  ],
+  "transcript": [
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Hey Derek! I wanted to chat with you about test. What's your take?"
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "..."
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "[slow] Hey Jeff, are you still there? [happy] I'm ready to dive into the technical side of things whenever you're back. Just let me know what's on your mind regarding the integrations."
+    },
+    {
+      "speaker": "CEO",
+      "role": "Interviewee",
+      "text": "Are you Derek?"
+    },
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "That is right, I am [happy] Derek, the integrations engineer here. I was just looking over some of our webhook flows and [fast] making sure our oauth tokens are refreshing properly. What is on your mind for the project today, Jeff?"
+    }
+  ],
+  "decisions": [],
+  "actionItems": [],
+  "mood": "Tentative and brief",
+  "nextMeetingTopics": [
+    "The original topic ('test') was never discussed and should be revisited",
+    "Webhook flows and OAuth token refresh that Derek mentioned as context"
+  ],
+  "participants": [
+    "ceo",
+    "derek"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "test",
+    "durationSeconds": 39
+  }
+}

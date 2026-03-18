@@ -1,0 +1,28 @@
+{
+  "id": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+  "slug": "write-a-one-page-north-star-vision-document-for-teamhq-au",
+  "name": "Write a one-page north star vision document for TeamHQ au...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-03-18T13:22:45.329Z",
+  "updatedAt": "2026-03-18T13:28:52.126Z",
+  "completedAt": "2026-03-18T13:28:52.126Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Write a one-page north star vision document for TeamHQ autonomy — the 'CEO wakes up and checks their phone' scenario as a concrete, vivid narrative that the team can align improvements against.\n\nOwner: Ravi\nPriority: medium\nSource: Custom Meeting #26",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

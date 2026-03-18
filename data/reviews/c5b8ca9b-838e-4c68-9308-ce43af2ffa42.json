@@ -1,0 +1,21 @@
+{
+  "id": "c5b8ca9b-838e-4c68-9308-ce43af2ffa42",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterFrontend",
+  "status": "changes-requested",
+  "createdAt": "2026-03-18T13:23:48.447Z",
+  "updatedAt": "2026-03-18T13:26:12.356Z",
+  "resolvedAt": null,
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-frontend-notes.md",
+      "title": "Visual Themes Frontend Implementation Notes"
+    }
+  ],
+  "agent": "Alice",
+  "summary": "Visual themes frontend implementation complete. Alice produced full implementation notes covering: theme registry (6 themes × light/dark variants as CSS custom properties), RoadmapPage theme application via data-theme/data-mode attributes, ThemePicker/AccentColorPicker/DarkModeToggle components, AG Grid variable mapping, top bar dark mode toggle, Socket.IO sync handler, export compatibility, keyboard nav, and ARIA labels. Forge repo not available locally — implementation organized by file ready to apply. Robert (design review) and Atlas (code review) now running in parallel.",
+  "feedback": "the forge repo is now available locally."
+}

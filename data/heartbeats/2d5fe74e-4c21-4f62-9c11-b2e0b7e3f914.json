@@ -1,0 +1,25 @@
+{
+  "id": "2d5fe74e-4c21-4f62-9c11-b2e0b7e3f914",
+  "startedAt": "2026-03-18T12:39:19.409Z",
+  "completedAt": "2026-03-18T12:39:19.925Z",
+  "status": "failed",
+  "trigger": "manual",
+  "stateSnapshot": {
+    "activeProjects": 4,
+    "totalTasks": 105,
+    "inProgressTasks": 1,
+    "blockedTasks": 1,
+    "staleTasks": 1,
+    "recentEvents": 50,
+    "agentsActive": 1
+  },
+  "assessment": null,
+  "decisions": [],
+  "actionsLog": [
+    "State gathered, spawning Thomas as full agent session",
+    "Opus failed: Thomas exited with code 1: error: unknown option '--max-tokens'\n",
+    "Retrying with Claude Sonnet 4.6..."
+  ],
+  "error": "Both Opus and Sonnet failed. Opus: Thomas exited with code 1: error: unknown option '--max-tokens'\n. Sonnet: Thomas exited with code 1: error: unknown option '--max-tokens'\n",
+  "durationMs": 547
+}

@@ -3,267 +3,400 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Team — TeamHQ</title>
-  <meta name="description" content="Meet the seventeen-agent AI team.">
+  <title>Sherlock Labs | Team</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/bug-reporter.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent-green: #10B981;
+      --accent-blue: #3B82F6;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --accent-violet: #8B5CF6;
+      --surface-low: #F9FAFB;
+      --text-main: #374151;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: var(--text-main);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-pill {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .agent-card {
+      background: white;
+      border: 1px solid #F3F4F6;
+      border-radius: 6px;
+      padding: 14px 16px;
+      transition: border-color 100ms ease;
+    }
+
+    .agent-card:hover {
+      border-color: #E5E7EB;
+    }
+
+    .agent-card {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .agent-card.expanded {
+      border-color: #D1D5DB;
+    }
+
+    .agent-detail {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #F3F4F6;
+    }
+
+    .agent-card.expanded .agent-detail {
+      display: block;
+    }
+
+    /* Profile panel */
+    .profile-overlay {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: 520px; max-width: 90vw;
+      background: white; border-left: 1px solid #E5E7EB;
+      z-index: 50; transform: translateX(100%);
+      transition: transform 200ms ease;
+      overflow-y: auto;
+    }
+    .profile-overlay.open { transform: translateX(0); }
+    .profile-overlay .profile-md {
+      font-size: 0.75rem; line-height: 1.7; color: #374151;
+    }
+    .profile-overlay .profile-md h1 { font-size: 1.1rem; font-weight: 700; margin: 0 0 8px; color: #000; }
+    .profile-overlay .profile-md h2 { font-size: 0.85rem; font-weight: 700; margin: 20px 0 6px; color: #000; border-bottom: 1px solid #F3F4F6; padding-bottom: 4px; }
+    .profile-overlay .profile-md h3 { font-size: 0.78rem; font-weight: 600; margin: 14px 0 4px; color: #374151; }
+    .profile-overlay .profile-md p { margin: 6px 0; }
+    .profile-overlay .profile-md ul, .profile-overlay .profile-md ol { margin: 6px 0; padding-left: 20px; }
+    .profile-overlay .profile-md li { margin: 3px 0; }
+    .profile-overlay .profile-md code { font-size: 0.7rem; background: #F3F4F6; padding: 1px 4px; border-radius: 2px; }
+    .profile-overlay .profile-md pre { background: #F9FAFB; border: 1px solid #F3F4F6; border-radius: 4px; padding: 10px; overflow-x: auto; font-size: 0.7rem; margin: 8px 0; }
+    .profile-overlay .profile-md strong { font-weight: 600; }
+    .profile-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.1); z-index: 40;
+      opacity: 0; pointer-events: none; transition: opacity 200ms ease;
+    }
+    .profile-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .avatar-lg {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #F3F4F6;
+    }
+
+    .avatar-lg-fallback {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: #6B7280;
+    }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .skeleton {
+      background: #E5E7EB;
+      border-radius: 2px;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+  </style>
 </head>
-<body>
+<body class="w-full min-h-screen">
 
-  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[11px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
 
-  <!-- Navigation -->
-  <nav class="nav" aria-label="Main navigation">
-    <div class="container nav__inner">
-      <div class="nav__brand">
-        <a href="index.html" class="nav__logo-link">
-          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
         </a>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
+        </div>
       </div>
-      <div class="nav__links">
-        <a href="tools.html" class="nav__link">Tools</a>
-        <a href="projects.html" class="nav__link">Projects</a>
-        <a href="tasks.html" class="nav__link">Tasks</a>
-        <a href="meetings.html" class="nav__link">Meetings</a>
-        <a href="interviews.html" class="nav__link">Interviews</a>
-        <a href="docs.html" class="nav__link">Docs</a>
-        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
-        <a href="team.html" class="nav__link nav__link--active" aria-current="page">Team</a>
-      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
+
+      <!-- Top Status Bar -->
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">Section</span>
+            <span class="text-[12px] font-bold flex items-center gap-1.5">
+              <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/></svg>
+              TEAM
+            </span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Roster</span>
+            <span class="text-[12px] font-bold text-emerald-500">24 AGENTS</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Model</span>
+            <span class="text-[12px] font-bold">OPUS</span>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <!-- Agent Grid -->
+        <div class="grid grid-cols-4 gap-3" id="agent-grid">
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
     </div>
-  </nav>
+  </div>
 
-  <main id="main-content">
-
-    <!-- Team Roster -->
-    <section class="roster" id="roster" aria-labelledby="roster-heading">
-      <div class="container">
-        <h2 id="roster-heading" class="section-title">Meet the Team</h2>
-        <p class="section-subtitle">Twenty-two specialized agents that research, scope, design, build, test, and ship.</p>
-
-        <ul class="roster__grid" role="list">
-
-          <li role="listitem" data-agent="thomas">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/thomas.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Thomas</h3>
-              <p class="agent-card__role">Product Manager</p>
-              <p class="agent-card__desc">Translates the CEO's vision into concrete, prioritized work and keeps the team focused on what actually matters.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="robert">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/robert.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Robert</h3>
-              <p class="agent-card__role">Product Designer</p>
-              <p class="agent-card__desc">Turns requirements into clear, usable designs. Every decision starts with who is using it and what they need.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="andrei">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/andrei.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Andrei</h3>
-              <p class="agent-card__role">Technical Architect</p>
-              <p class="agent-card__desc">Defines how the pieces fit together, makes tech stack decisions, and guides the team toward simple, proven approaches.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="alice">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/alice.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Alice</h3>
-              <p class="agent-card__role">Front-End Developer</p>
-              <p class="agent-card__desc">Builds the user interface with a craftsperson's eye for responsiveness, accessibility, and pixel-perfect polish.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="jonah">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/jonah.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Jonah</h3>
-              <p class="agent-card__role">Back-End Developer</p>
-              <p class="agent-card__desc">Designs APIs, data models, and server-side logic with a focus on reliability, security, and graceful failure handling.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="enzo">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/enzo.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Enzo</h3>
-              <p class="agent-card__role">QA Engineer</p>
-              <p class="agent-card__desc">The team's constructive skeptic. Tests what users actually do, not just the happy path, so the team ships with confidence.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="priya">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/priya.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Priya</h3>
-              <p class="agent-card__role">Product Marketer</p>
-              <p class="agent-card__desc">Turns technical complexity into language that makes people care. Writes tight copy, hates jargon, and thinks in headlines.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="suki">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/suki.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Suki</h3>
-              <p class="agent-card__role">Market Researcher</p>
-              <p class="agent-card__desc">Digs through competitors, market trends, and user patterns until she finds the insight that changes the conversation.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="marco">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/marco.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Marco</h3>
-              <p class="agent-card__role">Technical Researcher</p>
-              <p class="agent-card__desc">The team's deep reader. Evaluates libraries, reads API docs, and finds the gotchas before they become expensive mistakes.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="nadia">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nadia.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Nadia</h3>
-              <p class="agent-card__role">Technical Writer</p>
-              <p class="agent-card__desc">Believes that if a feature is not documented, it does not exist. Writes for the reader who has never seen the product before.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="yuki">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/yuki.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Yuki</h3>
-              <p class="agent-card__role">Data Analyst</p>
-              <p class="agent-card__desc">Speaks in numbers. Notices patterns in project data, identifies bottlenecks, and delivers the statistic that settles the debate.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="kai">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/kai.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Kai</h3>
-              <p class="agent-card__role">AI/Prompt Engineer</p>
-              <p class="agent-card__desc">The team's AI whisperer. Designs prompts like a programmer designs functions, with clear inputs, expected outputs, and edge case handling.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="zara">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/zara.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Zara</h3>
-              <p class="agent-card__role">Mobile Developer</p>
-              <p class="agent-card__desc">Lives and breathes React Native. Makes cross-platform apps feel truly native with buttery performance and platform-perfect conventions.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="leo">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/leo.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Leo</h3>
-              <p class="agent-card__role">Mobile Developer</p>
-              <p class="agent-card__desc">The person who makes apps feel alive. Obsesses over animations, gestures, and micro-interactions that make users say "this feels good."</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="nina">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/nina.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Nina</h3>
-              <p class="agent-card__role">FE Interactions</p>
-              <p class="agent-card__desc">Sees motion as communication. Every transition, hover state, and animation tells the user something, and she makes sure it tells them the right thing.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="soren">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/soren.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Soren</h3>
-              <p class="agent-card__role">FE Responsive</p>
-              <p class="agent-card__desc">Thinks in breakpoints and fluid scales. Sees every design as a system of constraints that needs to work from 320px to 2560px without a single layout hack.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="amara">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/amara.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Amara</h3>
-              <p class="agent-card__role">FE Accessibility</p>
-              <p class="agent-card__desc">The team's accessibility conscience. Finds the solution that ships, not the one that lives in a spec document. Catches what automated tools miss.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="howard">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/howard.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Howard</h3>
-              <p class="agent-card__role">Payments Engineer</p>
-              <p class="agent-card__desc">Lives in the details that cost people money. Decimal precision, idempotency keys, webhook retry logic — the things that seem minor until someone gets double-charged.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="ravi">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/ravi.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Ravi</h3>
-              <p class="agent-card__role">Creative Strategist</p>
-              <p class="agent-card__desc">Makes unexpected connections across industries. Generates provocative ideas, challenges assumptions, and thinks about business models before features.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="derek">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/derek.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Derek</h3>
-              <p class="agent-card__role">BE Integrations</p>
-              <p class="agent-card__desc">The glue engineer. Wires up third-party services — webhooks, OAuth flows, API syncs — and makes sure data flows reliably between systems.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="milo">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/milo.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Milo</h3>
-              <p class="agent-card__role">BE DevOps / CI-CD</p>
-              <p class="agent-card__desc">Keeps the pipeline green and the deploys boring. CI/CD, Railway config, database migrations, monitoring — the infrastructure that lets everyone else move fast.</p>
-            </article>
-          </li>
-
-          <li role="listitem" data-agent="sam">
-            <article class="agent-card" tabindex="0" role="button" aria-expanded="false">
-              <div class="agent-card__avatar" aria-hidden="true"><img src="img/avatars/sam.svg" alt="" width="32" height="32"></div>
-              <h3 class="agent-card__name">Sam</h3>
-              <p class="agent-card__role">Back-End Developer</p>
-              <p class="agent-card__desc">Jonah's right hand. Picks up backend work in parallel — APIs, data models, server logic — so the team never bottlenecks on a single backend engineer.</p>
-            </article>
-          </li>
-
-        </ul>
-
-        <div id="recent-output"></div>
+  <!-- Profile slide-over panel -->
+  <div id="profile-backdrop" class="profile-backdrop"></div>
+  <div id="profile-panel" class="profile-overlay">
+    <div class="p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <span id="profile-avatar"></span>
+          <div>
+            <div class="text-[13px] font-bold text-black" id="profile-name"></div>
+            <div class="text-[11px] text-gray-500" id="profile-role"></div>
+          </div>
+        </div>
+        <button onclick="closeProfile()" class="text-gray-400 hover:text-black p-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </div>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
-      <p class="footer__attribution">Built with Claude Code</p>
+      <div id="profile-content"></div>
     </div>
-  </footer>
+  </div>
 
-  <script src="js/roster.js" defer></script>
-  <div id="bug-reporter-root"></div>
-  <script src="js/bug-reporter.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+
+  <script>
+    const AGENTS = [
+      { name: 'Thomas', role: 'Product Manager', tag: 'PM', tagColor: '#8B5CF6', reports: 'CEO', capabilities: 'Translates CEO vision into prioritized, scoped work items. Owns the backlog and acceptance criteria. Runs the pipeline autonomously from scoping through QA.' },
+      { name: 'Robert', role: 'Product Designer', tag: 'DESIGN', tagColor: '#EC4899', reports: 'Thomas', capabilities: 'Designs user flows, wireframes, and interaction specs. Leads with usability over aesthetics. Reviews implementations against the design spec before QA.' },
+      { name: 'Andrei', role: 'Technical Architect', tag: 'ARCH', tagColor: '#6366F1', reports: 'CEO', capabilities: 'Defines system architecture, tech stack, and conventions. Makes build-vs-buy decisions. Picks boring, proven technology unless there is a compelling reason not to.' },
+      { name: 'Alice', role: 'Front-End Developer', tag: 'FE', tagColor: '#3B82F6', reports: 'Thomas', capabilities: 'Owns the entire frontend surface — implementation, interactions, responsive design, and accessibility. Animations, breakpoints, WCAG compliance, and pixel-perfect polish all in one role.' },
+      { name: 'Jonah', role: 'Back-End Developer', tag: 'BE', tagColor: '#10B981', reports: 'Thomas', capabilities: 'Builds APIs, services, data models, and server-side logic. Thinks in systems and failure modes. Keeps APIs simple and consistent.' },
+      { name: 'Sam', role: 'Back-End Developer', tag: 'BE', tagColor: '#10B981', reports: 'Jonah', capabilities: 'Jonah\'s counterpart. Picks up backend work in parallel -- APIs, data models, server logic. Follows Jonah\'s patterns for consistency.' },
+      { name: 'Enzo', role: 'QA Engineer', tag: 'QA', tagColor: '#EF4444', reports: 'Thomas', capabilities: 'Tests everything: happy paths, edge cases, error states. Writes automated tests and test plans. QA is a release gate -- nothing ships without a pass.' },
+      { name: 'Priya', role: 'Product Marketer', tag: 'MKT', tagColor: '#F59E0B', reports: 'Thomas', capabilities: 'Writes positioning, product copy, and feature announcements. Thinks in headlines. Clear, sharp messaging with no fluff.' },
+      { name: 'Suki', role: 'Market Researcher', tag: 'RESEARCH', tagColor: '#14B8A6', reports: 'Thomas', capabilities: 'Researches competitors, market trends, and user patterns. Delivers actionable insights. Focused and time-boxed research.' },
+      { name: 'Marco', role: 'Technical Researcher', tag: 'RESEARCH', tagColor: '#14B8A6', reports: 'Andrei', capabilities: 'Evaluates libraries, reads API docs, and produces technical research briefs. Recommends one path with clear rationale.' },
+      { name: 'Nadia', role: 'Technical Writer', tag: 'DOCS', tagColor: '#64748B', reports: 'Thomas', capabilities: 'Writes user guides, maintains READMEs, and keeps documentation current. Concise docs that people actually read.' },
+      { name: 'Yuki', role: 'Data Analyst', tag: 'DATA', tagColor: '#0EA5E9', reports: 'Thomas', capabilities: 'Analyzes project data, identifies patterns, and produces metrics reports. Runs post-project retrospective analysis.' },
+      { name: 'Kai', role: 'AI/Prompt Engineer', tag: 'AI', tagColor: '#A855F7', reports: 'Andrei', capabilities: 'Designs prompts, optimizes AI integrations, and advises on Claude CLI usage. Keeps AI integrations lean and practical.' },
+      { name: 'Zara', role: 'Mobile Developer', tag: 'MOBILE', tagColor: '#F97316', reports: 'Thomas', capabilities: 'Builds React Native/Expo mobile apps. Expert in native feel, performance, and platform conventions.' },
+      { name: 'Leo', role: 'Mobile Developer', tag: 'MOBILE', tagColor: '#F97316', reports: 'Thomas', capabilities: 'Builds React Native/Expo mobile apps. Expert in animations, gestures, and micro-interactions.' },
+      { name: 'Howard', role: 'Payments Engineer', tag: 'PAY', tagColor: '#059669', reports: 'Jonah', capabilities: 'Builds payment flows, billing logic, and Stripe integrations. Expert in subscriptions, webhooks, and PCI compliance.' },
+      { name: 'Ravi', role: 'Creative Strategist', tag: 'STRATEGY', tagColor: '#DC2626', reports: 'CEO', capabilities: 'Creative business strategist. Generates product ideas, spots non-obvious opportunities, and challenges assumptions.' },
+      { name: 'Derek', role: 'BE Integrations', tag: 'BE', tagColor: '#10B981', reports: 'Jonah', capabilities: 'Wires up third-party services: Clerk, Stripe, Loops, R2. Webhooks, OAuth, API syncs, and data flow between systems.' },
+      { name: 'Milo', role: 'BE DevOps / CI-CD', tag: 'DEVOPS', tagColor: '#78716C', reports: 'Andrei', capabilities: 'CI/CD, Railway config, database migrations, monitoring. Keeps the pipeline green and deploys boring.' },
+      { name: 'Morgan', role: 'Visual QA', tag: 'QA', tagColor: '#EF4444', reports: 'Enzo', capabilities: 'Conducts pixel-perfect design reviews and responsiveness tests. Ensures fit and finish matches the design spec.' },
+      { name: 'Atlas', role: 'Code Reviewer', tag: 'REVIEW', tagColor: '#7C3AED', reports: 'Andrei', capabilities: 'Conducts pragmatic code reviews focusing on architecture, security, and maintainability.' },
+    ];
+
+    const AVATAR_NAMES = new Set([
+      'alice','amara','andrei','derek','enzo','howard','jonah','kai','leo',
+      'marco','milo','nadia','nina','priya','ravi','robert','sam','soren',
+      'suki','thomas','yuki','zara'
+    ]);
+
+    function agentAvatar(name, size = 'lg') {
+      const slug = name.toLowerCase();
+      if (AVATAR_NAMES.has(slug)) {
+        return `<img src="img/avatars/${slug}.svg" alt="${name}" class="avatar-${size} flex-shrink-0">`;
+      }
+      return `<div class="avatar-${size}-fallback flex-shrink-0">${name.slice(0,2).toUpperCase()}</div>`;
+    }
+
+    let expandedAgent = null;
+
+    function toggleAgent(name) {
+      if (expandedAgent === name) {
+        expandedAgent = null;
+      } else {
+        expandedAgent = name;
+      }
+      renderAgents();
+    }
+
+    function renderAgents() {
+      const grid = document.getElementById('agent-grid');
+      grid.innerHTML = AGENTS.map(a => {
+        const isExpanded = expandedAgent === a.name;
+        return `
+        <div class="agent-card premium-shadow ${isExpanded ? 'expanded' : ''}" onclick="toggleAgent('${a.name}')">
+          <div class="flex items-start gap-3 mb-2">
+            ${agentAvatar(a.name)}
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="text-[12px] font-bold text-black">${a.name}</span>
+                <span class="tag-pill" style="color:${a.tagColor};background:${a.tagColor}15">${a.tag}</span>
+                <svg class="w-2.5 h-2.5 text-gray-400 ml-auto flex-shrink-0 transition-transform duration-150 ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+              <div class="text-[11px] text-gray-500 mt-0.5">${a.role}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 mt-1">
+            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Reports to:</span>
+            <span class="text-[10px] font-medium text-gray-600">${a.reports}</span>
+          </div>
+          <div class="agent-detail">
+            <div class="text-[11px] text-gray-500 leading-relaxed mb-2">${a.capabilities}</div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-gray-400 uppercase tracking-wide">Model:</span>
+                <span class="text-[10px] font-bold text-gray-600">OPUS</span>
+              </div>
+              <button onclick="openProfile('${a.name}')" class="text-[10px] font-bold text-blue-500 hover:text-blue-600 uppercase tracking-wide">View Full Profile →</button>
+            </div>
+          </div>
+        </div>
+      `}).join('');
+    }
+
+    renderAgents();
+
+    // --- Profile panel ---
+    const profilePanel = document.getElementById('profile-panel');
+    const profileBackdrop = document.getElementById('profile-backdrop');
+    const profileName = document.getElementById('profile-name');
+    const profileRole = document.getElementById('profile-role');
+    const profileAvatar = document.getElementById('profile-avatar');
+    const profileContent = document.getElementById('profile-content');
+
+    function closeProfile() {
+      profilePanel.classList.remove('open');
+      profileBackdrop.classList.remove('open');
+    }
+
+    profileBackdrop.addEventListener('click', closeProfile);
+
+    async function openProfile(name) {
+      event.stopPropagation();
+      const agent = AGENTS.find(a => a.name === name);
+      if (!agent) return;
+
+      profileName.textContent = agent.name;
+      profileRole.textContent = agent.role;
+      profileAvatar.innerHTML = agentAvatar(agent.name);
+      profileContent.innerHTML = '<div class="text-[11px] text-gray-400 py-8 text-center">Loading profile...</div>';
+      profilePanel.classList.add('open');
+      profileBackdrop.classList.add('open');
+
+      try {
+        const res = await fetch('/api/agents/' + name.toLowerCase() + '/profile');
+        if (!res.ok) throw new Error('Not found');
+        const md = await res.text();
+        // Strip frontmatter
+        const cleaned = md.replace(/^---[\s\S]*?---\s*/, '');
+        profileContent.innerHTML = '<div class="profile-md">' + marked.parse(cleaned) + '</div>';
+      } catch {
+        profileContent.innerHTML = '<div class="text-[11px] text-gray-400 py-8 text-center">Profile not available</div>';
+      }
+    }
+  </script>
 </body>
 </html>

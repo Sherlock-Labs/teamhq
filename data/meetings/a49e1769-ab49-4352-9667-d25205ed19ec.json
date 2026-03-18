@@ -1,0 +1,28 @@
+{
+  "id": "a49e1769-ab49-4352-9667-d25205ed19ec",
+  "type": "custom",
+  "status": "failed",
+  "meetingNumber": 22,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T12:35:40.779Z",
+  "completedAt": "2026-03-18T12:36:02.232Z",
+  "durationMs": null,
+  "error": "Meeting was interrupted: server restart.",
+  "summary": null,
+  "keyTakeaways": [],
+  "transcript": [],
+  "decisions": [],
+  "actionItems": [],
+  "mood": null,
+  "nextMeetingTopics": [],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Quick standup. Agenda: (1) Active project status — Review Gates has 1 remaining planned item (RG-15: Zod validation fix), RT-37 Visual Themes is stale for 24h+, Bug Reporter has 2 planned items. (2) We have 15 unfiled bugs in the Bugs project — should we triage? (3) Forge v2 has 12 planned features after themes ships — what should be next? (4) Any product improvement ideas for shipped products? Each person: 1-2 sentences max. Produce concrete decisions and action items.",
+  "interviewConfig": null
+}

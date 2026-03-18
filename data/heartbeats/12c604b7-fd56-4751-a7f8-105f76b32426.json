@@ -1,0 +1,25 @@
+{
+  "id": "12c604b7-fd56-4751-a7f8-105f76b32426",
+  "startedAt": "2026-03-18T12:30:00.406Z",
+  "completedAt": "2026-03-18T12:33:50.445Z",
+  "status": "failed",
+  "trigger": "cron",
+  "stateSnapshot": {
+    "activeProjects": 4,
+    "totalTasks": 105,
+    "inProgressTasks": 1,
+    "blockedTasks": 1,
+    "staleTasks": 1,
+    "recentEvents": 50,
+    "agentsActive": 1
+  },
+  "assessment": null,
+  "decisions": [],
+  "actionsLog": [
+    "State gathered, spawning Thomas as full agent session",
+    "Claude failed: Thomas exited with code 1: ",
+    "Falling back to Gemini 2.5 Pro..."
+  ],
+  "error": "Both Claude and Gemini failed. Claude: Thomas exited with code 1: . Gemini: Gemini API 400: {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"status\": \"INVALID_ARGUMENT\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc",
+  "durationMs": 230057
+}

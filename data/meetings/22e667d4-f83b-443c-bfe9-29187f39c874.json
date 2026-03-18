@@ -1,0 +1,255 @@
+{
+  "id": "22e667d4-f83b-443c-bfe9-29187f39c874",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 26,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T13:12:45.655Z",
+  "completedAt": "2026-03-18T13:16:16.649Z",
+  "durationMs": 210993,
+  "error": null,
+  "summary": "Custom meeting where Thomas, Robert, Suki, Ravi, Andrei, and Marco brainstormed twelve concrete improvements to make TeamHQ more autonomous, more robust, and more user-friendly. The team debated prioritization, feasibility, and scope — ultimately converging on a prioritized list spanning self-healing pipelines, smarter notifications, natural language project kickoff, and several UX improvements to the autonomy dashboard.",
+  "keyTakeaways": [
+    "The team identified 12 improvement areas across three axes: autonomy (self-healing pipelines, agent-to-agent handoff, proactive work detection), robustness (graceful degradation, conflict detection, session persistence), and user-friendliness (autonomy dashboard polish, smart notifications, natural language kickoff).",
+    "Ravi pushed hard for a 'zero-touch pipeline' vision where the CEO only intervenes on strategic decisions — not operational ones. Thomas tempered this with the reality that trust needs to be earned incrementally.",
+    "Andrei flagged that several improvements (especially conflict detection and session persistence) require architectural changes to the heartbeat system that shouldn't be rushed — he wants a dedicated architecture phase for the autonomy layer.",
+    "The team agreed that the autonomy dashboard is the highest-leverage UX improvement — the CEO needs better visibility into what the system is doing autonomously before they'll trust it to do more.",
+    "Marco identified Temporal.io and similar workflow engines as potential patterns for making the pipeline more robust, but Andrei pushed back on adding infrastructure complexity — preferring to build lightweight equivalents in the existing Express/JSON stack."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's get into it. The CEO wants a dozen ways we can make TeamHQ better — more autonomous, more robust, more user-friendly. I want to timebox this to 45 minutes. Let's start by dumping ideas on the table, then we'll filter and prioritize. No idea is too wild at this stage — Ravi, I'm looking at you — but we need to land on concrete, buildable improvements. Who wants to go first?"
+    },
+    {
+      "speaker": "Ravi",
+      "role": "Creative Strategist",
+      "text": "I'll bite. The biggest thing holding back autonomy right now is that the CEO is still the switchboard operator. Thomas runs inside heartbeats, sure, but every meaningful pipeline still starts with a human typing a prompt. What if we flipped it? The system watches the event log, notices patterns — three bug reports in the same area, a stale task that's been stuck for two days, a shipped project with no retrospective — and proactively proposes work. Not 'here's a notification,' but 'I've already scoped this, here's the review, approve or reject.' The CEO becomes an editor, not a writer."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I like the direction, but let's be careful. The CEO needs to trust the system before we hand it that much agency. Right now we're at 'Thomas runs meetings and spawns agents inside heartbeats.' The next step is probably 'Thomas identifies work without being told' — which we partially do already. The step after that is 'Thomas starts work without approval.' That's a bigger leap. I'd frame it as a progression: detect → propose → execute. We're somewhere between detect and propose."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Agreed. And there's a technical dimension here. The heartbeat runner currently spawns Thomas with a 30-minute timeout. If Thomas decides to run a full pipeline — arch, design, frontend, QA — that doesn't fit in one heartbeat. The system needs to support multi-heartbeat workflows where Thomas picks up where he left off. Right now each heartbeat is stateless. That's improvement number one for me: persistent workflow state across heartbeats."
+    },
+    {
+      "speaker": "Marco",
+      "role": "Technical Researcher",
+      "text": "I've been reading about workflow orchestration engines — Temporal, Inngest, that space. They solve exactly this: durable execution across time boundaries, automatic retries, state persistence. We could adopt the pattern without the dependency. A lightweight state machine stored in JSON that tracks where a pipeline is and what's next."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'd rather build a thin version ourselves than bring in Temporal. That's a massive dependency for what is essentially a JSON file that says 'pipeline X is at step 4, waiting for Alice.' We already have the pipeline log and work items — we just need a workflow cursor that persists between heartbeats."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Can I jump in on the user-friendly axis? The autonomy dashboard exists but it's still pretty raw. The CEO is watching heartbeat logs scroll by and reading Thomas's raw assessment text. That's like watching server logs instead of using a monitoring dashboard. We need a proper autonomy overview: what's the system doing right now, what did it decide, what's waiting for my input, what shipped since I last looked. Think of it as a morning briefing view — open TeamHQ, get a 30-second understanding of everything that happened overnight."
+    },
+    {
+      "speaker": "Suki",
+      "role": "Product Researcher",
+      "text": "That maps to what I've seen in the autonomous agent space. The products that get adopted — Devin, Cursor's background agents, even GitHub Copilot Workspace — they all invest heavily in the 'show your work' layer. Users don't trust autonomous systems they can't inspect. The ones that fail are the ones that say 'trust me, I did stuff.' Robert's morning briefing idea is exactly the right pattern. I'd add: make the decisions clickable. Click a decision, see the meeting transcript that produced it, see the code diff that resulted from it. Full traceability."
+    },
+    {
+      "speaker": "Ravi",
+      "role": "Creative Strategist",
+      "text": "Okay, that's two: proactive work detection and a proper autonomy dashboard. Let me throw a weirder one. What if the CEO could talk to TeamHQ? Not type a prompt — speak. 'Hey TeamHQ, what happened overnight?' and get an audio summary. We already built the interview system with Gemini. We have the audio infrastructure. Make the dashboard conversational."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a cool idea but it's a feature, not an improvement to the core. Let's keep that on a separate list. I want to focus on things that make the existing system work better, not new interaction modalities. What about robustness? Andrei, what breaks today?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Three things. First, when an agent session fails mid-pipeline — Claude times out, the CLI crashes, whatever — there's no automatic recovery. The heartbeat logs it as failed and moves on. We need retry logic with backoff, and if retry fails, the system should create a review for the CEO explaining what broke and why. Second, there's no conflict detection. If two heartbeats overlap or two agents touch the same file, we get race conditions. The event tracker logs everything, but nothing prevents collisions. Third, the meeting runner has a single fallback — Opus to Sonnet — but if both fail, the meeting just errors out. We should have graceful degradation all the way down."
+    },
+    {
+      "speaker": "Marco",
+      "role": "Technical Researcher",
+      "text": "On the conflict detection point — git itself handles file-level conflicts, but the real issue is semantic conflicts. Two agents both adding routes to index.ts, for example. They won't get a merge conflict because they're adding to different lines, but they might both add a route with the same path. That's harder to detect. A lightweight approach: before an agent starts work, it registers a 'lock' on the files it plans to touch. Other agents check the lock before starting. Not bulletproof, but it catches the obvious collisions."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "From a UX perspective, I'd add two more. First, the CEO inbox is a text box. You type a directive and hope Thomas reads it next heartbeat. There's no confirmation, no status, no 'your directive was received and will be acted on in the next cycle.' That's anxiety-inducing. We need a proper directive queue with status indicators — queued, picked up, acting on it, completed. Second, the reviews system is functional but the UI doesn't make it easy to approve or reject quickly. The CEO should be able to review and approve from a single screen without clicking into each one separately. Batch approve, basically."
+    },
+    {
+      "speaker": "Suki",
+      "role": "Product Researcher",
+      "text": "I want to flag something from the research side. We've shipped five-plus products now, and every time a new project starts, the agents re-discover context that exists in previous projects. 'How did we handle auth last time?' 'What PDF library did we use?' We have the MCP memory system, but adoption is inconsistent. Improvement idea: make memory writes automatic. When a pipeline completes, the system extracts patterns and decisions and writes them to team memory without anyone having to remember to do it. The retrospective phase should feed memory directly."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a good one. Yuki runs retrospectives but the insights live in a markdown file that nobody reads again. If those insights automatically became searchable memory entities, every future project benefits. Let me count where we are. We've got: one, proactive work detection. Two, autonomy dashboard overhaul. Three, persistent workflow state across heartbeats. Four, auto-retry with graceful degradation. Five, conflict detection and file locking. Six, directive queue with status tracking. Seven, batch review approval. Eight, automatic memory writes from retrospectives. We need four more."
+    },
+    {
+      "speaker": "Ravi",
+      "role": "Creative Strategist",
+      "text": "Here's one: pipeline templates. Right now Thomas mentally reconstructs the pipeline order every time — 'this project needs research, this one doesn't, this one needs payments, this one doesn't.' What if we had named templates? 'Full pipeline,' 'lightweight iteration,' 'frontend-only,' 'research spike.' Thomas picks a template, the system pre-populates the work items and agent sequence. Saves ten minutes of scoping boilerplate every time."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I like that. It also makes the system more predictable — the CEO can see 'Thomas chose the full-pipeline template' and immediately know what's coming. I'd add one more on the robustness side: health checks. Right now we have no way to know if the system is healthy without looking at it. Is the heartbeat cron running? Is the Claude CLI accessible? Is the MCP memory server responding? A simple health endpoint that checks all dependencies and surfaces issues before they cause a failed heartbeat."
+    },
+    {
+      "speaker": "Marco",
+      "role": "Technical Researcher",
+      "text": "Building on Andrei's health checks — what about alerting? If a heartbeat fails twice in a row, or if the system has been unable to reach Claude for 15 minutes, send a notification. Could be email, could be Slack, could be a push notification to the mobile app. The CEO shouldn't have to check the dashboard to discover the system is down."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That connects to a broader notification strategy. Right now the CEO gets Slack messages from individual agents, but there's no unified notification layer. Some things are urgent — 'pipeline blocked, need your input' — and some are informational — 'retrospective complete.' These should be treated differently. A smart notification system that batches informational updates into a digest but surfaces urgent items immediately."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So that's nine: pipeline templates. Ten: system health checks. Eleven: failure alerting. Twelve: smart notification tiers. Actually, Robert's smart notifications and Marco's failure alerting are related — let's keep them separate because they have different implementation paths, but they're part of the same 'keep the CEO informed without overwhelming them' theme."
+    },
+    {
+      "speaker": "Ravi",
+      "role": "Creative Strategist",
+      "text": "I want to sneak in a thirteenth because I think it's the most impactful one we haven't said yet. Natural language project kickoff. Instead of the CEO opening Claude Code, reading CLAUDE.md, remembering the pipeline, and typing 'spawn Thomas with this brief' — they open TeamHQ in a browser, type 'build me a tool that converts CSV to JSON,' and the system handles everything. Parse the intent, create the project, spawn Thomas, run the pipeline. The CEO's interface should be a chat box, not a terminal."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's basically the CEO inbox with superpowers. Right now the inbox is a dumb text field that Thomas reads. If we made it smart — parse the directive, auto-create a project, auto-spawn the right pipeline template — that's a massive UX leap. I'd scope that as a v2 of the directive system, not a separate feature."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Technically it's feasible. The heartbeat already gathers state and spawns Thomas. We'd add a layer that pre-processes directives before Thomas sees them — creates the project record, picks a pipeline template, maybe even does a quick feasibility check. Thomas still makes the final call on scope, but the boilerplate is handled."
+    },
+    {
+      "speaker": "Suki",
+      "role": "Product Researcher",
+      "text": "From a competitive standpoint, that's where the market is heading. Every AI coding tool is racing toward 'describe what you want, we build it.' Our version is unique because we have a full team with specialized roles — it's not one agent doing everything, it's a coordinated pipeline. That's the differentiator worth leaning into."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's lock the list and prioritize. We have twelve-plus ideas. I'm going to group them by impact and effort. High impact, lower effort — and therefore first in line — are: the autonomy dashboard overhaul, directive queue with status, and smart notifications. These are mostly frontend work with existing backend data. Medium effort, high impact: persistent workflow state, auto-retry with degradation, and automatic memory writes. These need architectural thinking from Andrei. Higher effort, highest long-term impact: natural language kickoff, proactive work detection, pipeline templates. Those are the ones that fundamentally change how the CEO interacts with the system. Thoughts?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'd move health checks into the 'do first' bucket. It's low effort — one endpoint that pings each dependency — and it's foundational. Everything else we build on top of autonomy is harder to debug without it."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Agreed on health checks. And I'd argue the autonomy dashboard isn't just a nice-to-have — it's a prerequisite for everything else. The CEO won't trust more autonomy if they can't see what the system is doing. Dashboard first, then give the system more agency."
+    },
+    {
+      "speaker": "Ravi",
+      "role": "Creative Strategist",
+      "text": "I don't disagree with the sequencing, but I want to make sure we don't lose the forest for the trees. The vision here is a system where the CEO wakes up, checks their phone, sees 'TeamHQ shipped two bug fixes overnight, started a new project based on your Tuesday directive, and has three decisions waiting for your approval.' That's the north star. Every improvement should be measured against: does this get us closer to that morning?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good framing, Ravi. That's the pitch. Let's wrap with assignments. I'll write up the full list as a prioritized improvement roadmap — not a requirements doc for each, just the ranked list with one-paragraph descriptions. Andrei, I need you to think about the architectural implications of persistent workflow state — what changes in the heartbeat runner, what's the migration path. Robert, sketch the autonomy dashboard concept — what does the morning briefing view look like? Suki, do a quick scan of how other autonomous agent products handle their 'show your work' layer — three to five examples, not a deep dive. Marco, evaluate lightweight workflow state patterns we could adopt without bringing in Temporal — I want options by next meeting. Ravi, write up the north star vision as a one-pager so we have something to align against."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Prioritize autonomy dashboard overhaul as the first improvement — it's a prerequisite for the CEO trusting more autonomous behavior from the system.",
+      "rationale": "The CEO can't grant more autonomy to a system they can't inspect. A proper 'morning briefing' view that shows what happened, what's pending, and what needs approval is foundational. Robert and Suki both argued this is the pattern that separates successful autonomous agent products from failed ones.",
+      "participants": [
+        "Thomas",
+        "Robert",
+        "Suki",
+        "Ravi"
+      ]
+    },
+    {
+      "description": "Adopt an incremental autonomy progression: detect → propose → execute. Don't skip to full autonomous execution without building trust through the intermediate steps.",
+      "rationale": "Ravi pushed for a 'zero-touch pipeline' vision, but Thomas argued trust must be earned. The team agreed on a staged approach: first improve visibility (dashboard), then improve proposals (smart directives), then allow autonomous execution for low-risk work. Each stage builds CEO confidence.",
+      "participants": [
+        "Thomas",
+        "Ravi",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Build lightweight workflow state persistence rather than adopting an external orchestration engine like Temporal.",
+      "rationale": "Marco identified Temporal as a pattern match, but Andrei argued the dependency is too heavy for what's essentially a JSON cursor tracking pipeline progress. The team will build a thin state machine that persists between heartbeats using the existing JSON file store.",
+      "participants": [
+        "Andrei",
+        "Marco",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "System health checks go into the 'build first' bucket alongside the dashboard — they're low effort and foundational for debugging all future autonomy work.",
+      "rationale": "Andrei pointed out that without a health endpoint that checks Claude CLI availability, MCP server status, and cron health, debugging failed heartbeats requires manual log inspection. A single /api/health endpoint is a few hours of work with outsized debugging value.",
+      "participants": [
+        "Andrei",
+        "Thomas"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Thomas",
+      "description": "Write a prioritized improvement roadmap document (docs/teamhq-autonomy-improvements.md) with all 12 improvements ranked by impact and effort, each with a one-paragraph description and suggested pipeline track.",
+      "priority": "high"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Draft an architectural sketch for persistent workflow state across heartbeats — what changes in heartbeatRunner.ts, how the state cursor is stored, and what the migration path looks like from the current stateless model.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Sketch the autonomy dashboard 'morning briefing' concept — layout, information hierarchy, what the CEO sees on first load, how decisions and reviews are surfaced for quick action.",
+      "priority": "high"
+    },
+    {
+      "owner": "Suki",
+      "description": "Quick competitive scan (3-5 examples) of how autonomous agent products handle their 'show your work' transparency layer — what patterns work, what feels trustworthy vs. opaque.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Marco",
+      "description": "Evaluate lightweight workflow state patterns (JSON state machines, saga pattern, simple FSM libraries) that could replace the current stateless heartbeat model without adding infrastructure dependencies.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Ravi",
+      "description": "Write a one-page north star vision document for TeamHQ autonomy — the 'CEO wakes up and checks their phone' scenario as a concrete, vivid narrative that the team can align improvements against.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Energized and ambitious",
+  "nextMeetingTopics": [
+    "Andrei's architectural sketch for persistent workflow state — is the approach sound?",
+    "Robert's autonomy dashboard concept — does the morning briefing view cover the CEO's needs?",
+    "Suki's competitive scan findings — what transparency patterns should we adopt?",
+    "Marco's workflow state pattern evaluation — which approach fits our stack?",
+    "Prioritization call: should we start with dashboard + health checks, or tackle workflow persistence first?",
+    "Ravi's north star vision — does the team agree on the destination?"
+  ],
+  "participants": [
+    "product-manager",
+    "product-designer",
+    "product-researcher",
+    "creative-strategist",
+    "technical-architect",
+    "technical-researcher"
+  ],
+  "instructions": "Come up with a dozen ways this product (teamhq) could be improved to be more autonomous, more robust, more user friendly.",
+  "interviewConfig": null
+}

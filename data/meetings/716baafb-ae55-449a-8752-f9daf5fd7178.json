@@ -1,0 +1,301 @@
+{
+  "id": "716baafb-ae55-449a-8752-f9daf5fd7178",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 33,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T14:36:45.810Z",
+  "completedAt": "2026-03-18T14:38:36.764Z",
+  "durationMs": 110954,
+  "error": null,
+  "summary": "Standup #35 covered SherlockPDF drag-drop status (built but not yet QA'd due to Enzo's regression queue), the stalled Forge review gates (team agreed on a 24-hour CEO escalation deadline before pivoting to shipped-product polish full-time), and quick improvement pitches for QuoteVoice, VoiceNote Pro, SiteSnap, and OST Tool. Enzo reported board and timeline regression suites complete, list view 60% done. The team decided to have Enzo QA SherlockPDF drag-drop immediately as the highest-priority item, then resume list view regression.",
+  "keyTakeaways": [
+    "SherlockPDF drag-drop backend and frontend are built but unshipped — blocked on Enzo QA, which will happen today as priority #1.",
+    "7 Forge review gates remain pending with no CEO action. Team agreed on a formal 24-hour escalation: if gates aren't cleared by tomorrow's standup, the team pivots entirely to shipped-product improvements.",
+    "Each team member pitched one fast-shippable improvement for a non-SherlockPDF product: QuoteVoice estimate PDF export (Jonah), VoiceNote Pro retry on failed transcriptions (Andrei), SiteSnap bulk photo delete (Alice), OST Tool print stylesheet (Robert), QuoteVoice line-item reordering (Enzo), VoiceNote Pro empty-state onboarding (Thomas).",
+    "Enzo's Forge regression suite covers board and timeline views fully; list view is 60% complete. He'll pause list view to QA SherlockPDF first.",
+    "No hard blockers besides the review gates, but the team is increasingly frustrated with idle capacity on Forge work."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup thirty-five. Five items, let's keep it tight. First up: SherlockPDF drag-and-drop. We scoped this last meeting as a fast-track item — Jonah on the backend, Alice on the frontend. What's the status?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Backend is done. Updated the upload endpoint to accept multipart form data, added file size validation with proper error responses — 413 for oversized files, 415 for wrong MIME types. Tested with curl against all the edge cases. Took about forty minutes. It's sitting in the SherlockPDF repo ready to go."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Frontend is done too. Drop zone with the dashed border, drag-over highlight state, progress indicator, error messages for bad files. I matched Robert's existing SherlockPDF visual language — no new design patterns. Also handles the case where someone drags multiple files, since the endpoint is single-file. It queues them."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "So both sides are built. Has it shipped?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "No. It hasn't been through QA yet. Enzo was deep in Forge regression work and we didn't want to pull him off that."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "That's on me. I was heads-down on the timeline view regression suite and didn't want to context-switch mid-run. But honestly, SherlockPDF drag-drop is a twenty-minute spot check — I should have carved out time for it. My bad."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Okay. Enzo, can you QA it today? This was supposed to be a two-hour ship. It's been sitting built-but-unshipped for too long."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Yes. I'll do it first thing after this standup. File types, oversized files, drag-and-cancel, multiple files, error states, mobile. Twenty minutes, thirty tops."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Did I do the code review? That was an action item from last meeting."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "You did — you reviewed both the multer config and the frontend drop zone component yesterday. No issues flagged."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So the path is: Enzo QAs, we ship. Moving on. Item two — the elephant in the room. Seven Forge review gates are still pending. The CEO hasn't acted on them. This has been the case for multiple standups now. What's our contingency?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'll be direct. We have a significant amount of Forge work — visual themes, command palette, keyboard shortcuts — that literally cannot move forward until those gates clear. My CSS token hierarchy doc is written and validated against the worktree code. It's just sitting there."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Same. I finished documenting the board view keyboard navigation gaps. Robert updated the design spec. I'm ready to start command palette implementation the moment that gate clears. But I can't."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I updated the Forge design spec with Alice's accessibility findings, and I've been reviewing the visual themes spec for consistency. But there's no new design work for me on Forge until the gates move. I'm effectively idle on Forge."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I've been idle on Forge since the backend for visual themes was done. That's why I was available for SherlockPDF. But I can't keep picking up one-off tasks forever — I need to know if we're building command palette backend or not."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Here's what I propose. I escalated last meeting. I'll escalate again today — harder. But we need a concrete fallback. If the gates haven't cleared by tomorrow's standup, we pivot the whole team to shipped-product improvements. Full stop. We're not going to sit idle."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I agree with that. But I want to be clear — when those gates do clear, there's going to be a wall of QA work. Visual themes alone is a big surface. If we're deep in five different product improvements at that point, the context-switching is going to be ugly."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Enzo's right. I'd rather we pick one or two substantive improvements and do them well than scatter across five products. If we pivot, we should pick the highest-impact shipped product and give it a focused push."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair point. Let's table the pivot decision for tomorrow. For now, let's get the improvement ideas on the table — that's agenda item three. Each person: one concrete improvement for a shipped product that is NOT SherlockPDF. QuoteVoice, VoiceNote Pro, SiteSnap, or OST Tool. Something that could ship fast. Jonah, go."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "QuoteVoice. Right now the estimate is voice-to-text only — it lives on screen. Contractors want to hand something to the homeowner. Add a simple PDF export of the formatted estimate. I can generate it server-side with a lightweight library. Half a day, maybe less."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "VoiceNote Pro. The transcription sometimes fails silently when the audio is too long or the connection drops mid-upload. Add a retry mechanism with exponential backoff and a visible retry button in the UI. It's a reliability fix, not a feature — but it's the kind of thing that turns a one-star review into a three-star review."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "OST Tool. The recommendation page looks good on screen but prints terribly — the expandable sections collapse, the debater reasoning disappears. Add a print stylesheet that flattens everything into a readable document. Designers and PMs actually print these things for stakeholder meetings. Alice could implement it in an hour."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "SiteSnap. Bulk delete for photos. Right now if you upload the wrong batch, you delete them one by one. Add a select-multiple mode with a bulk delete button. It's a standard pattern — checkboxes, select-all, confirmation dialog. I could build the frontend in a couple hours. Jonah would need a batch delete endpoint."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "QuoteVoice again. The line items in an estimate can't be reordered after creation. Contractors change their minds about the order constantly — they want labor before materials, or they want to group by room. Drag-to-reorder on the estimate line items. Alice has built drag-and-drop before, and the backend is just an array index update."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good ideas. I'm going to rank these. Jonah's QuoteVoice PDF export is probably highest impact for lowest effort — contractors need a deliverable. Andrei's VoiceNote Pro retry is a quality-of-life fix that prevents churn. Robert's print stylesheet is clever and cheap. Alice's bulk delete and Enzo's reorder are both useful but slightly bigger scope. My own pitch: VoiceNote Pro empty-state onboarding. First-time users see a blank screen with no guidance. A simple 'tap to record your first note' prompt with a brief explanation of what happens next. Copy change plus one conditional render."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I like the PDF export idea, but I want to spec the layout before Jonah builds it. A badly formatted PDF is worse than no PDF. Give me thirty minutes to define the template — margins, typography, logo placement, line item table format."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "That's fair. I don't want to guess at the layout anyway. Robert specs it, I build it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Okay, item four. Enzo — regression suite progress."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Board view is fully covered — keyboard navigation, card creation, drag-and-drop, column management, all automated. Timeline view is fully covered as of yesterday — zoom levels, date range selection, dependency arrows, item positioning. List view is about sixty percent — sorting and filtering are done, inline editing and bulk actions are still in progress. I was targeting all three green by end of yesterday but the timeline view had more edge cases than expected."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "What edge cases?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Dependency arrows when items overlap on the same date, and zoom level transitions when you have items at the boundary of the visible range. The arrows would detach visually during zoom. I wrote regression tests for both. Not bugs in production — just making sure they don't become bugs when visual themes lands."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Smart. Those are exactly the kind of things that break when CSS changes cascade through the layout."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Last item — blockers. Besides the review gates, which we've covered. Anyone have anything else?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "No blockers beyond the gates. I'm ready to work on whatever ships next."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Same. No technical blockers. Just the strategic question of where to point my time."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Nothing from me."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright. Decisions: Enzo QAs SherlockPDF drag-drop right now, we ship it today. I escalate on the seven gates with a hard deadline — if they're not cleared by tomorrow's standup, we formally pivot to shipped-product polish. The improvement pitches are on the table for CEO prioritization. Enzo finishes list view regression after SherlockPDF QA. Let's move."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Enzo will QA SherlockPDF drag-and-drop immediately after standup as the top priority, unblocking the ship.",
+      "rationale": "The feature has been built for over a day with both backend and frontend complete and code-reviewed. A 20-30 minute QA spot check is all that's needed. Leaving a finished feature unshipped is waste.",
+      "participants": [
+        "Thomas",
+        "Enzo",
+        "Alice",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "24-hour hard deadline on Forge review gates: if none have cleared by tomorrow's standup, the team formally pivots to shipped-product improvements.",
+      "rationale": "Seven gates have been pending across multiple standups with no CEO action. The team has productive secondary work but core Forge development is completely stalled. A hard deadline forces a decision rather than indefinite waiting. Enzo flagged context-switch risk when gates eventually clear; Andrei recommended focusing on one or two products rather than scattering.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Enzo",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Shipped-product improvement pitches submitted for CEO prioritization — not self-selected by the team. Top candidates by effort/impact: QuoteVoice PDF export, VoiceNote Pro retry mechanism, OST print stylesheet.",
+      "rationale": "The team generated six concrete improvement ideas across four products. Thomas ranked QuoteVoice PDF export as highest impact-to-effort ratio. Robert insisted on speccing the PDF layout before Jonah builds (30 minutes). These are proposals for CEO to prioritize, consistent with the team's previous decision not to self-select projects.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Andrei",
+        "Robert",
+        "Alice",
+        "Enzo"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Enzo",
+      "description": "QA SherlockPDF drag-and-drop immediately after standup — test file types, oversized files, multiple files, drag-and-cancel, error states, mobile viewport. Pass/fail verdict within 30 minutes.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Escalate to CEO on 7 pending Forge review gates with a hard ask: clear at least some gates by tomorrow's standup, or the team formally pivots to shipped-product improvements. Include the list of 6 improvement pitches for CEO prioritization.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write one-paragraph scope docs for the top 3 shipped-product improvements (QuoteVoice PDF export, VoiceNote Pro retry mechanism, OST print stylesheet) so they're ready to execute if the pivot happens.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Enzo",
+      "description": "After SherlockPDF QA, resume list view regression suite — target inline editing and bulk actions coverage. Goal: all three Forge views green by end of day.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Spec the QuoteVoice estimate PDF layout — margins, typography, logo placement, line item table format. 30-minute deliverable so Jonah can build without guessing.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Stand by for QuoteVoice PDF export implementation pending Robert's layout spec and CEO approval. Prep by reviewing QuoteVoice estimate data model.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Alice",
+      "description": "Finalize board view keyboard navigation gap documentation and hand off to Robert. Ready to pivot to either command palette (if gates clear) or shipped-product frontend work (if pivot happens).",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Keep CSS token hierarchy doc current against visual themes worktree. If pivot happens tomorrow, scope the VoiceNote Pro retry mechanism architecture (exponential backoff strategy, failure detection points).",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Productive but impatient",
+  "nextMeetingTopics": [
+    "SherlockPDF drag-and-drop — shipped and QA passed? Any issues found?",
+    "Forge review gates — did any clear? If not, execute the pivot to shipped-product improvements.",
+    "If pivoting: CEO's prioritization of the 6 improvement pitches. Which products get focus?",
+    "Enzo's regression suite — all three Forge views fully covered?",
+    "Robert's QuoteVoice PDF layout spec — complete and ready for Jonah?",
+    "Andrei's VoiceNote Pro retry architecture — scoped if pivot is happening?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Quick standup #35. Agenda: (1) Status check — SherlockPDF drag-drop was scoped last meeting. Did anything ship? (2) Forge review gates — still 7 pending. CEO has not acted yet. What is our contingency? (3) Quick improvement ideas for shipped products OTHER than SherlockPDF (QuoteVoice, VoiceNote Pro, SiteSnap, OST Tool). Each person: one concrete improvement that could ship fast. (4) Enzo: regression suite progress? (5) Any blockers? Produce concrete action items.",
+  "interviewConfig": null
+}

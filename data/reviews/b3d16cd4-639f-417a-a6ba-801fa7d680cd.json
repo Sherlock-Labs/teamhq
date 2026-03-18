@@ -1,0 +1,21 @@
+{
+  "id": "b3d16cd4-639f-417a-a6ba-801fa7d680cd",
+  "projectId": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+  "projectSlug": "north-star-vision",
+  "projectName": "North Star Vision",
+  "gate": "afterResearch",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:32:42.379Z",
+  "updatedAt": "2026-03-18T13:36:38.156Z",
+  "resolvedAt": "2026-03-18T13:36:38.156Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-autonomy-north-star.md",
+      "title": "North Star Vision Doc"
+    }
+  ],
+  "agent": "Ravi",
+  "summary": "Ravi wrote the north star vision — a vivid narrative of the CEO waking up to a shipped product, checking a 4-minute morning briefing, and redirecting with a sentence. Concrete, compelling, aligned against.",
+  "feedback": null
+}

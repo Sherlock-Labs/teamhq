@@ -50,14 +50,33 @@ function computePipelineStats(pipeline: Pipeline): {
 router.get("/projects", async (_req, res) => {
   try {
     const projects = await listProjects();
-    const summaries = projects.map(({ notes, kickoffPrompt, pipeline, ...rest }) => {
+    const summaries = await Promise.all(projects.map(async ({ notes, kickoffPrompt, pipeline, ...rest }) => {
       // Precompute pipeline stats for list view
       const pipelineStats = computePipelineStats(pipeline);
+
+      // Get actual work item counts (more accurate than pipeline log)
+      let workItemStats = { total: 0, inProgress: 0, completed: 0, planned: 0, owners: [] as string[] };
+      try {
+        const { workItems } = await getWorkItems(rest.slug);
+        const ownerSet = new Set<string>();
+        for (const wi of workItems) {
+          if (wi.owner) ownerSet.add(wi.owner);
+        }
+        workItemStats = {
+          total: workItems.length,
+          inProgress: workItems.filter(i => i.status === 'in-progress').length,
+          completed: workItems.filter(i => i.status === 'completed').length,
+          planned: workItems.filter(i => i.status === 'planned').length,
+          owners: Array.from(ownerSet),
+        };
+      } catch { /* no work items file */ }
+
       return {
         ...rest,
         pipeline: pipelineStats,
+        workItems: workItemStats,
       };
-    });
+    }));
     res.json({ projects: summaries });
   } catch (err) {
     console.error("Error listing projects:", err);

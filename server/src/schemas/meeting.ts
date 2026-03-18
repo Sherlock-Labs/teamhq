@@ -96,6 +96,7 @@ export type RunMeetingInput = z.infer<typeof RunMeetingSchema>;
 export const StartInterviewSchema = z.object({
   topic: z.string().min(1, "Topic is required"),
   context: z.string().optional(),
+  agentName: z.string().optional(),
 });
 
 export type StartInterviewInput = z.infer<typeof StartInterviewSchema>;

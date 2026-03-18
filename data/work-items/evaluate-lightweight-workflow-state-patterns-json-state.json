@@ -1,0 +1,18 @@
+{
+  "projectSlug": "evaluate-lightweight-workflow-state-patterns-json-state",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "WSP-1",
+      "title": "Evaluate lightweight workflow state patterns for heartbeat replacement",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Marco",
+      "priority": "medium",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    }
+  ]
+}

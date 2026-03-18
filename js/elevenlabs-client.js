@@ -71,6 +71,15 @@ ElevenLabsClient.prototype.connect = function (opts) {
   this._setState('connecting');
 
   // Request mic permission before starting session (per ElevenLabs docs)
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    self._setState('closed');
+    self._emit('error', {
+      type: 'connection',
+      message: 'Microphone access requires a secure connection (HTTPS). Please access this page over HTTPS or localhost.',
+    });
+    return;
+  }
+
   navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
     // Release the stream — SDK will request its own
     stream.getTracks().forEach(function (t) { t.stop(); });

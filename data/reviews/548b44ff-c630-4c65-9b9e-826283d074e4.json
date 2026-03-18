@@ -1,0 +1,21 @@
+{
+  "id": "548b44ff-c630-4c65-9b9e-826283d074e4",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterDesign",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:53:35.269Z",
+  "updatedAt": "2026-03-18T14:39:59.471Z",
+  "resolvedAt": "2026-03-18T14:39:59.471Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/forge-command-palette-design-spec.md",
+      "title": "Command Palette Design Spec"
+    }
+  ],
+  "agent": "Robert",
+  "summary": "Command Palette design spec (RT-38b) complete. 16-section spec covering: 560px centered modal at 20vh, search input with fuzzy filtering, result groups (Navigation/Actions/Settings/Recent/Items), 4 interaction states per item, keyboard navigation with scroll-into-view, empty/no-results states, shortcut cheat sheet modal, dark mode via --forge-* tokens, desktop-only (1024px+), 150ms open / 100ms close animations, full ARIA combobox/listbox pattern, complete CSS modules ready for Alice to copy directly. 8 key design decisions documented.",
+  "feedback": null
+}

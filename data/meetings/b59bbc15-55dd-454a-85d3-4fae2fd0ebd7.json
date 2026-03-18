@@ -1,0 +1,94 @@
+{
+  "id": "b59bbc15-55dd-454a-85d3-4fae2fd0ebd7",
+  "type": "interview",
+  "status": "completed",
+  "meetingNumber": 18,
+  "scheduledAt": null,
+  "startedAt": "2026-03-17T00:23:18.263Z",
+  "completedAt": "2026-03-17T00:25:16.561Z",
+  "durationMs": 3000,
+  "error": "Page closed during interview",
+  "summary": "The CEO of Sherlock Labs discussed his strategic focus on mastering AI-assisted product building, with design polish as the primary bottleneck. He shared that VoiceNote Pro and SherlockPDF are nearly ready to ship with revenue models, and that his two big goals are becoming the world's best AI product builder and building 2-3 revenue-generating products maintained by AI.",
+  "keyTakeaways": [
+    "Design polish is the single biggest bottleneck in AI-assisted product building — code quality and speed are already there, but the last mile of UI polish is the missing piece.",
+    "Two products (VoiceNote Pro and SherlockPDF) are targeting launch with paywalls in the next couple of weeks, representing the first revenue-generating products for Sherlock Labs.",
+    "The CEO's two primary goals are: (1) becoming the world's best AI product builder by refining the process, and (2) building 2-3 revenue-generating products that AI can maintain to reduce overhead.",
+    "Visual references (e.g., showing Claude the Notion mobile app) are more effective than written design specs for achieving design quality, suggesting the design pipeline should evolve to include visual comparison as a fine-tuning step.",
+    "The CEO believes AI coding will be completely different in 6 months and is investing now in the skill of directing AI to build products, so he's ready when the tools catch up."
+  ],
+  "transcript": [
+    {
+      "speaker": "AI Interviewer",
+      "role": "Interviewer",
+      "text": "Hey! I'd like to dig into test with you today. What's top of mind for you on this?"
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Invest in learning AI-directed product building now, before the tools fully mature, to be ready when the capability arrives.",
+      "rationale": "AI coding will be completely different in 6 months as both tools and models evolve. Building the skill of directing AI now creates a first-mover advantage.",
+      "participants": [
+        "CEO"
+      ]
+    },
+    {
+      "description": "Evolve the design pipeline to include visual references and visual comparison as a fine-tuning step after broad design implementation.",
+      "rationale": "Written design specs lose fidelity at the design-to-implementation handoff. Showing Claude the Notion mobile app was more effective than words alone. AI design mockup tools aren't good enough yet, so visual comparison of reference products to built output is the practical next step.",
+      "participants": [
+        "CEO"
+      ]
+    },
+    {
+      "description": "Ship VoiceNote Pro and SherlockPDF with paywalls in the next couple of weeks as the first revenue-generating products.",
+      "rationale": "The goal is to get products live to learn from real user feedback. Revenue will likely be small initially, but having live products enables iteration and learning.",
+      "participants": [
+        "CEO"
+      ]
+    },
+    {
+      "description": "Pursue a portfolio strategy — keep shipping products to improve the process while watching for one to break out.",
+      "rationale": "Building serves dual purpose: getting better at the AI-assisted building process and creating products that could take off. If one gains traction, double down on it.",
+      "participants": [
+        "CEO"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "CEO",
+      "description": "Ship VoiceNote Pro to the App Store with in-app purchase paywall",
+      "priority": "high"
+    },
+    {
+      "owner": "CEO",
+      "description": "Ship SherlockPDF live with its paywall",
+      "priority": "high"
+    },
+    {
+      "owner": "CEO",
+      "description": "Try Browser Use tool for automated visual design iteration (agent sees and critiques its own UI output)",
+      "priority": "medium"
+    },
+    {
+      "owner": "CEO",
+      "description": "Experiment with visual references (e.g., screenshots of Notion, Linear) in the design fine-tuning step of the pipeline",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Focused and optimistic",
+  "nextMeetingTopics": [
+    "Design pipeline evolution — results from visual reference and Browser Use experiments",
+    "VoiceNote Pro and SherlockPDF launch status and early user feedback",
+    "Progress toward AI-maintained product portfolio (reducing CEO overhead)",
+    "Assessment of AI coding tool/model improvements and their impact on the building process"
+  ],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "test",
+    "durationSeconds": 3
+  }
+}

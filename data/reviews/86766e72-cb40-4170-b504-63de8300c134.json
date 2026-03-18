@@ -1,0 +1,26 @@
+{
+  "id": "86766e72-cb40-4170-b504-63de8300c134",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterDesign",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:16:48.628Z",
+  "updatedAt": "2026-03-18T13:23:40.030Z",
+  "resolvedAt": "2026-03-18T13:23:40.030Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-design-spec.md",
+      "title": "Visual Themes Design Spec"
+    },
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-backend-notes.md",
+      "title": "Visual Themes Backend Notes"
+    }
+  ],
+  "agent": "Robert",
+  "summary": "Visual themes design spec complete. Themes: default, clean, bold, minimal, corporate, startup — each shown as a card in a 2-column grid with live preview thumbnail. Appearance section added to roadmap settings with theme picker, hex accent color input, and 3-state dark mode toggle (light/dark/system). Theme transitions animate at 200ms. RG-15 (Zod validation fix) also shipped by Jonah. Alice now implementing frontend (RT-37d).",
+  "feedback": null
+}

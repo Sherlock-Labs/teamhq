@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleetio Product Topology</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--sky:#68c5ed;--green:#067749;--dark:#0d1117;--card:#161b22;--border:#21262d;--text:#e6edf3;--muted:#8b949e;--r0:#067749;--r1:#1a8cff;--r2:#d4a017;--r3:#c850c0;--red:#ff6b6b}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--dark);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}
+nav .inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0;height:52px}
+nav .brand{color:var(--text);font-weight:700;font-size:.9rem;margin-right:2rem;white-space:nowrap}
+nav button{background:none;border:none;color:var(--muted);font-family:inherit;font-size:.8rem;font-weight:500;padding:.5rem 1rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+nav button:hover{color:var(--text)}
+nav button.on{color:var(--sky);border-bottom-color:var(--sky)}
+
+/* Page containers */
+.page{display:none;max-width:1100px;margin:0 auto;padding:3rem 2rem 5rem}
+.page.on{display:block}
+h1{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:.5rem}
+h1 span{color:var(--sky)}
+h2{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin:2.5rem 0 .75rem}
+h2:first-child{margin-top:0}
+h3{font-size:1.05rem;font-weight:600;margin-bottom:.5rem}
+p.lead{font-size:1rem;color:var(--muted);max-width:680px;line-height:1.7;margin-bottom:1.5rem}
+.badge{display:inline-block;background:rgba(104,197,237,.1);color:var(--sky);font-size:.68rem;font-weight:600;padding:.3rem .75rem;border-radius:99px;margin-bottom:1rem;letter-spacing:.05em;text-transform:uppercase}
+
+/* Cards & callouts */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:border-color .15s}
+.card:hover{border-color:rgba(104,197,237,.25)}
+.callout{border-radius:10px;padding:1.25rem 1.5rem;margin:1.25rem 0;font-size:.9rem}
+.callout.green{background:rgba(6,119,73,.06);border:1px solid rgba(6,119,73,.18)}
+.callout.blue{background:rgba(26,140,255,.05);border:1px solid rgba(26,140,255,.15)}
+.callout.amber{background:rgba(212,160,23,.05);border:1px solid rgba(212,160,23,.15)}
+.callout.purple{background:rgba(200,80,192,.05);border:1px solid rgba(200,80,192,.15)}
+.callout strong{display:block;margin-bottom:.3rem}
+.callout p{margin:0;color:var(--muted)}
+.callout p+p{margin-top:.4rem}
+
+/* Grids */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:900px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* Ring colors */
+.rc0{color:var(--r0)}.rc1{color:var(--r1)}.rc2{color:var(--r2)}.rc3{color:var(--r3)}
+.bg0{background:rgba(6,119,73,.08);border:1px solid rgba(6,119,73,.2)}
+.bg1{background:rgba(26,140,255,.06);border:1px solid rgba(26,140,255,.15)}
+.bg2{background:rgba(212,160,23,.05);border:1px solid rgba(212,160,23,.15)}
+.bg3{background:rgba(200,80,192,.05);border:1px solid rgba(200,80,192,.12)}
+
+/* Mini ring labels */
+.rl{display:inline-block;font-size:.6rem;font-weight:700;padding:.15rem .4rem;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle}
+.rl0{background:rgba(6,119,73,.12);color:var(--r0)}.rl1{background:rgba(26,140,255,.1);color:var(--r1)}
+.rl2{background:rgba(212,160,23,.1);color:var(--r2)}.rl3{background:rgba(200,80,192,.1);color:var(--r3)}
+
+/* Tabs within pages */
+.tabs{display:flex;gap:.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.tbtn{padding:.4rem .85rem;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.78rem;font-weight:500;font-family:inherit;transition:all .12s}
+.tbtn:hover{border-color:var(--sky);color:var(--text)}
+.tbtn.on{background:rgba(104,197,237,.1);border-color:var(--sky);color:var(--sky)}
+.tpane{display:none}.tpane.on{display:block}
+
+/* Value bars */
+.vrow{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.vrow .nm{width:140px;font-size:.8rem;text-align:right;flex-shrink:0}
+.vrow .bg{flex:1;height:24px;background:rgba(255,255,255,.03);border-radius:5px;overflow:hidden}
+.vrow .br{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:.6rem;font-size:.68rem;font-weight:600;color:rgba(255,255,255,.85)}
+.vrow .mt{font-size:.7rem;color:var(--muted);margin-left:.5rem;flex-shrink:0;width:100px}
+
+/* Heatmap */
+.mx{border-collapse:collapse;font-size:.68rem;width:100%}
+.mx th,.mx td{padding:.35rem .4rem;text-align:center;border:1px solid var(--border)}
+.mx th{background:var(--card);font-weight:600;color:var(--muted);white-space:nowrap}
+.mx th.rh{text-align:right;padding-right:.5rem}
+.mx .c0{background:rgba(255,255,255,.01);color:#444}
+.mx .c1{background:rgba(26,140,255,.08);color:rgba(26,140,255,.7)}
+.mx .c2{background:rgba(212,160,23,.12);color:rgba(212,160,23,.8)}
+.mx .c3{background:rgba(255,80,80,.15);color:#ff6b6b;font-weight:700}
+.mx .d{background:rgba(255,255,255,.03);color:#333}
+
+/* Seam list */
+.sl{list-style:none}.sl li{padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.sl li:last-child{border-bottom:none}.sl li strong{display:block;margin-bottom:.1rem;font-size:.88rem}
+.sl li span{color:var(--muted);font-size:.8rem}
+
+/* Param tables */
+.pt{width:100%;font-size:.8rem;border-collapse:collapse}
+.pt td{padding:.35rem 0;border-bottom:1px solid var(--border)}
+.pt td:first-child{color:var(--muted);width:110px}
+.pt td:nth-child(2){font-weight:600}
+.pt td:nth-child(3){color:var(--muted);font-size:.72rem}
+
+/* Dot rows */
+.dr{display:flex;align-items:center;gap:.4rem;margin-bottom:.25rem;font-size:.8rem}
+.dr .d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* Workflow steps */
+.wf{display:flex;align-items:center;gap:0;overflow-x:auto;padding:.5rem 0}
+.ws{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:90px;padding:0 .15rem}
+.ws .n{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:600;line-height:1.2;padding:.2rem;margin-bottom:.3rem}
+.ws .l{font-size:.65rem;color:var(--muted)}
+.wa{color:var(--muted);font-size:.85rem;min-width:24px;text-align:center;padding-bottom:1.2rem}
+
+/* 3x2 grid */
+.grid32{display:grid;grid-template-columns:auto 1fr 1fr;grid-template-rows:auto 1fr 1fr 1fr;gap:0;max-width:850px;margin:0 auto}
+.grid32 .hdr{text-align:center;padding:.4rem;font-size:.7rem;font-weight:600}
+.grid32 .ylbl{display:flex;align-items:center;padding:0 .6rem;font-size:.68rem;font-weight:600;color:var(--r1);line-height:1.3}
+.grid32 .cell{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.9rem;margin:.2rem}
+.grid32 .cell.hl{background:linear-gradient(135deg,rgba(212,160,23,.08),rgba(255,107,107,.04));border-color:rgba(212,160,23,.25)}
+.grid32 .cell h4{font-size:.82rem;margin-bottom:.15rem}.grid32 .cell p{font-size:.72rem;color:var(--muted);margin:0}
+.grid32 .cell .wtp{font-weight:600;margin-top:.35rem;font-size:.75rem}
+
+footer{text-align:center;padding:2rem;color:var(--muted);font-size:.72rem;border-top:1px solid var(--border)}
+
+/* Rings visual */
+.rings-wrap{display:flex;gap:2rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
+.rings-vis{position:relative;width:280px;height:280px;flex-shrink:0}
+@media(max-width:700px){.rings-vis{width:220px;height:220px;margin:0 auto}}
+.rv{position:absolute;border-radius:50%;transition:all .3s}
+.rv3{width:100%;height:100%;top:0;left:0;background:rgba(200,80,192,.04);border:1.5px solid rgba(200,80,192,.18)}
+.rv2{width:70%;height:70%;top:15%;left:15%;background:rgba(212,160,23,.04);border:1.5px solid rgba(212,160,23,.22)}
+.rv1{width:44%;height:44%;top:28%;left:28%;background:rgba(26,140,255,.05);border:1.5px solid rgba(26,140,255,.25)}
+.rv0{width:20%;height:20%;top:40%;left:40%;background:rgba(6,119,73,.08);border:1.5px solid rgba(6,119,73,.35)}
+.rv-lbl{position:absolute;font-size:.55rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.rv3>.rv-lbl{top:3%;left:50%;transform:translateX(-50%);color:var(--r3)}
+.rv2>.rv-lbl{top:4%;left:50%;transform:translateX(-50%);color:var(--r2)}
+.rv1>.rv-lbl{top:7%;left:50%;transform:translateX(-50%);color:var(--r1)}
+.rv0>.rv-lbl{top:50%;left:50%;transform:translate(-50%,-50%);color:var(--r0);font-size:.5rem;text-align:center;line-height:1.4}
+.rv-dot{position:absolute;width:8px;height:8px;border-radius:50%;z-index:5;cursor:default}
+.rv-dot .rv-tip{display:none;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.25rem .5rem;font-size:.62rem;white-space:nowrap;color:var(--text);pointer-events:none;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.rv-dot:hover .rv-tip{display:block}
+.rv-dot:hover{transform:scale(1.8)}
+.rv-dot.d0{background:var(--r0)}.rv-dot.d1{background:var(--r1)}.rv-dot.d2{background:var(--r2)}.rv-dot.d3{background:var(--r3)}
+.rings-legend{flex:1;min-width:240px}
+.rings-legend .rl-row{margin-bottom:.6rem;display:flex;gap:.5rem;align-items:flex-start}
+.rings-legend .rl-row .rl-label{flex-shrink:0;margin-top:.1rem}
+.rings-legend .rl-row .rl-text{font-size:.82rem}
+.rings-legend .rl-row .rl-text strong{font-size:.85rem}
+.rings-legend .rl-row .rl-text span{color:var(--muted);font-size:.78rem}
+</style>
+</head>
+<body>
+
+<nav>
+<div class="inner">
+  <span class="brand">Fleetio Topology</span>
+  <button class="on" onclick="go('summary',this)">Summary</button>
+  <button onclick="go('topology',this)">Product Topology</button>
+  <button onclick="go('segments',this)">Fleet Segments</button>
+  <button onclick="go('packaging',this)">Value & Packaging</button>
+</div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- PAGE 1: SUMMARY                                               -->
+<!-- ============================================================ -->
+<div class="page on" id="summary">
+
+<div class="badge">Product Architecture Analysis</div>
+<h1>Natural <span>Contour Lines</span></h1>
+<p class="lead">Fleetio's product has 14 distinct modules. They organize into four concentric rings. The current three-tier packaging works for one of the four rings — and one of the four customer segments. Here's the full picture in four sections.</p>
+
+<h2>The Thesis</h2>
+
+<div class="rings-wrap">
+  <div class="rings-vis">
+    <div class="rv rv3">
+      <span class="rv-lbl">Ring 3 — Intelligence</span>
+      <div class="rv-dot d3" style="top:7%;left:58%"><span class="rv-tip">Analytics</span></div>
+      <div class="rv-dot d3" style="top:12%;left:38%"><span class="rv-tip">AI (Smart Uploads)</span></div>
+      <div class="rv-dot d3" style="top:7%;left:48%"><span class="rv-tip">API Platform</span></div>
+    </div>
+    <div class="rv rv2">
+      <span class="rv-lbl">Ring 2 — Depth</span>
+      <div class="rv-dot d2" style="top:7%;left:30%"><span class="rv-tip">Parts & Inventory</span></div>
+      <div class="rv-dot d2" style="top:7%;left:60%"><span class="rv-tip">Shop Network</span></div>
+      <div class="rv-dot d2" style="top:14%;left:74%"><span class="rv-tip">Tire Mgmt</span></div>
+      <div class="rv-dot d2" style="top:14%;left:18%"><span class="rv-tip">Warranty</span></div>
+      <div class="rv-dot d2" style="top:7%;left:45%"><span class="rv-tip">Billing</span></div>
+    </div>
+    <div class="rv rv1">
+      <span class="rv-lbl">Ring 1 — Ops</span>
+      <div class="rv-dot d1" style="top:12%;left:36%"><span class="rv-tip">Work Orders</span></div>
+      <div class="rv-dot d1" style="top:12%;left:64%"><span class="rv-tip">Service Programs</span></div>
+      <div class="rv-dot d1" style="top:22%;left:74%"><span class="rv-tip">Telematics</span></div>
+      <div class="rv-dot d1" style="top:22%;left:26%"><span class="rv-tip">Automations</span></div>
+      <div class="rv-dot d1" style="top:8%;left:50%"><span class="rv-tip">Recalls</span></div>
+    </div>
+    <div class="rv rv0">
+      <span class="rv-lbl">Ring 0<br>Core</span>
+    </div>
+  </div>
+  <div class="rings-legend">
+    <div class="rl-row">
+      <span class="rl rl0 rl-label">Ring 0</span>
+      <div class="rl-text"><strong>Foundation</strong><br><span>Registry, Inspections, Fuel, Mobile. Digital logbook. The 10-truck plumber.</span></div>
+    </div>
+    <div class="rl-row">
+      <span class="rl rl1 rl-label">Ring 1</span>
+      <div class="rl-text"><strong>Operations</strong><br><span>Work Orders, Telematics, Automations. Process management. The Essential → Professional boundary sits here — <strong style="color:var(--text)">well-placed</strong>.</span></div>
+    </div>
+    <div class="rl-row">
+      <span class="rl rl2 rl-label">Ring 2</span>
+      <div class="rl-text"><strong>Specialized Depth</strong><br><span>Parts, Shop Network, Tires, Warranty, Billing. <strong style="color:var(--text)">Customer needs diverge here.</strong> All crammed into one Premium tier.</span></div>
+    </div>
+    <div class="rl-row">
+      <span class="rl rl3 rl-label">Ring 3</span>
+      <div class="rl-text"><strong>Intelligence</strong><br><span>Analytics, AI, API. Value multipliers that amplify Rings 0–2.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="callout amber" style="margin-top:1.5rem">
+  <strong style="color:var(--r2)">Where it breaks: Ring 2</strong>
+  <p>All five Ring 2 modules are behind one Premium tier. A fleet needing only Parts subsidizes Tires, Billing, and Warranty. Shop Network is free in Professional — no upgrade path. In-house shop fleets and outsource-everything fleets have <strong style="color:var(--text)">near-zero Ring 2 overlap</strong> but pay the same price. Only large private fleets with full in-house shops use all 5 modules.</p>
+</div>
+
+<h2>The Matrix That Predicts Packaging</h2>
+<p style="color:var(--muted);font-size:.9rem;margin-bottom:1.25rem">Two fleet parameters dominate: <strong>maintenance model</strong> (which Ring 2 modules) and <strong>downtime cost</strong> (willingness to pay per vehicle).</p>
+
+<div class="grid32">
+  <div></div>
+  <div class="hdr rc0">Low downtime ($100–400/day)</div>
+  <div class="hdr" style="color:var(--red)">High downtime ($500–2,000+/day)</div>
+
+  <div class="ylbl">Outsourced<br>(no shop)</div>
+  <div class="cell">
+    <h4>Light-Duty Service</h4>
+    <p>Pest control, HVAC, landscaping</p>
+    <p><strong style="color:var(--text)">Need:</strong> Shop Network</p>
+    <div class="wtp rc0">$5–8/veh/mo</div>
+    <p style="margin-top:.3rem;font-size:.68rem">Gets key module free. No upgrade path.</p>
+  </div>
+  <div class="cell">
+    <h4>Last-Mile / Delivery</h4>
+    <p>Amazon DSPs, FedEx contractors, couriers</p>
+    <p><strong style="color:var(--text)">Need:</strong> Automations + Telematics at scale</p>
+    <div class="wtp rc1">$8–12/veh/mo</div>
+    <p style="margin-top:.3rem;font-size:.68rem">Value is Ring 1 efficiency, not Ring 2 depth.</p>
+  </div>
+
+  <div class="ylbl">Hybrid<br>(shop + outsource)</div>
+  <div class="cell">
+    <h4>Gov / PubSec / Universities</h4>
+    <p>Cities, counties, school districts, campuses</p>
+    <p><strong style="color:var(--text)">Need:</strong> Parts + Billing + Motor Pool + Analytics</p>
+    <div class="wtp rc1">$8–12/veh/mo</div>
+    <p style="margin-top:.3rem;font-size:.68rem">In-house shop + outsource specialty. Vertical needs (Motor Pool, chargebacks). Extremely sticky.</p>
+  </div>
+  <div class="cell">
+    <h4>Mixed Fleet / Construction</h4>
+    <p>Construction, utilities, oil & gas</p>
+    <p><strong style="color:var(--text)">Need:</strong> Parts + Tires + Warranty + some Shop Net</p>
+    <div class="wtp rc2">$10–15/veh/mo</div>
+    <p style="margin-top:.3rem;font-size:.68rem">Own shop for routine PM, outsource specialty. Uses 3-4 Ring 2 modules.</p>
+  </div>
+
+  <div class="ylbl">In-house<br>(full shop ops)</div>
+  <div class="cell">
+    <h4>Regional Fleets</h4>
+    <p>Linen services, beverage distribution, waste</p>
+    <p><strong style="color:var(--text)">Need:</strong> Parts + Warranty</p>
+    <div class="wtp rc1">$8–10/veh/mo</div>
+    <p style="margin-top:.3rem;font-size:.68rem">Full in-house shop, moderate complexity. 2 Ring 2 modules.</p>
+  </div>
+  <div class="cell hl">
+    <h4>Large Private Fleets</h4>
+    <p>Beverage, food service, waste, building materials</p>
+    <p><strong style="color:var(--text)">Need:</strong> Parts + Tires + Warranty + Shop Net (overflow)</p>
+    <div class="wtp" style="color:var(--red)">$12–18/veh/mo</div>
+    <p style="margin-top:.3rem;font-size:.68rem"><strong style="color:var(--text)">Only segment where Premium bundle fits.</strong></p>
+  </div>
+</div>
+
+<h2>The Recommendation</h2>
+<div class="callout blue">
+  <strong style="color:var(--sky)">Tiered core, modular depth, platform add-ons</strong>
+  <p><strong>Rings 0–1: Tiered.</strong> Everyone follows the same tracking → operations progression. Current Essential/Professional boundary is correct.</p>
+  <p><strong>Ring 2: Modular.</strong> Parts & Inventory, Shop Network, Tire Management, Billing, and Intelligence as individually purchasable modules (or pre-built bundles like "In-House Shop" or "Outsourced").</p>
+  <p><strong>Ring 3: Platform add-ons.</strong> API, AI, premium analytics — available to any tier, different buyer (IT, executives).</p>
+</div>
+
+<p style="color:var(--muted);font-size:.85rem;margin-top:1.5rem">Use the tabs above to explore the full analysis: product topology (modules, data flows, coupling), fleet segments (five clusters, parameter profiles), and value & packaging (where revenue concentrates, gaps, module readiness).</p>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 2: PRODUCT TOPOLOGY                                      -->
+<!-- ============================================================ -->
+<div class="page" id="topology">
+
+<h2 style="margin-top:0">Product Topology</h2>
+<p class="lead">14 modules, four rings, and the data flows that connect them.</p>
+
+<!-- Rings overview -->
+<div class="g4" style="margin-top:1.5rem">
+  <div class="card bg0" style="padding:1rem">
+    <span class="rl rl0" style="margin-bottom:.4rem">Ring 0 — Foundation</span>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Fleet Registry, Contacts/Drivers, Inspections, Basic Fuel, Mobile App</p>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:.35rem;font-style:italic">Tracking. Recording what happened. The 10-truck plumber.</p>
+  </div>
+  <div class="card bg1" style="padding:1rem">
+    <span class="rl rl1" style="margin-bottom:.4rem">Ring 1 — Operations</span>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Work Orders, Service Programs, Telematics, Automations, Recalls</p>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:.35rem;font-style:italic">Managing processes. The Essential → Professional boundary.</p>
+  </div>
+  <div class="card bg2" style="padding:1rem">
+    <span class="rl rl2" style="margin-bottom:.4rem">Ring 2 — Depth</span>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Parts & Inventory, Shop Network, Tires, Warranty, Billing</p>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:.35rem;font-style:italic">Where customer needs diverge. All crammed into Premium.</p>
+  </div>
+  <div class="card bg3" style="padding:1rem">
+    <span class="rl rl3" style="margin-bottom:.4rem">Ring 3 — Intelligence</span>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Advanced Analytics, AI (Smart Uploads), API/Developer Platform</p>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:.35rem;font-style:italic">Amplify everything underneath. Value multipliers.</p>
+  </div>
+</div>
+
+<!-- Key workflows -->
+<h2>Key Cross-Module Workflows</h2>
+<p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">Packaging that breaks a workflow creates terrible UX. These are the flows that cross module boundaries.</p>
+
+<div class="tabs">
+  <button class="tbtn on" onclick="tab('wf1',this,'wf')">Maintenance Pipeline</button>
+  <button class="tbtn" onclick="tab('wf2',this,'wf')">Outsourced Repair</button>
+  <button class="tbtn" onclick="tab('wf3',this,'wf')">Parts Procurement</button>
+  <button class="tbtn" onclick="tab('wf4',this,'wf')">Profit Center</button>
+</div>
+
+<div class="tpane wf on" id="wf1">
+  <div class="card">
+    <h3 style="font-size:.92rem">The Maintenance Pipeline — the core loop</h3>
+    <div class="wf">
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Telem-<br>atics</div><div class="l">DTC / odometer</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg0" style="color:var(--r0)">Inspect</div><div class="l">Driver finds defect</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Issue</div><div class="l">Auto-created</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Work<br>Order</div><div class="l">Assign mechanic</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Warranty<br>Check</div><div class="l">Covered?</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Parts<br>Pull</div><div class="l">Auto-adjust stock</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg0" style="color:var(--r0)">Service<br>Entry</div><div class="l">Vehicle history</div></div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Clean cuts:</strong> Between Ring 0 and Ring 1 (Essential/Pro boundary). Between Ring 1 and Ring 2 (module boundary). <strong style="color:var(--text)">Bad cuts:</strong> Between Warranty and Work Orders (alert surfaces inside the WO).</p>
+  </div>
+</div>
+<div class="tpane wf" id="wf2">
+  <div class="card">
+    <h3 style="font-size:.92rem">Outsourced Repair — completely different path</h3>
+    <div class="wf">
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Issue</div><div class="l">Vehicle needs work</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Shop<br>Search</div><div class="l">Find nearby</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Send to<br>Shop</div><div class="l">Vendor Portal</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Estimate</div><div class="l">Line-by-line OK</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Shop<br>Repairs</div><div class="l">External</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg0" style="color:var(--r0)">Service<br>Entry</div><div class="l">Auto-recorded</div></div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Key insight:</strong> This barely touches Ring 1. No work orders, no mechanics, no parts. Shop Network and Parts & Inventory have a coupling score of <strong style="color:var(--text)">zero</strong> — they serve different operating models.</p>
+  </div>
+</div>
+<div class="tpane wf" id="wf3">
+  <div class="card">
+    <h3 style="font-size:.92rem">Parts Procurement — the inventory loop</h3>
+    <div class="wf">
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Work<br>Order</div><div class="l">Add parts</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Stock<br>Adjust</div><div class="l">Auto-decrement</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Low Stock<br>Alert</div><div class="l">Threshold hit</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Purchase<br>Order</div><div class="l">Manual or auto</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Auto-<br>Approve</div><div class="l">If &lt; threshold</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Stock<br>Received</div><div class="l">Inventory updated</div></div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Cleanest module boundary in the product.</strong> Own objects (parts, POs), own users (parts manager), own workflow. A fleet without an in-house shop has zero use for any of this.</p>
+  </div>
+</div>
+<div class="tpane wf" id="wf4">
+  <div class="card">
+    <h3 style="font-size:.92rem">Profit Center — maintenance as revenue</h3>
+    <div class="wf">
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Work<br>Order</div><div class="l">For ext. customer</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Add<br>Markups</div><div class="l">% or fixed</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Generate<br>Quote</div><div class="l">From WO details</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Customer<br>OK</div><div class="l">Approve/revise</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg1" style="color:var(--r1)">Do<br>Work</div><div class="l">Complete WO</div></div><div class="wa">→</div>
+      <div class="ws"><div class="n bg2" style="color:var(--r2)">Invoice</div><div class="l">Generate & email</div></div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">A business model upgrade, not a feature.</strong> Different buyer (shop manager, not fleet manager). Most fleets don't need it. Natural premium add-on.</p>
+  </div>
+</div>
+
+<!-- Coupling -->
+<h2>Module Coupling Matrix</h2>
+<p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Low coupling = clean packaging boundary. High coupling = bad place to cut. <span style="font-size:.78rem">3 = deeply interleaved, 2 = data exchange, 1 = light, 0 = independent</span></p>
+<div style="overflow-x:auto"><table class="mx" id="couplingMatrix"></table></div>
+<div class="g2" style="margin-top:1rem">
+  <div class="card"><h3 style="font-size:.88rem;color:var(--red)">Tightest cluster</h3><p style="font-size:.82rem;color:var(--muted);margin:0">Maintenance ↔ Parts ↔ Billing ↔ Warranty — the "in-house shop" cluster</p></div>
+  <div class="card"><h3 style="font-size:.88rem;color:var(--r0)">Most independent</h3><p style="font-size:.82rem;color:var(--muted);margin:0">Shop Network, Tire Management, Analytics, API — cleanest packaging boundaries</p></div>
+</div>
+
+<!-- Seams -->
+<h2>Seam Analysis</h2>
+<div class="g2">
+  <div>
+    <h3 style="color:var(--r0);font-size:.95rem">Strong Seams — clean cuts</h3>
+    <ul class="sl">
+      <li><strong>Essential → Professional (Ring 0 → 1)</strong><span>Work orders are the dividing line. Already well-placed.</span></li>
+      <li><strong>Parts & Inventory</strong><span>Own objects, users, procurement workflow. Zero coupling with Shop Network.</span></li>
+      <li><strong>Shop Network</strong><span>Parallel path to in-house maintenance. Different users entirely.</span></li>
+      <li><strong>Tire Management</strong><span>Self-contained data model. Only trucking/transport needs it.</span></li>
+      <li><strong>Billing</strong><span>Different business model. Different buyer (shop manager).</span></li>
+      <li><strong>Analytics</strong><span>Was already a separate paid add-on. Proven.</span></li>
+      <li><strong>API</strong><span>Different buyer (IT). Could be add-on for any tier.</span></li>
+    </ul>
+  </div>
+  <div>
+    <h3 style="color:var(--red);font-size:.95rem">Weak Seams — don't cut here</h3>
+    <ul class="sl">
+      <li><strong>Work Orders ↔ Reminders ↔ Service Programs</strong><span>One continuous workflow. Can't sell WOs without reminders.</span></li>
+      <li><strong>Inspections ↔ Issues ↔ Work Orders</strong><span>Single pipeline. Cutting between Issues and WOs breaks discovery → resolution.</span></li>
+      <li><strong>Telematics ↔ Fuel GPS Alerts</strong><span>Fraud detection requires GPS data. Can't split alert from source.</span></li>
+      <li><strong>Warranty ↔ Work Orders</strong><span>Warranty alert surfaces inside the WO. Without WOs it's a static field.</span></li>
+      <li><strong>Automations ↔ Everything</strong><span>Horizontal layer. Can't scope to specific modules without bizarre limits.</span></li>
+    </ul>
+    <div class="callout purple" style="margin-top:1rem;margin-bottom:0">
+      <strong style="color:var(--r3)">Automations and Telematics are platform capabilities, not modules.</strong>
+      <p>They cross every boundary. Keep them in Ring 1 — they work across whatever Ring 2 modules you purchase.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 3: FLEET SEGMENTS                                        -->
+<!-- ============================================================ -->
+<div class="page" id="segments">
+
+<h2 style="margin-top:0">Parameter-Based Fleet Segmentation</h2>
+<p class="lead">Five operational parameters — not firmographics — predict what a fleet needs and what they'll pay.</p>
+
+<div class="g3" style="grid-template-columns:repeat(5,1fr);margin-top:1rem">
+  <div class="card" style="text-align:center;padding:1rem"><h3 style="font-size:.82rem;color:var(--r2)">In-House vs. Outsourced</h3><p style="font-size:.72rem;color:var(--muted);margin:0">Which Ring 2 path</p></div>
+  <div class="card" style="text-align:center;padding:1rem"><h3 style="font-size:.82rem;color:var(--r2)">Asset Type Mix</h3><p style="font-size:.72rem;color:var(--muted);margin:0">Module relevance</p></div>
+  <div class="card" style="text-align:center;padding:1rem"><h3 style="font-size:.82rem;color:var(--r2)">Annual Miles</h3><p style="font-size:.72rem;color:var(--muted);margin:0">Maintenance frequency</p></div>
+  <div class="card" style="text-align:center;padding:1rem"><h3 style="font-size:.82rem;color:var(--r2)">Geo Spread</h3><p style="font-size:.72rem;color:var(--muted);margin:0">Shop Network value</p></div>
+  <div class="card" style="text-align:center;padding:1rem"><h3 style="font-size:.82rem;color:var(--r2)">Downtime $/day</h3><p style="font-size:.72rem;color:var(--muted);margin:0">Willingness to pay</p></div>
+</div>
+
+<h2>Five Natural Clusters</h2>
+<div class="tabs">
+  <button class="tbtn on" onclick="tab('s1',this,'sg')">Light-Duty Service</button>
+  <button class="tbtn" onclick="tab('s2',this,'sg')">Large Private Fleets</button>
+  <button class="tbtn" onclick="tab('s3',this,'sg')">Mixed / Heavy Equip</button>
+  <button class="tbtn" onclick="tab('s4',this,'sg')">Last-Mile Delivery</button>
+  <button class="tbtn" onclick="tab('s5',this,'sg')">Institutional / Gov</button>
+</div>
+
+<div class="tpane sg on" id="s1"><div class="g2"><div>
+  <h3>Light-Duty Service Fleets</h3>
+  <p style="color:var(--muted);font-size:.85rem">The van fleet that gets people to job sites. Fleet is overhead, not the product.</p>
+  <table class="pt" style="margin-top:.75rem">
+    <tr><td>In-house</td><td>0–10%</td><td>Outsource nearly everything</td></tr>
+    <tr><td>Assets</td><td>Vans, pickups, light trucks</td><td>Homogeneous</td></tr>
+    <tr><td>Annual miles</td><td>15K–30K</td><td>Moderate</td></tr>
+    <tr><td>Geo spread</td><td>Regional → multi-state</td><td></td></tr>
+    <tr><td>Downtime</td><td style="color:var(--r0)">$100–400/day</td><td>Tech can't reach job</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Examples:</strong> Pest control, HVAC, plumbing, landscaping, home health, solar installers</p>
+</div><div>
+  <div class="card" style="margin-bottom:.75rem">
+    <h3 style="font-size:.88rem">Module needs</h3>
+    <div class="dr"><span class="d" style="background:var(--r0)"></span>Ring 0: Inspections, fuel, mobile</div>
+    <div class="dr"><span class="d" style="background:var(--r1)"></span>Ring 1: WOs, telematics, automations</div>
+    <div class="dr"><span class="d" style="background:var(--r2)"></span>Ring 2: <strong>Shop Network only</strong></div>
+    <div class="dr"><span class="d" style="background:#333"></span><span style="color:var(--muted)">No parts, no tires, no billing</span></div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.88rem">Packaging implication</h3>
+    <p style="font-size:.82rem;color:var(--muted);margin:0">Gets Shop Network <strong style="color:var(--text)">free in Professional</strong>. Zero reason to upgrade to Premium. WTP: <strong style="color:var(--r0)">$5–8/veh/mo</strong>.</p>
+  </div>
+</div></div></div>
+
+<div class="tpane sg" id="s2"><div class="g2"><div>
+  <h3>Large Private Fleets</h3>
+  <p style="color:var(--muted);font-size:.85rem">Vehicles are revenue-critical assets. Full in-house shop operations, high maintenance intensity.</p>
+  <table class="pt" style="margin-top:.75rem">
+    <tr><td>In-house</td><td>60–85%</td><td>Full shop ops; outsource overflow/specialty</td></tr>
+    <tr><td>Assets</td><td>Medium-duty + Class 6-7 trucks, trailers</td><td>Moderate homogeneity</td></tr>
+    <tr><td>Annual miles</td><td style="color:var(--red)">30K–80K</td><td>High daily utilization</td></tr>
+    <tr><td>Geo spread</td><td>Regional → multi-state</td><td>Hub-and-spoke distribution</td></tr>
+    <tr><td>Downtime</td><td style="color:var(--red)">$600–1,500+/day</td><td>Route/delivery not covered</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Examples:</strong> Beverage distribution (Coca-Cola, Pepsi bottlers), food service (Sysco, US Foods), waste haulers, building materials, linen/uniform</p>
+</div><div>
+  <div class="card" style="margin-bottom:.75rem">
+    <h3 style="font-size:.88rem">Module needs</h3>
+    <div class="dr"><span class="d" style="background:var(--r0)"></span>Ring 0: Everything — inspections, fuel, asset tracking</div>
+    <div class="dr"><span class="d" style="background:var(--r1)"></span>Ring 1: Heavy WO volume, PM programs, telematics, automations</div>
+    <div class="dr"><span class="d" style="background:var(--r2)"></span>Ring 2: <strong>Most of it</strong> — Parts (large stockrooms), Tires, Warranty, Shop Net (overflow)</div>
+    <div class="dr"><span class="d" style="background:var(--r3)"></span>Ring 3: Analytics (cost per mile/route), API (ERP/WMS), AI</div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.88rem">Packaging implication</h3>
+    <p style="font-size:.82rem;color:var(--muted);margin:0"><strong style="color:var(--text)">Closest segment to current Premium bundle.</strong> Uses 4-5 Ring 2 modules. WTP: <strong style="color:var(--red)">$12–18/veh/mo</strong>. Clear ROI on every module.</p>
+  </div>
+</div></div></div>
+
+<div class="tpane sg" id="s3"><div class="g2"><div>
+  <h3>Mixed Fleet / Heavy Equipment</h3>
+  <p style="color:var(--muted);font-size:.85rem">Trucks AND machines. Measured in hours AND miles. Most complex asset registry.</p>
+  <table class="pt" style="margin-top:.75rem">
+    <tr><td>In-house</td><td>40–70%</td><td>Own shop; specialty outsourced</td></tr>
+    <tr><td>Assets</td><td>Pickups + dumps + excavators + loaders</td><td>High heterogeneity</td></tr>
+    <tr><td>Annual miles</td><td>Varies</td><td>Trucks: miles. Equipment: hours.</td></tr>
+    <tr><td>Geo spread</td><td>Regional</td><td>Job sites within a region</td></tr>
+    <tr><td>Downtime</td><td style="color:var(--r2)">$500–1,500/day</td><td>Equipment idle = crew idle</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Examples:</strong> Construction, utilities, oil & gas, mining, forestry</p>
+</div><div>
+  <div class="card" style="margin-bottom:.75rem">
+    <h3 style="font-size:.88rem">Module needs</h3>
+    <div class="dr"><span class="d" style="background:var(--r0)"></span>Ring 0: "Assets" mode, engine hours, OEM programs (Cat/Deere)</div>
+    <div class="dr"><span class="d" style="background:var(--r1)"></span>Ring 1: WOs with long repair cycles, service programs by hours</div>
+    <div class="dr"><span class="d" style="background:var(--r2)"></span>Ring 2: Parts + Tires + Warranty. <strong>Not</strong> Shop Network (too specialized).</div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.88rem">Packaging implication</h3>
+    <p style="font-size:.82rem;color:var(--muted);margin:0">Uses 3/5 Ring 2 modules but pays for all 5. WTP: <strong style="color:var(--r2)">$10–15/veh/mo</strong>. Value prop: stop losing $1,500/day on a $400K excavator.</p>
+  </div>
+</div></div></div>
+
+<div class="tpane sg" id="s4"><div class="g2"><div>
+  <h3>Last-Mile / High-Frequency</h3>
+  <p style="color:var(--muted);font-size:.85rem">Runs hard every day. Lots of stops. Volume is the defining feature.</p>
+  <table class="pt" style="margin-top:.75rem">
+    <tr><td>In-house</td><td>10–40%</td><td>Larger build a shop; smaller outsource</td></tr>
+    <tr><td>Assets</td><td>Sprinters, box trucks, cargo vans</td><td>Homogeneous</td></tr>
+    <tr><td>Annual miles</td><td style="color:var(--r2)">25K–50K</td><td>Stop-and-go, hard on brakes</td></tr>
+    <tr><td>Geo spread</td><td>Metro / regional</td><td>Hub-and-spoke</td></tr>
+    <tr><td>Downtime</td><td style="color:var(--r2)">$500–1,200/day</td><td>Route not covered, SLAs broken</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Examples:</strong> Amazon DSPs, FedEx Ground, food delivery, medical supply, courier, linen services</p>
+</div><div>
+  <div class="card" style="margin-bottom:.75rem">
+    <h3 style="font-size:.88rem">Module needs</h3>
+    <div class="dr"><span class="d" style="background:var(--r0)"></span>Ring 0: Inspections critical — every driver, every day</div>
+    <div class="dr"><span class="d" style="background:var(--r1)"></span>Ring 1: <strong>Automations are the killer feature.</strong> Telematics essential.</div>
+    <div class="dr"><span class="d" style="background:var(--r2)"></span>Ring 2: Shop Net if outsourcing. Parts if in-house. Moderate tires.</div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.88rem">Packaging implication</h3>
+    <p style="font-size:.82rem;color:var(--muted);margin:0">Value is <strong style="color:var(--text)">Ring 1 efficiency at scale</strong>, not Ring 2 depth. Under-served by current packaging. WTP: <strong style="color:var(--r1)">$8–12/veh/mo</strong>.</p>
+  </div>
+</div></div></div>
+
+<div class="tpane sg" id="s5"><div class="g2"><div>
+  <h3>Institutional / Government</h3>
+  <p style="color:var(--muted);font-size:.85rem">Internal "customers." Reports to a board. Union mechanics. Stickiest contracts.</p>
+  <table class="pt" style="margin-top:.75rem">
+    <tr><td>In-house</td><td>70–90%</td><td>Union rules often prevent outsourcing</td></tr>
+    <tr><td>Assets</td><td>Police, fire, dumps, mowers, sedans</td><td>Wildest mix</td></tr>
+    <tr><td>Annual miles</td><td>8K–20K</td><td>Most vehicles stay local</td></tr>
+    <tr><td>Geo spread</td><td>Single jurisdiction</td><td>City, county, campus</td></tr>
+    <tr><td>Downtime</td><td style="color:var(--r1)">Variable / political</td><td>Police car ≠ parks truck</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem"><strong style="color:var(--text)">Examples:</strong> Cities, counties, state agencies, school districts, universities, transit, military</p>
+</div><div>
+  <div class="card" style="margin-bottom:.75rem">
+    <h3 style="font-size:.88rem">Module needs</h3>
+    <div class="dr"><span class="d" style="background:var(--r1)"></span>Ring 1: WOs, service programs — priority by dept/function, not revenue</div>
+    <div class="dr"><span class="d" style="background:var(--r2)"></span>Ring 2: Parts + <strong>Billing (internal chargebacks)</strong> + <strong>Motor Pool</strong> (shared vehicle reservations). Some outsource specialty work.</div>
+    <div class="dr"><span class="d" style="background:var(--r3)"></span>Ring 3: <strong>Analytics for council/board reporting.</strong> API for ERP (Workday, Tyler/Munis).</div>
+    <div class="dr"><span class="d" style="background:#333"></span><span style="color:var(--muted)">Motor Pool doesn't exist in Fleetio today — big gap for PubSec</span></div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.88rem">Packaging implication</h3>
+    <p style="font-size:.82rem;color:var(--muted);margin:0">Needs vertical-specific capabilities (Motor Pool, chargebacks) that don't exist or are repurposed from other modules. WTP: <strong style="color:var(--r1)">$8–12/veh/mo</strong>. Extremely sticky (3-5yr contracts). Motor Pool is the kind of <strong style="color:var(--text)">verticalized Ring 2 module</strong> that signals the depth layer isn't just about maintenance complexity — it's about industry-specific workflows.</p>
+  </div>
+</div></div></div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 4: VALUE & PACKAGING                                     -->
+<!-- ============================================================ -->
+<div class="page" id="packaging">
+
+<h2 style="margin-top:0">Value & Packaging</h2>
+<p class="lead">Where value concentrates, where the gaps are, and which modules are ready to be packaged independently.</p>
+
+<!-- Value map -->
+<h3 style="margin-top:1.5rem">Measured Value by Module</h3>
+<p style="color:var(--muted);font-size:.82rem;margin-bottom:1rem">Fleetio's published customer metrics — the savings they report.</p>
+<div class="vrow"><div class="nm">Smart Uploads (AI)</div><div class="bg"><div class="br" style="width:90%;background:linear-gradient(90deg,rgba(104,197,237,.6),rgba(104,197,237,.25))">90% time reduction</div></div><div class="mt">Ring 3</div></div>
+<div class="vrow"><div class="nm">Automations</div><div class="bg"><div class="br" style="width:78%;background:linear-gradient(90deg,rgba(104,197,237,.6),rgba(104,197,237,.25))">15 hrs/week saved</div></div><div class="mt">Ring 1</div></div>
+<div class="vrow"><div class="nm">Inspections</div><div class="bg"><div class="br" style="width:65%;background:linear-gradient(90deg,rgba(6,119,73,.5),rgba(6,119,73,.25))">65% faster, 4.4 hrs/wk</div></div><div class="mt">Ring 0</div></div>
+<div class="vrow"><div class="nm">Shop Network</div><div class="bg"><div class="br" style="width:55%;background:linear-gradient(90deg,rgba(6,119,73,.5),rgba(6,119,73,.25))">12% maint. cost reduction</div></div><div class="mt">Ring 2 (free)</div></div>
+<div class="vrow"><div class="nm">Parts & Inventory</div><div class="bg"><div class="br" style="width:45%;background:linear-gradient(90deg,rgba(26,140,255,.45),rgba(26,140,255,.2))">Reduces stockouts</div></div><div class="mt">Ring 2</div></div>
+<div class="vrow"><div class="nm">Tire Management</div><div class="bg"><div class="br" style="width:38%;background:linear-gradient(90deg,rgba(212,160,23,.4),rgba(212,160,23,.18))">Tires = #2 fleet cost</div></div><div class="mt">Ring 2</div></div>
+<div class="vrow"><div class="nm">Warranty</div><div class="bg"><div class="br" style="width:30%;background:linear-gradient(90deg,rgba(212,160,23,.4),rgba(212,160,23,.18))">Catches covered repairs</div></div><div class="mt">Ring 2</div></div>
+<div class="vrow"><div class="nm">Billing</div><div class="bg"><div class="br" style="width:25%;background:linear-gradient(90deg,rgba(212,160,23,.4),rgba(212,160,23,.18))">Revenue enabler</div></div><div class="mt">Ring 2</div></div>
+
+<div class="callout amber" style="margin-top:1.25rem">
+  <strong style="color:var(--r2)">Ring 2 modules have bimodal willingness-to-pay</strong>
+  <p>Tire Management value is either very high (trucking: tires = $8-12K/yr/vehicle) or zero (pest control: standard tires, outsource everything). When WTP is bimodal, bundling in a tier over-charges some and under-charges others. <strong style="color:var(--text)">This is the textbook signal for modular pricing.</strong></p>
+</div>
+
+<!-- Shop Network -->
+<h2>The Shop Network Paradox</h2>
+<div class="g4" style="margin-top:.75rem">
+  <div class="card" style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:var(--r2)">110K+</div><div style="font-size:.72rem;color:var(--muted)">verified shops</div></div>
+  <div class="card" style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:var(--r2)">14M+</div><div style="font-size:.72rem;color:var(--muted)">repair orders / yr</div></div>
+  <div class="card" style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:var(--r2)">12%</div><div style="font-size:.72rem;color:var(--muted)">avg cost reduction</div></div>
+  <div class="card" style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:var(--r2)">~3%</div><div style="font-size:.72rem;color:var(--muted)">take rate (modest GMV)</div></div>
+</div>
+<p style="color:var(--muted);font-size:.88rem;margin-top:1rem">Biggest competitive moat. ~3% take rate but GMV is modest — most repair volume happens outside the network. The opportunity is growing GMV, not raising the rate. Plus: the network generates the best fleet maintenance data asset in the industry with no separate monetization path yet.</p>
+
+<!-- Five modules -->
+<h2>Five Packaging-Ready Modules</h2>
+<p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">If Ring 2 becomes modular, these are the natural products.</p>
+<div class="g3" style="grid-template-columns:repeat(5,1fr)">
+  <div class="card" style="text-align:center;padding:1rem">
+    <h3 style="font-size:.88rem">Parts & Inventory</h3>
+    <p style="font-size:.75rem;color:var(--r2);font-style:italic;margin:.25rem 0">"Manage your parts room"</p>
+    <p style="font-size:.7rem;color:var(--muted);margin:0">Parts mgr, procurement</p>
+    <div style="margin-top:.5rem;font-size:.62rem;padding:.15rem .4rem;border-radius:3px;display:inline-block;background:rgba(255,107,107,.1);color:var(--red)">Premium-gated</div>
+  </div>
+  <div class="card" style="text-align:center;padding:1rem">
+    <h3 style="font-size:.88rem">Shop Network</h3>
+    <p style="font-size:.75rem;color:var(--r2);font-style:italic;margin:.25rem 0">"Outsource smarter"</p>
+    <p style="font-size:.7rem;color:var(--muted);margin:0">Fleet mgr + 110K shops</p>
+    <div style="margin-top:.5rem;font-size:.62rem;padding:.15rem .4rem;border-radius:3px;display:inline-block;background:rgba(6,119,73,.12);color:var(--r0)">Free in Pro+</div>
+  </div>
+  <div class="card" style="text-align:center;padding:1rem">
+    <h3 style="font-size:.88rem">Tire Management</h3>
+    <p style="font-size:.75rem;color:var(--r2);font-style:italic;margin:.25rem 0">"Every tire, every axle"</p>
+    <p style="font-size:.7rem;color:var(--muted);margin:0">Trucking / transport</p>
+    <div style="margin-top:.5rem;font-size:.62rem;padding:.15rem .4rem;border-radius:3px;display:inline-block;background:rgba(255,107,107,.1);color:var(--red)">Premium-gated</div>
+  </div>
+  <div class="card" style="text-align:center;padding:1rem">
+    <h3 style="font-size:.88rem">Billing Suite</h3>
+    <p style="font-size:.75rem;color:var(--r2);font-style:italic;margin:.25rem 0">"Shop as profit center"</p>
+    <p style="font-size:.7rem;color:var(--muted);margin:0">Shop mgr, finance</p>
+    <div style="margin-top:.5rem;font-size:.62rem;padding:.15rem .4rem;border-radius:3px;display:inline-block;background:rgba(255,107,107,.1);color:var(--red)">Premium-gated</div>
+  </div>
+  <div class="card" style="text-align:center;padding:1rem">
+    <h3 style="font-size:.88rem">Intelligence</h3>
+    <p style="font-size:.75rem;color:var(--r2);font-style:italic;margin:.25rem 0">"What your data says"</p>
+    <p style="font-size:.7rem;color:var(--muted);margin:0">Executives, finance</p>
+    <div style="margin-top:.5rem;font-size:.62rem;padding:.15rem .4rem;border-radius:3px;display:inline-block;background:rgba(255,107,107,.1);color:var(--red)">Was add-on</div>
+  </div>
+</div>
+
+<div class="callout amber" style="margin-top:1rem">
+  <strong style="color:var(--r2)">Natural bundles (the two operating models)</strong>
+  <p><strong>In-House Shop:</strong> Parts & Inventory + Billing + Warranty &nbsp;|&nbsp; <strong>Outsourced:</strong> Shop Network &nbsp;|&nbsp; <strong>Both:</strong> Tire Management (needed regardless of maintenance model)</p>
+</div>
+
+<!-- Gaps -->
+<h2>Adjacent Capabilities (What's Missing)</h2>
+<p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Draw packaging boundaries around the future shape, not just what exists today.</p>
+<div class="g2">
+  <div class="card" style="border-left:3px solid var(--red)"><h3 style="font-size:.88rem">Motor Pool / Vehicle Reservations</h3><p style="font-size:.8rem;color:var(--muted);margin:0">Shared vehicle check-out/check-in, reservation scheduling, pool utilization tracking. <strong style="color:var(--text)">Critical for PubSec</strong> — cities, universities, and government agencies manage shared pools, not assigned vehicles. A verticalized Ring 2 module that doesn't exist today. Example of how "depth" can mean industry-specific workflow, not just deeper maintenance features.</p></div>
+  <div class="card" style="border-left:3px solid var(--red)"><h3 style="font-size:.88rem">Route Planning & Dispatch</h3><p style="font-size:.8rem;color:var(--muted);margin:0">Know where vehicles are (Telematics) → optimize where they go. Natural Ring 1 extension.</p></div>
+  <div class="card" style="border-left:3px solid var(--red)"><h3 style="font-size:.88rem">ELD / HOS / IFTA</h3><p style="font-size:.8rem;color:var(--muted);margin:0">Delegated to partners (Motive, Samsara). Major gap for trucking fleets.</p></div>
+  <div class="card" style="border-left:3px solid var(--red)"><h3 style="font-size:.88rem">Benchmarking</h3><p style="font-size:.8rem;color:var(--muted);margin:0">8M vehicles, 14M repair orders → "your cost per mile is 23% above peers." Data product waiting to happen.</p></div>
+  <div class="card" style="border-left:3px solid var(--red)"><h3 style="font-size:.88rem">Embedded Payments</h3><p style="font-size:.8rem;color:var(--muted);margin:0">14M repair orders with no payment facilitation. Natural Shop Network + Billing extension.</p></div>
+  <div class="card" style="border-left:3px solid var(--r0)"><h3 style="font-size:.88rem">Extended Warranty Processing</h3><p style="font-size:.8rem;color:var(--muted);margin:0">Auto Integrate acquisition (2025). Moving from tracking to processing warranty claims.</p></div>
+  <div class="card" style="border-left:3px solid var(--r0)"><h3 style="font-size:.88rem">AI-Powered Insights</h3><p style="font-size:.8rem;color:var(--muted);margin:0">Smart Uploads proves AI works. 2026 strategy: predictive maintenance, utilization optimization.</p></div>
+</div>
+
+<div class="callout blue" style="margin-top:1rem">
+  <strong style="color:var(--sky)">Parts should absorb Procurement. Shop Network should absorb Payments. Analytics should absorb Benchmarking.</strong>
+  <p>The module boundaries you draw now need room for these without another packaging overhaul.</p>
+</div>
+
+</div>
+
+<footer>Fleetio Product Topology Analysis — Confidential</footer>
+
+<script>
+// Page switching
+function go(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+// Tab switching within pages
+function tab(id, btn, cls) {
+  document.querySelectorAll('.tpane.' + cls).forEach(p => p.classList.remove('on'));
+  btn.parentElement.querySelectorAll('.tbtn').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+// Coupling matrix
+const mods = ['Registry','Contacts','Inspect.','Fuel','Maint.','Parts','Shop Net','Tires','Warranty','Billing','Telem.','Analytics','Automat.','API'];
+const d = [
+  [9,3,2,2,3,1,1,1,1,0,2,2,1,1],[3,9,2,1,2,0,0,0,0,0,0,1,1,1],
+  [2,2,9,0,2,0,0,0,0,0,1,1,1,1],[2,1,0,9,0,0,0,0,0,0,2,1,1,1],
+  [3,2,2,0,9,3,2,1,2,3,2,2,2,1],[1,0,0,0,3,9,0,2,2,2,0,1,1,1],
+  [1,0,0,0,2,0,9,0,0,0,1,1,1,1],[1,0,0,0,1,2,0,9,0,0,0,1,0,1],
+  [1,0,0,0,2,2,0,0,9,0,0,1,1,1],[0,0,0,0,3,2,0,0,0,9,0,1,0,1],
+  [2,0,1,2,2,0,1,0,0,0,9,1,1,1],[2,1,1,1,2,1,1,1,1,1,1,9,1,1],
+  [1,1,1,1,2,1,1,0,1,0,1,1,9,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,9]
+];
+const t = document.getElementById('couplingMatrix');
+let h = '<tr><th></th>';
+mods.forEach(m => h += '<th>' + m + '</th>');
+t.innerHTML = h + '</tr>';
+d.forEach((r, i) => {
+  let tr = '<tr><th class="rh">' + mods[i] + '</th>';
+  r.forEach((v, j) => tr += i===j ? '<td class="d">\u2014</td>' : '<td class="c'+v+'">'+v+'</td>');
+  t.innerHTML += tr + '</tr>';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sherlock Labs | Pipeline Workflow</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: #374151;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: #9CA3AF;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Pipeline visualization */
+    .phase-node {
+      position: relative;
+      background: white;
+      border: 1px solid #F3F4F6;
+      border-radius: 6px;
+      padding: 12px 16px;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      cursor: default;
+    }
+    .phase-node:hover {
+      border-color: #E5E7EB;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .phase-connector {
+      width: 2px;
+      background: #E5E7EB;
+      margin: 0 auto;
+    }
+
+    .phase-connector-h {
+      height: 2px;
+      background: #E5E7EB;
+      flex: 1;
+    }
+
+    .agent-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #F3F4F6;
+      color: #374151;
+    }
+
+    .agent-chip img {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+    .phase-badge {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .gate-node {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+    }
+
+    .parallel-group {
+      border: 1px dashed #D1D5DB;
+      border-radius: 8px;
+      padding: 12px;
+      background: #FAFAFA;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body class="w-full min-h-screen">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[10px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[9px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">View</span>
+            <span class="text-[12px] font-bold">PIPELINE_WORKFLOW</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Phases</span>
+            <span class="text-[12px] font-bold">8 SEQUENTIAL</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Agents</span>
+            <span class="text-[12px] font-bold text-emerald-500">21 AVAILABLE</span>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="flex justify-between items-center mb-5">
+          <h1 class="text-xl font-bold text-black tracking-tight">Pipeline Workflow</h1>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <span class="legend-dot" style="background:#6366F1"></span>
+              <span class="text-[11px] text-gray-500">SEQUENTIAL</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="legend-dot" style="background:#10B981"></span>
+              <span class="text-[11px] text-gray-500">PARALLEL</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="legend-dot" style="background:#EF4444"></span>
+              <span class="text-[11px] text-gray-500">GATE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pipeline Visualization -->
+        <div class="flex flex-col items-center gap-0">
+
+          <!-- Phase 0: CEO Direction -->
+          <div class="phase-node w-full max-w-md text-center" style="border-left: 3px solid #000">
+            <div class="flex items-center justify-center gap-2 mb-1">
+              <span class="phase-badge" style="color:#000;background:#00000011">PHASE 0</span>
+              <span class="text-[12px] font-bold">CEO Direction</span>
+            </div>
+            <p class="text-[11px] text-gray-500">Sets vision and goals. Defines the problem to solve.</p>
+            <div class="mt-2 flex justify-center gap-2">
+              <span class="agent-chip"><img src="img/avatars/ravi.svg" alt="">Ravi</span>
+              <span class="agent-chip"><img src="img/avatars/priya.svg" alt="">Priya</span>
+              <span class="text-[10px] text-gray-400 self-center">divergence check</span>
+            </div>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 1: Research -->
+          <div class="parallel-group w-full max-w-lg">
+            <div class="text-center mb-2">
+              <span class="phase-badge" style="color:#3B82F6;background:#3B82F611">PHASE 1</span>
+              <span class="text-[11px] font-bold ml-1">Research</span>
+              <span class="text-[10px] text-emerald-500 ml-2">PARALLEL</span>
+            </div>
+            <div class="flex gap-3">
+              <div class="phase-node flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/suki.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Suki</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Market research, competitors, user patterns</p>
+              </div>
+              <div class="phase-node flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/marco.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Marco</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Technical research, libraries, API docs</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 2: Scope -->
+          <div class="phase-node w-full max-w-md" style="border-left: 3px solid #6366F1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="phase-badge" style="color:#6366F1;background:#6366F111">PHASE 2</span>
+              <span class="text-[12px] font-bold">Scope & Requirements</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <img src="img/avatars/thomas.svg" alt="" class="w-4 h-4 rounded-full">
+              <span class="text-[11px] font-bold">Thomas (PM)</span>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-1">Writes requirements, acceptance criteria, work items. Outputs → <code class="text-[10px]">docs/{project}-requirements.md</code></p>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 3: Architecture -->
+          <div class="phase-node w-full max-w-md" style="border-left: 3px solid #8B5CF6">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="phase-badge" style="color:#8B5CF6;background:#8B5CF611">PHASE 3</span>
+              <span class="text-[12px] font-bold">Architecture</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <img src="img/avatars/andrei.svg" alt="" class="w-4 h-4 rounded-full">
+              <span class="text-[11px] font-bold">Andrei</span>
+              <span class="text-[10px] text-gray-400">+</span>
+              <img src="img/avatars/kai.svg" alt="" class="w-4 h-4 rounded-full">
+              <span class="text-[11px] font-bold">Kai</span>
+              <span class="text-[10px] text-gray-400">(AI parts)</span>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-1">Tech stack, system design, API contracts. Outputs → <code class="text-[10px]">docs/{project}-tech-approach.md</code></p>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 4: Parallel Track -->
+          <div class="parallel-group w-full max-w-2xl">
+            <div class="text-center mb-3">
+              <span class="phase-badge" style="color:#10B981;background:#10B98111">PHASE 4</span>
+              <span class="text-[11px] font-bold ml-1">Design + Backend + Messaging</span>
+              <span class="text-[10px] text-emerald-500 ml-2">PARALLEL</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="phase-node">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/robert.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Robert</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Design spec, user flows, wireframes</p>
+                <p class="text-[9px] text-gray-400 mt-1">needs: requirements + tech approach</p>
+              </div>
+              <div class="phase-node">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/jonah.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Jonah</span>
+                  <span class="text-[10px] text-gray-400">+</span>
+                  <img src="img/avatars/sam.svg" alt="" class="w-3.5 h-3.5 rounded-full">
+                  <span class="text-[11px] font-bold">Sam</span>
+                </div>
+                <p class="text-[10px] text-gray-500">APIs, schemas, business logic</p>
+                <p class="text-[9px] text-gray-400 mt-1">needs: requirements + tech approach</p>
+              </div>
+              <div class="phase-node">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/priya.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Priya</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Messaging, copy, positioning</p>
+                <p class="text-[9px] text-gray-400 mt-1">needs: requirements only</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 mt-3">
+              <div class="phase-node">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/derek.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Derek</span>
+                </div>
+                <p class="text-[10px] text-gray-500">3rd-party integrations</p>
+                <p class="text-[9px] text-gray-400 mt-1">if needed</p>
+              </div>
+              <div class="phase-node">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/milo.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Milo</span>
+                </div>
+                <p class="text-[10px] text-gray-500">CI/CD, infra, Railway</p>
+                <p class="text-[9px] text-gray-400 mt-1">if needed</p>
+              </div>
+              <div class="phase-node">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/howard.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Howard</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Payment flows, Stripe</p>
+                <p class="text-[9px] text-gray-400 mt-1">if needed</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 5: Frontend -->
+          <div class="phase-node w-full max-w-lg" style="border-left: 3px solid #EC4899">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="phase-badge" style="color:#EC4899;background:#EC489911">PHASE 5</span>
+              <span class="text-[12px] font-bold">Frontend / Mobile</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mt-1">
+              <span class="agent-chip"><img src="img/avatars/alice.svg" alt="">Alice (FE + interactions + responsive + a11y)</span>
+              <span class="agent-chip"><img src="img/avatars/zara.svg" alt="">Zara</span>
+              <span class="agent-chip"><img src="img/avatars/leo.svg" alt="">Leo</span>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-1">Blocked until design spec AND backend API are ready. Alice owns the full frontend surface.</p>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 6: Review -->
+          <div class="parallel-group w-full max-w-lg">
+            <div class="text-center mb-2">
+              <span class="phase-badge" style="color:#F59E0B;background:#F59E0B11">PHASE 6</span>
+              <span class="text-[11px] font-bold ml-1">Review</span>
+              <span class="text-[10px] text-emerald-500 ml-2">PARALLEL</span>
+            </div>
+            <div class="flex gap-3">
+              <div class="phase-node flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/robert.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Robert</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Design review — visual check against spec</p>
+              </div>
+              <div class="phase-node flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <div class="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[6px] font-bold text-gray-500">AT</div>
+                  <span class="text-[11px] font-bold">Atlas</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Code review — arch, security, reliability</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 7: QA Gate -->
+          <div class="parallel-group w-full max-w-lg">
+            <div class="text-center mb-2">
+              <span class="phase-badge" style="color:#EF4444;background:#EF444411">PHASE 7</span>
+              <span class="text-[11px] font-bold ml-1">QA + Docs</span>
+              <span class="text-[10px] text-emerald-500 ml-2">PARALLEL</span>
+            </div>
+            <div class="flex gap-3">
+              <div class="phase-node gate-node flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/enzo.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Enzo</span>
+                  <span class="phase-badge" style="color:#EF4444;background:#EF444422">RELEASE GATE</span>
+                </div>
+                <p class="text-[10px] text-gray-500">Pass/fail verdict. Failures block shipping. Nothing ships without a pass.</p>
+              </div>
+              <div class="phase-node flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <img src="img/avatars/nadia.svg" alt="" class="w-4 h-4 rounded-full">
+                  <span class="text-[11px] font-bold">Nadia</span>
+                </div>
+                <p class="text-[10px] text-gray-500">User guides, README, docs. Revises if QA causes changes.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-connector h-6"></div>
+
+          <!-- Phase 8: Retro -->
+          <div class="phase-node w-full max-w-md" style="border-left: 3px solid #10B981">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="phase-badge" style="color:#10B981;background:#10B98111">PHASE 8</span>
+              <span class="text-[12px] font-bold">Ship + Retrospective</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <img src="img/avatars/yuki.svg" alt="" class="w-4 h-4 rounded-full">
+              <span class="text-[11px] font-bold">Yuki</span>
+              <span class="text-[10px] text-gray-400">retrospective analysis</span>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-1">Metrics, lessons learned, process improvements</p>
+          </div>
+
+          <div class="phase-connector h-4"></div>
+
+          <!-- Ship -->
+          <div class="w-full max-w-md text-center py-3 px-4 bg-black text-white rounded-lg">
+            <span class="text-[12px] font-bold tracking-wide">SHIPPED</span>
+          </div>
+        </div>
+
+        <!-- Critical Path -->
+        <div class="mt-8 bg-white border border-gray-100 rounded-lg p-4 premium-shadow">
+          <div class="subtle-label mb-2">Critical Path</div>
+          <div class="flex items-center gap-1 flex-wrap">
+            <span class="text-[11px] font-bold text-black px-2 py-0.5 bg-gray-100 rounded">CEO</span>
+            <span class="text-[11px] text-gray-400">→</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded" style="color:#6366F1;background:#6366F111">Thomas</span>
+            <span class="text-[11px] text-gray-400">→</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded" style="color:#8B5CF6;background:#8B5CF611">Andrei</span>
+            <span class="text-[11px] text-gray-400">→</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded" style="color:#A855F7;background:#A855F711">Robert</span>
+            <span class="text-[11px] text-gray-400">→</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded" style="color:#EC4899;background:#EC489911">Alice</span>
+            <span class="text-[11px] text-gray-400">→</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded" style="color:#F59E0B;background:#F59E0B11">Review</span>
+            <span class="text-[11px] text-gray-400">→</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded" style="color:#EF4444;background:#EF444411">Enzo (QA)</span>
+            <span class="text-[11px] text-gray-400">→</span>
+            <span class="text-[11px] font-bold text-white px-2 py-0.5 bg-black rounded">Ship</span>
+          </div>
+          <p class="text-[10px] text-gray-400 mt-2">Jonah, Sam, Priya, Nadia, Derek, Milo, Howard, and Ravi are off the critical path.</p>
+        </div>
+
+        <!-- Operating Agreements -->
+        <div class="mt-4 bg-white border border-gray-100 rounded-lg p-4 premium-shadow">
+          <div class="subtle-label mb-3">Operating Agreements</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">01</span>
+              <span class="text-[11px] text-gray-600">QA is a release gate. Nothing ships without Enzo's pass.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">02</span>
+              <span class="text-[11px] text-gray-600">Trivial-fix boundary: single-file, cosmetic-only, no behavior change.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">03</span>
+              <span class="text-[11px] text-gray-600">Design review before QA. Robert checks implementation against spec.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">04</span>
+              <span class="text-[11px] text-gray-600">API contract alignment. Alice + Jonah define shapes before building.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">05</span>
+              <span class="text-[11px] text-gray-600">Lightweight iteration track for small post-v1 improvements.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">06</span>
+              <span class="text-[11px] text-gray-600">Architecture time floor. Every project gets Andrei's pass.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">07</span>
+              <span class="text-[11px] text-gray-600">Backend quality parity. Atlas reviews backend in parallel with design review.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-[10px] font-bold text-red-500 mt-0.5">08</span>
+              <span class="text-[11px] text-gray-600">One pipeline at a time. Don't start new until current clears QA.</span>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

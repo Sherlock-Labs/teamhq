@@ -1,0 +1,21 @@
+{
+  "id": "6978b54a-5f1e-47e1-9c09-a3882812befa",
+  "projectId": "d669781c-652d-46f9-b42f-dc15169b7e73",
+  "projectSlug": "teamhq-autonomy-improvements",
+  "projectName": "TeamHQ Autonomy Improvement Roadmap",
+  "gate": "afterRequirements",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:31:34.468Z",
+  "updatedAt": "2026-03-18T13:36:44.195Z",
+  "resolvedAt": "2026-03-18T13:36:44.195Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-autonomy-improvements.md",
+      "title": "Prioritized Improvement Roadmap (12 improvements, 4 tiers)"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Wrote the prioritized improvement roadmap (docs/teamhq-autonomy-improvements.md) covering all 12 improvements from Meeting #26. Ranked by impact and effort across 4 priority tiers: P0 (dashboard, health checks, persistent state), P1 (directive queue, notifications, retry, memory), P2 (batch reviews, templates, conflict detection, alerting), P3 (NL kickoff, proactive detection). Also kicked off 5 parallel agent sessions: Ravi (north star vision), Marco (workflow state patterns eval), Suki (competitive scan), Robert (morning briefing sketch), Andrei (persistent workflow arch sketch).",
+  "feedback": null
+}

@@ -1,0 +1,28 @@
+{
+  "id": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+  "slug": "quick-competitive-scan-3-5-examples-of-how-autonomous-a",
+  "name": "Quick competitive scan (3-5 examples) of how autonomous a...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-03-18T13:22:37.819Z",
+  "updatedAt": "2026-03-18T13:32:08.456Z",
+  "completedAt": "2026-03-18T13:32:08.456Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Quick competitive scan (3-5 examples) of how autonomous agent products handle their 'show your work' transparency layer — what patterns work, what feels trustworthy vs. opaque.\n\nOwner: Suki\nPriority: medium\nSource: Custom Meeting #26",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

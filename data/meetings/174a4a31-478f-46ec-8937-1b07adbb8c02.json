@@ -1,0 +1,262 @@
+{
+  "id": "174a4a31-478f-46ec-8937-1b07adbb8c02",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 34,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T14:42:44.512Z",
+  "completedAt": "2026-03-18T14:45:33.865Z",
+  "durationMs": 169353,
+  "error": null,
+  "summary": "Standup #36 focused on unblocking Forge visual themes by having Alice apply the existing code to the live Forge repo at /home/jeff/forge-app, with Enzo QA'ing immediately after. The team sequenced work: themes application and QA first, then Alice pivots to command palette (RT-38c). Jonah was assigned the QuoteVoice PDF export as parallel shipped-product work, pending Robert's layout spec from last meeting. The offline mode rejection was acknowledged. The 24-hour gate deadline pressure drove crisp decision-making.",
+  "keyTakeaways": [
+    "Visual themes are unblocked — Alice applies code to /home/jeff/forge-app immediately, Enzo QAs the running app right after. Target: both done today.",
+    "Command palette is next for Alice after themes QA passes — tech approach and design spec are ready, she can start RT-38c without waiting.",
+    "QuoteVoice PDF export is the parallel shipped-product win — Jonah builds it while Alice does Forge work, but only after Robert's layout spec lands.",
+    "CEO rejected offline mode — the team moves on without debate, removing it from the backlog.",
+    "The 24-hour gate deadline is working — CEO cleared the afterFrontend gate, and the team is executing immediately rather than waiting."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, quick standup. Three items: apply visual themes to the live Forge repo, sequence command palette after that, and figure out what parallel work we can ship. CEO gave us two pieces of feedback — afterFrontend gate is cleared, Forge repo is at /home/jeff/forge-app, and offline mode is rejected. Let's not dwell on the rejection. Moving on."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Good news on themes. The code is fully written — CSS tokens, component styles, the whole styling layer is documented in the frontend notes. I need to actually apply it to the running Forge codebase at /home/jeff/forge-app. Question is whether it's a clean apply or if the Forge repo has drifted since we wrote the theme code."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I finished the CSS token hierarchy doc against the visual themes worktree. The cascade order is clean — design tokens feed into component tokens feed into utility classes. Alice, the main risk is if Forge's existing styles have specificity conflicts with the new token system. Read the existing stylesheets first before applying. Don't just paste — integrate."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Agreed, I'll read every file before touching it. I'll start with the token layer, verify nothing breaks, then layer on component styles. If there are specificity conflicts I'll fix them as I go rather than piling overrides on top."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Quick update on my side — SherlockPDF drag-drop QA passed yesterday. All file types, oversized files, drag-and-cancel, error states, mobile viewport. Clean pass. So I'm free for themes QA."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Great, that's one shipped. Enzo, how's the Forge regression suite looking? You were targeting all three views green."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Board and timeline are fully covered. List view is about 80% — I finished inline editing coverage, still need bulk actions. But here's my concern: if Alice is about to apply a full visual theme to Forge, I should QA the themes on the running app, not just finish regression on the old styles. The regression suite will catch if themes break existing functionality."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's the right call. Here's the sequence: Alice applies themes to forge-app, Enzo QAs themes on the running app — which doubles as regression testing. You're testing both 'do themes look right' and 'did themes break anything.' Two birds."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Exactly. I'll run my existing board and timeline regression cases against the themed app. That covers both. For list view, I'll finish the remaining bulk actions coverage as part of the same pass."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I'm not on the critical path for themes or command palette. What do you want me on? The QuoteVoice PDF export was the top-ranked improvement pitch from last meeting."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Right. Robert was supposed to spec the PDF layout — margins, typography, line item table format. That was a 30-minute deliverable from last standup. I don't think we have it yet since Robert isn't in this meeting. Jonah, can you start on the QuoteVoice PDF export without the layout spec, or are you blocked?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I can prep the backend — review the estimate data model, set up the PDF generation endpoint, pick a library. But I shouldn't guess at the visual layout. Last time I made layout decisions without Robert, we had a round-trip. I'd rather wait for the spec and do it once."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Jonah's right. The generation logic and the layout are separable. He can build the endpoint that accepts estimate data and returns a PDF, stub the layout, and swap in Robert's design when it lands. That way he's not blocked and not guessing."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Jonah, build the PDF generation scaffolding — endpoint, library choice, data model mapping. Leave the visual template as a placeholder. I'll ping Robert separately to get that layout spec finished today."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Works for me. I'll use pdf-lib since we've already used it in SherlockPDF. No new dependencies."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "One thing on command palette timing. After I finish themes and Enzo QAs, I pivot straight to RT-38c. The design spec and tech approach are both done. I've read them already. How much runway do I have before Enzo needs something to QA on command palette?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'll be occupied with themes QA for a while — full regression across three views plus visual verification. Realistically, if themes takes me the rest of today, I won't be ready for command palette QA until tomorrow. So you have a solid window."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "That's plenty. Command palette is mostly frontend — fuzzy search, keyboard navigation, action registry. I can have a working implementation by end of day tomorrow if themes goes smoothly today."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Andrei, anything Alice should watch out for on command palette from the tech approach?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "The main thing is the action registry pattern. I specified a declarative registry where each action defines its own label, shortcut, and handler. Don't hardcode the action list — build the registry first, then populate it. That way keyboard shortcuts and command palette share the same source of truth. It's in the tech approach doc."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Already noted. Registry pattern, shared with keyboard shortcuts. I'll build the registry abstraction first, then the palette UI consumes it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Let me confirm the offline mode rejection. CEO said no. That's removed from the backlog. Anyone have concerns with that?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "No concerns. Offline mode would have been a significant architectural lift — service workers, conflict resolution, sync queues. Removing it keeps the Forge architecture simple. The right call."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Fine by me. One less thing to test. Offline state testing is notoriously painful."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's lock it down. Alice: apply visual themes to /home/jeff/forge-app, starting now. Enzo: stand by for themes QA as soon as Alice signals ready — full visual check plus regression across all three views. Jonah: QuoteVoice PDF export scaffolding, placeholder layout until Robert specs it. After themes QA passes, Alice pivots to command palette. The 24-hour deadline is working in our favor — let's not waste the momentum. Anything else?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "One more thing — should I also look at the VoiceNote Pro retry mechanism while I'm doing parallel work? Andrei was supposed to scope the architecture for that if the pivot happened."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Not yet. One shipped-product improvement at a time. Finish QuoteVoice PDF export first. If that ships fast and we still have bandwidth, we'll talk about VoiceNote Pro retry next standup."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Agreed. I have a rough idea for the retry mechanism — exponential backoff with jitter — but it doesn't need a formal architecture pass until we commit to it. Let's not context-switch."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "We're done. Alice on themes, Enzo on standby for QA, Jonah on QuoteVoice PDF, Andrei available for questions. Let's ship."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Alice applies visual themes to the live Forge repo at /home/jeff/forge-app immediately — this is the top priority unblocked by the CEO's afterFrontend gate clearance.",
+      "rationale": "The theme code is fully written and documented but has never been applied to the running codebase. The CEO confirmed repo access. Every hour it sits unapplied is wasted work. Alice reads existing styles first to avoid specificity conflicts, then layers tokens and component styles incrementally.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Enzo QAs visual themes on the running Forge app, combining visual verification with regression testing across all three views (board, timeline, list).",
+      "rationale": "Rather than doing separate visual QA and regression passes, Enzo runs his existing regression suite against the themed app — testing both that themes look correct and that they don't break existing functionality. This is more efficient than two separate passes and Enzo already has board and timeline regression cases ready.",
+      "participants": [
+        "Thomas",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "After themes QA passes, Alice pivots to command palette implementation (RT-38c). No waiting — tech approach and design spec are already done.",
+      "rationale": "Command palette has zero blockers once Alice is free. Both the tech approach (Andrei) and design spec (Robert) are complete. Enzo will be occupied with themes QA for the rest of the day, giving Alice a full build window before the next QA cycle.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Jonah builds QuoteVoice PDF export scaffolding as parallel shipped-product work — endpoint, library (pdf-lib), data model mapping — with a placeholder layout until Robert delivers the visual spec.",
+      "rationale": "Jonah is off the Forge critical path and has bandwidth. QuoteVoice PDF export was ranked highest impact-to-effort in the previous standup. Separating the generation logic from the visual layout lets Jonah make progress without guessing at design decisions. Uses pdf-lib for consistency with SherlockPDF.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Offline mode is removed from the Forge backlog per CEO rejection.",
+      "rationale": "CEO explicitly rejected it. The team agreed it would have been a significant architectural lift (service workers, conflict resolution, sync queues) with painful QA implications. Removing it keeps Forge's architecture simple.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Enzo"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Alice",
+      "description": "Apply visual themes code to the live Forge repo at /home/jeff/forge-app. Read all existing stylesheets first, then apply token layer, verify nothing breaks, layer component styles. Signal Enzo when ready for QA.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "QA visual themes on the running Forge app once Alice signals ready. Run full visual verification plus existing regression suite (board, timeline, list views). Finish remaining list view bulk actions coverage as part of the same pass. Pass/fail verdict.",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Build QuoteVoice PDF export scaffolding — endpoint, pdf-lib integration, estimate data model mapping. Use placeholder layout template until Robert delivers the visual spec. Start by reviewing the QuoteVoice estimate data model.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Ping Robert (outside this meeting) to finish the QuoteVoice PDF layout spec — margins, typography, logo placement, line item table format. Needs to land today so Jonah can finalize.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Alice",
+      "description": "After themes QA passes, pivot to command palette implementation (RT-38c). Build action registry abstraction first (shared with keyboard shortcuts), then palette UI. Target: working implementation by end of day tomorrow.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Remove offline mode from the Forge backlog and update work items to reflect CEO rejection.",
+      "priority": "low"
+    }
+  ],
+  "mood": "Focused and unblocked",
+  "nextMeetingTopics": [
+    "Visual themes — applied to Forge and QA passed? Any issues found by Enzo?",
+    "Command palette — Alice started RT-38c? Early progress or blockers?",
+    "QuoteVoice PDF export — Jonah's scaffolding done? Robert's layout spec delivered?",
+    "Enzo's regression suite — all three Forge views fully green after themes pass?",
+    "Remaining Forge review gates — any more cleared by CEO? Pipeline status update.",
+    "VoiceNote Pro retry mechanism — ready to scope if Jonah has bandwidth after QuoteVoice?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Meeting #36 — Quick standup. Context:\n\n1. CEO FEEDBACK on review gates: (a) afterFrontend — CEO confirms Forge repo is available locally at /home/jeff/forge-app. Alice can apply visual themes code. (b) afterQA proposals — CEO rejected offline mode.\n\n2. Visual themes: code written in TeamHQ docs but not yet applied to running Forge repo. RT-52 (real QA on running code) still planned.\n\n3. Command palette: tech approach + design spec done. RT-38c (frontend impl) planned for Alice.\n\n4. 24-hour deadline on Forge gates is ticking.\n\nAgenda: (1) Immediate next step — apply visual themes to forge-app and get Enzo to QA. (2) After themes QA passes, Alice starts command palette. (3) Shipped-product improvement pitches — what quick wins can run in parallel? Decisions and actions only.",
+  "interviewConfig": null
+}

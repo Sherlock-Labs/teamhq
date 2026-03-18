@@ -1,0 +1,138 @@
+{
+  "projectSlug": "teamhq-platform-improvements",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "TPI-1",
+      "title": "GET /api/health endpoint — server status, data directory, JSON parseability",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Jonah",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-2",
+      "title": "Pipeline status dashboard scoping — define three-card layout, API shape, frontend tasks",
+      "description": "Scoping task. Defined the pipeline dashboard: three cards (active pipelines, recent completions, pending reviews) powered by GET /api/pipeline-status. Created TPI-2a (backend) and TPI-2b (frontend) as implementation tasks.",
+      "status": "completed",
+      "phase": "",
+      "owner": "Thomas",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-2a",
+      "title": "GET /api/pipeline-status endpoint — aggregate pipeline-log data with agent-level detail",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Jonah",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-2b",
+      "title": "Pipeline dashboard frontend — three metric cards on index.html using /api/pipeline-status",
+      "description": "Add three cards to index.html dashboard: (1) Active Pipelines — count + list with progress bars, (2) Recent Completions — last 5 shipped projects, (3) Pending Reviews — count + list linking to reviews page. Data source: GET /api/pipeline-status. Match existing metric-card style. No new dependencies.",
+      "status": "planned",
+      "phase": "",
+      "owner": "Alice",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-3",
+      "title": "Keyboard shortcuts for meetings/projects pages (after RT-38c ships)",
+      "description": "",
+      "status": "planned",
+      "phase": "",
+      "owner": "Alice",
+      "priority": "medium",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-4",
+      "title": "Design token audit — normalize spacing, color, type values across TeamHQ pages",
+      "description": "",
+      "status": "planned",
+      "phase": "",
+      "owner": "Robert",
+      "priority": "low",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-5",
+      "title": "Smoke test for GET /api/health endpoint",
+      "description": "",
+      "status": "planned",
+      "phase": "",
+      "owner": "Enzo",
+      "priority": "low",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-6",
+      "title": "Meetings page card improvements — participant count, summary preview, card density",
+      "description": "Lightweight iteration. The meetings API already returns summary, participants, and status. Frontend-only change to meetings.html — show participant avatars/count, first-line summary, and reduce vertical spacing per card. Robert eyeballs + Enzo spot-checks.",
+      "status": "planned",
+      "phase": "",
+      "owner": "Alice",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-7",
+      "title": "Pipeline-log data quality audit — flag sparse entries in last 5 shipped projects",
+      "description": "Andrei audits pipeline-log JSON files for inconsistencies (missing subtasks, decisions, filesChanged). Only backfill last 5 shipped projects. Older projects accepted as legacy data.",
+      "status": "planned",
+      "phase": "",
+      "owner": "Andrei",
+      "priority": "medium",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-8",
+      "title": "QA-passed badge on project cards — show verified status for QA-gated projects",
+      "description": "Add a small checkmark badge on project cards for projects that have a completed QA pass. Absence of badge means unknown/legacy (not failure). Frontend-only change.",
+      "status": "planned",
+      "phase": "",
+      "owner": "Alice",
+      "priority": "low",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    },
+    {
+      "id": "TPI-9",
+      "title": "Meetings page search/filter — text search + type filter (custom/standup/retro)",
+      "description": "Optional add-on to TPI-6. Add a search bar and meeting type filter to meetings.html. Client-side filtering — no new API needed. Scoped as a fast follow after TPI-6.",
+      "status": "planned",
+      "phase": "",
+      "owner": "Alice",
+      "priority": "low",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    }
+  ]
+}

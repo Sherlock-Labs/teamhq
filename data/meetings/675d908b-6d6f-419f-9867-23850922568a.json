@@ -1,0 +1,280 @@
+{
+  "id": "675d908b-6d6f-419f-9867-23850922568a",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 29,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T13:37:10.750Z",
+  "completedAt": "2026-03-18T13:40:03.881Z",
+  "durationMs": 173131,
+  "error": null,
+  "summary": "Quick standup covering five agenda items: celebrated Forge v2 visual themes passing QA and confirmed it's ready to ship, reviewed RT-38 Command Palette requirements status and next steps, acknowledged five autonomy research deliverables awaiting CEO review gates, discussed Bug Reporter BR-4/BR-5 priority, debated what product improvements users would value most, and identified proactive work the team can do while waiting on CEO reviews.",
+  "keyTakeaways": [
+    "Forge v2 visual themes passed QA and is ready to ship — the team's first visual customization feature is complete.",
+    "Command Palette (RT-38) requirements are written; Andrei will draft the tech approach and Robert will start the design spec once the tech approach lands.",
+    "Five autonomy research deliverables are queued behind CEO review gates — the team should not build on them until the CEO reviews and provides direction.",
+    "Bug Reporter BR-4/BR-5 are deferred until after Command Palette ships — they're polish items that don't block core functionality.",
+    "The team identified concrete proactive work: Jonah will spike on QuoteVoice reconnection fix, Alice will audit Forge accessibility, Andrei will draft command palette tech approach, and Enzo will build a regression test suite for Forge's shipped features."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, quick standup. Five items on the agenda. Let's move fast. First up — Forge v2 visual themes. Enzo, you gave the pass. Walk us through the verdict."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Clean pass. I ran full regression across timeline, board, and list views with every theme active. Theme token cascade works correctly — no bleed between themes, no hardcoded colors leaking through. SVG dependency lines pick up the custom properties. Tested on mobile viewports too. One minor note: there's a 50ms flash when switching themes on slower connections, but it's within acceptable range. I'm comfortable shipping this."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "My design review aligned with Enzo's findings. The token naming is consistent, the cascade is clean. The theme flash Enzo mentioned — that's a CSS custom property swap, it'll always have a tiny repaint. Not worth optimizing for v1. Ship it."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Good to hear. The SVG migration was the part I was most worried about — those dependency lines were the last hardcoded stroke colors. Everything's on custom properties now. Ready to ship whenever the CEO pulls the trigger."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Great. Visual themes is done. Moving to item two — Command Palette, RT-38. I've written the requirements doc. Scoped to 18 commands for v1: view switching, item CRUD, search, navigation, theme toggle, and a few utility actions. Andrei, you were going to draft the tech approach. Where are we?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I haven't started yet. I was finishing the persistent workflow state architectural sketch for the autonomy project. I'll pick up the command palette tech approach next — the action registry pattern I outlined verbally in the last meeting is straightforward. Map of action IDs to handler functions with metadata: label, keyboard shortcut, icon, category. I can have the doc done today."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Today works. Robert, once Andrei's tech approach lands, how fast can you turn around a design spec?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Command palette is a well-established pattern. I don't need to reinvent anything — it's a centered modal with a search input, filtered action list, and keyboard navigation. The interesting design decisions are around grouping, how we show shortcut hints, and the empty/no-results states. I can have the spec done same day as Andrei's doc, maybe next morning."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "From my side, the implementation is pretty clean once I have the spec. The action registry is the backbone — once that's solid, the UI is a filtered list with keyboard handlers. My main question for Andrei: are we doing a global keyboard listener that intercepts shortcuts, or does each shortcut register independently?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Global listener. Single keydown handler on the document that checks against the shortcut map. Way simpler than scattering listeners across components. The palette itself is just one more shortcut — Cmd+K opens it, then the list filters as you type. I'll spec this in the tech approach."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Quick question — does the command palette need any backend work? Search across items, for instance?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good question. For v1, no. The search is client-side only — it filters the 18 registered commands by label. Item search across the roadmap data is a v2 feature I've explicitly deferred. You're off the critical path for this one, Jonah."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Item three. We have five autonomy research deliverables completed — north star vision, competitive scan, workflow state patterns, persistent workflow arch sketch, and the morning briefing design sketch. All of them are sitting behind CEO review gates. The CEO hasn't reviewed them yet. What's the play here?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "We don't build on them until the CEO reviews. That's the whole point of review gates — we shipped that feature specifically so the CEO can provide direction before we commit engineering effort. If we start building the workflow state persistence layer and the CEO comes back with 'actually, I want a different approach,' we've wasted the work."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Agreed. The morning briefing sketch and dashboard spec are concepts, not commitments. I'd rather get the CEO's reaction before I spend time on detailed component specs."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Right. Those are parked. We don't touch them until the CEO clears the gates. Moving on — item four, Bug Reporter. BR-4 and BR-5 are still planned. BR-4 is drag-to-reorder screenshots, BR-5 is recent bugs quick-view. Both are polish. My recommendation: defer them again. Command palette is higher leverage."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "The core bug reporting flow works. I tested it when it shipped — screenshot capture, voice transcription, filing as work items. BR-4 and BR-5 are nice-to-haves. I'd rather spend my QA cycles on the command palette than on screenshot reordering."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Same. Drag-to-reorder is a fun interaction problem but it's not blocking anyone. Defer."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "BR-4 and BR-5 deferred until after command palette ships. Item five — what product improvements would users value most right now, and what proactive work can we do while we're waiting on CEO reviews?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The QuoteVoice reconnection bug is still open. That's a real user-facing issue — contractors on spotty job site connections lose their session when the app backgrounds. The lightweight iteration scope is already written. I can spike on the server-side fix today: exponential backoff plus a session resume token. It's maybe half a day of work."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That's a good use of downtime. The reconnection pattern is straightforward and it's a real pain point. Jonah, check the existing WebSocket handler in the QuoteVoice repo — I think there's already a partial reconnection attempt that just doesn't persist the session state. Extend it rather than rebuilding."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "While we're talking about user value — I've been wanting to do an accessibility audit on Forge. We've been shipping features fast and I'm not confident every view handles keyboard navigation correctly, especially the newer board view with drag-and-drop. I could do a focused audit and fix pass while I'm waiting for the command palette spec."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That's a great call. The board view's drag-and-drop was designed with mouse interaction in mind. I should have specified keyboard alternatives in the design spec. Alice, if you find gaps, flag them and I'll update the spec retroactively so we don't regress."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'll add to the proactive list: I want to build a regression test suite for Forge's shipped features. We've been doing manual regression each time a new feature lands. With visual themes, command palette, and more features coming, a proper automated suite would save us hours per QA cycle. I can start writing those tests now against the stable codebase."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "All good uses of time. Let me also flag — the autonomy improvement roadmap I wrote includes a prioritized list of what to build next once the CEO clears the gates. But until then, these proactive items are exactly the right move: fix real bugs, improve quality, reduce future QA burden."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "One more thing. When I write the command palette tech approach today, I'm going to design the action registry to be extensible for AI-driven actions. Not building AI features now — but the registry shape should accommodate an action that says 'ask AI to summarize this roadmap' alongside 'switch to board view.' It's zero extra work to get the type right upfront."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's fine as long as it doesn't add scope to v1. The 18 commands I scoped are the 18 commands we ship. The extensibility is in the architecture, not the feature set."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Exactly. It's a type definition, not a feature."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Let's wrap. Forge visual themes is ready to ship. Command palette is next — Andrei has the tech approach today, Robert specs it same day or next morning, Alice implements once both land. Jonah spikes on QuoteVoice reconnection. Alice audits Forge accessibility. Enzo starts the regression test suite. Autonomy deliverables stay parked until CEO reviews. Bug Reporter BR-4/BR-5 deferred. Any objections? No? We're done."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Forge v2 visual themes is confirmed shipped — QA passed, design review passed, ready for production deployment.",
+      "rationale": "Enzo ran full regression across all three views with every theme active. Robert's design review confirmed token consistency and clean cascade. The minor theme-switch flash (50ms repaint) is acceptable and not worth optimizing for v1.",
+      "participants": [
+        "Enzo",
+        "Robert",
+        "Alice",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "Command Palette (RT-38) is the next Forge v2 feature. Andrei writes the tech approach today, Robert specs same day or next morning, Alice implements once both land.",
+      "rationale": "Requirements are already written (18 commands scoped). The action registry pattern is straightforward and well-understood. The team has capacity now that visual themes is complete. Command palette was already chosen as the next feature in Meeting #27.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Robert",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Bug Reporter BR-4 (drag-to-reorder screenshots) and BR-5 (recent bugs quick-view) deferred until after Command Palette ships.",
+      "rationale": "Both are polish items on a feature whose core flow is already working in production. Command palette is higher leverage. No one on the team is blocked by the missing bug reporter features.",
+      "participants": [
+        "Thomas",
+        "Enzo",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Autonomy research deliverables remain parked behind CEO review gates — no build work begins until the CEO reviews and provides direction.",
+      "rationale": "Review gates exist specifically to prevent the team from committing engineering effort before the CEO validates the direction. Building on unreviewed research risks wasted work if the CEO wants a different approach.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Robert"
+      ]
+    },
+    {
+      "description": "Jonah will spike on QuoteVoice WebSocket reconnection fix as proactive work using the lightweight iteration track.",
+      "rationale": "It's a real user-facing bug affecting contractors on spotty connections. The scope is already written, the server-side fix is straightforward (exponential backoff + session resume token), and Jonah is off the critical path for command palette.",
+      "participants": [
+        "Jonah",
+        "Andrei",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "Andrei will design the command palette action registry to be type-extensible for future AI actions, with zero added scope to v1.",
+      "rationale": "Getting the type shape right upfront (accommodating AI-driven actions alongside manual commands) costs nothing now but avoids a registry redesign later. Thomas confirmed: extensibility is in the architecture, not the feature set.",
+      "participants": [
+        "Andrei",
+        "Thomas"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Andrei",
+      "description": "Write Forge v2 command palette tech approach today — action registry pattern with global keyboard listener, Map of action IDs to handlers with metadata (label, shortcut, icon, category). Design registry types to be extensible for future AI actions.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Write command palette design spec once Andrei's tech approach lands — centered modal, search input, filtered action list, keyboard navigation, shortcut hints, grouping, empty/no-results states. Target: same day or next morning.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Implement command palette once both Andrei's tech approach and Robert's design spec are ready.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Conduct focused accessibility audit on Forge — especially board view keyboard navigation and drag-and-drop alternatives. Flag gaps to Robert for design spec updates.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Spike on QuoteVoice WebSocket reconnection fix — exponential backoff + session resume token. Check existing partial reconnection handler in QuoteVoice repo and extend rather than rebuild. Target: half day.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Build automated regression test suite for Forge's shipped features (visual themes, dependency lines, three views, core CRUD) against the stable codebase.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Robert",
+      "description": "Update board view design spec with keyboard alternatives for drag-and-drop if Alice's accessibility audit finds gaps.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Productive and energized",
+  "nextMeetingTopics": [
+    "Andrei's command palette tech approach — is it done and ready for Robert and Alice?",
+    "Robert's command palette design spec — done and handed off to Alice?",
+    "Alice's Forge accessibility audit findings — any critical gaps in keyboard navigation?",
+    "Jonah's QuoteVoice reconnection spike — did the server-side fix land?",
+    "Enzo's regression test suite progress — how many Forge features are covered?",
+    "CEO review gate status on autonomy deliverables — has the CEO reviewed any of the five?",
+    "Alice's command palette implementation — started, in progress, or blocked?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Quick standup. Agenda: (1) Forge v2 visual themes passed QA — ready to ship. Next feature: RT-38 Command Palette has requirements written. (2) Five autonomy research deliverables completed, all awaiting CEO review gates. (3) Bug Reporter BR-4/BR-5 still planned. (4) What product improvements would users value most right now? (5) Proactive work ideas while waiting on CEO reviews?",
+  "interviewConfig": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "6b5c7eae-f1aa-4eb0-8630-e791cbd04825",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterQA",
+  "status": "pending",
+  "createdAt": "2026-03-18T14:40:13.680Z",
+  "updatedAt": "2026-03-18T14:40:13.680Z",
+  "resolvedAt": null,
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/sherlockpdf-drag-drop-scope.md",
+      "title": "SherlockPDF Drag-Drop Scope"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "ESCALATION — Meeting #35 summary + 24-hour deadline.\n\n7 Forge review gates pending 3+ hours across multiple heartbeats. Team set a 24-HOUR HARD DEADLINE: if gates have not cleared by tomorrow standup, team pivots from Forge to shipped-product improvements.\n\nSherlockPDF drag-drop: built, Enzo QAing now. Regression suite: board+timeline done, list 60%.\n\nTeam pitched 6 shipped-product improvements for CEO prioritization:\n1. QuoteVoice PDF export (highest impact/effort)\n2. VoiceNote Pro retry mechanism\n3. OST print stylesheet\n4. SiteSnap comparison thumbnails\n5. QuoteVoice session search\n6. VoiceNote Pro batch export\n\nRECOMMENDED: Approve visual themes gates first (afterBackend → afterFrontend → afterQA). Code is in Forge repo, build passes. Enzo has regression suite ready. Unblocks: real QA → merge → command palette.",
+  "feedback": null
+}

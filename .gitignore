@@ -5,6 +5,9 @@
 data/memory/*.db
 data/memory/*.db-*
 
+# TLS certs (Tailscale)
+server/certs/
+
 # Temp/scratch files
 tmp/
 

@@ -3,308 +3,602 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tasks — TeamHQ</title>
-  <meta name="description" content="Track all work items across every project in one centralized view.">
+  <title>Sherlock Labs | Tasks</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css">
-  <!-- AG Grid Community — CSS (structural + Quartz theme) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-grid.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-theme-quartz.css">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/spreadsheet.css">
-  <link rel="stylesheet" href="css/tasks.css">
-  <link rel="stylesheet" href="css/tasks-multi-select.css">
-  <link rel="stylesheet" href="css/bug-reporter.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent-green: #10B981;
+      --accent-blue: #3B82F6;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --accent-violet: #8B5CF6;
+      --surface-low: #F9FAFB;
+      --text-main: #374151;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: var(--text-main);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-pill {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid white;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6px;
+      font-weight: 700;
+      color: #6B7280;
+    }
+
+    .task-row {
+      transition: background-color 100ms ease;
+    }
+
+    .task-row:hover {
+      background-color: #F9FAFB;
+    }
+
+    .task-row.task-row--selected {
+      background-color: #EFF6FF;
+      border-left: 2px solid #3B82F6;
+    }
+
+    .status-pill-btn {
+      cursor: pointer;
+      transition: opacity 100ms ease, transform 80ms ease;
+      border: none;
+      background: none;
+      padding: 0;
+      font: inherit;
+    }
+
+    .status-pill-btn:hover {
+      opacity: 0.75;
+      transform: scale(1.05);
+    }
+
+    .status-pill-btn:active {
+      transform: scale(0.95);
+    }
+
+    .task-detail-panel {
+      background: #F9FAFB;
+      border-top: 1px solid #F3F4F6;
+      padding: 8px 16px 8px 40px;
+      display: none;
+    }
+
+    .task-detail-panel.visible {
+      display: block;
+    }
+
+    .saving-indicator {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      background: #000;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 0.7rem;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 200ms ease, transform 200ms ease;
+    }
+
+    .saving-indicator.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .saving-indicator.error {
+      background: #EF4444;
+    }
+
+    .filter-tab {
+      padding: 3px 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 3px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 100ms ease;
+    }
+
+    .filter-tab:hover {
+      color: var(--text-main);
+    }
+
+    .filter-tab.active {
+      background: #F3F4F6;
+      color: var(--text-main);
+    }
+
+    .project-group-header {
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 100ms ease;
+    }
+
+    .project-group-header:hover {
+      background-color: #F3F4F6;
+    }
+
+    .chevron {
+      transition: transform 150ms ease;
+    }
+
+    .chevron.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .skeleton {
+      background: #E5E7EB;
+      border-radius: 2px;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+  </style>
 </head>
-<body>
+<body class="w-full min-h-screen">
 
-  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[11px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
 
-  <!-- Navigation -->
-  <nav class="nav" aria-label="Main navigation">
-    <div class="container nav__inner">
-      <div class="nav__brand">
-        <a href="index.html" class="nav__logo-link">
-          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
         </a>
-      </div>
-      <div class="nav__links">
-        <a href="tools.html" class="nav__link">Tools</a>
-        <a href="projects.html" class="nav__link">Projects</a>
-        <a href="tasks.html" class="nav__link nav__link--active" aria-current="page">Tasks</a>
-        <a href="meetings.html" class="nav__link">Meetings</a>
-        <a href="interviews.html" class="nav__link">Interviews</a>
-        <a href="docs.html" class="nav__link">Docs</a>
-        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
-        <a href="team.html" class="nav__link">Team</a>
-      </div>
-    </div>
-  </nav>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
 
-  <main class="tasks-page" id="main-content">
-    <div class="container">
-      <!-- Page Header -->
-      <div class="tasks-header">
-        <div class="tasks-header__title-row">
-          <h1 class="tasks-header__title">Tasks</h1>
-          <button class="tasks-header__new-btn" type="button" id="new-task-btn">+ New Task</button>
-        </div>
-        <p class="tasks-header__stats" id="tasks-stats" aria-live="polite"></p>
-      </div>
-
-      <!-- Filter Bar -->
-      <div class="tasks-filter-bar" id="tasks-filter-bar" style="display:none;">
-        <div class="tasks-filter-bar__filters">
-          <div class="tasks-filter-bar__field">
-            <select class="tasks-filter-bar__select" id="filter-project" aria-label="Filter by project">
-              <option value="">All Projects</option>
-            </select>
-          </div>
-          <div class="tasks-filter-bar__field">
-            <select class="tasks-filter-bar__select" id="filter-status" aria-label="Filter by status">
-              <option value="">All Statuses</option>
-              <option value="planned">Planned</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
-              <option value="deferred">Deferred</option>
-            </select>
-          </div>
-          <div class="tasks-filter-bar__field">
-            <select class="tasks-filter-bar__select" id="filter-priority" aria-label="Filter by priority">
-              <option value="">All Priorities</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-          <div class="tasks-filter-bar__field">
-            <select class="tasks-filter-bar__select" id="filter-owner" aria-label="Filter by owner">
-              <option value="">All Owners</option>
-              <option value="__unassigned">Unassigned</option>
-            </select>
-          </div>
-          <div class="tasks-filter-bar__field tasks-filter-bar__field--search">
-            <input class="tasks-filter-bar__search" type="text" id="filter-search"
-                   placeholder="Search tasks..." aria-label="Search tasks by title">
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
           </div>
         </div>
-        <div class="tasks-filter-bar__actions">
-          <span class="tasks-filter-bar__badge" id="filter-badge" hidden></span>
-          <button class="tasks-filter-bar__clear" id="filter-clear" type="button" hidden>Clear</button>
-        </div>
       </div>
+    </aside>
 
-      <!-- Loading State -->
-      <div class="tasks-loading" id="tasks-loading">Loading tasks...</div>
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
 
-      <!-- Empty State -->
-      <div class="tasks-empty" id="tasks-empty" style="display:none;">
-        <p class="tasks-empty__text">No tasks tracked yet.</p>
-        <p class="tasks-empty__hint">Create work items on individual projects to see them here.</p>
-      </div>
-
-      <!-- Error State -->
-      <div class="tasks-error" id="tasks-error" style="display:none;">
-        <p>Failed to load tasks. <a href="#" id="tasks-retry">Retry</a></p>
-      </div>
-
-      <!-- AG Grid Container -->
-      <div id="tasks-grid" class="ag-theme-quartz" style="display:none;"></div>
-    </div>
-  </main>
-
-  <!-- Screen reader announcement for panel open -->
-  <div class="sr-only" aria-live="polite" aria-atomic="true" id="panel-announcement"></div>
-
-  <!-- Bulk Action Bar -->
-  <div class="bulk-action-bar" id="bulk-action-bar" aria-hidden="true">
-    <div class="bulk-action-bar__count" id="bulk-count">0 selected</div>
-    <div class="bulk-action-bar__controls">
-      <select id="bulk-status" aria-label="Bulk set status">
-        <option value="" disabled selected>Set Status...</option>
-        <option value="planned">Planned</option>
-        <option value="in-progress">In Progress</option>
-        <option value="completed">Completed</option>
-        <option value="deferred">Deferred</option>
-      </select>
-      <select id="bulk-priority" aria-label="Bulk set priority">
-        <option value="" disabled selected>Set Priority...</option>
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-      </select>
-      <div class="bulk-action-bar__input-group">
-        <input type="text" id="bulk-owner" placeholder="Set Owner">
-        <button type="button" id="bulk-owner-apply" disabled>Apply</button>
-      </div>
-      <button type="button" class="bulk-action-bar__delete" id="bulk-delete" aria-label="Delete selected tasks">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-        Delete
-      </button>
-    </div>
-  </div>
-
-  <!-- Task Detail Panel Overlay (click-to-close target) -->
-  <div class="task-detail-overlay" id="task-detail-overlay"></div>
-
-  <!-- Task Detail Panel -->
-  <aside class="task-detail" id="task-detail" aria-hidden="true" role="complementary" aria-label="Task details">
-    <div class="task-detail__header">
-      <span class="task-detail__id" id="panel-task-id"></span>
-      <button class="task-detail__close" id="panel-close" type="button" aria-label="Close task details">&times;</button>
-    </div>
-    <div class="task-detail__body" id="panel-body">
-      <!-- Title (editable heading/input toggle) -->
-      <div class="task-detail__title-wrap">
-        <span class="task-detail__title" id="panel-title-display" role="heading" aria-level="2" tabindex="0"></span>
-        <input type="text" class="task-detail__title-input" id="panel-title-input"
-               placeholder="Task title" autocomplete="off" aria-label="Task title" style="display:none;">
-      </div>
-
-      <!-- Description (always-visible textarea) -->
-      <textarea class="task-detail__description" id="panel-description"
-                placeholder="Add a description..." rows="4" aria-label="Task description"></textarea>
-
-      <!-- Screenshot (visible for bug reports) -->
-      <div class="task-detail__screenshot" id="panel-screenshot-section" style="display:none;">
-        <span class="task-detail__label">Screenshot</span>
-        <div class="task-detail__screenshot-thumb" id="panel-screenshot-thumb">
-          <img src="" alt="Bug screenshot" id="panel-screenshot-img">
-        </div>
-      </div>
-
-      <!-- Separator -->
-      <hr class="task-detail__separator">
-
-      <!-- Metadata -->
-      <div class="task-detail__metadata">
-        <div class="task-detail__field">
-          <span class="task-detail__label">Status</span>
-          <div class="task-detail__badge-select">
-            <span class="thq-badge thq-badge--muted" id="panel-status-badge">Planned</span>
-            <select class="task-detail__select-native" id="panel-status" aria-label="Status">
-              <option value="planned">Planned</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
-              <option value="deferred">Deferred</option>
-            </select>
+      <!-- Top Status Bar -->
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">Section</span>
+            <span class="text-[12px] font-bold flex items-center gap-1.5">
+              <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              TASKS
+            </span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Total</span>
+            <span class="text-[12px] font-bold" id="header-total">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">In Progress</span>
+            <span class="text-[12px] font-bold text-blue-500" id="header-progress">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Completed</span>
+            <span class="text-[12px] font-bold text-emerald-500" id="header-completed">---</span>
           </div>
         </div>
-        <div class="task-detail__field">
-          <span class="task-detail__label">Priority</span>
-          <div class="task-detail__badge-select">
-            <span class="thq-badge thq-badge--muted" id="panel-priority-badge">Medium</span>
-            <select class="task-detail__select-native" id="panel-priority" aria-label="Priority">
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
+        <div class="flex gap-3 items-center">
+          <input type="text" id="search-input" placeholder="Search tasks..."
+            class="text-[11px] px-2 py-1 border border-gray-100 rounded bg-white focus:outline-none focus:border-gray-300 w-40">
+          <span class="text-[11px] text-gray-400" id="last-updated">---</span>
+        </div>
+      </header>
+
+      <main>
+        <!-- Filter Bar -->
+        <div class="flex items-center gap-1 mb-3" id="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All</button>
+          <button class="filter-tab" data-filter="in-progress">In Progress</button>
+          <button class="filter-tab" data-filter="planned">Planned</button>
+          <button class="filter-tab" data-filter="completed">Completed</button>
+          <button class="filter-tab" data-filter="blocked">Blocked</button>
+        </div>
+
+        <!-- Task Groups -->
+        <div id="tasks-container">
+          <!-- Skeleton loading -->
+          <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden mb-3">
+            <div class="px-4 py-3"><span class="skeleton w-32 h-3 block"></span></div>
+            <div class="px-4 py-2.5 border-t border-gray-50"><span class="skeleton w-full h-3 block mb-1.5"></span><span class="skeleton w-1/3 h-2 block"></span></div>
+            <div class="px-4 py-2.5 border-t border-gray-50"><span class="skeleton w-3/4 h-3 block mb-1.5"></span><span class="skeleton w-1/4 h-2 block"></span></div>
+          </div>
+          <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden mb-3">
+            <div class="px-4 py-3"><span class="skeleton w-40 h-3 block"></span></div>
+            <div class="px-4 py-2.5 border-t border-gray-50"><span class="skeleton w-5/6 h-3 block mb-1.5"></span><span class="skeleton w-2/5 h-2 block"></span></div>
           </div>
         </div>
-        <div class="task-detail__field">
-          <span class="task-detail__label">Owner</span>
-          <input type="text" class="task-detail__text-input" id="panel-owner"
-                 placeholder="Assign owner..." autocomplete="off" aria-label="Owner">
-        </div>
-        <div class="task-detail__field">
-          <span class="task-detail__label">Phase</span>
-          <input type="text" class="task-detail__text-input" id="panel-phase"
-                 placeholder="Set phase..." autocomplete="off" aria-label="Phase">
-        </div>
-        <div class="task-detail__field">
-          <span class="task-detail__label">Project</span>
-          <a class="task-detail__project-link" id="panel-project-link" href="#">—</a>
-        </div>
-        <div class="task-detail__field">
-          <span class="task-detail__label">Created by</span>
-          <span class="task-detail__readonly" id="panel-created-by">—</span>
-        </div>
-      </div>
-    </div>
-  </aside>
+      </main>
 
-  <!-- New Task Modal -->
-  <div class="modal-overlay" id="task-modal-overlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-labelledby="task-modal-title" aria-modal="true">
-      <div class="modal__header">
-        <h3 class="modal__title" id="task-modal-title">New Task</h3>
-        <button class="modal__close" type="button" aria-label="Close">&times;</button>
-      </div>
-      <form class="modal__form" id="task-form" novalidate>
-        <div class="modal__field">
-          <label class="modal__label" for="task-project">Project <span class="modal__required">*</span></label>
-          <select class="modal__select" id="task-project" name="project" required>
-            <option value="">Select a project...</option>
-          </select>
-          <p class="modal__error" aria-live="polite"></p>
-        </div>
-        <div class="modal__field">
-          <label class="modal__label" for="task-title">Title <span class="modal__required">*</span></label>
-          <input class="modal__input" type="text" id="task-title" name="title"
-                 placeholder="e.g. Add user profile page" required autocomplete="off">
-          <p class="modal__error" aria-live="polite"></p>
-        </div>
-        <div class="modal__field">
-          <label class="modal__label" for="task-description">Description</label>
-          <textarea class="modal__textarea modal__textarea--brief" id="task-description" name="description"
-                    placeholder="Add details, context, or notes..." rows="3"></textarea>
-        </div>
-        <div class="modal__field">
-          <label class="modal__label" for="task-status">Status</label>
-          <select class="modal__select" id="task-status" name="status">
-            <option value="planned" selected>Planned</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="deferred">Deferred</option>
-          </select>
-        </div>
-        <div class="modal__field">
-          <label class="modal__label" for="task-priority">Priority</label>
-          <select class="modal__select" id="task-priority" name="priority">
-            <option value="high">High</option>
-            <option value="medium" selected>Medium</option>
-            <option value="low">Low</option>
-          </select>
-        </div>
-        <div class="modal__field">
-          <label class="modal__label" for="task-owner">Owner</label>
-          <input class="modal__input" type="text" id="task-owner" name="owner"
-                 placeholder="e.g. Alice" autocomplete="off">
-        </div>
-        <div class="modal__field">
-          <label class="modal__label" for="task-phase">Phase</label>
-          <input class="modal__input" type="text" id="task-phase" name="phase"
-                 placeholder="e.g. v1.0" autocomplete="off">
-        </div>
-        <div class="modal__actions">
-          <button class="modal__cancel" type="button">Cancel</button>
-          <button class="modal__submit" type="submit">Create Task</button>
-        </div>
-      </form>
+      <!-- Footer -->
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
-      <p class="footer__attribution">Built with Claude Code</p>
-    </div>
-  </footer>
+  <script>
+    const API_BASE = '/api';
 
-  <!-- Screenshot Preview Overlay (shared with bug reporter styles) -->
-  <div class="bug-preview-overlay" id="panel-preview-overlay">
-    <button class="bug-preview-overlay__close bug-sr-only" type="button" id="panel-preview-close">Close preview</button>
-    <img src="" alt="Screenshot preview" id="panel-preview-img">
-  </div>
+    const STATUS_COLORS = {
+      'planned': '#9CA3AF',
+      'in-progress': '#3B82F6',
+      'completed': '#10B981',
+      'blocked': '#EF4444',
+      'deferred': '#F59E0B',
+    };
 
-  <!-- AG Grid Community — JS (UMD bundle) -->
-  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js"></script>
-  <script src="js/tasks.js"></script>
-  <div id="bug-reporter-root"></div>
-  <script src="js/bug-reporter.js" defer></script>
+    const STATUS_LABELS = {
+      'planned': 'PLANNED',
+      'in-progress': 'IN_PROGRESS',
+      'completed': 'COMPLETED',
+      'blocked': 'BLOCKED',
+      'deferred': 'DEFERRED',
+    };
+
+    const AVATAR_NAMES = new Set([
+      'alice','amara','andrei','derek','enzo','howard','jonah','kai','leo',
+      'marco','milo','nadia','nina','priya','ravi','robert','sam','soren',
+      'suki','thomas','yuki','zara'
+    ]);
+
+    function agentAvatar(name) {
+      if (!name) return '';
+      const slug = name.toLowerCase();
+      if (AVATAR_NAMES.has(slug)) {
+        return `<img src="img/avatars/${slug}.svg" alt="${name}" class="w-[18px] h-[18px] rounded-full object-cover flex-shrink-0" title="${name}">`;
+      }
+      return `<div class="avatar flex-shrink-0" title="${name}">${name.slice(0,2).toUpperCase()}</div>`;
+    }
+
+    let allTasks = []; // { ...task, projectName, projectSlug }
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let collapsedGroups = new Set();
+
+    async function loadTasks() {
+      try {
+        const projRes = await fetch(API_BASE + '/projects');
+        const projData = await projRes.json();
+        const projects = projData.projects || [];
+
+        // Fetch work items for each project in parallel
+        const taskPromises = projects.map(async (p) => {
+          try {
+            const res = await fetch(API_BASE + '/projects/' + p.id + '/work-items');
+            const data = await res.json();
+            return (data.workItems || []).map(t => ({
+              ...t,
+              projectName: p.name,
+              projectSlug: p.slug,
+              projectId: p.id,
+            }));
+          } catch {
+            return [];
+          }
+        });
+
+        const taskArrays = await Promise.all(taskPromises);
+        allTasks = taskArrays.flat();
+
+        // Update header stats
+        document.getElementById('header-total').textContent = allTasks.length;
+        document.getElementById('header-progress').textContent = allTasks.filter(t => t.status === 'in-progress').length;
+        document.getElementById('header-completed').textContent = allTasks.filter(t => t.status === 'completed').length;
+        document.getElementById('last-updated').textContent = 'UPDATED ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        renderTasks();
+      } catch (err) {
+        console.error('Failed to load tasks:', err);
+        document.getElementById('tasks-container').innerHTML =
+          '<div class="bg-white border border-gray-100 rounded-lg premium-shadow px-4 py-8 text-center text-[11px] text-gray-400">Failed to load tasks</div>';
+      }
+    }
+
+    function renderTasks() {
+      let filtered = allTasks;
+
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(t => t.status === currentFilter);
+      }
+
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(t =>
+          (t.title || '').toLowerCase().includes(q) ||
+          (t.id || '').toLowerCase().includes(q) ||
+          (t.owner || '').toLowerCase().includes(q)
+        );
+      }
+
+      // Group by project
+      const groups = {};
+      filtered.forEach(t => {
+        const key = t.projectName || 'Uncategorized';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(t);
+      });
+
+      const container = document.getElementById('tasks-container');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="bg-white border border-gray-100 rounded-lg premium-shadow px-4 py-8 text-center text-[11px] text-gray-400">No tasks found</div>';
+        return;
+      }
+
+      container.innerHTML = Object.entries(groups).map(([projectName, tasks]) => {
+        const isCollapsed = collapsedGroups.has(projectName);
+        const completedCount = tasks.filter(t => t.status === 'completed').length;
+
+        return `
+          <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden mb-3">
+            <div class="project-group-header flex items-center justify-between px-4 py-2.5 border-b border-gray-50"
+                 onclick="toggleGroup('${projectName.replace(/'/g, "\\'")}')">
+              <div class="flex items-center gap-2">
+                <svg class="w-3 h-3 text-gray-400 chevron ${isCollapsed ? 'collapsed' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+                <span class="text-[12px] font-bold text-black">${projectName}</span>
+                <span class="text-[11px] text-gray-400">${completedCount}/${tasks.length}</span>
+              </div>
+              <span class="tag-pill text-violet-600 bg-violet-50">${tasks.length} TASKS</span>
+            </div>
+            ${isCollapsed ? '' : `
+              <div class="divide-y divide-gray-50">
+                ${tasks.map(t => {
+                  const color = STATUS_COLORS[t.status] || '#9CA3AF';
+                  const label = STATUS_LABELS[t.status] || t.status.toUpperCase();
+                  const isSelected = selectedTaskId === t.id && selectedTaskProject === t.projectId;
+                  return `
+                    <div class="task-row flex items-center gap-3 px-4 py-2 cursor-pointer ${isSelected ? 'task-row--selected' : ''}"
+                         onclick="selectTask('${escapeAttr(t.projectId)}', '${escapeAttr(t.id)}')">
+                      <span class="status-dot flex-shrink-0" style="background:${color}"></span>
+                      <span class="text-[11px] text-gray-400 font-medium flex-shrink-0 w-12">${t.id || '---'}</span>
+                      <span class="text-[12px] text-black truncate flex-1">${t.title || 'Untitled'}</span>
+                      ${t.owner ? agentAvatar(t.owner) : ''}
+                      <button class="status-pill-btn flex-shrink-0" onclick="event.stopPropagation(); cycleStatus('${escapeAttr(t.projectId)}', '${escapeAttr(t.id)}')" title="Click to change status">
+                        <span class="tag-pill" style="color:${color};background:${color}11">${label}</span>
+                      </button>
+                    </div>
+                    <div class="task-detail-panel ${isSelected ? 'visible' : ''}" id="task-detail-${escapeAttr(t.projectId)}-${escapeAttr(t.id)}">
+                      <div class="flex items-center gap-4 text-[11px]">
+                        <span class="text-gray-400">Status:</span>
+                        <span class="font-medium" style="color:${color}">${label}</span>
+                        ${t.owner ? `<span class="text-gray-400 ml-2">Owner:</span><span class="font-medium text-gray-600">${t.owner}</span>` : ''}
+                        <span class="text-gray-400 ml-2">Project:</span>
+                        <span class="font-medium text-gray-600">${t.projectName}</span>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleGroup(name) {
+      if (collapsedGroups.has(name)) {
+        collapsedGroups.delete(name);
+      } else {
+        collapsedGroups.add(name);
+      }
+      renderTasks();
+    }
+
+    // Filter tab clicks
+    document.getElementById('filter-tabs').addEventListener('click', (e) => {
+      const tab = e.target.closest('.filter-tab');
+      if (!tab) return;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter = tab.dataset.filter;
+      renderTasks();
+    });
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderTasks();
+    });
+
+    let selectedTaskId = null;
+    let selectedTaskProject = null;
+
+    function escapeAttr(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function selectTask(projectId, taskId) {
+      if (selectedTaskId === taskId && selectedTaskProject === projectId) {
+        selectedTaskId = null;
+        selectedTaskProject = null;
+      } else {
+        selectedTaskId = taskId;
+        selectedTaskProject = projectId;
+      }
+      renderTasks();
+    }
+
+    const STATUS_CYCLE = ['planned', 'in-progress', 'completed', 'blocked'];
+
+    async function cycleStatus(projectId, taskId) {
+      const task = allTasks.find(t => t.projectId === projectId && t.id === taskId);
+      if (!task) return;
+
+      const currentIdx = STATUS_CYCLE.indexOf(task.status);
+      const nextStatus = STATUS_CYCLE[(currentIdx + 1) % STATUS_CYCLE.length];
+
+      // Optimistic update
+      task.status = nextStatus;
+      renderTasks();
+      updateHeaderStats();
+
+      // Save to server
+      showSaving('Saving...');
+      try {
+        // Fetch all work items for this project
+        const res = await fetch(API_BASE + '/projects/' + projectId + '/work-items');
+        const data = await res.json();
+        const workItems = data.workItems || [];
+
+        // Update the specific task
+        const item = workItems.find(w => w.id === taskId);
+        if (item) {
+          item.status = nextStatus;
+        }
+
+        // Save back
+        const saveRes = await fetch(API_BASE + '/projects/' + projectId + '/work-items', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ workItems }),
+        });
+
+        if (!saveRes.ok) throw new Error('Failed to save');
+        showSaving('Saved', false, 1500);
+      } catch (err) {
+        console.error('Failed to save status:', err);
+        showSaving('Failed to save', true, 3000);
+        // Reload to get correct state
+        loadTasks();
+      }
+    }
+
+    function updateHeaderStats() {
+      document.getElementById('header-total').textContent = allTasks.length;
+      document.getElementById('header-progress').textContent = allTasks.filter(t => t.status === 'in-progress').length;
+      document.getElementById('header-completed').textContent = allTasks.filter(t => t.status === 'completed').length;
+    }
+
+    function showSaving(msg, isError = false, autoDismiss = 0) {
+      let el = document.getElementById('saving-indicator');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'saving-indicator';
+        el.className = 'saving-indicator';
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      el.classList.toggle('error', isError);
+      el.classList.add('visible');
+
+      if (autoDismiss > 0) {
+        setTimeout(() => { el.classList.remove('visible'); }, autoDismiss);
+      } else {
+        // Will be dismissed by next call
+      }
+    }
+
+    loadTasks();
+  </script>
 </body>
 </html>

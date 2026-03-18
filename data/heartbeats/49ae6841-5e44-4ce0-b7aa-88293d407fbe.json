@@ -1,0 +1,34 @@
+{
+  "id": "49ae6841-5e44-4ce0-b7aa-88293d407fbe",
+  "startedAt": "2026-03-17T22:03:53.966Z",
+  "completedAt": "2026-03-18T12:35:00.000Z",
+  "status": "failed",
+  "trigger": "manual",
+  "stateSnapshot": {
+    "activeProjects": 4,
+    "totalTasks": 100,
+    "inProgressTasks": 3,
+    "blockedTasks": 1,
+    "staleTasks": 3,
+    "recentEvents": 50,
+    "agentsActive": 0
+  },
+  "assessment": null,
+  "decisions": [],
+  "actionsLog": [
+    "State gathered, spawning Thomas as full agent session",
+    "Thomas working... (2594 chars output so far)",
+    "Both Phase 7 agents are working. Will report results when they complete.",
+    "Nadia's done \u2014 user guide written at `docs/pipeline-review-gates-user-guide.md`. Still waiting on Enzo's QA pass.",
+    "Enzo's QA: **FAIL** \u2014 3 major bugs block shipping:",
+    "1. **RG-11**: Deliverable doc viewer 404s (doubled `docs/` prefix in fetch URL)",
+    "2. **RG-12**: Approve button requires double-click (confirmation should only apply to keyboard shortcut)",
+    "3. **RG-13**: Dashboard pending reviews metric card missing",
+    "All are Alice's fixes. Spawning her to resolve them.",
+    "[tool: Agent]",
+    "Alice is working on all 3 major fixes + 1 minor fix. Once she's done, I'll re-run Enzo for a QA retest.",
+    "All 4 fixes are in. Spawning Enzo for a QA retest on the fixed bugs."
+  ],
+  "error": "Killed: stuck heartbeat (Opus overloaded)",
+  "durationMs": null
+}

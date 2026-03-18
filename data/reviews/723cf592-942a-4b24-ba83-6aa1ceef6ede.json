@@ -1,0 +1,21 @@
+{
+  "id": "723cf592-942a-4b24-ba83-6aa1ceef6ede",
+  "projectId": "9183521f-ca26-4013-a240-f044a3e1ea41",
+  "projectSlug": "persistent-workflow",
+  "projectName": "Persistent Workflow State",
+  "gate": "afterResearch",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:32:43.121Z",
+  "updatedAt": "2026-03-18T13:36:19.935Z",
+  "resolvedAt": "2026-03-18T13:36:19.935Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-persistent-workflow-arch-sketch.md",
+      "title": "Persistent Workflow Arch Sketch"
+    }
+  ],
+  "agent": "Andrei",
+  "summary": "Andrei designed the state model: data/workflow-state.json with ActivePlan[] and InFlightAgent[]. Heartbeat reads state, Thomas acts on it, writes updated state. Atomic writes prevent corruption. Minimal changes to heartbeatRunner.ts.",
+  "feedback": null
+}

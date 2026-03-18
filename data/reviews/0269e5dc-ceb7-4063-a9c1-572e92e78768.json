@@ -1,0 +1,21 @@
+{
+  "id": "0269e5dc-ceb7-4063-a9c1-572e92e78768",
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "projectSlug": "review-gates",
+  "projectName": "Pipeline Review Gates",
+  "gate": "afterQA",
+  "status": "approved",
+  "createdAt": "2026-03-17T22:18:10.535Z",
+  "updatedAt": "2026-03-18T02:54:21.835Z",
+  "resolvedAt": "2026-03-18T02:54:21.835Z",
+  "deliverables": [
+    {
+      "type": "qa-report",
+      "path": "docs/pipeline-review-gates-qa-report.md",
+      "title": "QA Report"
+    }
+  ],
+  "agent": "Enzo",
+  "summary": "QA pass: tested all review CRUD operations, gate triggering from heartbeat, approve/reject flows, changes-requested feedback loop, dashboard badge count, and edge cases (no gates enabled, all gates enabled, concurrent reviews). 3 minor bugs found and fixed (RG-11 through RG-14).",
+  "feedback": null
+}

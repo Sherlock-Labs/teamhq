@@ -1,0 +1,21 @@
+{
+  "id": "f75f35b9-d462-4ef8-9d76-3de10526e24f",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterRequirements",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:20:40.102Z",
+  "updatedAt": "2026-03-18T13:23:42.500Z",
+  "resolvedAt": "2026-03-18T13:23:42.500Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-requirements.md",
+      "title": "Visual Themes Requirements (existing)"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Team standup decisions (2026-03-18): (1) Visual themes ~80% done, Alice finishing today, Robert design review tomorrow, then Enzo QA. (2) Command palette is next v2 feature — highest-leverage, scoped to 15-20 commands. (3) Bug Reporter 2 remaining items deferred. (4) QuoteVoice reconnection bug is priority fix for shipped products.",
+  "feedback": null
+}

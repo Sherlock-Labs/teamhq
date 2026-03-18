@@ -484,11 +484,20 @@
     setState('connecting');
     showConnectingState(topic);
 
+    // Check for agent chat mode
+    var agentNameInput = document.getElementById('interview-agent-name');
+    var agentName = agentNameInput ? agentNameInput.value.trim() : '';
+
     // Call backend to create meeting and get signed URL
+    var requestBody = { topic: topic, context: context || undefined };
+    if (agentName) {
+      requestBody.agentName = agentName;
+    }
+
     fetch(API_BASE + '/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: topic, context: context || undefined }),
+      body: JSON.stringify(requestBody),
     })
       .then(function (res) {
         if (!res.ok) {
@@ -730,6 +739,16 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && state === 'configuring') {
       closeConfigPanel();
+    }
+  });
+
+  // Clean up running interview if page is closed/navigated away
+  window.addEventListener('beforeunload', function () {
+    if (meetingId && (state === 'connecting' || state === 'active' || state === 'processing')) {
+      navigator.sendBeacon(
+        API_BASE + '/' + encodeURIComponent(meetingId) + '/fail',
+        new Blob([JSON.stringify({ error: 'Page closed during interview' })], { type: 'application/json' })
+      );
     }
   });
 

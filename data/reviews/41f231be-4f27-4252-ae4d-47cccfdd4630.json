@@ -1,0 +1,21 @@
+{
+  "id": "41f231be-4f27-4252-ae4d-47cccfdd4630",
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "projectSlug": "review-gates",
+  "projectName": "Pipeline Review Gates",
+  "gate": "afterDesign",
+  "status": "approved",
+  "createdAt": "2026-03-17T22:18:10.379Z",
+  "updatedAt": "2026-03-18T02:54:37.604Z",
+  "resolvedAt": "2026-03-18T02:54:37.604Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/pipeline-review-gates-design-spec.md",
+      "title": "Design Specification"
+    }
+  ],
+  "agent": "Robert",
+  "summary": "Design spec covers the reviews page layout (list + detail panel), gate configuration UI in project settings, inline deliverable viewer with markdown rendering, and CEO feedback form. Follows the JetBrains Mono dense design system.",
+  "feedback": null
+}

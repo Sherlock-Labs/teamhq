@@ -50,9 +50,16 @@ export async function runClaude(
 
     child.on("close", (code) => {
       if (code !== 0) {
+        // Try to extract API error from stdout JSON envelope
+        let apiError = "";
+        try {
+          const envelope = JSON.parse(stdout);
+          if (envelope?.result) apiError = `\napi: ${envelope.result}`;
+          else if (envelope?.message) apiError = `\napi: ${envelope.message}`;
+        } catch { /* ignore parse errors */ }
         reject(
           new Error(
-            `claude-runner exited with code ${code}${stderr ? `\nstderr: ${stderr}` : ""}`
+            `claude-runner exited with code ${code}${apiError}${stderr ? `\nstderr: ${stderr}` : ""}${!apiError && stdout ? `\nstdout: ${stdout.slice(0, 500)}` : ""}`
           )
         );
         return;

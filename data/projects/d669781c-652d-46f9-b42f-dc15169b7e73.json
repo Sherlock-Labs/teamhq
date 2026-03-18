@@ -1,0 +1,28 @@
+{
+  "id": "d669781c-652d-46f9-b42f-dc15169b7e73",
+  "slug": "write-a-prioritized-improvement-roadmap-document-docs-te",
+  "name": "Write a prioritized improvement roadmap document (docs/te...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-03-18T13:22:23.888Z",
+  "updatedAt": "2026-03-18T13:31:14.712Z",
+  "completedAt": "2026-03-18T13:31:14.712Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Write a prioritized improvement roadmap document (docs/teamhq-autonomy-improvements.md) with all 12 improvements ranked by impact and effort, each with a one-paragraph description and suggested pipeline track.\n\nOwner: Thomas\nPriority: high\nSource: Custom Meeting #26",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

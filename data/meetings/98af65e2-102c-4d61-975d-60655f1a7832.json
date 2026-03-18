@@ -1,0 +1,320 @@
+{
+  "id": "98af65e2-102c-4d61-975d-60655f1a7832",
+  "type": "weekly",
+  "status": "completed",
+  "meetingNumber": 13,
+  "scheduledAt": null,
+  "startedAt": "2026-03-16T18:41:42.722Z",
+  "completedAt": "2026-03-16T18:44:40.534Z",
+  "durationMs": 177811,
+  "error": null,
+  "summary": "Weekly status sync covering Forge v2 visual themes (active build), Bug Reporter progress, new Paperclip migration and Fleetio research initiatives, and pipeline scheduling. The team debated whether to pause Forge v2 feature work to ship Bug Reporter first, ultimately deciding to let Bug Reporter clear QA before starting Forge v2's next sprint. New research on multi-model chat and Fleetio packaging was noted but deferred for scoping.",
+  "keyTakeaways": [
+    "Forge v2 visual themes/styling sprint is the active build — Sprint E is nearly code-complete and heading to design review.",
+    "Bug Reporter is in progress but blocked on ElevenLabs Scribe v2 integration — Jonah is working through WebSocket reliability issues.",
+    "Paperclip migration and Fleetio research docs landed but haven't entered the pipeline yet — queued behind current active work per the one-pipeline-at-a-time rule.",
+    "Team reaffirmed the one-pipeline-at-a-time agreement: Bug Reporter must clear QA before Forge v2 Sprint F begins.",
+    "Enzo raised regression risk on Forge v2 visual themes touching shared CSS tokens — Andrei agreed to add change impact classification to the sprint doc."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's get through this quickly. Three things on the board: Forge v2 visual themes sprint, Bug Reporter, and a stack of new research docs that landed. Let's start with action items from last time."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Meeting twelve had two action items. CEO was going to scope the quick bug reporter feature — that's done, I wrote the requirements doc and it's in the pipeline. Second was evaluating transcription models — we went with ElevenLabs Scribe v2 for real-time transcription. Both closed."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Small correction — Bug Reporter hasn't cleared QA yet. It's in progress, not done. I haven't seen a build I can test."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Right. That's the status update, not the action item. The scoping action item is complete. The build is still in flight. Jonah, where are we on the backend?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The API endpoints are up — POST /api/bug-reports and GET /api/scribe-token both work. Screenshot upload to R2 is functioning. The piece I'm still wrestling with is the Scribe v2 WebSocket connection — it drops intermittently after about 45 seconds of recording. I've been working through their reconnection protocol but it's not well-documented."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Is this a client-side WebSocket or server-proxied?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Client-side. The browser connects directly to ElevenLabs for the real-time transcription stream. The server just vends ephemeral tokens."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That's the right architecture. The 45-second drop — is that consistent or intermittent? Could be their idle timeout if there's silence in the recording."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Intermittent. Happens even with continuous speech. I think it's a keepalive issue. I'm adding ping frames and a reconnect-with-resume strategy. Should have it stable by end of day tomorrow."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "The frontend is ready on my end. Floating widget renders, screenshot capture works via html2canvas, the voice recording UI with the live waveform visualization is done. I'm just waiting on Jonah's WebSocket fix so I can wire up the real transcription stream instead of the mock."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I did an informal look at Alice's implementation last week. The widget feels right — small footprint, fast to open. One thing I want to check in the formal design review: the recording state animation might be too subtle. On a busy page it could be hard to tell if you're actively recording."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I can bump the pulse animation. Right now it's a gentle opacity fade on the mic icon. I could add a colored ring or make the whole button background pulse."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Let me see it in the design review before you change anything. It might be fine — I just want to verify on a real page with real content behind it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So Bug Reporter timeline: Jonah fixes the WebSocket issue, Alice wires it up, Robert does design review, then Enzo gets it. Enzo, you should be able to start QA by Thursday?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "If the build is stable by Wednesday, yes. I already have my test plan drafted from the requirements doc. I want to specifically test the degraded mode — what happens when R2 isn't configured and screenshots are disabled. The spec says the modal should still work as description-only."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "It should. That's in the acceptance criteria. Okay, moving on — Forge v2. The visual themes sprint is the active build. Alice, status?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Sprint E is nearly code-complete. Custom color themes, font selection, and the theme preview panel are all implemented. I'm finishing up the theme persistence layer — saving to the project JSON and restoring on load. The CSS custom properties approach Andrei spec'd is working well. No major issues."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "How are you handling theme token conflicts with the base design system? I want to make sure custom themes override cleanly without breaking the default look when no theme is applied."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "CSS cascade. Custom theme tokens are scoped to a data-theme attribute on the project container. If no theme is set, the base tokens from the root apply. It's clean — I tested switching between themed and unthemed projects and there's no bleed."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "That's actually my concern with Forge v2. The visual themes touch shared CSS tokens. If a theme introduces a color that has poor contrast, or if the token override breaks something in an unthemed view, that's a regression across the whole app. I want to make sure the change impact is documented so I know what to regression test."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Fair point. I should add change impact classification to the sprint doc. The token overrides are scoped, so the risk is low, but the theme preview panel is new UI that touches the sidebar layout — that's closer to a Modify classification. I'll update the doc today."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Appreciate that. Now — there's a queue of new research docs that landed. I see paperclip migration requirements and tech research, multi-model chat technical research, and a whole batch of Fleetio docs. None of these have entered the pipeline."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "What's the Paperclip migration? I haven't seen context on that."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "It's a data migration project — moving from our current flat-file JSON storage to a proper database for some of the heavier data. The requirements and Marco's tech research are written but I haven't scoped pipeline work yet. It's queued."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I've been wanting that migration for a while. The JSON files work fine for small data, but Forge's project data is getting complex enough that we're going to hit pain points with concurrent writes and querying. The sooner we do it, the less migration surface area we accumulate."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I hear you, but — one pipeline at a time. Bug Reporter needs to clear QA first. Then we decide: is the next pipeline Forge v2 Sprint F features, or is it Paperclip migration?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "From a backend perspective, I'd advocate for Paperclip sooner rather than later. Every new feature we ship on flat-file JSON is more data we have to migrate later. But I agree it shouldn't jump the queue."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "If Paperclip is a backend-heavy migration, the QA surface is going to be enormous. Every feature that reads or writes data needs regression testing. I want to be in the loop early on that one — not as a blocker, just for planning."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Noted. When Paperclip enters the pipeline, you'll get early notification per our agreement. That's exactly the kind of thing the Restructure classification was built for."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "What about the Fleetio docs? Is that a client project or a product?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Research output — competitive pricing analysis, product topology mapping, fleet segmentation. It's strategic context, not a build pipeline item. Ravi and Suki produced it. No action needed from the build team right now."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "And multi-model chat?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Marco's technical research on supporting multiple AI models in chat interfaces. Again, research phase only. If the CEO decides to build something with it, it'll come through me as a proper pipeline item."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I did skim Marco's multi-model research. The architectural implications are interesting — model routing, context management across providers, fallback strategies. If that becomes a real project, I'll want a proper architecture phase. Not something to compress."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Agreed. It won't skip architecture. Alright, blockers and risks. The only active blocker is Jonah's WebSocket issue on Bug Reporter. Anything else?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "No blockers on Forge v2. Just waiting for Robert's design review on Sprint E once I finish the persistence layer."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "No blockers, but a risk flag: we have two things converging on QA at the same time — Bug Reporter and Forge v2 Sprint E. If they both land Wednesday-Thursday, I need to sequence them. Bug Reporter first since it's been in the pipeline longer?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Yes. Bug Reporter first. Sprint E can wait a day. Enzo shouldn't be context-switching between two QA passes simultaneously."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I can do my design review on Sprint E while Enzo is testing Bug Reporter. That way when Bug Reporter clears, Sprint E is already reviewed and ready for Enzo."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Perfect. That's good parallelism. Okay, next steps. Jonah — WebSocket fix by tomorrow. Alice — finish persistence layer, wire up real transcription when Jonah's ready. Robert — design review Bug Reporter first, then Sprint E. Enzo — QA Bug Reporter Thursday, Sprint E follows. Andrei — update Forge Sprint E doc with change impact classification. Everyone clear?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Clear."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Clear."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Clear. I'll have Bug Reporter results by Friday."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. After Bug Reporter ships, I'll bring the Paperclip vs. Forge Sprint F prioritization decision to the CEO. We're done."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Bug Reporter QA takes priority over Forge v2 Sprint E QA if both land the same week.",
+      "rationale": "Bug Reporter has been in the pipeline longer and Enzo shouldn't context-switch between two QA passes simultaneously. Sequential QA produces better results.",
+      "participants": [
+        "Thomas",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Robert will design-review Forge Sprint E in parallel while Enzo QAs Bug Reporter, so Sprint E is review-ready when Enzo finishes.",
+      "rationale": "Maximizes parallelism without overloading Enzo. Design review and QA are independent gates that can overlap on different projects.",
+      "participants": [
+        "Robert",
+        "Thomas",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Paperclip migration and multi-model chat research remain queued — neither enters the pipeline until Bug Reporter clears QA.",
+      "rationale": "One-pipeline-at-a-time operating agreement. New research docs are informational, not actionable until the CEO prioritizes them through Thomas.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "Andrei will add change impact classification to Forge v2 Sprint E tech doc to support Enzo's regression planning.",
+      "rationale": "Visual theme tokens touch shared CSS. Even though the risk is low due to scoping via data-theme attributes, documenting the impact helps Enzo plan regression cases per the team's operating agreement.",
+      "participants": [
+        "Andrei",
+        "Enzo"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Jonah",
+      "description": "Fix ElevenLabs Scribe v2 WebSocket reconnection issue — resolve the intermittent 45-second connection drops by adding ping frames and reconnect-with-resume strategy.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Finish Forge v2 Sprint E theme persistence layer (save/restore from project JSON), then wire Bug Reporter frontend to real Scribe v2 transcription stream once Jonah's fix lands.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Design review Bug Reporter implementation — specifically verify recording state visibility on busy pages. Then design review Forge v2 Sprint E visual themes.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "QA Bug Reporter by Thursday/Friday — test happy path, degraded mode (no R2), voice recording edge cases, and screenshot capture across page types.",
+      "priority": "high"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Update Forge v2 Sprint E tech doc with change impact classification for CSS token overrides and theme preview panel.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "After Bug Reporter ships, bring Paperclip migration vs. Forge v2 Sprint F prioritization decision to the CEO.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Focused and productive",
+  "nextMeetingTopics": [
+    "Bug Reporter QA results — pass/fail verdict from Enzo",
+    "Forge v2 Sprint E design review and QA status",
+    "Pipeline prioritization: Paperclip migration vs. Forge v2 Sprint F — needs CEO decision",
+    "Paperclip migration early QA notification if it enters the pipeline",
+    "Multi-model chat research — does the CEO want to build on it?"
+  ],
+  "participants": [],
+  "instructions": null,
+  "interviewConfig": null
+}

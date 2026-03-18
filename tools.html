@@ -3,100 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tools — TeamHQ</title>
-  <meta name="description" content="Products and utilities built by the team.">
+  <title>Sherlock Labs | Tools</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/bug-reporter.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent-green: #10B981;
+      --accent-blue: #3B82F6;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --accent-violet: #8B5CF6;
+      --surface-low: #F9FAFB;
+      --text-main: #374151;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: var(--text-main);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-pill {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .tool-row {
+      transition: background-color 100ms ease;
+    }
+
+    .tool-row:hover {
+      background-color: #F9FAFB;
+    }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .skeleton {
+      background: #E5E7EB;
+      border-radius: 2px;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+  </style>
 </head>
-<body>
+<body class="w-full min-h-screen">
 
-  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[11px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
 
-  <!-- Navigation -->
-  <nav class="nav" aria-label="Main navigation">
-    <div class="container nav__inner">
-      <div class="nav__brand">
-        <a href="index.html" class="nav__logo-link">
-          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
         </a>
-      </div>
-      <div class="nav__links">
-        <a href="tools.html" class="nav__link nav__link--active" aria-current="page">Tools</a>
-        <a href="projects.html" class="nav__link">Projects</a>
-        <a href="tasks.html" class="nav__link">Tasks</a>
-        <a href="meetings.html" class="nav__link">Meetings</a>
-        <a href="interviews.html" class="nav__link">Interviews</a>
-        <a href="docs.html" class="nav__link">Docs</a>
-        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
-        <a href="team.html" class="nav__link">Team</a>
-      </div>
-    </div>
-  </nav>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
 
-  <main id="main-content">
-
-    <!-- Tools -->
-    <section class="tools" id="tools" aria-labelledby="tools-heading">
-      <div class="container">
-        <h2 id="tools-heading" class="section-title">Tools</h2>
-        <p class="section-subtitle">What we've built.</p>
-
-        <div class="tools__grid">
-          <article class="tool-card">
-            <div class="tool-card__header">
-              <h3 class="tool-card__name">OST Tool</h3>
-              <span class="tool-card__badge tool-card__badge--live">Live</span>
-            </div>
-            <p class="tool-card__desc">Generate Opportunity Solution Trees with AI to explore product opportunities, debate solutions, and get recommendations.</p>
-            <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" class="tool-card__launch">
-              Launch
-              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
-            </a>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card__header">
-              <h3 class="tool-card__name">PDF Splitter</h3>
-              <span class="tool-card__badge tool-card__badge--live">Live</span>
-            </div>
-            <p class="tool-card__desc">Split multi-page PDFs into individual pages. Download pages one at a time or all at once as a ZIP. Runs entirely in your browser.</p>
-            <a href="pdf-splitter/index.html" class="tool-card__launch">
-              Launch
-              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
-            </a>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card__header">
-              <h3 class="tool-card__name">PDF Combiner</h3>
-              <span class="tool-card__badge tool-card__badge--live">Live</span>
-            </div>
-            <p class="tool-card__desc">Combine multiple images and PDFs into a single document. Drag to reorder, then download. Runs entirely in your browser.</p>
-            <a href="pdf-combiner/index.html" class="tool-card__launch">
-              Launch
-              <span class="tool-card__launch-arrow" aria-hidden="true">&rarr;</span>
-            </a>
-          </article>
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
         </div>
       </div>
-    </section>
+    </aside>
 
-  </main>
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
-      <p class="footer__attribution">Built with Claude Code</p>
+      <!-- Top Status Bar -->
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">Section</span>
+            <span class="text-[12px] font-bold flex items-center gap-1.5">
+              <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+              TOOLS
+            </span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Products</span>
+            <span class="text-[12px] font-bold">7 REPOS</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Org</span>
+            <span class="text-[12px] font-bold text-emerald-500">SHERLOCK-LABS</span>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <!-- Tools Table -->
+        <div class="bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden">
+          <!-- Table Header -->
+          <div class="grid grid-cols-12 gap-2 px-4 py-2 border-b border-gray-50">
+            <div class="col-span-3 subtle-label">Repo</div>
+            <div class="col-span-5 subtle-label">Description</div>
+            <div class="col-span-2 subtle-label">Stack</div>
+            <div class="col-span-2 subtle-label text-right">Link</div>
+          </div>
+
+          <!-- Tool Rows -->
+          <div id="tools-list" class="divide-y divide-gray-50">
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
     </div>
-  </footer>
+  </div>
 
-  <div id="bug-reporter-root"></div>
-  <script src="js/bug-reporter.js" defer></script>
+  <script>
+    const TOOLS = [
+      {
+        name: 'ost-tool',
+        displayName: 'OST Tool',
+        desc: 'Opportunity Solution Tree -- Vite+React + Express',
+        stack: 'Vite + React + Express',
+        url: 'https://github.com/Sherlock-Labs/ost-tool',
+      },
+      {
+        name: 'sherlockpdf',
+        displayName: 'SherlockPDF',
+        desc: 'PDF tools with Stripe billing',
+        stack: 'Full-stack',
+        url: 'https://github.com/Sherlock-Labs/sherlockpdf',
+      },
+      {
+        name: 'pdf-splitter',
+        displayName: 'PDF Splitter',
+        desc: 'Client-side PDF splitter (single HTML file)',
+        stack: 'Vanilla HTML',
+        url: 'https://github.com/Sherlock-Labs/pdf-splitter',
+      },
+      {
+        name: 'pdf-combiner',
+        displayName: 'PDF Combiner',
+        desc: 'Client-side PDF combiner (single HTML file)',
+        stack: 'Vanilla HTML',
+        url: 'https://github.com/Sherlock-Labs/pdf-combiner',
+      },
+      {
+        name: 'sitesnap',
+        displayName: 'SiteSnap',
+        desc: 'Job site photo auto-organizer for solo contractors',
+        stack: 'Expo + Express',
+        url: 'https://github.com/Sherlock-Labs/sitesnap',
+      },
+      {
+        name: 'quotevoice',
+        displayName: 'QuoteVoice',
+        desc: 'Voice-to-professional estimate for contractors',
+        stack: 'Expo + Express',
+        url: 'https://github.com/Sherlock-Labs/quotevoice',
+      },
+      {
+        name: 'voicenote-pro',
+        displayName: 'VoiceNote Pro',
+        desc: 'Voice notes with AI structuring, RevenueCat IAP',
+        stack: 'Expo + Express',
+        url: 'https://github.com/Sherlock-Labs/voicenote-pro',
+      },
+    ];
+
+    function repoInitials(name) {
+      const parts = name.split('-');
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return name.slice(0, 2).toUpperCase();
+    }
+
+    function renderTools() {
+      const el = document.getElementById('tools-list');
+      el.innerHTML = TOOLS.map(t => `
+        <div class="tool-row grid grid-cols-12 gap-2 px-4 py-2.5 items-center">
+          <div class="col-span-3 flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded bg-gray-50 border border-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500">${repoInitials(t.name)}</div>
+            <div>
+              <span class="text-[12px] font-medium text-black">${t.displayName}</span>
+              <span class="block text-[10px] text-gray-400 font-mono">${t.name}</span>
+            </div>
+          </div>
+          <div class="col-span-5">
+            <span class="text-[11px] text-gray-500">${t.desc}</span>
+          </div>
+          <div class="col-span-2">
+            <span class="tag-pill text-violet-600 bg-violet-50">${t.stack}</span>
+          </div>
+          <div class="col-span-2 text-right">
+            <a href="${t.url}" target="_blank" rel="noopener noreferrer"
+               class="text-[11px] text-blue-500 hover:text-blue-600 font-medium">
+              GITHUB
+              <svg class="w-2.5 h-2.5 inline-block ml-0.5 -mt-px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderTools();
+  </script>
 </body>
 </html>

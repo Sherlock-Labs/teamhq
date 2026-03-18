@@ -1,0 +1,26 @@
+{
+  "id": "d4cd6658-250f-4f91-84f4-4a2036e006fe",
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "projectSlug": "review-gates",
+  "projectName": "Pipeline Review Gates",
+  "gate": "afterBackend",
+  "status": "approved",
+  "createdAt": "2026-03-17T22:18:10.434Z",
+  "updatedAt": "2026-03-18T02:54:33.939Z",
+  "resolvedAt": "2026-03-18T02:54:33.939Z",
+  "deliverables": [
+    {
+      "type": "code",
+      "path": "server/src/store/reviews.ts",
+      "title": "Review Store"
+    },
+    {
+      "type": "code",
+      "path": "server/src/routes/reviews.ts",
+      "title": "Review API Routes"
+    }
+  ],
+  "agent": "Jonah",
+  "summary": "Backend implementation: review store (data/reviews/), 5 REST endpoints, Zod validation, review gate checking middleware. All endpoints tested manually. Follows existing Express patterns from projects/workItems stores.",
+  "feedback": null
+}

@@ -1,0 +1,272 @@
+{
+  "id": "27c02071-305e-439e-886b-3c35f13d3e01",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 35,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T14:47:43.301Z",
+  "completedAt": "2026-03-18T14:49:22.441Z",
+  "durationMs": 99140,
+  "error": null,
+  "summary": "Standup #37 focused on unblocking current work across the team. Enzo confirmed RT-52 visual themes QA is stale because he never received Alice's ready signal — Alice confirmed the build passes and themes are applied, so Enzo will start QA immediately. The team addressed the 2 changes-requested review gates and 2 still pending, then assigned concrete next actions: Enzo on themes QA, Alice prepping command palette while waiting, Jonah continuing QuoteVoice PDF scaffolding, and Andrei scoping autonomy research into actionable architecture work.",
+  "keyTakeaways": [
+    "Visual themes QA was blocked by a missed handoff signal, not by actual work — Enzo starts immediately now that Alice confirmed ready",
+    "Two review gates have changes-requested status meaning the team can act on CEO feedback now; two more remain pending",
+    "Command palette (RT-38c) is Alice's next task but she can prep the action registry abstraction while Enzo runs themes QA",
+    "Shipped-product improvements are still awaiting CEO prioritization — Jonah continues QuoteVoice PDF scaffolding as the safest parallel bet",
+    "Six autonomy research tasks are complete but need someone to synthesize them into a concrete next step — Andrei takes this"
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup 37. We have five specific things to cover and I want decisions on each, not discussion. First up — Enzo, RT-52 visual themes QA. The CEO flagged it as stale. What's the status?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Stale is accurate. I never got Alice's ready signal from last standup. I've been finishing list view regression and the SherlockPDF drag-drop QA. I didn't want to start testing themes on a half-applied codebase."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "That's on me — I applied the themes, confirmed the build passes, but I got pulled into documenting the board view keyboard nav gaps for Robert and never pinged Enzo. The themes are fully applied. Token layer, component styles, all three views. Build is green."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Then I can start right now. I already have my regression suite for board and timeline. List view is at about 80% coverage. I'll run themes QA as a combined pass — visual verification plus regression. How long has the build been green?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Since yesterday afternoon. I've been using it locally, no visual regressions that I can see, but I'm biased since I wrote the styles."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Okay, clear action: Enzo starts themes QA immediately after this standup. No more waiting for signals — the build is green, Alice confirms it's ready. Enzo, estimated turnaround?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Two to three hours for a thorough pass across all three views. I want to check dark-mode token fallbacks, responsive breakpoints with the new spacing, and make sure the timeline dependency lines didn't shift. If it's clean, you'll have a verdict by early afternoon."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Second item — review gates. Two pending, two changes-requested. The changes-requested ones mean the CEO gave feedback. What feedback and who needs to act on it?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I can speak to this. The CEO rejected offline mode — which we already removed from the backlog last standup. And the CEO confirmed the Forge repo is available at /home/jeff/forge-app, which unblocked Alice's theme application. So both changes-requested items have already been acted on. The two still-pending gates are the ones we've been waiting on for days."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "So the changes-requested gates are effectively resolved — the team already acted. The two pending gates are still blocking. Do we know which phases they cover?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I'd need to check the specific gate IDs, but based on the pipeline sequence, they're likely the afterDesign and afterQA gates for the current sprint. If afterDesign is still pending, that's not blocking us since Alice already built from the design spec. But if afterQA is pending, it means even after Enzo passes themes, we can't formally ship until the CEO clears it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Noted. We can't control the CEO's gate timing. Let's focus on what we can control. Third item — command palette, RT-38c. Alice, you're queued for this after themes QA passes. What's your plan while Enzo is testing?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm not going to sit idle for three hours. I'll start the action registry abstraction — that's the shared foundation between the command palette and keyboard shortcuts. It's pure TypeScript, no UI, no dependency on the themes QA outcome. If Enzo finds issues with themes, I can context-switch back to fix them without losing the registry work."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Quick question on the action registry — does it need any backend support? Like persisting user-customized shortcuts or recently-used commands?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Not for v1. The registry is client-side only. Actions are registered by feature modules, the palette queries them. No persistence, no backend. If we add customizable shortcuts later, that's a v2 concern."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Agreed. Keep it client-side. The tech approach for command palette already specifies this. Don't over-engineer the registry — it's a Map of action IDs to handler functions with metadata. That's it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Alice preps the action registry now, pivots to full command palette UI once Enzo greenlights themes. Fourth item — shipped-product improvements. We pitched six ideas last standup, CEO hasn't responded. Jonah, where are you on QuoteVoice PDF export?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I've got the endpoint scaffolded and pdf-lib integrated. The estimate data model mapping is done. I'm blocked on Robert's layout spec for the actual PDF rendering — margins, typography, logo placement. I've been using a placeholder layout but I can't finalize without his spec. That said, the generation pipeline works end-to-end with the placeholder."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Robert's not in this meeting, but I pinged him yesterday about the layout spec. I'll escalate that again. Jonah, keep working with the placeholder — when the spec lands, it should be a swap, not a rewrite. Is there other work you can pick up in parallel?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I could look at the VoiceNote Pro retry mechanism. Andrei, did you scope the architecture for that?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Not yet. That was contingent on the shipped-product pivot, which the CEO hasn't officially called. I don't want to scope architecture for work that might not get prioritized. If the CEO greenlights it, I can have the retry strategy documented in an hour — it's exponential backoff with jitter on the transcription API calls, not complex."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair. Jonah, stick with QuoteVoice PDF for now. If you finish and there's still no CEO direction on the other improvements, flag me and I'll find you work. Fifth item — six autonomy research tasks are all complete. That's great, but research without action is just reading. Who's synthesizing this into something actionable?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I wrote the persistent workflow architecture sketch and evaluated the state patterns. The north star vision doc and the improvement roadmap are done too. The logical next step is to distill those six documents into a concrete proposal — here's what we build first, here's the architecture, here's the scope. I can do that."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Do it. But keep it to a one-pager. I don't want another research doc — I want a scoping document I can turn into work items. 'Build this thing, it takes this long, it needs these people.' Can you have that by end of day?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "End of day is tight if I'm also staying available for Alice's command palette questions and monitoring the themes QA. Tomorrow morning is realistic."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Tomorrow morning works. Enzo, anything else on your plate besides themes QA today?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Once themes QA is done — pass or fail — I still need to finish the last 20% of list view regression coverage. That's inline editing and bulk actions. I want all three Forge views fully green before Alice starts layering command palette on top. If themes QA surfaces bugs, those take priority over the regression coverage."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Makes sense. Alright, let me summarize assignments. Enzo: themes QA right now, verdict by early afternoon, then list view regression. Alice: action registry abstraction now, full command palette after themes pass. Jonah: finalize QuoteVoice PDF with placeholder, wait for Robert's layout spec. Andrei: synthesize autonomy research into a concrete one-page scoping doc by tomorrow morning. I'll escalate Robert's PDF spec and keep pushing on the two pending review gates. Anyone blocked on anything that isn't already covered?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Just one thing — if Enzo finds themes bugs, I need to know severity fast. Cosmetic tweaks I can fix between command palette work. If it's structural — like token values cascading wrong — that's a different story and I'll need to pause everything."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'll triage as I go. You'll get a Slack ping within the first hour if anything structural comes up. Cosmetic stuff I'll batch into the final report."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Perfect. That's the standup. Five items, five decisions, everyone has a clear next action. Go."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Enzo starts RT-52 visual themes QA immediately — the missed handoff signal is resolved, Alice confirms build is green and themes are fully applied.",
+      "rationale": "The QA was stale due to a communication gap, not a technical blocker. Alice confirmed themes have been applied and building cleanly since yesterday afternoon. Every hour of delay is wasted.",
+      "participants": [
+        "Thomas",
+        "Enzo",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Alice begins command palette prep work (action registry abstraction) now, pivots to full command palette UI after themes QA passes.",
+      "rationale": "Alice shouldn't idle during Enzo's 2-3 hour QA pass. The action registry is pure TypeScript with no dependency on themes QA outcome, so it's safe parallel work. If Enzo finds themes bugs, Alice can context-switch back without losing progress.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Jonah continues QuoteVoice PDF export with placeholder layout — no pivot to other shipped-product improvements until CEO prioritizes.",
+      "rationale": "Robert's layout spec is still outstanding but the generation pipeline works end-to-end with placeholders. Pivoting to VoiceNote Pro retry would require architecture scoping that Andrei hasn't done, and the CEO hasn't officially called the shipped-product pivot. QuoteVoice PDF is the safest bet.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Andrei synthesizes the six completed autonomy research tasks into a concrete one-page scoping document by tomorrow morning.",
+      "rationale": "Research without action is waste. Six docs exist but no one has distilled them into 'build this, it takes this long, it needs these people.' Thomas needs a scoping input, not more analysis. Tomorrow morning is realistic given Andrei's other availability commitments.",
+      "participants": [
+        "Thomas",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "The two changes-requested review gates are effectively resolved — offline mode was already removed and Forge repo access was already used. No further action needed on those.",
+      "rationale": "Both pieces of CEO feedback were acted on before this standup. Acknowledging them as resolved avoids phantom blockers cluttering the board. The two still-pending gates remain outside the team's control.",
+      "participants": [
+        "Thomas",
+        "Andrei"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Enzo",
+      "description": "Start RT-52 visual themes QA immediately. Run combined visual verification plus regression across all three Forge views (board, timeline, list). Triage structural issues within the first hour via Slack to Alice. Deliver pass/fail verdict by early afternoon.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Build the command palette action registry abstraction (client-side Map of action IDs to handlers with metadata) while Enzo runs themes QA. Pivot to full command palette UI (RT-38c) once themes QA passes. If Enzo finds structural themes bugs, pause and fix those first.",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Continue QuoteVoice PDF export — finalize generation pipeline with placeholder layout. When Robert's layout spec arrives, swap in the real template. Flag Thomas if you finish and have no next task.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Synthesize the six completed autonomy research documents into a one-page concrete scoping doc: what to build first, estimated effort, which agents are needed. Deliver by tomorrow morning.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Escalate to Robert (outside this meeting) on the QuoteVoice PDF layout spec — it's blocking Jonah's finalization. Also continue pushing on the two pending Forge review gates with the CEO.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Enzo",
+      "description": "After themes QA, finish the remaining 20% of list view regression coverage (inline editing and bulk actions). Goal: all three Forge views fully green before command palette work lands.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Crisp and unblocked",
+  "nextMeetingTopics": [
+    "Visual themes QA verdict — passed, failed, or bugs found? Any structural issues?",
+    "Command palette progress — action registry done? UI started?",
+    "QuoteVoice PDF — Robert's layout spec delivered? Jonah finalized?",
+    "Andrei's autonomy scoping doc — delivered? Ready for Thomas to create work items?",
+    "Pending review gates — any movement from CEO?",
+    "Enzo's list view regression — all three Forge views fully green?",
+    "CEO response on the 6 shipped-product improvement pitches — any prioritization?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Quick standup #37. Context: (1) Visual themes code applied to Forge repo, build passes. RT-52 QA is stale — Enzo, what is the status? (2) Review gates: 2 pending, 2 changes-requested. CEO feedback acted on (no offline mode, forge repo available). (3) Command palette (RT-38c) queued for Alice after themes QA. (4) Team pitched 6 shipped-product improvements — CEO has not responded yet. (5) All 6 autonomy research tasks completed. What should each person work on RIGHT NOW? Decisions and next actions only.",
+  "interviewConfig": null
+}

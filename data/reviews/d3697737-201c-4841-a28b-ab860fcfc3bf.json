@@ -1,0 +1,36 @@
+{
+  "id": "d3697737-201c-4841-a28b-ab860fcfc3bf",
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "projectSlug": "review-gates",
+  "projectName": "Pipeline Review Gates",
+  "gate": "afterQA",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:20:37.027Z",
+  "updatedAt": "2026-03-18T13:23:43.620Z",
+  "resolvedAt": "2026-03-18T13:23:43.620Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/pipeline-review-gates-requirements.md",
+      "title": "Requirements"
+    },
+    {
+      "type": "doc",
+      "path": "docs/pipeline-review-gates-tech-approach.md",
+      "title": "Tech Approach"
+    },
+    {
+      "type": "doc",
+      "path": "docs/pipeline-review-gates-design-spec.md",
+      "title": "Design Spec"
+    },
+    {
+      "type": "doc",
+      "path": "docs/pipeline-review-gates-user-guide.md",
+      "title": "User Guide"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Review Gates confirmed complete — 15/15 tasks done, QA passed by Enzo. Marked project as completed. Minor timestamp formatting fix queued for Alice (trivial cosmetic).",
+  "feedback": null
+}

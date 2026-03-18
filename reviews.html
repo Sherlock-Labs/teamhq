@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sherlock Labs | Reviews</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent-green: #10B981;
+      --accent-blue: #3B82F6;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --accent-violet: #8B5CF6;
+      --surface-low: #F9FAFB;
+      --text-main: #374151;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: var(--text-main);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-pill {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid white;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6px;
+      font-weight: 700;
+      color: #6B7280;
+    }
+
+    .filter-tab {
+      padding: 3px 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 3px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 100ms ease;
+      border: none;
+      background: none;
+    }
+
+    .filter-tab:hover {
+      color: var(--text-main);
+    }
+
+    .filter-tab.active {
+      background: #F3F4F6;
+      color: var(--text-main);
+    }
+
+    .filter-tab:focus-visible {
+      outline: 2px solid #006B3F;
+      outline-offset: 2px;
+    }
+
+    .review-nav-badge {
+      background: #EF4444;
+      color: white;
+      font-size: 8px;
+      font-weight: 700;
+      min-width: 14px;
+      height: 14px;
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      margin-left: auto;
+    }
+
+    /* Review row */
+    .review-row {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: background-color 100ms ease;
+      border-left: 2px solid transparent;
+    }
+
+    .review-row:hover {
+      background-color: #F9FAFB;
+    }
+
+    .review-row.selected {
+      background-color: #F9FAFB;
+      border-left-color: #374151;
+    }
+
+    .review-row:focus-visible {
+      outline: 2px solid #006B3F;
+      outline-offset: -2px;
+    }
+
+    /* Buttons */
+    .btn-approve {
+      background: #10B981;
+      color: white;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 100ms ease;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .btn-approve:hover { background: #059669; }
+    .btn-approve:active { background: #047857; transform: scale(0.98); }
+    .btn-approve:focus-visible { outline: 2px solid #006B3F; outline-offset: 2px; }
+    .btn-approve:disabled { opacity: 0.5; pointer-events: none; }
+
+    .btn-changes {
+      background: transparent;
+      color: #374151;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border: 1px solid #E5E7EB;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 100ms ease;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .btn-changes:hover { border-color: #D1D5DB; background: #F9FAFB; }
+    .btn-changes:active { background: #F3F4F6; transform: scale(0.98); }
+    .btn-changes:focus-visible { outline: 2px solid #006B3F; outline-offset: 2px; }
+
+    .btn-submit-feedback {
+      background: #F59E0B;
+      color: white;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 100ms ease;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .btn-submit-feedback:hover { background: #D97706; }
+    .btn-submit-feedback:active { transform: scale(0.98); }
+    .btn-submit-feedback:focus-visible { outline: 2px solid #006B3F; outline-offset: 2px; }
+    .btn-submit-feedback:disabled { opacity: 0.5; pointer-events: none; }
+
+    .btn-cancel {
+      background: transparent;
+      color: #9CA3AF;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: color 100ms ease;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .btn-cancel:hover { color: #374151; }
+    .btn-cancel:focus-visible { outline: 2px solid #006B3F; outline-offset: 2px; }
+
+    .feedback-input {
+      width: 100%;
+      min-height: 80px;
+      max-height: 200px;
+      resize: vertical;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      line-height: 1.6;
+      color: #374151;
+      background: #FAFAFA;
+      border: 1px solid #E5E7EB;
+      border-radius: 3px;
+      padding: 8px 10px;
+      transition: border-color 100ms ease;
+    }
+    .feedback-input:focus {
+      outline: none;
+      border-color: #006B3F;
+      box-shadow: 0 0 0 2px rgba(0, 107, 63, 0.1);
+    }
+    .feedback-input::placeholder { color: #9CA3AF; }
+
+    /* Doc content (reuse from docs.html) */
+    .doc-content {
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .doc-content h1 { font-size: 16px; font-weight: 700; margin: 20px 0 8px; color: #111827; }
+    .doc-content h2 { font-size: 14px; font-weight: 700; margin: 16px 0 6px; color: #111827; }
+    .doc-content h3 { font-size: 13px; font-weight: 600; margin: 14px 0 4px; color: #374151; }
+    .doc-content p { margin: 6px 0; color: #4B5563; }
+    .doc-content ul, .doc-content ol { margin: 6px 0; padding-left: 20px; color: #4B5563; }
+    .doc-content li { margin: 2px 0; }
+    .doc-content code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: #F3F4F6; padding: 1px 4px; border-radius: 2px; }
+    .doc-content pre { background: #F9FAFB; border: 1px solid #F3F4F6; border-radius: 4px; padding: 12px; margin: 8px 0; overflow-x: auto; }
+    .doc-content pre code { background: none; padding: 0; }
+    .doc-content blockquote { border-left: 2px solid #E5E7EB; padding-left: 12px; margin: 8px 0; color: #6B7280; }
+    .doc-content table { border-collapse: collapse; margin: 8px 0; font-size: 11px; }
+    .doc-content th, .doc-content td { border: 1px solid #F3F4F6; padding: 4px 8px; text-align: left; }
+    .doc-content th { background: #F9FAFB; font-weight: 600; }
+    .doc-content a { color: #3B82F6; text-decoration: none; }
+    .doc-content a:hover { text-decoration: underline; }
+    .doc-content hr { border: none; border-top: 1px solid #F3F4F6; margin: 16px 0; }
+
+    /* Feedback expand/collapse */
+    .feedback-area {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 200ms ease-out;
+    }
+    .feedback-area.open {
+      grid-template-rows: 1fr;
+    }
+    .feedback-area > div {
+      overflow: hidden;
+    }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .skeleton {
+      background: #E5E7EB;
+      border-radius: 2px;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .review-row,
+      .btn-approve,
+      .btn-changes,
+      .btn-submit-feedback,
+      .feedback-area,
+      .feedback-input,
+      .filter-tab {
+        transition: none !important;
+      }
+      .skeleton { animation: none; opacity: 0.5; }
+    }
+
+    /* Mobile: single column with back navigation */
+    @media (max-width: 639px) {
+      .reviews-grid { display: block !important; }
+      .review-detail-container.mobile-hidden { display: none; }
+      .reviews-list-container.mobile-hidden { display: none; }
+      .mobile-back-btn { display: flex !important; }
+      .btn-approve, .btn-changes { width: 100%; min-height: 44px; }
+      .feedback-input { min-height: 120px; }
+      .actions-row { flex-direction: column !important; }
+      .review-row { min-height: 52px; }
+    }
+
+    /* Tablet */
+    @media (min-width: 640px) and (max-width: 1024px) {
+      .header-bar-inner { flex-wrap: wrap; gap: 8px; }
+    }
+  </style>
+</head>
+<body class="w-full min-h-screen">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[11px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
+
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
+
+      <!-- Top Status Bar -->
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow header-bar-inner">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">Section</span>
+            <span class="text-[12px] font-bold flex items-center gap-1.5">
+              <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              REVIEWS
+            </span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Pending</span>
+            <span class="text-[12px] font-bold" id="header-pending">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Total</span>
+            <span class="text-[12px] font-bold" id="header-total">---</span>
+          </div>
+        </div>
+        <div class="flex gap-1 items-center" id="filter-tabs" role="tablist" aria-label="Review status filter">
+          <button class="filter-tab" role="tab" aria-selected="false" data-filter="all">All</button>
+          <button class="filter-tab active" role="tab" aria-selected="true" data-filter="pending">Pending</button>
+          <button class="filter-tab" role="tab" aria-selected="false" data-filter="approved">Approved</button>
+          <button class="filter-tab" role="tab" aria-selected="false" data-filter="changes-requested">Changes Requested</button>
+        </div>
+      </header>
+
+      <main>
+        <!-- Two-column layout: reviews list + detail -->
+        <div class="reviews-grid grid grid-cols-5 gap-3" style="min-height: calc(100vh - 180px);">
+
+          <!-- Left: Reviews List -->
+          <div class="reviews-list-container col-span-2 bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden flex flex-col" id="reviews-list-container">
+            <div class="px-4 py-2.5 border-b border-gray-50">
+              <span class="text-[12px] font-bold text-black">Reviews</span>
+            </div>
+            <div id="reviews-list" class="divide-y divide-gray-50 overflow-y-auto flex-1" style="max-height: calc(100vh - 220px);" role="listbox" aria-label="Review list">
+              <!-- Skeleton loading -->
+              <div class="px-4 py-3"><span class="skeleton w-32 h-3 block mb-1.5"></span><span class="skeleton w-20 h-2 block mb-1"></span><span class="skeleton w-16 h-2 block"></span></div>
+              <div class="px-4 py-3"><span class="skeleton w-40 h-3 block mb-1.5"></span><span class="skeleton w-24 h-2 block mb-1"></span><span class="skeleton w-12 h-2 block"></span></div>
+              <div class="px-4 py-3"><span class="skeleton w-28 h-3 block mb-1.5"></span><span class="skeleton w-16 h-2 block mb-1"></span><span class="skeleton w-20 h-2 block"></span></div>
+            </div>
+          </div>
+
+          <!-- Right: Review Detail -->
+          <div class="review-detail-container col-span-3 bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden flex flex-col" id="review-detail-container">
+            <div class="px-4 py-2.5 border-b border-gray-50 flex items-center justify-between">
+              <span class="text-[12px] font-bold text-black" id="detail-title">Select a review</span>
+              <span class="text-[11px] text-gray-400" id="detail-meta"></span>
+            </div>
+            <!-- Mobile back button -->
+            <button class="mobile-back-btn hidden items-center gap-1 px-4 py-2 text-[11px] text-blue-500 font-medium border-b border-gray-50" id="mobile-back-btn" aria-label="Back to reviews list">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Reviews
+            </button>
+            <div id="review-detail" class="flex-1 overflow-hidden flex flex-col" style="max-height: calc(100vh - 220px);">
+              <!-- Empty state -->
+              <div class="flex items-center justify-center h-full flex-col gap-2" id="detail-empty">
+                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-[11px] text-gray-400">Select a review from the list</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@15/lib/marked.umd.min.js"></script>
+  <script>
+    const API_BASE = '/api';
+
+    // Gate label mapping
+    const GATE_LABELS = {
+      afterResearch: 'After Research',
+      afterRequirements: 'After Requirements',
+      afterArchitecture: 'After Architecture',
+      afterDesign: 'After Design',
+      afterBackend: 'After Backend',
+      afterFrontend: 'After Frontend',
+      afterQA: 'After QA',
+    };
+
+    // Status pill styling
+    const STATUS_STYLES = {
+      pending:            { color: '#B45309', bg: 'rgba(245, 158, 11, 0.1)', label: 'PENDING' },
+      approved:           { color: '#059669', bg: 'rgba(16, 185, 129, 0.1)', label: 'APPROVED' },
+      'changes-requested':{ color: '#DC2626', bg: 'rgba(239, 68, 68, 0.1)', label: 'CHANGES REQUESTED' },
+      'not-applicable':   { color: '#9CA3AF', bg: '#F3F4F6',                label: 'N/A' },
+    };
+
+    function timeAgo(ts) {
+      if (!ts) return '';
+      const diff = Date.now() - new Date(ts).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      const days = Math.floor(hrs / 24);
+      return days + 'd ago';
+    }
+
+    function agentInitials(name) {
+      if (!name) return '??';
+      return name.slice(0, 2).toUpperCase();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      const d = document.createElement('div');
+      d.appendChild(document.createTextNode(str));
+      return d.innerHTML;
+    }
+
+    let allReviews = [];
+    let currentFilter = 'pending';
+    let selectedReviewId = null;
+    let feedbackOpen = false;
+    let approveConfirmTimer = null;
+    let approveConfirmActive = false;
+    let selectedIndex = -1;
+
+    // --- Data fetching ---
+    async function loadReviews() {
+      try {
+        const [reviewsRes, projectsRes] = await Promise.all([
+          fetch(API_BASE + '/reviews'),
+          fetch(API_BASE + '/projects'),
+        ]);
+        const data = await reviewsRes.json();
+        const projectsData = await projectsRes.json();
+        const projectMap = {};
+        (projectsData.projects || []).forEach(p => { projectMap[p.id] = p.name; });
+
+        allReviews = (data.reviews || []).sort((a, b) =>
+          new Date(b.createdAt) - new Date(a.createdAt)
+        ).map(r => ({
+          ...r,
+          projectName: projectMap[r.projectId] || r.projectName,
+        }));
+
+        const pendingCount = allReviews.filter(r => r.status === 'pending').length;
+        document.getElementById('header-pending').textContent = pendingCount;
+        document.getElementById('header-pending').style.color = pendingCount > 0 ? '#EF4444' : '';
+        document.getElementById('header-total').textContent = allReviews.length;
+
+        updateNavBadge(pendingCount);
+        renderReviewsList();
+
+        // Auto-select first if nothing selected
+        const filtered = getFilteredReviews();
+        if (!selectedReviewId && filtered.length > 0) {
+          selectReview(filtered[0].id);
+        } else if (selectedReviewId) {
+          // Re-render detail in case data changed
+          const review = allReviews.find(r => r.id === selectedReviewId);
+          if (review) renderReviewDetail(review);
+        }
+      } catch (err) {
+        console.error('Failed to load reviews:', err);
+        document.getElementById('reviews-list').innerHTML =
+          `<div class="flex items-center justify-center h-64 flex-col gap-2">
+            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="text-[12px] font-medium text-gray-700">Failed to load reviews</span>
+            <span class="text-[11px] text-gray-400">Check your connection and try again.</span>
+            <button class="btn-changes mt-2" onclick="loadReviews()">RETRY</button>
+          </div>`;
+      }
+    }
+
+    function updateNavBadge(count) {
+      const badge = document.getElementById('nav-review-badge');
+      if (badge) {
+        if (count > 0) {
+          badge.textContent = count;
+          badge.style.display = '';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+
+    function getFilteredReviews() {
+      if (currentFilter === 'all') return allReviews;
+      return allReviews.filter(r => r.status === currentFilter);
+    }
+
+    // --- Rendering ---
+    function renderReviewsList() {
+      const el = document.getElementById('reviews-list');
+      const filtered = getFilteredReviews();
+
+      if (filtered.length === 0) {
+        el.innerHTML = `
+          <div class="flex items-center justify-center h-64 flex-col gap-2">
+            <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="text-[12px] font-medium text-gray-700">No ${currentFilter === 'all' ? '' : currentFilter + ' '}reviews</span>
+            <span class="text-[11px] text-gray-400 text-center" style="max-width:12rem;">Reviews will appear here when the pipeline reaches a configured gate.</span>
+          </div>`;
+        return;
+      }
+
+      el.innerHTML = filtered.map((r, idx) => {
+        const ss = STATUS_STYLES[r.status] || STATUS_STYLES.pending;
+        const gateLabel = GATE_LABELS[r.gate] || r.gate;
+        const isSelected = r.id === selectedReviewId;
+
+        return `
+          <div class="review-row ${isSelected ? 'selected' : ''}"
+               role="option"
+               aria-selected="${isSelected}"
+               tabindex="0"
+               data-review-id="${r.id}"
+               data-index="${idx}"
+               onclick="selectReview('${r.id}')"
+               onkeydown="handleRowKeydown(event, '${r.id}', ${idx})">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold" style="color:#374151">${escapeHtml(r.projectName)}</span>
+              <span class="tag-pill" style="color:${ss.color};background:${ss.bg}" aria-label="Status: ${r.status}">${ss.label}</span>
+            </div>
+            <span class="text-[11px] font-medium" style="color:#9CA3AF">${escapeHtml(gateLabel)}</span>
+            <div class="flex items-center gap-3 mt-0.5">
+              <div class="flex items-center gap-1.5">
+                <div class="avatar flex-shrink-0">${agentInitials(r.agent)}</div>
+                <span class="text-[11px]" style="color:#9CA3AF">${escapeHtml(r.agent)}</span>
+              </div>
+              <span class="text-[11px]" style="color:#9CA3AF">${timeAgo(r.createdAt)}</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function selectReview(id) {
+      selectedReviewId = id;
+      feedbackOpen = false;
+      approveConfirmActive = false;
+
+      // Update list selection
+      document.querySelectorAll('.review-row').forEach(row => {
+        const isSelected = row.dataset.reviewId === id;
+        row.classList.toggle('selected', isSelected);
+        row.setAttribute('aria-selected', isSelected);
+      });
+
+      const review = allReviews.find(r => r.id === id);
+      if (!review) return;
+
+      renderReviewDetail(review);
+
+      // Mobile: show detail, hide list
+      if (window.innerWidth < 640) {
+        document.getElementById('reviews-list-container').classList.add('mobile-hidden');
+        document.getElementById('review-detail-container').classList.remove('mobile-hidden');
+      }
+    }
+
+    function renderReviewDetail(review) {
+      const ss = STATUS_STYLES[review.status] || STATUS_STYLES.pending;
+      const gateLabel = GATE_LABELS[review.gate] || review.gate;
+
+      document.getElementById('detail-title').textContent = gateLabel + ' \u2014 ' + review.projectName;
+      document.getElementById('detail-meta').textContent = review.agent + '  \u00b7  ' + timeAgo(review.createdAt);
+
+      const detailEl = document.getElementById('review-detail');
+
+      // Summary section
+      let html = `
+        <div class="px-4 py-3 border-b" style="border-color:#F9FAFB">
+          <div class="subtle-label mb-1">SUMMARY</div>
+          <div class="text-[11px] leading-relaxed" style="color:#4B5563">${escapeHtml(review.summary)}</div>
+        </div>`;
+
+      // Deliverables tabs (if multiple)
+      if (review.deliverables && review.deliverables.length > 1) {
+        html += `
+          <div class="px-4 py-2 border-b flex gap-2" style="border-color:#F9FAFB" id="deliverable-tabs">
+            ${review.deliverables.map((d, i) => `
+              <button class="filter-tab ${i === 0 ? 'active' : ''}" data-deliverable-idx="${i}" onclick="switchDeliverable(${i})">${escapeHtml(d.title)}</button>
+            `).join('')}
+          </div>`;
+      }
+
+      // Deliverable viewer area
+      html += `<div class="flex-1 overflow-y-auto" id="deliverable-viewer" style="max-height: calc(100vh - 380px);" aria-busy="false"></div>`;
+
+      // Previous feedback (if changes-requested)
+      if (review.status === 'changes-requested' && review.feedback) {
+        html += `
+          <div class="px-4 py-3 border-t" style="border-color:#F9FAFB;background:#FFFBEB">
+            <div class="subtle-label mb-1" style="color:#B45309">YOUR FEEDBACK</div>
+            <div class="text-[11px] leading-relaxed" style="color:#92400E">${escapeHtml(review.feedback)}</div>
+            <div class="text-[11px] mt-1" style="color:#D97706">Submitted ${timeAgo(review.updatedAt)}</div>
+          </div>`;
+      }
+
+      // Actions area (only for actionable reviews)
+      if (review.status === 'pending' || review.status === 'changes-requested') {
+        html += `
+          <div class="px-4 py-3 border-t" style="border-color:#E5E7EB">
+            <div class="actions-row flex items-center gap-2 justify-end" id="actions-row">
+              <span class="text-[11px] text-gray-400" id="approve-hint" style="display:none">Press A again to confirm</span>
+              <button class="btn-approve" id="btn-approve" onclick="approveReview('${review.id}', true)" aria-label="Approve review for ${escapeHtml(gateLabel)}">APPROVE</button>
+              <button class="btn-changes" id="btn-changes" onclick="openFeedback()" aria-label="Request changes">REQUEST CHANGES</button>
+            </div>
+            <div class="feedback-area" id="feedback-area">
+              <div>
+                <div class="mt-3">
+                  <label for="feedback-text" class="subtle-label block mb-1">FEEDBACK</label>
+                  <textarea class="feedback-input" id="feedback-text" placeholder="Describe what needs to change..." aria-label="Feedback for review"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 mt-2">
+                  <button class="btn-cancel" onclick="closeFeedback()">CANCEL</button>
+                  <button class="btn-submit-feedback" id="btn-submit" onclick="submitFeedback('${review.id}')">SUBMIT FEEDBACK</button>
+                </div>
+              </div>
+            </div>
+            <div class="text-[11px] mt-1" style="color:#DC2626;display:none" id="action-error"></div>
+          </div>`;
+      } else if (review.status === 'approved') {
+        html += `
+          <div class="px-4 py-3 border-t" style="border-color:#E5E7EB">
+            <div class="flex items-center gap-2 py-2">
+              <svg class="w-3.5 h-3.5" style="color:#059669" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-[11px] font-medium" style="color:#059669">Approved${review.resolvedAt ? ' \u2014 ' + timeAgo(review.resolvedAt) : ''}</span>
+            </div>
+          </div>`;
+      }
+
+      detailEl.innerHTML = html;
+      document.getElementById('detail-empty')?.remove();
+
+      // Load first deliverable
+      if (review.deliverables && review.deliverables.length > 0) {
+        loadDeliverable(review.deliverables[0]);
+      }
+    }
+
+    function switchDeliverable(idx) {
+      const review = allReviews.find(r => r.id === selectedReviewId);
+      if (!review || !review.deliverables[idx]) return;
+
+      // Update tab active state
+      document.querySelectorAll('#deliverable-tabs .filter-tab').forEach((tab, i) => {
+        tab.classList.toggle('active', i === idx);
+      });
+
+      loadDeliverable(review.deliverables[idx]);
+    }
+
+    async function loadDeliverable(deliverable) {
+      const viewer = document.getElementById('deliverable-viewer');
+      if (!viewer) return;
+
+      viewer.setAttribute('aria-busy', 'true');
+
+      if (deliverable.type === 'doc') {
+        viewer.innerHTML = '<div class="flex items-center justify-center h-32"><span class="text-[11px] text-gray-400">Loading document...</span></div>';
+
+        try {
+          const docPath = deliverable.path.replace(/^docs\//, '');
+          const res = await fetch('/api/docs/' + docPath);
+          if (!res.ok) throw new Error('Not found');
+          const text = await res.text();
+
+          if (typeof marked !== 'undefined') {
+            viewer.innerHTML = '<div class="p-4 doc-content">' + marked.parse(text) + '</div>';
+          } else {
+            viewer.innerHTML = '<div class="p-4"><pre style="white-space:pre-wrap;font-size:11px;color:#4B5563;">' + escapeHtml(text) + '</pre></div>';
+          }
+        } catch (err) {
+          viewer.innerHTML = '<div class="flex items-center justify-center h-32"><span class="text-[11px] text-red-400">Failed to load document</span></div>';
+        }
+      } else if (deliverable.type === 'code') {
+        // Show code file summary
+        const path = deliverable.path || '';
+        viewer.innerHTML = `
+          <div class="p-4 flex flex-col gap-2">
+            <div class="flex items-center gap-2 px-3 py-2 rounded" style="background:#F9FAFB;border:1px solid #F3F4F6">
+              <svg class="w-3 h-3 flex-shrink-0" style="color:#9CA3AF" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span class="text-[11px] font-mono" style="color:#374151">${escapeHtml(path)}</span>
+            </div>
+          </div>`;
+      } else if (deliverable.type === 'qa-report') {
+        // QA report placeholder
+        viewer.innerHTML = `
+          <div class="p-4">
+            <div class="flex items-center gap-3 px-4 py-3 rounded mb-3" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15)">
+              <svg class="w-4 h-4" style="color:#059669" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-[12px] font-bold" style="color:#059669">QA REPORT</span>
+            </div>
+            <div class="text-[11px]" style="color:#4B5563">See deliverable for full QA results.</div>
+          </div>`;
+      }
+
+      viewer.setAttribute('aria-busy', 'false');
+    }
+
+    // --- Actions ---
+    async function approveReview(id, fromButton) {
+      // Keyboard double-press confirmation (only for keyboard shortcut, not button clicks)
+      if (!fromButton && !approveConfirmActive) {
+        approveConfirmActive = true;
+        const hint = document.getElementById('approve-hint');
+        if (hint) hint.style.display = '';
+        clearTimeout(approveConfirmTimer);
+        approveConfirmTimer = setTimeout(() => {
+          approveConfirmActive = false;
+          if (hint) hint.style.display = 'none';
+        }, 2000);
+        return;
+      }
+
+      approveConfirmActive = false;
+      const hint = document.getElementById('approve-hint');
+      if (hint) hint.style.display = 'none';
+
+      const btn = document.getElementById('btn-approve');
+      if (btn) { btn.textContent = 'APPROVING...'; btn.disabled = true; }
+
+      try {
+        const res = await fetch(API_BASE + '/reviews/' + id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'approved' }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Failed to approve');
+        }
+
+        // Refresh data
+        await loadReviews();
+
+        // If filtering by pending, the approved review is now gone
+        if (currentFilter === 'pending') {
+          const filtered = getFilteredReviews();
+          if (filtered.length > 0) {
+            selectReview(filtered[0].id);
+          } else {
+            selectedReviewId = null;
+            renderReviewsList();
+            document.getElementById('detail-title').textContent = 'Select a review';
+            document.getElementById('detail-meta').textContent = '';
+            document.getElementById('review-detail').innerHTML = `
+              <div class="flex items-center justify-center h-full flex-col gap-2">
+                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-[11px] text-gray-400">Select a review from the list</span>
+              </div>`;
+          }
+        }
+      } catch (err) {
+        if (btn) { btn.textContent = 'APPROVE'; btn.disabled = false; }
+        const errEl = document.getElementById('action-error');
+        if (errEl) { errEl.textContent = err.message || 'Failed to update review. Please try again.'; errEl.style.display = ''; }
+      }
+    }
+
+    function openFeedback() {
+      feedbackOpen = true;
+      const area = document.getElementById('feedback-area');
+      if (area) area.classList.add('open');
+      const textarea = document.getElementById('feedback-text');
+      if (textarea) setTimeout(() => textarea.focus(), 200);
+    }
+
+    function closeFeedback() {
+      feedbackOpen = false;
+      const area = document.getElementById('feedback-area');
+      if (area) area.classList.remove('open');
+    }
+
+    async function submitFeedback(id) {
+      const textarea = document.getElementById('feedback-text');
+      const feedback = textarea ? textarea.value.trim() : '';
+      if (!feedback) {
+        textarea.focus();
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit');
+      if (btn) { btn.textContent = 'SUBMITTING...'; btn.disabled = true; }
+
+      try {
+        const res = await fetch(API_BASE + '/reviews/' + id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'changes-requested', feedback }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Failed to submit feedback');
+        }
+
+        feedbackOpen = false;
+        await loadReviews();
+      } catch (err) {
+        if (btn) { btn.textContent = 'SUBMIT FEEDBACK'; btn.disabled = false; }
+        const errEl = document.getElementById('action-error');
+        if (errEl) { errEl.textContent = err.message || 'Failed to update review. Please try again.'; errEl.style.display = ''; }
+      }
+    }
+
+    // --- Filter tabs ---
+    document.getElementById('filter-tabs').addEventListener('click', (e) => {
+      const tab = e.target.closest('.filter-tab');
+      if (!tab) return;
+      document.querySelectorAll('#filter-tabs .filter-tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      currentFilter = tab.dataset.filter;
+      selectedReviewId = null;
+      renderReviewsList();
+
+      // Auto-select first in new filter
+      const filtered = getFilteredReviews();
+      if (filtered.length > 0) {
+        selectReview(filtered[0].id);
+      } else {
+        document.getElementById('detail-title').textContent = 'Select a review';
+        document.getElementById('detail-meta').textContent = '';
+        document.getElementById('review-detail').innerHTML = `
+          <div class="flex items-center justify-center h-full flex-col gap-2">
+            <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="text-[11px] text-gray-400">Select a review from the list</span>
+          </div>`;
+      }
+    });
+
+    // --- Keyboard navigation ---
+    function handleRowKeydown(e, id, idx) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectReview(id);
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = document.querySelector(`[data-index="${idx + 1}"]`);
+        if (next) { next.focus(); selectReview(next.dataset.reviewId); }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prev = document.querySelector(`[data-index="${idx - 1}"]`);
+        if (prev) { prev.focus(); selectReview(prev.dataset.reviewId); }
+      }
+    }
+
+    // Global keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Don't capture when typing in textarea/input
+      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+
+      if (e.key === 'a' || e.key === 'A') {
+        if (selectedReviewId) {
+          const review = allReviews.find(r => r.id === selectedReviewId);
+          if (review && (review.status === 'pending' || review.status === 'changes-requested')) {
+            e.preventDefault();
+            approveReview(selectedReviewId);
+          }
+        }
+      } else if (e.key === 'r' || e.key === 'R') {
+        if (selectedReviewId && !feedbackOpen) {
+          const review = allReviews.find(r => r.id === selectedReviewId);
+          if (review && (review.status === 'pending' || review.status === 'changes-requested')) {
+            e.preventDefault();
+            openFeedback();
+          }
+        }
+      } else if (e.key === 'Escape') {
+        if (feedbackOpen) {
+          closeFeedback();
+        }
+      }
+    });
+
+    // --- Mobile back button ---
+    document.getElementById('mobile-back-btn').addEventListener('click', () => {
+      document.getElementById('reviews-list-container').classList.remove('mobile-hidden');
+      document.getElementById('review-detail-container').classList.add('mobile-hidden');
+    });
+
+    // Initial load
+    loadReviews();
+  </script>
+</body>
+</html>

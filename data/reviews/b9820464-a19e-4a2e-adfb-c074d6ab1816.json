@@ -1,0 +1,21 @@
+{
+  "id": "b9820464-a19e-4a2e-adfb-c074d6ab1816",
+  "projectId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+  "projectSlug": "teamhq-platform-improvements",
+  "projectName": "TeamHQ Platform Improvements",
+  "gate": "afterRequirements",
+  "status": "pending",
+  "createdAt": "2026-03-18T15:42:17.057Z",
+  "updatedAt": "2026-03-18T15:42:17.057Z",
+  "resolvedAt": null,
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-autonomy-improvements.md",
+      "title": "TeamHQ Improvement Roadmap"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #41 — Three New TeamHQ Improvements Scoped + Review Gate Cleanup Proposal\n\nTeam held standup #41 (6 participants). Key outcomes:\n\n**What shipped:** TPI-1 (health endpoint) and TPI-2a (pipeline-status endpoint) both completed and verified. Enzo wrote smoke tests for health endpoint.\n\n**Stale work status:**\n- TPI-2 (pipeline dashboard): Backend ready, scoping frontend cards for Alice next.\n- RT-38c (command palette): Alice found focus trap bug — opening bug reporter while command palette is active creates dead focus state. Fix is generic modal suppression (half-day). Handoff to Enzo EOD today.\n\n**Three new TeamHQ improvements scoped (lightweight iteration track):**\n1. **TPI-6: Meetings page card improvements** [high] — Add participant count, one-line summary preview, reduce card density. Frontend-only.\n2. **TPI-7: Pipeline-log data quality audit** [medium] — Andrei audits last 5 shipped projects for sparse entries. Also fixes stale team page activity grids.\n3. **TPI-8: QA-passed badge on project cards** [low] — Checkmark for QA-verified projects. Absence = unknown.\n\n**Review gate cleanup:** 7 pending gates (5 Forge visual themes, 2 TeamHQ meeting summaries). All describe shipped or informational work. RECOMMEND: batch-approve all 7 to clear the backlog.\n\n**Alice priority after RT-38c:** TPI-6 (meetings cards) then TPI-2b (pipeline dashboard frontend) then TPI-3 (keyboard shortcuts).",
+  "feedback": null
+}

@@ -1,0 +1,28 @@
+{
+  "id": "8b22bf81-0388-492a-84e5-104d3a734013",
+  "slug": "scope-a-quick-bug-reporter-feature-floating-widget-wit",
+  "name": "Scope a 'quick bug reporter' feature: floating widget wit...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-03-16T20:22:41.424Z",
+  "updatedAt": "2026-03-18T14:18:36.636Z",
+  "completedAt": "2026-03-18T14:18:36.636Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Scope a 'quick bug reporter' feature: floating widget with screenshot capture, voice narration, AI transcription, and auto-filing to task tracker as a bug-type task.\n\nOwner: CEO\nPriority: high\nSource: Charter Meeting #12",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

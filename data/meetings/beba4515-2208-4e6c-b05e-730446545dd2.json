@@ -1,0 +1,298 @@
+{
+  "id": "beba4515-2208-4e6c-b05e-730446545dd2",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 40,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T15:37:14.501Z",
+  "completedAt": "2026-03-18T15:40:01.017Z",
+  "durationMs": 166516,
+  "error": null,
+  "summary": "Standup #41 covered shipped work (Jonah's pipeline-status and health endpoints), resolved two stale items (TPI-2 pipeline dashboard blocked on Thomas's work item creation, RT-38c command palette blocked on a focus trap regression Alice found late), aligned on consolidating 35 review gate files into one CEO summary, and generated a prioritized list of concrete TeamHQ improvements including meetings page UX, project detail views, and data quality cleanup.",
+  "keyTakeaways": [
+    "Jonah shipped both TPI-2a (pipeline-status endpoint) and TPI-1 (health endpoint) — backend is ready for the pipeline dashboard frontend cards.",
+    "TPI-2 stalled because Thomas hasn't created the work items yet — he committed to finishing them within the hour so Alice can pick up the frontend after command palette clears QA.",
+    "RT-38c command palette has a focus trap regression: opening bug reporter from inside the palette traps focus in a dead state. Alice estimates a half-day fix, QA handoff by EOD today.",
+    "Team agreed Thomas should consolidate all 35 pending review files into a single CEO summary document — most are for already-shipped Forge visual themes work and don't need individual review.",
+    "The team identified meetings page as the highest-impact TeamHQ improvement: meeting cards lack status indicators, there's no search/filter, and completed meetings don't show key takeaways in the list view."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup forty-one. Four items on the agenda — let's keep it tight. First up: what shipped. Jonah, you had two endpoints on your plate."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Both done. The pipeline-status endpoint reads the pipeline-log index, aggregates active projects, recent completions, and pending review count into one GET response. The health endpoint checks server status, data directory, pipeline index, and projects directory — returns healthy, degraded, or unhealthy. Both are registered in the router and tested with curl."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I wrote the smoke test for the health endpoint yesterday. It passes — 200 response, correct shape, all four check fields present. I also hit it with a malformed data directory to confirm it returns 'degraded' instead of crashing. Solid."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. That gives us the backend for TPI-2. Which brings us to item two — stale work. TPI-2 pipeline dashboard and RT-38c command palette are both stale over twenty-four hours. I'll own the TPI-2 one first — that's on me. I was supposed to create the work items in data/work-items/ to scope the three cards, the endpoint integration, and the frontend build. I got pulled into the Forge review gate backlog and didn't get to it. No excuse. I'll have them written within the hour."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "For what it's worth, I did finish the pipeline-log JSON schema doc yesterday. So the contract Jonah's endpoint and the frontend will build against is documented. That piece isn't blocking anything."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Noted — that unblocks Alice on the frontend once I get the work items scoped. Alice, what's happening with RT-38c?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "So the keyboard conflict I fixed on Monday — that's resolved. But during final polish yesterday I found a new issue. If you open the command palette and then hit Cmd+Shift+B to open the bug reporter, focus gets trapped in a dead state. The bug reporter modal opens behind the command palette overlay, and neither Escape nor clicking the backdrop works because both components are fighting over the focus trap. It's not a cosmetic issue — it's a real interaction bug."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "That's exactly the kind of thing I would have caught in QA, but it's better that Alice found it before handoff. Is the fix straightforward?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Yeah, I need to add a focus trap priority system — when the command palette is open, it should suppress the bug reporter shortcut entirely, or close the palette first before opening the reporter. I'm leaning toward suppressing the shortcut. Half-day fix. I can hand off to you by end of day."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Suppressing is the right call. The command palette is a modal context — you shouldn't be able to trigger another modal from inside it. That's a general rule we should apply: no modal-from-modal via keyboard shortcuts."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Agreed. I'll make the fix generic — any global keyboard shortcut that opens a modal checks if another modal is already active. That covers future cases too."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. So RT-38c handoff to Enzo by EOD today. Enzo, your test plan is ready?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Eighty percent done from last time. I need to add a test case for this specific focus trap scenario and the modal suppression behavior Alice just described. Give me thirty minutes after she hands off and I'll start testing."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Perfect. Item three — TeamHQ improvements. The CEO wants concrete ideas, not vague wish-list stuff. What would make TeamHQ itself better right now? I'll go first: the meetings page is our weakest link. You can start meetings, but the list view is just a wall of cards with titles and dates. No status indicator, no search, no way to see key takeaways without clicking in. For a CEO who runs five-plus meetings a day, that's painful."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Completely agree on meetings. The card density is wrong — too much vertical space per card, not enough information shown. I'd want to see: meeting type as a colored badge, a one-line summary or first takeaway, participant count, and a status indicator. That's a lightweight iteration track item — no architecture change, just a better card layout."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "From the backend side, the meetings API already returns all that data. Summary, participants, status — it's all in the JSON. The frontend just isn't displaying it. Zero backend work needed."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I can pick that up right after the command palette clears QA. It's a CSS and template change on meetings.html. Half a day, maybe less."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I want to raise something less visible but more impactful: data quality. I've been looking at the pipeline-log files and there are inconsistencies — some projects have full task entries with subtasks and decisions, others just have a status field and nothing else. The pipeline dashboard is going to surface this, and if the data looks sparse, the dashboard looks broken. We should do a data cleanup pass before the dashboard frontend goes live."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's a good catch. Who owns that?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I can audit the pipeline-log files and flag which ones need backfilling. But the actual backfilling is manual — someone needs to read the git history and reconstruct what each agent did on older projects. That's a time investment."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Let's scope it. Andrei audits and flags. We backfill only the last five shipped projects — anything older than that, we accept as legacy data. That keeps it bounded."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "One improvement I'd push for: the projects page has no way to tell which projects have passing QA versus which ones shipped without a formal QA pass. Some of our early projects predate the QA-as-release-gate agreement. If we're showing project history, that distinction matters."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That could be as simple as a small badge on the project card — a checkmark for QA-passed, nothing for legacy projects. Don't show a failure indicator for old projects that just didn't have QA. That would be misleading."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Fair. Presence of badge means verified, absence means unknown. I like that."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good ideas. Let me prioritize: meetings page card improvement is highest impact, lowest effort. Pipeline data cleanup is medium effort but necessary before the dashboard. QA badge on projects is low effort, nice-to-have. I'll scope all three as lightweight iteration track items. Now, item four — review gates. We have thirty-five review files sitting in data/reviews/. Most of these are from the Forge visual themes pipeline, which already shipped. The CEO hasn't had time to review them individually and it's creating a bottleneck."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Thirty-five? Last meeting we said seven. What happened?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "The Forge visual themes pipeline ran through multiple phases and each phase generated review gates at every configured checkpoint. Most of them are approvals for work that's already been implemented and merged. They're technically pending but practically moot."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Can we just bulk-close the ones for shipped work? If the code is already live, what's the point of a review gate after the fact?"
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "That's what I'm proposing. I'll write a one-page summary of all thirty-five gates — what each one was for, what shipped, any open items. The CEO reads the summary, approves in bulk, and we clear the backlog. Going forward, we need to be more disciplined about when we create review gates so they don't pile up like this."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Support that. One summary document is the right format. But flag anything that has an actual open design question — don't bury those in the bulk approval."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Agreed. I'll separate them: bulk-approvable versus needs-attention. Alright, let's wrap with next actions. I've got a clear list."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "One more thing before we close — the team page. The activity grids on the agent cards haven't been updating because the data source changed when we restructured pipeline-log. The grids show stale data from February. It's not broken-broken, but it looks neglected."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That ties into the data quality cleanup. If we fix the pipeline-log consistency, the activity grids should pull correct data again. Same root cause."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good — I'll note that as a dependency. Pipeline data cleanup fixes both the dashboard and the team page grids. Alright, actions are clear. Let's ship."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Thomas will consolidate all 35 pending review gate files into a single CEO summary document, separated into bulk-approvable items and items needing attention.",
+      "rationale": "35 individual review gates are creating a bottleneck — most are for already-shipped Forge visual themes work. A single summary document is faster for the CEO to process than 35 individual reviews. Robert flagged that actual open design questions should be separated, not buried in the bulk approval.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Robert"
+      ]
+    },
+    {
+      "description": "RT-38c fix: suppress global keyboard shortcuts that open modals when another modal is already active, rather than allowing modal-from-modal stacking.",
+      "rationale": "Opening the bug reporter from inside the command palette creates a focus trap deadlock. Suppressing is cleaner than close-then-open because the command palette is a modal context where secondary modals shouldn't spawn. Robert confirmed this as a general design principle.",
+      "participants": [
+        "Alice",
+        "Robert",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Meetings page card improvement is the highest-priority TeamHQ improvement — add type badges, one-line summary, participant count, and status to meeting cards.",
+      "rationale": "The meetings page is the most-used TeamHQ page for the CEO (5+ meetings/day) but shows the least information per card. The backend already returns all the needed data — this is purely a frontend display improvement with zero backend work required.",
+      "participants": [
+        "Thomas",
+        "Robert",
+        "Jonah",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Pipeline-log data cleanup will backfill only the last 5 shipped projects; older projects accepted as legacy data.",
+      "rationale": "Full backfill of all projects would require extensive git archaeology for diminishing returns. The last 5 projects are the ones that will appear on the pipeline dashboard, so they need to look complete. Older projects are historical and rarely viewed.",
+      "participants": [
+        "Thomas",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "QA badge on project cards will use presence/absence pattern: checkmark badge for QA-verified projects, no indicator for legacy projects.",
+      "rationale": "Early projects predate the QA-as-release-gate agreement. Showing a 'no QA' indicator for those would be misleading — they weren't supposed to have QA. Presence of badge means verified; absence means unknown era.",
+      "participants": [
+        "Enzo",
+        "Robert"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Thomas",
+      "description": "Create TPI-2 pipeline dashboard work items in data/work-items/ — scope the three frontend cards, Jonah's endpoint integration, and Alice's implementation as separate tasks. Complete within the hour.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write a one-page summary of all 35 pending review gates — separate into bulk-approvable (shipped Forge work) and needs-attention (open questions). Submit to CEO today.",
+      "priority": "high"
+    },
+    {
+      "owner": "Alice",
+      "description": "Fix RT-38c focus trap regression: implement generic modal suppression so global keyboard shortcuts are blocked when a modal is active. Hand off to Enzo for QA by EOD today.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Add focus trap and modal suppression test cases to RT-38c test plan. Begin QA immediately when Alice hands off.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Scope three lightweight iteration track items: (1) meetings page card improvements, (2) pipeline-log data cleanup, (3) QA badge on project cards. Write brief scoping paragraphs per Agreement #5.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Audit all pipeline-log JSON files and flag which of the last 5 shipped projects need data backfilling (missing subtasks, decisions, or filesChanged).",
+      "priority": "medium"
+    },
+    {
+      "owner": "Alice",
+      "description": "After RT-38c clears QA, pick up meetings page card improvement — add type badges, one-line summary, participant count, and status indicator to meeting cards on meetings.html.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Verify pipeline-status endpoint returns correct data for the 5 most recent completed projects — spot-check against actual pipeline-log files to confirm aggregation is accurate before the dashboard frontend goes live.",
+      "priority": "low"
+    }
+  ],
+  "mood": "Focused and unblocking",
+  "nextMeetingTopics": [
+    "RT-38c command palette — QA verdict from Enzo. Pass or fail?",
+    "TPI-2 pipeline dashboard — work items created? Alice started on frontend cards?",
+    "Review gate consolidation — CEO approved the bulk summary? Backlog cleared?",
+    "Meetings page card improvement — Alice picked it up? Robert reviewed?",
+    "Pipeline-log data audit — Andrei's findings. Which projects need backfilling and how much effort?",
+    "Team page activity grids — fixed by the pipeline-log cleanup or separate issue?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Standup #41. Agenda: (1) What shipped since last meeting? Jonah finished pipeline-status endpoint (TPI-2a) and health endpoint (TPI-1). (2) Stale work: TPI-2 pipeline dashboard (Thomas) and RT-38c command palette (Alice) are both stale >24h. What is blocking them and what is the plan? (3) TeamHQ-focused improvements: What specific, concrete improvements to TeamHQ itself would make the product better right now? Think about: the dashboard, meetings page, projects page, team page, UX polish, missing features, data quality. (4) We have 10+ pending CEO review gates — many are for already-shipped Forge visual themes work. Should Thomas consolidate these into one summary? (5) Concrete next actions with owners.",
+  "interviewConfig": null
+}

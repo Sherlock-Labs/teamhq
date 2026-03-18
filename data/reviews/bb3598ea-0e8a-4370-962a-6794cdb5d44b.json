@@ -1,0 +1,21 @@
+{
+  "id": "bb3598ea-0e8a-4370-962a-6794cdb5d44b",
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "projectSlug": "review-gates",
+  "projectName": "Pipeline Review Gates",
+  "gate": "afterArchitecture",
+  "status": "approved",
+  "createdAt": "2026-03-17T22:18:10.326Z",
+  "updatedAt": "2026-03-18T02:54:39.139Z",
+  "resolvedAt": "2026-03-18T02:54:39.139Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/pipeline-review-gates-tech-approach.md",
+      "title": "Technical Architecture"
+    }
+  ],
+  "agent": "Andrei",
+  "summary": "Tech approach defines review data model (JSON file store), REST API endpoints (CRUD + status updates), review gate checking in heartbeat runner, and deliverable rendering strategy. Uses existing Express patterns — no new dependencies.",
+  "feedback": null
+}

@@ -1,0 +1,18 @@
+{
+  "projectSlug": "write-a-one-page-north-star-vision-document-for-teamhq-au",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "NSV-1",
+      "title": "Write north star vision document for TeamHQ autonomy",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Ravi",
+      "priority": "medium",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    }
+  ]
+}

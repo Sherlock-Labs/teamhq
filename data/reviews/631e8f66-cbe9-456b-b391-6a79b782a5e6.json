@@ -1,0 +1,21 @@
+{
+  "id": "631e8f66-cbe9-456b-b391-6a79b782a5e6",
+  "projectId": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+  "projectSlug": "morning-briefing",
+  "projectName": "Morning Briefing Dashboard",
+  "gate": "afterResearch",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:32:42.939Z",
+  "updatedAt": "2026-03-18T13:36:54.705Z",
+  "resolvedAt": "2026-03-18T13:36:54.705Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-morning-briefing-design-sketch.md",
+      "title": "Morning Briefing Design Sketch"
+    }
+  ],
+  "agent": "Robert",
+  "summary": "Robert sketched the morning briefing layout: status banner (green/yellow/red), action cards (reviews, directives, blockers), overnight activity timeline, and active pipelines view. Progressive disclosure: scan in 30s, drill-down on demand.",
+  "feedback": null
+}

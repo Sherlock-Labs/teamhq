@@ -70,6 +70,7 @@ export async function createProject(data: {
   goals: string;
   constraints: string;
   brief: string;
+  reviewGates?: Partial<Project["reviewGates"]>;
 }): Promise<Project> {
   await ensureDir();
   const now = new Date().toISOString();
@@ -99,6 +100,16 @@ export async function createProject(data: {
     kickoffPrompt: null,
     activeSessionId: null,
     pipeline: { tasks: [] },
+    reviewGates: {
+      afterResearch: false,
+      afterRequirements: false,
+      afterArchitecture: false,
+      afterDesign: false,
+      afterBackend: false,
+      afterFrontend: false,
+      afterQA: false,
+      ...data.reviewGates,
+    },
   };
   await writeFile(projectPath(project.id), JSON.stringify(project, null, 2));
   return project;
@@ -112,20 +123,29 @@ export async function getProject(id: string): Promise<Project> {
 
 export async function updateProject(
   id: string,
-  updates: Partial<Pick<Project, "name" | "description" | "status" | "goals" | "constraints" | "brief">>
+  updates: Partial<Pick<Project, "name" | "description" | "status" | "goals" | "constraints" | "brief">> & {
+    reviewGates?: Partial<Project["reviewGates"]>;
+  },
 ): Promise<Project> {
   const project = await getProject(id);
   const now = new Date().toISOString();
 
+  // Merge reviewGates partially — individual gate toggles can be updated independently
+  const mergedGates = updates.reviewGates
+    ? { ...project.reviewGates, ...updates.reviewGates }
+    : project.reviewGates;
+
+  const { reviewGates: _rg, ...restUpdates } = updates;
   const updated: Project = {
     ...project,
-    ...updates,
+    ...restUpdates,
     id: project.id,
     createdAt: project.createdAt,
     updatedAt: now,
     completedAt: resolveCompletedAt(project, updates),
     notes: project.notes,
     kickoffPrompt: project.kickoffPrompt,
+    reviewGates: mergedGates,
   };
 
   await writeFile(projectPath(id), JSON.stringify(updated, null, 2));

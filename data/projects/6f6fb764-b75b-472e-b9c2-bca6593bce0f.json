@@ -1,0 +1,28 @@
+{
+  "id": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+  "slug": "sketch-the-autonomy-dashboard-morning-briefing-concept",
+  "name": "Sketch the autonomy dashboard 'morning briefing' concept ...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-03-18T13:22:34.325Z",
+  "updatedAt": "2026-03-18T13:30:43.370Z",
+  "completedAt": "2026-03-18T13:30:43.370Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Sketch the autonomy dashboard 'morning briefing' concept — layout, information hierarchy, what the CEO sees on first load, how decisions and reviews are surfaced for quick action.\n\nOwner: Robert\nPriority: high\nSource: Custom Meeting #26",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

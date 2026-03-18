@@ -1,0 +1,18 @@
+{
+  "projectSlug": "sketch-the-autonomy-dashboard-morning-briefing-concept",
+  "taskPrefix": "",
+  "workItems": [
+    {
+      "id": "MBD-1",
+      "title": "Sketch autonomy dashboard morning briefing concept",
+      "description": "",
+      "status": "completed",
+      "phase": "",
+      "owner": "Robert",
+      "priority": "high",
+      "createdBy": "",
+      "type": "task",
+      "metadata": {}
+    }
+  ]
+}

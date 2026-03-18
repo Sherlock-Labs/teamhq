@@ -71,6 +71,15 @@ export async function migrateFromTasksJson(): Promise<void> {
       kickoffPrompt: null,
       activeSessionId: null,
       pipeline: { tasks: [] },
+      reviewGates: {
+        afterResearch: false,
+        afterRequirements: false,
+        afterArchitecture: false,
+        afterDesign: false,
+        afterBackend: false,
+        afterFrontend: false,
+        afterQA: false,
+      },
     };
     await saveProjectDirect(project);
     console.log(`Migration: created project "${project.name}" (${project.id})`);

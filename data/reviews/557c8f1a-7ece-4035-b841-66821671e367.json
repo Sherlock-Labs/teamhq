@@ -1,0 +1,26 @@
+{
+  "id": "557c8f1a-7ece-4035-b841-66821671e367",
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "projectSlug": "review-gates",
+  "projectName": "Pipeline Review Gates",
+  "gate": "afterFrontend",
+  "status": "approved",
+  "createdAt": "2026-03-17T22:18:10.485Z",
+  "updatedAt": "2026-03-18T02:54:28.704Z",
+  "resolvedAt": "2026-03-18T02:54:28.704Z",
+  "deliverables": [
+    {
+      "type": "code",
+      "path": "reviews.html",
+      "title": "Reviews Page"
+    },
+    {
+      "type": "code",
+      "path": "projects.html",
+      "title": "Project Create Form (gate toggles)"
+    }
+  ],
+  "agent": "Alice",
+  "summary": "Frontend implementation: reviews.html page with pending/resolved views, approve/request-changes actions, inline markdown doc viewer, dashboard badge for pending reviews, and review gate config toggles on the project create form.",
+  "feedback": null
+}

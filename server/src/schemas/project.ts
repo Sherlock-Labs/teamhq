@@ -33,6 +33,19 @@ export const PipelineSchema = z.object({
 
 export type Pipeline = z.infer<typeof PipelineSchema>;
 
+// Review gate configuration — boolean flags for each pipeline checkpoint
+export const ReviewGatesSchema = z.object({
+  afterResearch: z.boolean().default(false),
+  afterRequirements: z.boolean().default(false),
+  afterArchitecture: z.boolean().default(false),
+  afterDesign: z.boolean().default(false),
+  afterBackend: z.boolean().default(false),
+  afterFrontend: z.boolean().default(false),
+  afterQA: z.boolean().default(false),
+});
+
+export type ReviewGates = z.infer<typeof ReviewGatesSchema>;
+
 export const ProjectSchema = z.object({
   id: z.string(),
   slug: z.string().nullable().default(null),       // human-readable identifier, links to data/pipeline-log/{slug}.json
@@ -50,6 +63,15 @@ export const ProjectSchema = z.object({
   kickoffPrompt: z.string().nullable().default(null),
   activeSessionId: z.string().nullable().default(null),
   pipeline: PipelineSchema.default({ tasks: [] }),  // pipeline task history
+  reviewGates: ReviewGatesSchema.default({
+    afterResearch: false,
+    afterRequirements: false,
+    afterArchitecture: false,
+    afterDesign: false,
+    afterBackend: false,
+    afterFrontend: false,
+    afterQA: false,
+  }),
 });
 
 export type Project = z.infer<typeof ProjectSchema>;
@@ -71,6 +93,7 @@ export const UpdateProjectSchema = z.object({
   goals: z.string().optional(),
   constraints: z.string().optional(),
   brief: z.string().optional(),
+  reviewGates: ReviewGatesSchema.partial().optional(),
 });
 
 export const CreateNoteSchema = z.object({

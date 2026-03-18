@@ -1,0 +1,34 @@
+{
+  "id": "2668a203-e409-4517-b7e0-5d736f779b76",
+  "startedAt": "2026-03-18T15:04:19.941Z",
+  "completedAt": "2026-03-18T15:09:56.865Z",
+  "status": "failed",
+  "trigger": "cron",
+  "stateSnapshot": {
+    "activeProjects": 2,
+    "totalTasks": 125,
+    "inProgressTasks": 1,
+    "blockedTasks": 1,
+    "staleTasks": 1,
+    "recentEvents": 50,
+    "agentsActive": 6
+  },
+  "assessment": null,
+  "decisions": [],
+  "actionsLog": [
+    "State gathered, spawning Thomas as full agent session",
+    "Thomas working... (1681 chars output so far)",
+    "Now let me execute. I'll scope the pipeline dashboard and spawn Jonah for the health endpoint.",
+    "[tool: Bash]",
+    "No existing \"TeamHQ Improvements\" project. Let me create one and scope the first two work items.",
+    "[tool: Bash]",
+    "[tool: Bash]",
+    "Now let me spawn Jonah to build the health endpoint.",
+    "[tool: Bash]",
+    "[tool: Bash]",
+    "Jonah's working on the health endpoint in the background. Now let me write the brief scope for the pipeline status dashb",
+    "[tool: Read]"
+  ],
+  "error": "Heartbeat was interrupted: server restart.",
+  "durationMs": null
+}

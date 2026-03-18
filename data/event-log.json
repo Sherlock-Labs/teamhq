@@ -1,0 +1,3513 @@
+[
+  {
+    "id": "86720c8f-cde0-4dbf-8144-9c8509e7bb45",
+    "timestamp": "2026-03-02T22:33:16.983Z",
+    "actor": "Derek",
+    "action": "filed bug report for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "08853141-7906-43d4-bfc0-a0b4345d84a2",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "9b4dc888-75b7-4156-ba73-5f70be69e33d",
+    "timestamp": "2026-03-03T05:33:16.983Z",
+    "actor": "Alice",
+    "action": "started code review for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "4db3b49e-f116-4d78-9756-b7fcd3146566",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "ab83fde0-72ec-4f5f-90b8-115a0ab8331e",
+    "timestamp": "2026-03-03T08:33:16.983Z",
+    "actor": "Sam",
+    "action": "started code review for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "fe0bb7bc-9404-41f4-ade8-d4e9907fac30",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "82f60999-5ab3-4ef7-a297-35ac9231f0fe",
+    "timestamp": "2026-03-03T11:33:16.983Z",
+    "actor": "Jonah",
+    "action": "filed bug report for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "35d2a257-248e-4f2c-9ff9-cc646b8bc6e5",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "d0453bae-10f4-4556-be69-372fe6a1f808",
+    "timestamp": "2026-03-03T18:33:16.983Z",
+    "actor": "Andrei",
+    "action": "updated work items for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "919ef079-1f03-4251-85c1-4ef0df9d5d39",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "591f6008-9fbe-4e67-a3ec-fd275cb2f99e",
+    "timestamp": "2026-03-04T05:33:16.983Z",
+    "actor": "Thomas",
+    "action": "filed bug report for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "174186bb-a9fd-4b3a-b657-a21d3989d57d",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "112388df-67e6-4405-b8a7-a9ede8406356",
+    "timestamp": "2026-03-04T10:33:16.983Z",
+    "actor": "Enzo",
+    "action": "started code review for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "001703b7-2ad5-4d96-92a3-c5fb47fadaad",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "d741e2a9-3edf-4fe5-bf2b-3a525c8b84d0",
+    "timestamp": "2026-03-04T13:33:16.983Z",
+    "actor": "Kai",
+    "action": "completed requirements for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "443c742c-0b74-4dd4-a36a-307506734017",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "9a57a477-9c06-45c0-ab3c-0835a69a6b22",
+    "timestamp": "2026-03-04T16:33:16.983Z",
+    "actor": "Jonah",
+    "action": "filed bug report for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "51c2ffbd-d3cb-4891-8c23-80263bfa4f98",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "f94808a6-8494-4093-bee8-9e8b07d3e7cc",
+    "timestamp": "2026-03-05T03:33:16.983Z",
+    "actor": "Andrei",
+    "action": "completed backend API for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "72566e19-0a3c-4380-9151-206e04d19dd0",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "7dd89f71-cb13-4c07-80bd-9eba2aee402d",
+    "timestamp": "2026-03-05T03:33:16.983Z",
+    "actor": "Priya",
+    "action": "completed backend API for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "a0ba18f6-bf31-4fca-87d2-2855bf509727",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "ae66e94e-8842-4bf3-b7f3-bb9460f5d0ad",
+    "timestamp": "2026-03-05T17:33:16.983Z",
+    "actor": "Robert",
+    "action": "completed requirements for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "02572c3b-a09b-403a-836d-5b4df6809087",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "bde9b053-df2d-435a-af81-01968a388c6d",
+    "timestamp": "2026-03-05T17:33:16.983Z",
+    "actor": "Thomas",
+    "action": "completed requirements for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "a56d2a6f-42bf-4235-920b-5b2f10222a3f",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "c45b0458-f0fa-47ce-93f7-ff60bb323ec2",
+    "timestamp": "2026-03-06T00:33:16.983Z",
+    "actor": "Kai",
+    "action": "completed design spec for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "af5ddc31-471a-442f-ae1d-a1c7439a873c",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "9d315593-1cad-433e-84bd-7afc8f2cf9b4",
+    "timestamp": "2026-03-06T12:33:16.983Z",
+    "actor": "Sam",
+    "action": "completed requirements for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "14410774-123c-49a6-ab62-12d7ab76c5f0",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "cf353caa-6005-4a0c-88c8-d343a54f0431",
+    "timestamp": "2026-03-06T13:33:16.983Z",
+    "actor": "Jonah",
+    "action": "completed requirements for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "badfe0ca-b910-4c25-98f8-415da57eae0b",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "a447bff9-f43e-42db-b91c-c1ea8a38717e",
+    "timestamp": "2026-03-06T16:33:16.983Z",
+    "actor": "Robert",
+    "action": "started architecture for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "377cadbc-1158-44e2-a11a-8c82b74ca39b",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "52f40c31-a2ea-47c5-b8a9-2ac0fcfd48be",
+    "timestamp": "2026-03-07T05:33:16.983Z",
+    "actor": "Kai",
+    "action": "started architecture for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "c4498ee1-c391-4b0e-b0dd-cdbf1a399903",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "2933b1f4-ac75-411b-8c9a-b765111b0e30",
+    "timestamp": "2026-03-07T11:33:16.983Z",
+    "actor": "Robert",
+    "action": "completed design spec for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "129f65c6-4cf2-48d6-8f22-306b3f53fd7c",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "cf7c5f15-3c7a-41e6-99d9-7807883681ec",
+    "timestamp": "2026-03-07T21:33:16.983Z",
+    "actor": "Priya",
+    "action": "started frontend for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "fbe290cb-6d48-4abf-813b-7c576049ab79",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "fdd60aec-cccf-490f-8ece-f64ed98edbf9",
+    "timestamp": "2026-03-07T22:33:16.983Z",
+    "actor": "Priya",
+    "action": "started architecture for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "eae64544-fb70-4e5f-831c-2836d383eef3",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "292b9759-dde8-4700-8df0-3bb6acb9c482",
+    "timestamp": "2026-03-08T04:33:16.983Z",
+    "actor": "Kai",
+    "action": "updated work items for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "7e79ba08-451f-4969-9c62-1d05770a3b6c",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "8257b696-4667-441a-aeb2-d0e71de5b836",
+    "timestamp": "2026-03-08T04:33:16.983Z",
+    "actor": "Thomas",
+    "action": "updated work items for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "3a8ac476-4499-4ee3-8bda-b5c3e95b89a3",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "70b09feb-d2fd-4a63-8f47-945699315468",
+    "timestamp": "2026-03-08T10:33:16.983Z",
+    "actor": "Thomas",
+    "action": "started frontend for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "88e9f387-6305-403d-a83f-5015517190b4",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "6bfff233-6326-468a-8fef-af64973908d8",
+    "timestamp": "2026-03-08T14:33:16.983Z",
+    "actor": "Alice",
+    "action": "passed QA for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "9c4eba45-66a2-4094-878a-f659978a5c41",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "39f6c6a4-6538-405b-bd9f-594cd3180d69",
+    "timestamp": "2026-03-08T14:33:16.983Z",
+    "actor": "Robert",
+    "action": "filed bug report for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "52f13d27-c2fd-4f0f-88c3-5fd0020b8b0d",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "47a231b3-dd70-4954-8531-9e6bb2756d3e",
+    "timestamp": "2026-03-08T17:33:16.983Z",
+    "actor": "Derek",
+    "action": "passed QA for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "15bb6353-bfa8-4f8f-a5b1-f17874e23ed8",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "1a9a4064-7437-41da-b59a-dc96393aea0a",
+    "timestamp": "2026-03-08T19:33:16.983Z",
+    "actor": "Sam",
+    "action": "updated work items for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "6a49d89f-5fb4-4f5a-a97a-c53955f8a3bd",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "cadd8a5c-6fce-4e85-b130-61c82fc58725",
+    "timestamp": "2026-03-09T09:33:16.983Z",
+    "actor": "Enzo",
+    "action": "started architecture for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "95e69bbf-e769-48b5-9ae2-fc1b90c59ec8",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "d98b3206-6e4d-4067-b108-a80a059b82f2",
+    "timestamp": "2026-03-09T09:33:16.983Z",
+    "actor": "Priya",
+    "action": "completed design spec for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "a2b96694-a964-430a-ad79-b539edeafc0c",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "c47e6b74-1533-4913-aaa3-c9ecf6f21ef4",
+    "timestamp": "2026-03-09T12:33:16.983Z",
+    "actor": "Andrei",
+    "action": "started code review for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "0a25053f-e13f-47b7-b15d-773986682be6",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "1fd95315-13ca-43f9-b81e-8609c2c368eb",
+    "timestamp": "2026-03-09T17:33:16.983Z",
+    "actor": "Robert",
+    "action": "passed QA for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "c0110165-dd94-47db-b9d8-5840cba249c2",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "5eb41a62-2b30-41d9-ac57-0a6faa1d1fd5",
+    "timestamp": "2026-03-09T17:33:16.983Z",
+    "actor": "Andrei",
+    "action": "updated work items for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "6c68c189-9569-4669-acb0-9e67631f6f35",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "4d131821-5cb3-4e1e-a3c9-f2e6c787701a",
+    "timestamp": "2026-03-10T01:33:16.983Z",
+    "actor": "Robert",
+    "action": "completed design spec for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "38e84bdf-a784-4d71-bb2c-c072bb183d57",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "5e1f17f1-20b9-4634-9eba-2ed371913777",
+    "timestamp": "2026-03-10T03:33:16.983Z",
+    "actor": "Derek",
+    "action": "started frontend for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "a9a08337-7771-4d6a-b609-f1c4e53221b2",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "b4af00f1-3269-45b8-830b-559779a2d5e5",
+    "timestamp": "2026-03-10T12:33:16.983Z",
+    "actor": "Alice",
+    "action": "filed bug report for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "b612bcee-4602-436e-9b4c-6b6d1ccf0e2c",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "6f5bad33-800d-49f4-a62b-55cd16f142c7",
+    "timestamp": "2026-03-10T13:33:16.983Z",
+    "actor": "Alice",
+    "action": "completed backend API for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "35b6ca9a-8ed1-4910-a569-9e74fd279e29",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "8091fefd-e6c5-403a-adb9-56e6813538c0",
+    "timestamp": "2026-03-10T15:33:16.983Z",
+    "actor": "Enzo",
+    "action": "passed QA for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "46efa3f3-6193-4613-8aa6-fcc5c0e9bc20",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "193a8045-9397-46ef-a41a-c1213bd57996",
+    "timestamp": "2026-03-10T15:33:16.983Z",
+    "actor": "Thomas",
+    "action": "passed QA for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "732a4bcc-88dd-45f2-8bb5-2ab888a0d449",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "139f7aa5-48f6-4719-abf7-2cb413a62a83",
+    "timestamp": "2026-03-11T01:33:16.983Z",
+    "actor": "Priya",
+    "action": "filed bug report for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "d83475da-67d4-4e86-b731-ed9536ea34ad",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "015c6997-a949-44e9-b702-b7ee6c1219a0",
+    "timestamp": "2026-03-11T04:33:16.983Z",
+    "actor": "Priya",
+    "action": "completed backend API for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "501f7aa7-8e0f-4dde-b44a-9f3525e63148",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "5f23ceee-9a2a-4196-a62e-3150b9922a8b",
+    "timestamp": "2026-03-11T05:33:16.983Z",
+    "actor": "Priya",
+    "action": "filed bug report for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "a432eb40-3d11-4d62-b98f-96248d9bb71b",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "bd70b009-829a-4787-aac3-d9700ae4a094",
+    "timestamp": "2026-03-11T08:33:16.983Z",
+    "actor": "Enzo",
+    "action": "filed bug report for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "2a48f30b-d22b-4341-9097-30896761f1ae",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "bf1134ea-675a-4e17-9ef0-3002945b5a36",
+    "timestamp": "2026-03-11T11:33:16.983Z",
+    "actor": "Robert",
+    "action": "started frontend for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "b2eefe59-9871-4e6a-b19a-ee5b7b9d70d6",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "46f271f2-08eb-4d02-abeb-398d7012cd1e",
+    "timestamp": "2026-03-11T16:33:16.983Z",
+    "actor": "Sam",
+    "action": "started architecture for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "cc61012e-4eb6-40f6-a7ea-d362fcf866d4",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "7807d159-693e-4b8b-9c2e-54d7d388208e",
+    "timestamp": "2026-03-11T19:33:16.983Z",
+    "actor": "Derek",
+    "action": "updated work items for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "709d6abb-8cd7-4a0b-a8c6-33a591dfd4c6",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "af4d8774-ccac-4397-bb07-92d49ece73e3",
+    "timestamp": "2026-03-11T22:33:16.983Z",
+    "actor": "Robert",
+    "action": "updated work items for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "5289719d-6bcd-40c4-b989-0ec2e8a5582e",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "796673bb-e276-41bf-b684-6f75279572f5",
+    "timestamp": "2026-03-12T00:33:16.983Z",
+    "actor": "Sam",
+    "action": "completed backend API for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "66814aa4-8461-49a2-8df2-5470ac07d0fb",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "d2ff1067-4eff-4f39-9611-9f0b87265c54",
+    "timestamp": "2026-03-12T01:33:16.983Z",
+    "actor": "Enzo",
+    "action": "started code review for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "ced8897f-e69b-43bb-bd62-019c4042220c",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "9a055ebb-f151-4a9a-b134-56da2b3adca6",
+    "timestamp": "2026-03-12T03:33:16.983Z",
+    "actor": "Priya",
+    "action": "completed backend API for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "701a283c-ae1d-4e75-b0fd-23070982da8c",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "88abcf76-0b56-4441-a5e8-fabd3e053a9a",
+    "timestamp": "2026-03-12T04:33:16.983Z",
+    "actor": "Alice",
+    "action": "started frontend for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "b438bb55-cc02-44a3-9433-2edae8b37bcb",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "2ec9c9f5-5e6f-4fb8-9aeb-869586006aa6",
+    "timestamp": "2026-03-12T12:33:16.983Z",
+    "actor": "Andrei",
+    "action": "completed tech approach for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "ab87d94a-a406-4fc3-9180-af54f3e9cf31",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "4225dc6c-81d4-4c44-9b12-76a4212cf3e4",
+    "timestamp": "2026-03-12T20:33:16.983Z",
+    "actor": "Derek",
+    "action": "completed design spec for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "991481a3-e7f6-4bd7-9645-81389688026c",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "c3cbd71b-e5a4-492b-a16f-d429015215df",
+    "timestamp": "2026-03-13T00:33:16.983Z",
+    "actor": "Jonah",
+    "action": "started architecture for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "f3fe8769-429d-46b5-b1e9-225d13be197f",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "4b879c20-1497-4e6d-93ce-85b347f7ed8b",
+    "timestamp": "2026-03-13T01:33:16.983Z",
+    "actor": "Derek",
+    "action": "filed bug report for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "e8f76063-3512-405f-af5c-5ec9eac6aa37",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "31240405-71e7-41b5-b75d-a798f97dc355",
+    "timestamp": "2026-03-13T04:33:16.983Z",
+    "actor": "Kai",
+    "action": "completed design spec for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "477d6179-6c4f-4d0f-80d6-834039ff237f",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "7a70819e-5611-41c0-b12c-36c53eaef70a",
+    "timestamp": "2026-03-13T07:33:16.983Z",
+    "actor": "Sam",
+    "action": "completed design spec for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "07d105f5-b9c8-47ab-ba7c-8388bbab6fb4",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "5e38c7d0-4e35-49fe-b240-7903d0d92824",
+    "timestamp": "2026-03-13T07:33:16.983Z",
+    "actor": "Andrei",
+    "action": "completed design spec for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "12c3edc1-8e25-4c74-8492-a8e23271afa5",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "72ca13bd-5134-4997-b50a-b9ffaff481d0",
+    "timestamp": "2026-03-13T09:33:16.983Z",
+    "actor": "Sam",
+    "action": "started code review for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "8eb6a8ad-dd51-42de-b9df-69b39d5bd14a",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "e49b46f1-12bd-47e2-9bb5-3dcc0560e577",
+    "timestamp": "2026-03-13T11:33:16.983Z",
+    "actor": "Thomas",
+    "action": "started code review for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "94f8c13d-80e5-4011-a317-6482c5c864a5",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "8b7ade85-3261-42ea-98e9-5078cab7bd55",
+    "timestamp": "2026-03-13T11:33:16.983Z",
+    "actor": "Sam",
+    "action": "filed bug report for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "76b44190-e539-4881-9341-96a64e067f3a",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "fceae18b-99a1-4f3e-9e5c-1c424d7398d6",
+    "timestamp": "2026-03-13T18:33:16.983Z",
+    "actor": "Jonah",
+    "action": "started architecture for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "9e03f0e9-ddda-4471-b4a6-dbb41c36edca",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "fd3fe1ea-48bd-4927-a76f-b9d307be30a7",
+    "timestamp": "2026-03-13T19:33:16.983Z",
+    "actor": "Kai",
+    "action": "completed tech approach for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "4d72f313-8c93-461a-8d6b-cee8280a9e17",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "6ffe92ca-0201-48ff-8b6b-5d5fd65ecfe8",
+    "timestamp": "2026-03-13T20:33:16.983Z",
+    "actor": "Enzo",
+    "action": "completed design spec for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "49542d72-78e5-4c6a-b388-a7b55479271f",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "a6160169-700c-4b68-a96b-ba60ddbe9554",
+    "timestamp": "2026-03-14T10:33:16.983Z",
+    "actor": "Kai",
+    "action": "filed bug report for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "0e4d67cb-0eb7-499d-910d-1465b78b207e",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "ce4b4a0e-a6cf-49d1-8944-4e6290f75bc6",
+    "timestamp": "2026-03-14T11:33:16.983Z",
+    "actor": "Priya",
+    "action": "passed QA for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "c95aa302-f0e9-49e2-81f2-3be789ba6a74",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "2839b927-65f9-4b4d-ba60-ca0298ad6b42",
+    "timestamp": "2026-03-14T23:33:16.983Z",
+    "actor": "Derek",
+    "action": "completed tech approach for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "853916fd-bb8b-4e69-bde1-c088d3801aec",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "f5c31101-7a25-4e5a-b50b-7d27b93e2d4f",
+    "timestamp": "2026-03-15T00:33:16.983Z",
+    "actor": "Priya",
+    "action": "completed backend API for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "d10f334a-1928-4ab0-8aa3-dfe32615623a",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "7d368df9-9cec-423d-b545-c63051054d8b",
+    "timestamp": "2026-03-15T05:33:16.983Z",
+    "actor": "Alice",
+    "action": "started architecture for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "54469c27-a0db-432c-98d9-c6c227bd26ba",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "cd12fada-06a7-44a1-98fc-1008479ed722",
+    "timestamp": "2026-03-15T10:33:16.983Z",
+    "actor": "Derek",
+    "action": "completed design spec for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "0b0f3a36-5151-430b-af37-b41d66a70184",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "4248ceb7-b3de-44be-b35b-5dbfea338644",
+    "timestamp": "2026-03-15T11:33:16.983Z",
+    "actor": "Thomas",
+    "action": "started code review for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "c0a59e0d-c167-493f-922e-8f7fa8f81766",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "0d04ef0c-06b7-4d94-87c4-829aceb58d73",
+    "timestamp": "2026-03-15T16:33:16.983Z",
+    "actor": "Sam",
+    "action": "completed tech approach for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "dfce2f8d-500b-4130-937d-f6c7229fe421",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "dc12a26f-38fd-4fa0-9d49-a0dcff024153",
+    "timestamp": "2026-03-15T17:33:16.983Z",
+    "actor": "Andrei",
+    "action": "started code review for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "c71837b4-ff08-4771-9b30-f4addcf62c2c",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "2f4108f9-0a62-412a-8b5e-4b94d04ec6da",
+    "timestamp": "2026-03-15T17:33:16.983Z",
+    "actor": "Thomas",
+    "action": "completed backend API for voicenote-pro",
+    "entityType": "pipeline-task",
+    "entityId": "279cff4f-e2e1-4e64-b0cc-f0604dddc8fd",
+    "entityName": "voicenote-pro",
+    "projectSlug": "voicenote-pro"
+  },
+  {
+    "id": "7be58da8-6644-4417-8d27-61c22ec4e769",
+    "timestamp": "2026-03-15T22:33:16.983Z",
+    "actor": "Thomas",
+    "action": "filed bug report for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "ccd07066-59f1-4b9c-a1f4-92d1f961c05d",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "3468c588-5ad5-4a2f-a4c5-e18931cf7a4e",
+    "timestamp": "2026-03-16T00:33:16.983Z",
+    "actor": "Enzo",
+    "action": "filed bug report for quotevoice",
+    "entityType": "pipeline-task",
+    "entityId": "02bb17d6-9f36-4c2f-a606-c4d03bdea0f6",
+    "entityName": "quotevoice",
+    "projectSlug": "quotevoice"
+  },
+  {
+    "id": "25ea798f-e8ac-4094-8e7e-d2d996524ce2",
+    "timestamp": "2026-03-16T01:33:16.983Z",
+    "actor": "Andrei",
+    "action": "started frontend for sherlockpdf",
+    "entityType": "pipeline-task",
+    "entityId": "13f5783b-0d13-4e34-bb99-98c672fa8f85",
+    "entityName": "sherlockpdf",
+    "projectSlug": "sherlockpdf"
+  },
+  {
+    "id": "53ef8e9c-53b6-414d-9b7e-014f4097bfbf",
+    "timestamp": "2026-03-16T08:33:16.983Z",
+    "actor": "Kai",
+    "action": "completed tech approach for sitesnap",
+    "entityType": "pipeline-task",
+    "entityId": "06aa399a-f1f0-437b-b35d-aeebe69596d8",
+    "entityName": "sitesnap",
+    "projectSlug": "sitesnap"
+  },
+  {
+    "id": "39a646a6-8700-4305-b111-bafa67a1094d",
+    "timestamp": "2026-03-16T11:33:16.983Z",
+    "actor": "Kai",
+    "action": "started code review for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "95b1e93d-d8cc-4c1a-aea1-95a6c034b43b",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "8e8ca117-a696-4ed0-b3ea-78616719fcf1",
+    "timestamp": "2026-03-16T18:33:16.983Z",
+    "actor": "Jonah",
+    "action": "passed QA for ost-tool",
+    "entityType": "pipeline-task",
+    "entityId": "cbe8be0b-aec7-49f2-8ffd-a424b9fb6dfc",
+    "entityName": "ost-tool",
+    "projectSlug": "ost-tool"
+  },
+  {
+    "id": "f0ddee6e-0d60-49f9-9e0d-04f9d941eae3",
+    "timestamp": "2026-03-17T16:20:28.008Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates"
+  },
+  {
+    "id": "5b2b8f59-e5e9-4438-a41e-bbddb44d4332",
+    "timestamp": "2026-03-17T16:20:43.367Z",
+    "actor": "system",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 10,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "63374b6c-3e2d-4bda-8295-2c3c2dd89229",
+    "timestamp": "2026-03-17T16:21:45.048Z",
+    "actor": "Thomas",
+    "action": "completed heartbeat — 2 decisions, 2 executed",
+    "entityType": "agent",
+    "entityId": "b3aea848-d0f9-4d88-9c2f-05c609c9e92c",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "82dfdc98-28af-442f-8f40-d21114fb1a80",
+    "timestamp": "2026-03-17T17:01:00.238Z",
+    "actor": "system",
+    "action": "updated work items (1 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 10,
+      "completed": 1,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "981519b0-7c6e-45b6-a5f0-4e5716ecba66",
+    "timestamp": "2026-03-17T17:02:05.755Z",
+    "actor": "Thomas",
+    "action": "completed heartbeat — 2 decisions, 1 executed",
+    "entityType": "agent",
+    "entityId": "efc6de5e-8fb2-41b7-901f-af152b955242",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "077de55a-522f-4de7-aaae-627974a0ff0c",
+    "timestamp": "2026-03-17T18:07:09.187Z",
+    "actor": "Andrei",
+    "action": "started working on assigned task",
+    "entityType": "agent",
+    "entityId": "andrei",
+    "entityName": "Andrei"
+  },
+  {
+    "id": "ef7b28a5-79eb-402f-b5e1-b79bef20bb14",
+    "timestamp": "2026-03-17T18:10:24.946Z",
+    "actor": "Andrei",
+    "action": "completed task in 196s",
+    "entityType": "agent",
+    "entityId": "andrei",
+    "entityName": "Andrei"
+  },
+  {
+    "id": "a4d6862b-bce6-4cf8-9168-450122c6f03b",
+    "timestamp": "2026-03-17T18:10:24.956Z",
+    "actor": "Robert",
+    "action": "started working on assigned task",
+    "entityType": "agent",
+    "entityId": "robert",
+    "entityName": "Robert"
+  },
+  {
+    "id": "ab2027f7-0e59-43ff-b0c4-fdb35199d3cb",
+    "timestamp": "2026-03-17T19:29:34.846Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates"
+  },
+  {
+    "id": "12027b40-73f3-4826-9c4d-c6c65df19c06",
+    "timestamp": "2026-03-17T19:29:47.833Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates"
+  },
+  {
+    "id": "6bced17e-369e-4b06-bcd5-86f408d05b90",
+    "timestamp": "2026-03-17T19:30:54.126Z",
+    "actor": "system",
+    "action": "updated work items (4 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 10,
+      "completed": 4,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "c325558f-1de6-40f3-9d24-df149d682108",
+    "timestamp": "2026-03-17T21:58:13.496Z",
+    "actor": "system",
+    "action": "updated work items (5 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 10,
+      "completed": 5,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "61291268-0928-42a0-8cda-a57d7f865f62",
+    "timestamp": "2026-03-17T22:03:14.377Z",
+    "actor": "system",
+    "action": "updated work items (6 completed, 2 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 10,
+      "completed": 6,
+      "inProgress": 2
+    }
+  },
+  {
+    "id": "efd20d6d-67ec-404c-ba1b-8dd802758290",
+    "timestamp": "2026-03-17T22:06:35.184Z",
+    "actor": "system",
+    "action": "updated work items (8 completed, 2 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 10,
+      "completed": 8,
+      "inProgress": 2
+    }
+  },
+  {
+    "id": "5774f6e1-114f-482c-9df6-7307b7ade8ec",
+    "timestamp": "2026-03-17T22:08:11.514Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates"
+  },
+  {
+    "id": "d6946440-90a7-4766-8e9b-3c380c924da2",
+    "timestamp": "2026-03-17T22:08:11.537Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates"
+  },
+  {
+    "id": "8439e237-ce2a-4658-8704-5ea7f947efef",
+    "timestamp": "2026-03-17T22:08:11.560Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates"
+  },
+  {
+    "id": "8ae264fd-4687-4a47-8685-ee11fd212619",
+    "timestamp": "2026-03-17T22:08:11.583Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates"
+  },
+  {
+    "id": "6cc9649b-d1ed-475a-be39-a0ae161d341e",
+    "timestamp": "2026-03-17T22:13:03.503Z",
+    "actor": "system",
+    "action": "updated work items (14 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 15,
+      "completed": 14,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "a812240d-69c2-4e44-999d-596cf6a2b493",
+    "timestamp": "2026-03-17T22:25:24.971Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 55s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "cd673e95-470e-49b9-9370-869f9a64f73d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "36f61c16-45b6-4eb5-aeb3-c025d1db205e",
+    "timestamp": "2026-03-17T22:30:09.517Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 39s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "03ec3c77-279d-4dd1-9cf8-6ff8d828a8c2",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "16f06ef3-8bec-4eef-8790-24857f6e73a9",
+    "timestamp": "2026-03-17T22:34:44.267Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 14s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a1b2fc51-c080-4583-9d3e-1d13eaf9aa05",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "a75f34d9-fc2a-4ab2-acc2-4d6e953cebde",
+    "timestamp": "2026-03-17T22:39:41.490Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 11s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "793d2530-17e4-4f0a-bd95-d88d18fdf5d6",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "c44708ce-be92-4383-a531-29139e789266",
+    "timestamp": "2026-03-17T22:44:40.150Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "6e91b25c-7b55-481d-84ca-ce8770e9b7a7",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7e14f516-8540-4d10-8d44-949cf3b3f9b2",
+    "timestamp": "2026-03-17T22:49:37.518Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "15308100-3a85-4c27-a86e-57d7e15b696e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "fd14014c-aa7c-49bf-a2c9-deff8a24c468",
+    "timestamp": "2026-03-17T22:54:39.940Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "76d8d10e-c7ea-464d-bef8-65114cdce34d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d5bad545-3459-4647-8532-2613f9a2e235",
+    "timestamp": "2026-03-17T22:59:39.311Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "1a416c82-287d-4880-a845-02e8eb9d4ae3",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "4496464c-e789-4c74-b064-50ee5c66515e",
+    "timestamp": "2026-03-17T23:04:37.187Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a5d9d50c-7b8b-4ea5-9bd5-7db8e21364a2",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7c8ae8cb-ab75-4d3c-bded-00e86acd33d5",
+    "timestamp": "2026-03-17T23:09:41.902Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 11s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "79b6f0dd-c044-43c8-a877-c13fb3ea026a",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "e31a1373-088b-480c-84b1-b0fece868649",
+    "timestamp": "2026-03-17T23:14:37.643Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "2696d9b2-fbe2-4336-b18d-f7438011ae58",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "36b32723-b845-4a88-b407-ff6e53c8942b",
+    "timestamp": "2026-03-17T23:19:38.430Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b2ae03b2-fb43-40c6-a620-8b32b8cb22b8",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "f164c6ec-e591-4418-ba43-b4f18de2b28c",
+    "timestamp": "2026-03-17T23:24:39.570Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f6ebced5-61af-48ca-b2c1-462182ae7e97",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "11da8711-912b-48be-8afa-9dc3995ab037",
+    "timestamp": "2026-03-17T23:29:40.856Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "289c433b-aaf7-4317-9daa-28344f1e19fe",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "eae8b1f4-5f54-4d6d-a4f9-9680c3606b73",
+    "timestamp": "2026-03-17T23:34:40.258Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "27a4a6d8-517c-4403-a1e0-b0384f272285",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "8ef0e86c-4166-4c00-a85e-efad64fc4c01",
+    "timestamp": "2026-03-17T23:39:37.937Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "38c9244f-0fdf-4d97-90e1-8c55f13675f9",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "8ad50045-3675-4f14-9245-978803b838fc",
+    "timestamp": "2026-03-17T23:44:39.884Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "ef22bba6-e8ea-4516-a643-7103ce8713c6",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "6b5d84ca-880d-478a-9dc7-0c76143a9bc1",
+    "timestamp": "2026-03-17T23:49:37.659Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "14b87134-166f-4a1c-a5a6-feea88db2531",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "90b8fc5b-4cb4-47c7-ada9-5aa4cf5e5ca3",
+    "timestamp": "2026-03-17T23:54:38.174Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "c0ba4bc5-d58a-427c-a8d9-9f253596fa82",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "abbc77c2-24f0-4852-bb38-1c7bb5e3fa9c",
+    "timestamp": "2026-03-17T23:59:38.556Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7c541290-46d0-4f5e-a615-13156b57368c",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "04ed3457-95fc-4c71-8f30-de17d158ad69",
+    "timestamp": "2026-03-18T00:04:39.223Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "2d9e8200-e05c-4244-a589-444b816cdc1a",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "c5eb4b45-45fb-4f94-8d8c-dc3120b1458f",
+    "timestamp": "2026-03-18T00:09:38.591Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f2a6d5fd-965a-43ec-b30a-d1d140fa7ef7",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "3a392aef-69bd-4627-beff-62495756d6cd",
+    "timestamp": "2026-03-18T00:14:37.354Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "31a38816-8704-42e0-b6a7-5acf8420eee9",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2e49fd48-1835-4ec1-b4d1-d234923ef2be",
+    "timestamp": "2026-03-18T00:19:37.055Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "620a45c9-e1a4-412b-b5e9-d9c3be4df157",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d9d0bcc7-6650-464a-ac31-8436e0e135af",
+    "timestamp": "2026-03-18T00:24:38.806Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "6a62b21c-c371-46a0-83a7-f1f7686a08b5",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7786234b-114c-42fc-85fb-ad4f6ada53db",
+    "timestamp": "2026-03-18T00:29:36.333Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "8eb374fd-b4c5-4ee0-895b-b129bb6e69b4",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "8a564fdb-782e-4202-a006-7324e97fc268",
+    "timestamp": "2026-03-18T00:34:38.228Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "0ffc221a-833b-4348-90c0-87bb8b56aaa1",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "f48a0fbd-b622-4d81-940a-2555bfa073ca",
+    "timestamp": "2026-03-18T00:39:38.756Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "af032ec1-f2d8-4866-a2f5-0ce3e6ee3ed4",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "e569366c-419c-45c3-bbb1-69e294308fb5",
+    "timestamp": "2026-03-18T00:44:38.206Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7f8f8735-2b40-4dce-afac-d351a430ac38",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "09f29afb-bccf-437f-916a-a84eae0039db",
+    "timestamp": "2026-03-18T00:49:37.228Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "9ca92efe-149f-47e7-836a-4166a3672279",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "8f64e265-217a-423a-bbf8-b4d203021b0d",
+    "timestamp": "2026-03-18T00:54:38.435Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "74e86481-196f-4ef5-94d2-3ec259780e78",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "9c15ec4c-bbf3-4528-95d3-ff8b9d3c2e8b",
+    "timestamp": "2026-03-18T00:59:36.929Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "9feaccc4-70c6-4cee-8454-cccd62577a67",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "bfc4058d-fca0-4d2f-9582-26e5d09049ea",
+    "timestamp": "2026-03-18T01:04:39.222Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a9a5ebde-ee29-4fce-a0b9-fb7fbf8a72da",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b348d6f0-cd0c-4fba-9ce9-6df6dc0c9c8d",
+    "timestamp": "2026-03-18T01:09:37.616Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f2975537-88a6-4a27-85e9-803f2615627d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d4c10f7d-6e0a-4a17-adf2-a10c06080cff",
+    "timestamp": "2026-03-18T01:14:36.621Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7b5e069f-95f1-42a8-8abd-bbd42d26ee47",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "89701a2e-12e1-4d97-bab5-276d13df6d3b",
+    "timestamp": "2026-03-18T01:19:36.942Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "cea23040-7c78-4220-a1fb-4e89d0346876",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7ee0fd19-d8bc-47c7-9748-f7f873f0a08b",
+    "timestamp": "2026-03-18T01:24:37.332Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "0f2b059e-cb25-4ecb-8fde-441e4b8f3b1a",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "e55c4fe5-16e2-4f3c-a988-a491083fa3bc",
+    "timestamp": "2026-03-18T01:29:38.357Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "1c9b7c32-3405-44ce-9743-9d7792820158",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "125bf9b3-4071-49e1-95a8-c27af8eff546",
+    "timestamp": "2026-03-18T01:34:40.514Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "fc7b2930-6d2d-4fb9-9af7-9351153cae1e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "9ffc3723-fda0-40df-87b6-eb293cd7bc1b",
+    "timestamp": "2026-03-18T01:39:38.479Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "1551e423-e1bd-4cec-917e-6c2c1f43a8e7",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2dd191d3-d28f-4116-a311-2f16109977e0",
+    "timestamp": "2026-03-18T01:44:42.925Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 12s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "9f2a780b-326c-47c0-8bc0-6b1ca916ad90",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7dfcca29-829a-43b3-ae1c-5db3acf74da9",
+    "timestamp": "2026-03-18T01:49:36.991Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b8fd65d3-be26-4519-a5b2-6f64a95e5a16",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "e4574259-c0da-452f-ba02-409952683b57",
+    "timestamp": "2026-03-18T01:54:40.907Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "da751813-0592-4638-820a-9547fb3526ee",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "08052dc2-9364-4de5-b9e4-6b6d6da22ae0",
+    "timestamp": "2026-03-18T01:59:37.715Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "9fc3bbe7-9fe4-4e18-a5cc-4af1148351ed",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "6a6e0593-edca-4787-ad10-a6ae1ae0bf3b",
+    "timestamp": "2026-03-18T02:04:38.123Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "fc967ca9-c277-4610-8ef5-7e370218e6dc",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "1fb3a30a-9c23-4c09-9409-94d4a39726fc",
+    "timestamp": "2026-03-18T02:09:37.269Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "e54f9ce1-d9fe-49a8-a3d8-ac686da9332b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d14321e8-dc83-42c2-9681-945b1346fd7e",
+    "timestamp": "2026-03-18T02:14:38.096Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a9371ed5-0459-4fe4-af6e-da27e4a0dcb8",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "55880bfb-49ee-4652-95bf-f0514abb6296",
+    "timestamp": "2026-03-18T02:19:41.612Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 11s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "70e01d5d-09d2-4904-a1b5-e001901a7030",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "f19aafb8-4273-4cf8-9310-6de4a748dec6",
+    "timestamp": "2026-03-18T02:24:37.747Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "eda9956c-752a-4d58-85f1-cf57d477eb4b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "87a8f653-af57-4b51-a64b-e081ffe17df6",
+    "timestamp": "2026-03-18T02:29:39.294Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "4a4362f1-40ee-4cad-9dd7-ee223f85627d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "97eebaa2-7bd6-45b8-8f80-f33923b163bd",
+    "timestamp": "2026-03-18T02:34:40.690Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "c8957dc3-e10c-4257-9dc3-f883f8b6afae",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b65af0d1-005f-4438-91db-15b5ac3ed339",
+    "timestamp": "2026-03-18T02:39:37.945Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "8fc68a41-78d0-4013-b2f5-0ee6727922c3",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "3b70ee24-295c-4eb8-aaad-4b15b01e0aa1",
+    "timestamp": "2026-03-18T02:44:37.146Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "8d6156e3-b04b-43d2-9449-5dab9616ec6f",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "a67ad013-9277-4301-9064-7728a40301cf",
+    "timestamp": "2026-03-18T02:49:37.341Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "79519cc5-dc3a-4ba2-8bed-dcb716a787a3",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "134d7fec-fffb-41f6-8cfc-9b11c3423a8a",
+    "timestamp": "2026-03-18T02:54:39.880Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "52fe4d4f-3af6-4fb4-b238-25ae56611c55",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "38f6f27c-dccd-42f5-8614-4571465f0cd4",
+    "timestamp": "2026-03-18T02:59:40.226Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "cbe8f893-8aae-4328-9743-d9b0f38316f4",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "a0df17b2-8aa1-437f-b8bf-ab4686db0863",
+    "timestamp": "2026-03-18T03:04:45.584Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 15s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "c8e0224b-3f95-4c32-8e92-4b5d37add2bf",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "61a1f9f4-3738-4874-8b0c-132ba636f4c9",
+    "timestamp": "2026-03-18T03:09:37.490Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "619f75e3-804d-4645-b54d-71847c28acd2",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "c5c76348-923b-4f36-b113-52d89ab1134d",
+    "timestamp": "2026-03-18T03:14:39.757Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "96552df8-d8eb-4749-9481-bf925961d256",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "3921385a-eaee-4f5e-9d76-f59d61c0021d",
+    "timestamp": "2026-03-18T03:19:37.667Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "21505109-9d05-4c49-8c78-d4670c946927",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "68c1b93a-2317-43bd-a311-1ea78ed79f12",
+    "timestamp": "2026-03-18T03:24:40.905Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "ab5c1e60-034f-4fd4-9c10-48b7c0b576c1",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b389b5ac-6fda-4723-911c-612a1f23f5c2",
+    "timestamp": "2026-03-18T03:29:37.608Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "1cd95713-66bc-4b75-a893-75467cce9aa6",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "af6aaa7a-6ea6-4bca-b803-a468f26cc1e6",
+    "timestamp": "2026-03-18T03:34:39.244Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7cf780cb-3199-4e08-b666-8c5cebcbd87b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "06bbae8d-e559-4dc2-ac47-aba1721a4a58",
+    "timestamp": "2026-03-18T03:39:38.104Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "ae989608-ea65-476b-8815-7c4084be0a22",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2fd9216e-190b-491d-88cc-825bb8879408",
+    "timestamp": "2026-03-18T03:44:41.190Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 11s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "42d8ba9c-1548-4147-adf8-7d509f6e23ad",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "470a3900-fe12-4431-bf36-290377da5c45",
+    "timestamp": "2026-03-18T03:49:37.518Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b7c8e80d-dfb5-4a7d-98e3-6087d356c86b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "f9d44342-a8b9-4692-9476-80ed7321a353",
+    "timestamp": "2026-03-18T03:54:37.458Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "d25a79ef-17da-4d08-8038-d6a0dc3193d5",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b7b21486-eae1-4d93-b018-b45399fad0c7",
+    "timestamp": "2026-03-18T03:59:37.616Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "8e425c47-afa8-4440-9c3b-ab194064f7e5",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d4d1a6d5-cf3f-48e9-b4b2-21799fc378be",
+    "timestamp": "2026-03-18T04:04:37.833Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "8a2af20b-28af-4781-810a-ff49e8ccbbb9",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "065adaf0-b50d-4239-bd64-8f862ea33fb2",
+    "timestamp": "2026-03-18T04:09:45.343Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 15s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "10d63454-1714-49f0-8cd5-e450842e1ebf",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "459bc327-9314-4f95-8c0f-52618a83a132",
+    "timestamp": "2026-03-18T04:14:37.281Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "007b756b-3326-450b-8c25-c139b6b4c6ec",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "59fdf49c-293f-4277-b11e-73f180c1ff55",
+    "timestamp": "2026-03-18T04:19:44.643Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 14s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b65faa85-d0f9-4454-ac9a-8b6fdc1d3efb",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d22f6149-5fcf-44aa-81d9-2dc907465ea4",
+    "timestamp": "2026-03-18T04:24:40.702Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "dd06f020-6cfd-4692-bb15-9bee7f8cc836",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "efe9a3d3-5915-4211-8a98-c08448d7bb65",
+    "timestamp": "2026-03-18T04:29:41.652Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 11s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "5da9ec3d-61b7-44e8-8ab2-f59a0a39a091",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "dadfd69b-41f7-4c56-a41b-1e9840acf134",
+    "timestamp": "2026-03-18T04:34:37.741Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "0d5469ad-5db8-434e-85f5-2478e8bc09fc",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "bf92dc88-529a-46fa-91e5-0dbcdf97c235",
+    "timestamp": "2026-03-18T04:39:38.330Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "e094be43-1b07-4f52-8795-fd340452532c",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "201c6463-d8e7-4a45-879c-e0c3938509a5",
+    "timestamp": "2026-03-18T04:44:37.653Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "dfcb0d7a-baea-4632-a306-f4e81554f379",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "1e157a10-9164-4e37-9f55-9eb0d3689528",
+    "timestamp": "2026-03-18T04:49:38.488Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b2a450a2-0526-4559-a849-1bbd0b4f13a8",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "183e1436-49e5-433d-8b9d-b00d1ed6ca8c",
+    "timestamp": "2026-03-18T04:54:40.088Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "d8bd55d4-0868-45d4-8b98-cac790782941",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7d344ab4-cf49-44b1-83f0-9827e91d2b1d",
+    "timestamp": "2026-03-18T04:59:37.513Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "5ceb9f49-cbce-4875-9e24-72fa28beee6c",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "e0de3e73-a31d-4b98-ab48-c67a79489586",
+    "timestamp": "2026-03-18T05:04:40.308Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "d45cc15d-6ebf-4e8a-9de6-65dc835a51df",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "cf8f874e-9d3e-457e-be67-0ef3bcd65e60",
+    "timestamp": "2026-03-18T05:09:39.097Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "6e91df84-b071-4af4-b279-571a24763b45",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b8f4d829-cb46-42d0-85d8-895356374155",
+    "timestamp": "2026-03-18T05:14:39.078Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "3f77dff3-26e6-4322-a1e8-413fba5b4531",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7f66d954-4e53-4f1c-8a55-dc9ed7aee304",
+    "timestamp": "2026-03-18T05:19:38.915Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "efa4499e-2361-4d35-8867-cb659e34d8d0",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "e7ca1249-1f43-40e4-bba9-90d64285e72e",
+    "timestamp": "2026-03-18T05:24:39.296Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f25ac42c-ae80-40bc-a6f8-eb793a4ca0ea",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "25295b02-91b6-40a1-a055-d21b8aa198e4",
+    "timestamp": "2026-03-18T05:29:37.905Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "fb5355f4-619e-4f4d-a096-f0a1984b7303",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7d94877e-4b44-41a7-a1b2-ef7d6016f2df",
+    "timestamp": "2026-03-18T05:34:38.668Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a22c9614-80ca-45a6-9d73-c6e8dd2ef7df",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b1b06fd6-d7a2-4175-8996-5fd2d7a3b080",
+    "timestamp": "2026-03-18T05:39:38.639Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "9faa614a-b3dc-4a3d-8ea6-7cbef891a363",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "5e61ee5d-1b21-4b95-b90b-03a8608cbb8f",
+    "timestamp": "2026-03-18T05:44:40.048Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "3534a268-b395-42c7-bdb2-4ece09ca1223",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2e123792-4e53-4bf9-bb1e-7aeafd28f579",
+    "timestamp": "2026-03-18T05:49:38.632Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a8ae2daf-9d9d-4a96-a017-ef70079cc447",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2ded1c78-1966-4e08-a915-74143363269d",
+    "timestamp": "2026-03-18T05:54:41.483Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "ba75c477-ac55-448b-8b2a-43d75c903ed2",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "500d089a-190c-4859-85a6-e5728705aa67",
+    "timestamp": "2026-03-18T05:59:38.394Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b63cf330-4554-48d2-829f-6d78da133482",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b9539e6f-155b-42fd-9e1b-8b5dd60d6d4b",
+    "timestamp": "2026-03-18T06:04:41.962Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 11s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7a773815-9ffb-47b7-b393-c8922ccb24a9",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "64267636-4735-484e-9a64-ae85ace3e32b",
+    "timestamp": "2026-03-18T06:09:40.338Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a44aa200-edda-4e3a-9578-6ec2affdab2c",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "870841ff-a9da-4eee-ab65-6d20942b4275",
+    "timestamp": "2026-03-18T06:14:39.084Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "4101e208-8f64-46d8-9c0f-57a2617b5c10",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "ee035330-ea3e-4a1a-9218-8497b29c360f",
+    "timestamp": "2026-03-18T06:19:50.512Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 19s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "213c7be8-2bb9-47e4-9013-ade7f1402098",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "1e253211-b184-43ac-b020-5d91d0587cb1",
+    "timestamp": "2026-03-18T06:24:38.412Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "56b7e107-2032-43ad-bb1b-a2c5681a13bc",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "dffe0616-cffd-4be8-a866-5a71ee512756",
+    "timestamp": "2026-03-18T06:29:38.113Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b9751e97-4bf1-4f0c-ac0e-0daf35c8720d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "68f72ef4-9464-4726-a307-971000c2c515",
+    "timestamp": "2026-03-18T06:34:39.813Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f4aeddb4-175d-493a-9e5d-11a5d6717a2b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "1636d4f0-1828-4d74-86bf-f0445eced71c",
+    "timestamp": "2026-03-18T06:39:54.567Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 23s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "6fad891b-2947-4acb-808b-8d5dd0ac9695",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "858f0b36-7d90-46ab-9082-ed6e9f425647",
+    "timestamp": "2026-03-18T06:45:48.813Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 78s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "3384efbc-6d0a-4e62-a2dd-984ebd1ecf7e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "450699f5-dadd-41e5-9796-46436419633a",
+    "timestamp": "2026-03-18T06:49:41.334Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "e3631761-69aa-4887-9ce9-e55c201e0f21",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7663d610-6022-43a0-943d-ef5962268998",
+    "timestamp": "2026-03-18T06:54:43.708Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 13s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "c07c43af-aed5-48f3-83d9-1cf26a4f2653",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "48e8f9ee-cb5c-43d6-a8aa-507000747c1f",
+    "timestamp": "2026-03-18T06:59:39.470Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7652aa15-2dd2-4b62-b723-709c31f9d1d6",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "535df279-4ffa-434b-9dbe-44b161b35fef",
+    "timestamp": "2026-03-18T07:04:39.189Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "bd151834-c09f-43e4-9533-d39c43ad2939",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "f9b74f36-9341-4781-9057-6d8b8cb88f31",
+    "timestamp": "2026-03-18T07:09:38.990Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f56a132a-5a9f-4997-b481-c5aa9952d6bb",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "74decc86-11f3-41ec-abc0-d7e6b0006feb",
+    "timestamp": "2026-03-18T07:14:38.336Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "c47a66b2-9d9f-44e0-84e6-986cd5480d76",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b49e2d28-ca04-480c-a760-ba4ef129c785",
+    "timestamp": "2026-03-18T07:19:40.903Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "510733e3-d834-4816-bbf9-f28b146b97d3",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "48f1aa0b-e071-4d1b-94ad-56c51613fc45",
+    "timestamp": "2026-03-18T07:24:38.678Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "44399961-b89d-442a-806e-1168e4b1a783",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "235acb17-c4a1-4a9a-91c2-629575ea3af0",
+    "timestamp": "2026-03-18T07:29:38.986Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "658e7755-1a9c-4a52-9e69-30856fc634c9",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "9132ce19-acb2-405f-bc5f-c771e01c687f",
+    "timestamp": "2026-03-18T07:34:41.264Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "cc7cac66-c407-460c-ae1f-a34b6842da97",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "c218cb63-e7b3-4005-9c28-010df84b70bf",
+    "timestamp": "2026-03-18T07:39:38.952Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "3e79d3b3-1851-41e1-9b32-3a9c44729b9e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "61f7c6e7-dc68-4ade-90e6-f695585756a5",
+    "timestamp": "2026-03-18T07:44:39.395Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "2714f3c0-59d9-42b2-ad90-c3221dec2592",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "fd09cb08-a7d7-47b4-99bd-1a0631670edd",
+    "timestamp": "2026-03-18T07:49:39.404Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f27540cb-6a64-42e2-b5d6-9ccfb613414e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "f9c06a4a-8587-4c22-a699-207240985371",
+    "timestamp": "2026-03-18T07:54:40.294Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "39c2b6d6-6361-419b-a550-b951a2592feb",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "91d78a3f-b8d7-4b9b-9a4d-3478bae2690d",
+    "timestamp": "2026-03-18T07:59:40.298Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "de4f4160-b8ec-4b46-80b5-fda269876421",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "1d1b9995-451a-49d0-9620-b6169ed4372c",
+    "timestamp": "2026-03-18T08:04:41.720Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "712c66e7-42c2-4fa2-a2a8-283227af8ca1",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "c87de42e-4da2-43ce-a4ff-5d8c14735791",
+    "timestamp": "2026-03-18T08:09:41.149Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7e5d9147-1fad-4f1c-bc14-28af5af2e9b2",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "1b2bdd31-f345-491f-aa58-aa90f6da454c",
+    "timestamp": "2026-03-18T08:14:41.551Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "c119e0f8-bb14-422d-a989-a5c30eadf329",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "66f67b8c-c1e1-4def-8c67-2df2cbd4b4b8",
+    "timestamp": "2026-03-18T08:19:38.037Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "3a00f035-c5db-45fa-9d6f-99808e02ba13",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "16031e2b-85f9-44be-b08f-9ee9410b3c53",
+    "timestamp": "2026-03-18T08:24:43.783Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 12s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "e5ef6305-8de2-46f8-aa7d-42f910ba99fa",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "75fdc880-b067-4e5d-a409-59d5f981819d",
+    "timestamp": "2026-03-18T08:29:38.365Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "a9ac125a-6ba5-4e65-9eb1-9b4e96472e3b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "1828ec00-c9e0-4a9e-892f-667d0fca608f",
+    "timestamp": "2026-03-18T08:34:38.488Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "ac7fa143-ccf6-4f78-8595-5dcf50745cf6",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "77a3aeb8-01b3-4503-93b0-7015ad7993c2",
+    "timestamp": "2026-03-18T08:39:39.123Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "d2a4fa7a-0f75-4061-b427-ff8dc7736c7d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7b9023f4-4e64-4b1a-a72d-0ef684a59419",
+    "timestamp": "2026-03-18T08:44:38.939Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "4d6d497e-db6a-4018-9c27-2fa4cf14cfae",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d94dbed2-f573-473c-9c20-4329c76cf435",
+    "timestamp": "2026-03-18T08:49:38.135Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "0fb82c83-e5af-464d-b734-bdcf623a15c9",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "3d723a24-9de6-4b91-a733-bf0c66b4b504",
+    "timestamp": "2026-03-18T08:54:41.514Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "1842dcc0-1e87-4573-a16b-48f532203177",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "295ad74e-e2e9-42cc-b9a1-138dbd780f7e",
+    "timestamp": "2026-03-18T08:59:39.880Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "25ae15f5-0af3-4e59-8f0e-13d0469b5506",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "963625f8-1f7f-4693-9409-90bf68b1364a",
+    "timestamp": "2026-03-18T09:04:38.389Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "5621398e-3f82-4c2f-932b-b9aefca7cd4f",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "8d12d5e2-ee4c-4e1c-b86c-1b97aa5fe20a",
+    "timestamp": "2026-03-18T09:09:37.994Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "77d11262-0b53-43e3-bac9-f30e06dfccb0",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "942cc0c4-bdc0-4d0f-9c3b-12fda781a822",
+    "timestamp": "2026-03-18T09:14:38.380Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "da107bf1-aea7-4257-9c91-0a7fa80b8204",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "06c6d6b6-ec3e-4108-8a31-0bffdbbd7bd9",
+    "timestamp": "2026-03-18T09:19:38.153Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "8d435e7f-36df-460d-8ac8-48f2349ebdfe",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "5f1dcdbd-9183-4c4d-b964-fe19a9419d6c",
+    "timestamp": "2026-03-18T09:24:39.329Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "72d90b47-ecbd-41ad-a433-a6cce0426d33",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "8207faae-28d1-4361-b21e-0c9bc5f4db83",
+    "timestamp": "2026-03-18T09:29:38.139Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "28e20d13-97e2-468b-8a24-225f01ea0a82",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "3159ec93-6814-4c09-a4a1-de3829818d5e",
+    "timestamp": "2026-03-18T09:34:40.818Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "cc37d5a7-2d4a-4220-a7dd-cb829fbdee94",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "4868f01a-6af6-4669-b05a-4f77056ddf41",
+    "timestamp": "2026-03-18T09:39:38.206Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f813e36f-eb1f-43e6-8fe4-a5ec7c6e2951",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b45dba28-7518-4df2-9eb6-c8802eb06e7e",
+    "timestamp": "2026-03-18T09:44:39.132Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "5f474abd-0792-4711-8386-3249e69ca844",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "71ad16f2-9645-47dc-a67a-d39871e4fd05",
+    "timestamp": "2026-03-18T09:49:39.048Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "ee0ff416-d2be-4548-84e5-168a9d01624d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d42dc05c-30c6-4d16-9e05-19d67e33de8e",
+    "timestamp": "2026-03-18T09:54:38.540Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "8a87ac7c-a213-4da4-a585-f1db406fbe33",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "a4f00223-18cb-46b4-9f43-a7a0a29f7620",
+    "timestamp": "2026-03-18T09:59:39.781Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f81b24e4-ffc4-459f-87e3-52e64602a5f7",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "bcd66842-d585-428e-b551-14646f1cb5e5",
+    "timestamp": "2026-03-18T10:04:38.221Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "2d758b2a-3263-4fdc-8b66-acef8392d01e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "694f5e1a-bc35-4185-baa0-909d451f7429",
+    "timestamp": "2026-03-18T10:09:38.054Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f5442f5f-7e93-41d0-a5dd-5fbd56d1a25f",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "53c88e58-78f8-4b6f-a4f9-cf7c1e0ce80f",
+    "timestamp": "2026-03-18T10:14:38.522Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "018b43c4-a159-4fef-8782-d052956681e1",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "503758c7-360e-47d8-b572-7a058ca9c34c",
+    "timestamp": "2026-03-18T10:19:41.840Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 10s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "eaaa6b65-cfd8-4eaf-b0f6-ac5b8858b46d",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "fc890bb9-7163-4580-b22c-bf3cd3da5f93",
+    "timestamp": "2026-03-18T10:24:38.607Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "04010fb4-ee26-4935-aea8-23621db4a47b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2e7f4bf5-74f6-4490-987e-5c584575fa5e",
+    "timestamp": "2026-03-18T10:29:38.781Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "3472f8e9-6aab-4a16-9639-94d23ab2ba75",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "ed682bd4-f36b-4b01-9960-80cda941d374",
+    "timestamp": "2026-03-18T10:34:39.534Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "35e15316-589d-4c3c-8c42-9485983f409e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "9ddc352e-303c-4e5f-90bb-1caf054f07df",
+    "timestamp": "2026-03-18T10:39:40.605Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "2498b8e5-3f67-417a-a0c9-fd6bdb30e3a7",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7fb7b00d-6d57-42b2-8f04-548ce615a734",
+    "timestamp": "2026-03-18T10:44:39.085Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "90bee2f7-e3a4-48eb-b469-5a5a11115e53",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "301d3781-8e4b-4cf0-ae7c-df89745d99e8",
+    "timestamp": "2026-03-18T10:49:38.303Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "209a7bc5-9cc3-4756-b402-cc15e4d42e3f",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "be5bb9b1-46c2-4483-8016-14b046d175d3",
+    "timestamp": "2026-03-18T10:54:41.235Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "41600400-c7ef-449f-a53b-5bbb63a98d4e",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "064c2cae-9733-41e1-b92e-03d834b8dd79",
+    "timestamp": "2026-03-18T10:59:39.191Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "dc17da36-9f09-400d-98b2-5a57d8bb5db3",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "73882e86-230a-4e5b-81ac-d462effdc9f1",
+    "timestamp": "2026-03-18T11:04:38.916Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "49b47b96-eeda-4981-904b-484d1823708c",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "eb59a910-d207-49db-86e5-be072b4f445c",
+    "timestamp": "2026-03-18T11:09:41.112Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "05269b57-70f5-436e-9025-88d23faf7448",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "05051d36-d172-4ce3-896e-d517b0cf8f0b",
+    "timestamp": "2026-03-18T11:14:38.861Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "41f08707-9c9d-4ea9-bf19-817c4818d9e4",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "9fe17654-efac-461b-bd13-2117743c57ee",
+    "timestamp": "2026-03-18T11:19:38.791Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b1d8e4dd-d2b3-4c5a-be27-a4cce8091d01",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "13f076be-3900-4022-a495-224db789b229",
+    "timestamp": "2026-03-18T11:24:39.104Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "4d511a70-5423-49a3-a0dd-886d722463bf",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "78dc11f4-0405-4602-9645-435d3ed850da",
+    "timestamp": "2026-03-18T11:29:39.382Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "ff429b11-8bf5-40d3-92e1-ab0fcba6f07a",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "0ef0d026-272c-4e96-bda7-b8ca6054608d",
+    "timestamp": "2026-03-18T11:34:38.515Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "1add1d05-c983-4819-9b80-3862a8cd14d0",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "4bca40f9-a7af-442d-b9ba-6e0683abedf2",
+    "timestamp": "2026-03-18T11:39:39.628Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "04de0774-6eac-42c6-9f61-eadd04c7eba4",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "c80fe38e-87dd-4be7-948c-caa48be0a7b9",
+    "timestamp": "2026-03-18T11:44:40.825Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "9debaed7-8bef-4924-97f9-ccae5e354725",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "5d3a8bf3-9acb-465a-b245-a1cf65920f45",
+    "timestamp": "2026-03-18T11:49:38.381Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 6s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "9752076e-8cfa-4217-8772-6b16e8ce539a",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "02f90b11-6947-416c-8f39-76cbbfc7fb65",
+    "timestamp": "2026-03-18T11:54:40.287Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 8s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "149e3230-3ce7-4e8b-a70c-83eb9ff6b8e6",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "45126306-0e97-4683-a3d5-420e72ba4903",
+    "timestamp": "2026-03-18T11:59:41.087Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 9s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "5586ca47-9335-4545-a99b-febb0e53d25f",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "e895757e-cd68-4ad2-859d-032d9a60f222",
+    "timestamp": "2026-03-18T12:05:03.145Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 7s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "2c7cab85-0256-4ea5-aa23-46329fd26322",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "121fe161-1ea7-4552-b33a-1387b719b790",
+    "timestamp": "2026-03-18T12:08:47.599Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 46s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "02b4e68c-e411-4b2a-8635-a0d8a97791f8",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "cc079922-19ae-4716-b804-fb68cb372209",
+    "timestamp": "2026-03-18T12:13:25.691Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 46s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "72da2843-d94f-4813-a3e5-92d834c3b4b6",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "0a02b8c1-81a2-4e1e-874d-49bf2586fbea",
+    "timestamp": "2026-03-18T12:47:14.087Z",
+    "actor": "system",
+    "action": "updated work items (36 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 55,
+      "completed": 36,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "be86e693-4417-4d82-b515-937839122011",
+    "timestamp": "2026-03-18T12:49:24.383Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 576s (claude-sonnet-4-6)",
+    "entityType": "agent",
+    "entityId": "6f579d8f-675f-4bca-b1a2-0f7334c78dad",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "874fb7ab-ab7f-4ea2-a343-44b5c46d71b5",
+    "timestamp": "2026-03-18T12:50:59.920Z",
+    "actor": "system",
+    "action": "updated work items (37 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 55,
+      "completed": 37,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "006aa337-4545-4b10-8f94-38ef0d3b539e",
+    "timestamp": "2026-03-18T13:09:47.061Z",
+    "actor": "system",
+    "action": "updated work items (37 completed, 2 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 55,
+      "completed": 37,
+      "inProgress": 2
+    }
+  },
+  {
+    "id": "50f14ee3-1ce0-45ce-9dc7-6a96b29740b8",
+    "timestamp": "2026-03-18T13:09:49.201Z",
+    "actor": "system",
+    "action": "updated work items (14 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 15,
+      "completed": 14,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "a0127a76-5eb6-4fcf-836c-7bb6134776ea",
+    "timestamp": "2026-03-18T13:12:03.410Z",
+    "actor": "system",
+    "action": "updated work items (38 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 55,
+      "completed": 38,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "95478ec1-56e5-4b2f-870f-ac5470033cb0",
+    "timestamp": "2026-03-18T13:12:06.475Z",
+    "actor": "system",
+    "action": "updated work items (15 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "work items for 056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "projectSlug": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "details": {
+      "totalItems": 15,
+      "completed": 15,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "be06c450-70d6-4143-b15f-bf75e784b396",
+    "timestamp": "2026-03-18T13:14:52.885Z",
+    "actor": "system",
+    "action": "updated work items (39 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 55,
+      "completed": 39,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "f3e9d11a-8278-4cf7-9b7a-9696f7c5a38e",
+    "timestamp": "2026-03-18T13:16:06.016Z",
+    "actor": "system",
+    "action": "updated work items (39 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 55,
+      "completed": 39,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "a9fd8a01-873a-4ef2-a08a-cf4971d865f9",
+    "timestamp": "2026-03-18T13:17:13.884Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+    "entityName": "Pipeline Review Gates",
+    "projectSlug": "review-gates",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "472a4618-0820-47cf-a609-295dedc24b2b",
+    "timestamp": "2026-03-18T13:22:03.685Z",
+    "actor": "system",
+    "action": "updated work items (40 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 60,
+      "completed": 40,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "f0c538e1-e70a-4d2e-b494-d0e918673f92",
+    "timestamp": "2026-03-18T13:22:21.859Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 382s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "46823c0f-0293-402b-8251-dc41418e6888",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "9005f03d-52e8-47a2-ae9f-6e851b8e6707",
+    "timestamp": "2026-03-18T13:22:23.911Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "d669781c-652d-46f9-b42f-dc15169b7e73",
+    "entityName": "Write a prioritized improvement roadmap document (docs/te...",
+    "projectSlug": "write-a-prioritized-improvement-roadmap-document-docs-te"
+  },
+  {
+    "id": "9e171dc4-b45b-4dde-b04c-15b0222425e9",
+    "timestamp": "2026-03-18T13:22:28.141Z",
+    "actor": "system",
+    "action": "updated work items (41 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 60,
+      "completed": 41,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "f4fe12e8-4a94-414b-8466-a8da58d8a581",
+    "timestamp": "2026-03-18T13:22:31.325Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "9183521f-ca26-4013-a240-f044a3e1ea41",
+    "entityName": "Draft an architectural sketch for persistent workflow sta...",
+    "projectSlug": "draft-an-architectural-sketch-for-persistent-workflow-sta"
+  },
+  {
+    "id": "4d651ce0-a774-4053-bd3c-04851cc98bb5",
+    "timestamp": "2026-03-18T13:22:34.373Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "entityName": "Sketch the autonomy dashboard 'morning briefing' concept ...",
+    "projectSlug": "sketch-the-autonomy-dashboard-morning-briefing-concept"
+  },
+  {
+    "id": "921252fd-b10e-47b0-aa10-525c3bf40687",
+    "timestamp": "2026-03-18T13:22:37.868Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "entityName": "Quick competitive scan (3-5 examples) of how autonomous a...",
+    "projectSlug": "quick-competitive-scan-3-5-examples-of-how-autonomous-a"
+  },
+  {
+    "id": "6450fc1b-3a49-4a15-810c-050d95ac6222",
+    "timestamp": "2026-03-18T13:22:40.722Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "58f0c169-450e-489a-ae98-f7142b88f550",
+    "entityName": "Evaluate lightweight workflow state patterns (JSON state ...",
+    "projectSlug": "evaluate-lightweight-workflow-state-patterns-json-state"
+  },
+  {
+    "id": "f76318f6-6288-4c04-a8cf-c07ebcd88e27",
+    "timestamp": "2026-03-18T13:22:45.349Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "entityName": "Write a one-page north star vision document for TeamHQ au...",
+    "projectSlug": "write-a-one-page-north-star-vision-document-for-teamhq-au"
+  },
+  {
+    "id": "5acc55a3-bca3-4753-9cd4-811892baafb0",
+    "timestamp": "2026-03-18T13:26:15.610Z",
+    "actor": "system",
+    "action": "updated work items (42 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 60,
+      "completed": 42,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "109f047d-5949-4277-a7e4-baf21a1dbdeb",
+    "timestamp": "2026-03-18T13:26:45.322Z",
+    "actor": "system",
+    "action": "updated project status to in-progress",
+    "entityType": "project",
+    "entityId": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "entityName": "Write a one-page north star vision document for TeamHQ au...",
+    "projectSlug": "write-a-one-page-north-star-vision-document-for-teamhq-au",
+    "details": {
+      "status": "in-progress"
+    }
+  },
+  {
+    "id": "483f4eca-3889-403d-9d61-0d0a9f1077b7",
+    "timestamp": "2026-03-18T13:26:45.347Z",
+    "actor": "Ravi",
+    "action": "updated work items (0 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "entityName": "work items for 2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "projectSlug": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "details": {
+      "totalItems": 1,
+      "completed": 0,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "2e05d425-d194-4477-95ca-5cff070f85d3",
+    "timestamp": "2026-03-18T13:26:48.936Z",
+    "actor": "system",
+    "action": "updated project status to in-progress",
+    "entityType": "project",
+    "entityId": "58f0c169-450e-489a-ae98-f7142b88f550",
+    "entityName": "Evaluate lightweight workflow state patterns (JSON state ...",
+    "projectSlug": "evaluate-lightweight-workflow-state-patterns-json-state",
+    "details": {
+      "status": "in-progress"
+    }
+  },
+  {
+    "id": "ddb887fc-bf89-4d34-8ec7-5b065a5e874b",
+    "timestamp": "2026-03-18T13:26:48.958Z",
+    "actor": "Marco",
+    "action": "updated work items (0 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "58f0c169-450e-489a-ae98-f7142b88f550",
+    "entityName": "work items for 58f0c169-450e-489a-ae98-f7142b88f550",
+    "projectSlug": "58f0c169-450e-489a-ae98-f7142b88f550",
+    "details": {
+      "totalItems": 1,
+      "completed": 0,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "f247ad92-a342-4c67-afb7-591b42fe889f",
+    "timestamp": "2026-03-18T13:26:52.503Z",
+    "actor": "system",
+    "action": "updated project status to in-progress",
+    "entityType": "project",
+    "entityId": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "entityName": "Quick competitive scan (3-5 examples) of how autonomous a...",
+    "projectSlug": "quick-competitive-scan-3-5-examples-of-how-autonomous-a",
+    "details": {
+      "status": "in-progress"
+    }
+  },
+  {
+    "id": "d0fd677b-de5a-4555-acfe-22aa62248411",
+    "timestamp": "2026-03-18T13:26:52.526Z",
+    "actor": "Suki",
+    "action": "updated work items (0 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "entityName": "work items for 3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "projectSlug": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "details": {
+      "totalItems": 1,
+      "completed": 0,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "cf5d0650-4800-4e8b-86b3-af90f60543b3",
+    "timestamp": "2026-03-18T13:26:56.146Z",
+    "actor": "system",
+    "action": "updated project status to in-progress",
+    "entityType": "project",
+    "entityId": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "entityName": "Sketch the autonomy dashboard 'morning briefing' concept ...",
+    "projectSlug": "sketch-the-autonomy-dashboard-morning-briefing-concept",
+    "details": {
+      "status": "in-progress"
+    }
+  },
+  {
+    "id": "878c7c17-e262-4fc5-b9aa-d55e439158e3",
+    "timestamp": "2026-03-18T13:26:56.168Z",
+    "actor": "Robert",
+    "action": "updated work items (0 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "entityName": "work items for 6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "projectSlug": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "details": {
+      "totalItems": 1,
+      "completed": 0,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "b5257e6e-f2e3-4567-8f69-434161a6aeed",
+    "timestamp": "2026-03-18T13:26:59.731Z",
+    "actor": "system",
+    "action": "updated project status to in-progress",
+    "entityType": "project",
+    "entityId": "9183521f-ca26-4013-a240-f044a3e1ea41",
+    "entityName": "Draft an architectural sketch for persistent workflow sta...",
+    "projectSlug": "draft-an-architectural-sketch-for-persistent-workflow-sta",
+    "details": {
+      "status": "in-progress"
+    }
+  },
+  {
+    "id": "62fc4607-65d5-4278-8701-5c137455befe",
+    "timestamp": "2026-03-18T13:26:59.755Z",
+    "actor": "Andrei",
+    "action": "updated work items (0 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "9183521f-ca26-4013-a240-f044a3e1ea41",
+    "entityName": "work items for 9183521f-ca26-4013-a240-f044a3e1ea41",
+    "projectSlug": "9183521f-ca26-4013-a240-f044a3e1ea41",
+    "details": {
+      "totalItems": 1,
+      "completed": 0,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "2f8cfb15-e576-4cb3-8394-c26a29dd815e",
+    "timestamp": "2026-03-18T13:27:02.894Z",
+    "actor": "system",
+    "action": "updated project status to in-progress",
+    "entityType": "project",
+    "entityId": "d669781c-652d-46f9-b42f-dc15169b7e73",
+    "entityName": "Write a prioritized improvement roadmap document (docs/te...",
+    "projectSlug": "write-a-prioritized-improvement-roadmap-document-docs-te",
+    "details": {
+      "status": "in-progress"
+    }
+  },
+  {
+    "id": "1cb40649-38af-4c8f-b007-56342d701f2c",
+    "timestamp": "2026-03-18T13:27:02.917Z",
+    "actor": "Thomas",
+    "action": "updated work items (0 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "d669781c-652d-46f9-b42f-dc15169b7e73",
+    "entityName": "work items for d669781c-652d-46f9-b42f-dc15169b7e73",
+    "projectSlug": "d669781c-652d-46f9-b42f-dc15169b7e73",
+    "details": {
+      "totalItems": 1,
+      "completed": 0,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "ff536a14-1f3a-4d6b-a072-850a780a59de",
+    "timestamp": "2026-03-18T13:27:32.492Z",
+    "actor": "system",
+    "action": "updated work items (42 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 60,
+      "completed": 42,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "9179e2fd-a317-4af9-be94-30ba7d5ed481",
+    "timestamp": "2026-03-18T13:28:52.119Z",
+    "actor": "Ravi",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "entityName": "work items for 2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "projectSlug": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "details": {
+      "totalItems": 1,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "5d7722b2-34fc-4fa5-94cd-71b822a8686a",
+    "timestamp": "2026-03-18T13:28:52.126Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "2dad2192-a486-4f2d-9b3b-1a9332bfd34b",
+    "entityName": "Write a one-page north star vision document for TeamHQ au...",
+    "projectSlug": "write-a-one-page-north-star-vision-document-for-teamhq-au",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "0ff728a3-59cc-45e8-ad63-295fdf1779b0",
+    "timestamp": "2026-03-18T13:30:00.759Z",
+    "actor": "Marco",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "58f0c169-450e-489a-ae98-f7142b88f550",
+    "entityName": "work items for 58f0c169-450e-489a-ae98-f7142b88f550",
+    "projectSlug": "58f0c169-450e-489a-ae98-f7142b88f550",
+    "details": {
+      "totalItems": 1,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "84e2b8fc-1c6e-4d19-b356-769d7db708d6",
+    "timestamp": "2026-03-18T13:30:08.946Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "58f0c169-450e-489a-ae98-f7142b88f550",
+    "entityName": "Evaluate lightweight workflow state patterns (JSON state ...",
+    "projectSlug": "evaluate-lightweight-workflow-state-patterns-json-state",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "a464e452-ba28-4533-b543-d0d83410de74",
+    "timestamp": "2026-03-18T13:30:42.962Z",
+    "actor": "Robert",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "entityName": "work items for 6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "projectSlug": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "details": {
+      "totalItems": 1,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "9472bc70-f5e0-4808-bb75-cbd98239dc51",
+    "timestamp": "2026-03-18T13:30:43.370Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "6f6fb764-b75b-472e-b9c2-bca6593bce0f",
+    "entityName": "Sketch the autonomy dashboard 'morning briefing' concept ...",
+    "projectSlug": "sketch-the-autonomy-dashboard-morning-briefing-concept",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "9d8a8b2f-a93d-4976-bbe6-cd2322d0216f",
+    "timestamp": "2026-03-18T13:31:14.687Z",
+    "actor": "Thomas",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "d669781c-652d-46f9-b42f-dc15169b7e73",
+    "entityName": "work items for d669781c-652d-46f9-b42f-dc15169b7e73",
+    "projectSlug": "d669781c-652d-46f9-b42f-dc15169b7e73",
+    "details": {
+      "totalItems": 1,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "f44b5d50-c329-4a7d-9d4e-6d6dc78f1769",
+    "timestamp": "2026-03-18T13:31:14.712Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "d669781c-652d-46f9-b42f-dc15169b7e73",
+    "entityName": "Write a prioritized improvement roadmap document (docs/te...",
+    "projectSlug": "write-a-prioritized-improvement-roadmap-document-docs-te",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "44129726-97a1-4eb1-b49b-44f5e80d750c",
+    "timestamp": "2026-03-18T13:31:17.274Z",
+    "actor": "Andrei",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "9183521f-ca26-4013-a240-f044a3e1ea41",
+    "entityName": "work items for 9183521f-ca26-4013-a240-f044a3e1ea41",
+    "projectSlug": "9183521f-ca26-4013-a240-f044a3e1ea41",
+    "details": {
+      "totalItems": 1,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "377dec09-0bd5-45c0-94e2-87b874b6d6d1",
+    "timestamp": "2026-03-18T13:31:21.811Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "9183521f-ca26-4013-a240-f044a3e1ea41",
+    "entityName": "Draft an architectural sketch for persistent workflow sta...",
+    "projectSlug": "draft-an-architectural-sketch-for-persistent-workflow-sta",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "9c149c32-a4be-4cc3-9f97-7ab0dfb141e4",
+    "timestamp": "2026-03-18T13:32:07.950Z",
+    "actor": "Suki",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "entityName": "work items for 3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "projectSlug": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "details": {
+      "totalItems": 1,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "1a2414c7-1904-43de-82aa-bc89912936b4",
+    "timestamp": "2026-03-18T13:32:08.456Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+    "entityName": "Quick competitive scan (3-5 examples) of how autonomous a...",
+    "projectSlug": "quick-competitive-scan-3-5-examples-of-how-autonomous-a",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "05635275-5475-4425-b5d5-084cab8677a5",
+    "timestamp": "2026-03-18T13:33:24.031Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 492s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "f14a7e53-bc3c-4018-8fda-c4c179346555",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "04942bf9-4882-4210-b976-43e90ef259dd",
+    "timestamp": "2026-03-18T13:42:27.134Z",
+    "actor": "system",
+    "action": "updated work items (43 completed, 2 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 43,
+      "inProgress": 2
+    }
+  },
+  {
+    "id": "38e120bf-e905-4526-9973-144315f39d84",
+    "timestamp": "2026-03-18T13:45:19.341Z",
+    "actor": "system",
+    "action": "updated work items (44 completed, 2 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 44,
+      "inProgress": 2
+    }
+  },
+  {
+    "id": "771114e7-a806-43e3-8f61-fc11b5b1aeda",
+    "timestamp": "2026-03-18T13:46:56.705Z",
+    "actor": "system",
+    "action": "updated work items (45 completed, 2 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 45,
+      "inProgress": 2
+    }
+  },
+  {
+    "id": "c90459fb-c4cd-4185-9850-f940f81db2bb",
+    "timestamp": "2026-03-18T13:59:41.632Z",
+    "actor": "system",
+    "action": "updated work items (47 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 47,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "3f6096a5-c3a0-4fcf-b928-d79dc7af047a",
+    "timestamp": "2026-03-18T14:08:45.247Z",
+    "actor": "system",
+    "action": "updated work items (47 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 47,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "d1538cec-8cac-4a54-b69e-e427b33682a7",
+    "timestamp": "2026-03-18T14:12:44.490Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 2205s (claude-sonnet-4-6)",
+    "entityType": "agent",
+    "entityId": "7e726991-7bbf-4404-beb5-d1f623f678bb",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "b825c973-7736-4563-a6f7-056c3b40dd2c",
+    "timestamp": "2026-03-18T14:17:36.237Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "04ef068d-0455-4435-8512-976034606272",
+    "entityName": "Conduct a half-day technical spike on Gemini 2.5 Flash au...",
+    "projectSlug": "conduct-a-half-day-technical-spike-on-gemini-2-5-flash-au",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "ad213444-a527-429e-a747-07868bad44a4",
+    "timestamp": "2026-03-18T14:18:36.637Z",
+    "actor": "system",
+    "action": "updated project status to completed",
+    "entityType": "project",
+    "entityId": "8b22bf81-0388-492a-84e5-104d3a734013",
+    "entityName": "Scope a 'quick bug reporter' feature: floating widget wit...",
+    "projectSlug": "scope-a-quick-bug-reporter-feature-floating-widget-wit",
+    "details": {
+      "status": "completed"
+    }
+  },
+  {
+    "id": "db8a07a3-aa1f-42d3-9f94-9a35b8b6a46f",
+    "timestamp": "2026-03-18T14:20:27.237Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 267s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "1786e1b1-be44-445f-900e-efc703336e86",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "d5c27e90-016f-4cf8-9c07-c761947edb16",
+    "timestamp": "2026-03-18T14:26:46.700Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 347s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "cb620c7f-62fc-4c71-8290-65c940174f9b",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2e0f66ed-e313-4e89-9f91-bb9282b0e61d",
+    "timestamp": "2026-03-18T14:34:56.284Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 236s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "e872fd05-fe3e-4ef1-afe8-13dbd5bb9423",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "2bb2864a-bab8-4cc6-b0d9-9b951ebf0ccd",
+    "timestamp": "2026-03-18T14:40:55.454Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 296s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "7e0ace80-e971-4c2e-bbfb-5d13d9ef320a",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "708e1fec-73a7-4928-9b1c-36b00daad6bf",
+    "timestamp": "2026-03-18T14:46:22.473Z",
+    "actor": "system",
+    "action": "updated work items (47 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 47,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "7ee9357e-58c5-449f-bb33-7523208dd207",
+    "timestamp": "2026-03-18T14:49:08.373Z",
+    "actor": "system",
+    "action": "updated work items (48 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 48,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "8369f3c4-3dea-4bb3-967e-08b879a6cb5a",
+    "timestamp": "2026-03-18T14:50:26.096Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 233s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "669bc7af-d5c4-4925-89e2-85eab1700ce4",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "f10f707f-0e1e-42a8-a839-005930c7169a",
+    "timestamp": "2026-03-18T14:56:20.849Z",
+    "actor": "system",
+    "action": "updated work items (48 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "entityName": "work items for a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "projectSlug": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+    "details": {
+      "totalItems": 63,
+      "completed": 48,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "d05a8066-d402-4ffd-b5d2-40824e02e145",
+    "timestamp": "2026-03-18T14:56:52.606Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 320s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "d5b480b8-77be-49cf-9eca-caf7e82bd3c1",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "4a174cdb-b336-4f16-8dfb-df9cb5e29d65",
+    "timestamp": "2026-03-18T15:09:03.680Z",
+    "actor": "system",
+    "action": "created project",
+    "entityType": "project",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "TeamHQ Platform Improvements",
+    "projectSlug": "teamhq-platform-improvements"
+  },
+  {
+    "id": "d808eb14-5793-43e6-a077-fae3da8171cc",
+    "timestamp": "2026-03-18T15:09:11.351Z",
+    "actor": "system",
+    "action": "updated work items (0 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "work items for 8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "projectSlug": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "details": {
+      "totalItems": 4,
+      "completed": 0,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "774d2ffa-14de-431a-8341-a597fad1274c",
+    "timestamp": "2026-03-18T15:10:41.763Z",
+    "actor": "system",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "work items for 8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "projectSlug": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "details": {
+      "totalItems": 4,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "eb24c1fb-bc36-43c2-9e3d-5436377d1ce5",
+    "timestamp": "2026-03-18T15:11:26.272Z",
+    "actor": "system",
+    "action": "updated work items (1 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "work items for 8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "projectSlug": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "details": {
+      "totalItems": 4,
+      "completed": 1,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "c51e251e-40bc-4625-b363-a5b642923bb8",
+    "timestamp": "2026-03-18T15:14:41.492Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "TeamHQ Platform Improvements",
+    "projectSlug": "teamhq-platform-improvements"
+  },
+  {
+    "id": "2d727711-44b1-4394-a8fc-8af2357ef753",
+    "timestamp": "2026-03-18T15:14:42.203Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "TeamHQ Platform Improvements",
+    "projectSlug": "teamhq-platform-improvements"
+  },
+  {
+    "id": "90a18c36-119a-4e05-b4f8-c35c8b36356e",
+    "timestamp": "2026-03-18T15:14:42.863Z",
+    "actor": "system",
+    "action": "updated project",
+    "entityType": "project",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "TeamHQ Platform Improvements",
+    "projectSlug": "teamhq-platform-improvements"
+  },
+  {
+    "id": "c982e230-78ce-46ab-b5e9-b7ab529aedd8",
+    "timestamp": "2026-03-18T15:30:01.738Z",
+    "actor": "system",
+    "action": "updated work items (1 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "work items for 8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "projectSlug": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "details": {
+      "totalItems": 7,
+      "completed": 1,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "84398d6f-140e-473b-8f6d-83925166c1cf",
+    "timestamp": "2026-03-18T15:32:20.117Z",
+    "actor": "system",
+    "action": "updated work items (2 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "work items for 8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "projectSlug": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "details": {
+      "totalItems": 7,
+      "completed": 2,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "bd4c0b17-67de-467b-ab2f-44e6ff4dab96",
+    "timestamp": "2026-03-18T15:41:45.987Z",
+    "actor": "system",
+    "action": "updated work items (2 completed, 1 in progress)",
+    "entityType": "work-item",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "work items for 8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "projectSlug": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "details": {
+      "totalItems": 10,
+      "completed": 2,
+      "inProgress": 1
+    }
+  },
+  {
+    "id": "53aa0339-b0e1-41c6-b2fa-c5760f6c0b7c",
+    "timestamp": "2026-03-18T15:42:40.105Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 388s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "96e3631d-989a-4240-8e3b-10b079cee07a",
+    "entityName": "heartbeat"
+  },
+  {
+    "id": "7e140fac-ab93-4b8a-9498-6133cf297ca0",
+    "timestamp": "2026-03-18T15:50:21.876Z",
+    "actor": "system",
+    "action": "updated work items (3 completed, 0 in progress)",
+    "entityType": "work-item",
+    "entityId": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "entityName": "work items for 8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "projectSlug": "8a0d708c-ecf3-4d77-aaed-4c5485b0c6ee",
+    "details": {
+      "totalItems": 11,
+      "completed": 3,
+      "inProgress": 0
+    }
+  },
+  {
+    "id": "cb6ca432-c29d-4080-a47f-22bac693ee71",
+    "timestamp": "2026-03-18T15:51:37.286Z",
+    "actor": "Thomas",
+    "action": "autonomous heartbeat completed in 325s (claude-opus-4-6)",
+    "entityType": "agent",
+    "entityId": "b87c1817-4eac-47d4-8d11-2a9e9273033e",
+    "entityName": "heartbeat"
+  }
+]

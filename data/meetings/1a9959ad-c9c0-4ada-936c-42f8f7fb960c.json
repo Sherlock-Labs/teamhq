@@ -1,0 +1,263 @@
+{
+  "id": "1a9959ad-c9c0-4ada-936c-42f8f7fb960c",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 27,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T13:17:04.416Z",
+  "completedAt": "2026-03-18T13:19:43.737Z",
+  "durationMs": 159320,
+  "error": null,
+  "summary": "Hourly standup covering five agenda items: confirmed Review Gates completion (15/15 tasks), got Alice's status on Forge v2 visual themes frontend (on track to finish today), decided to defer Bug Reporter's remaining items, debated next Forge v2 feature and converged on command palette over keyboard shortcuts, and discussed concrete improvements to shipped products including QuoteVoice connection recovery and SiteSnap batch uploads.",
+  "keyTakeaways": [
+    "Review Gates is confirmed complete — 15/15 tasks done, Enzo passed QA, ready for the CEO to use in the next pipeline run.",
+    "Forge v2 visual themes frontend is roughly 80% done — Alice expects to finish today, then Robert does a design review before Enzo's QA pass.",
+    "Bug Reporter's 2 remaining planned items are low priority and don't block anything — team deferred them to after Forge v2 themes ships.",
+    "Command palette won the vote for next Forge v2 feature — it's higher user value than keyboard shortcuts alone and keyboard shortcuts become trivial once the palette exists.",
+    "QuoteVoice connection recovery remains the highest-priority bug fix for shipped products — Thomas already has the lightweight iteration scope from last meeting's action item."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's keep this tight — five items on the agenda. First up: Review Gates. The task board shows 15 out of 15 items complete. Jonah, Enzo — can you confirm we're actually done here?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Confirmed from my side. All backend endpoints are in — checkpoint CRUD, the pause/resume mechanism, idempotent state persistence. I tested every endpoint with curl and wrote integration tests for the state transitions. The approval flow handles concurrent requests cleanly."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I ran through the full test plan. Happy path works — create checkpoint, pause pipeline, review deliverables, approve, pipeline resumes. Tested edge cases: approving an already-approved checkpoint, rejecting then re-approving, network interruption mid-approval. All passed. One minor cosmetic thing — the timestamp formatting on the review history is inconsistent between 12h and 24h — but I'm not going to fail QA over that. Verdict: pass."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "The frontend is solid too. The review panel renders correctly across viewport sizes, the approval buttons have proper loading and disabled states, and keyboard nav works through the checkpoint list. That timestamp thing Enzo mentioned — I can fix that in five minutes, it's a single formatting call."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Great. Review Gates is done. Alice, go ahead and fix the timestamp formatting — that's a single-file cosmetic fix, well within the trivial-fix boundary. Moving on. Forge v2 visual themes — RT-37c backend is marked complete. Alice, where are we on RT-37d, the frontend?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm about 80% through. The theme preview panel is working — you can toggle between themes and see a live preview of how your roadmap looks. Theme persistence is hooked up to Jonah's backend endpoints. What's left is the visual regression check across the three existing views — timeline, board, and list. I need to make sure theme tokens cascade correctly through all the existing components without breaking anything. I'm targeting end of day today."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Quick question — are you following the token naming conventions from the design spec? I want to make sure the theme tokens are semantic, not literal. Like 'surface-primary' and 'accent-default', not 'dark-bg' and 'blue-button'. That matters for extensibility when we add more themes later."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Yes, I'm using the semantic naming from your spec. Every token maps to a role, not a color value. The theme object swaps the values underneath. Andrei reviewed the token structure last week and signed off on it."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Confirmed. I reviewed the token cascade and the naming conventions. It's clean. One thing I'd flag — Alice, when you do the visual regression across views, pay extra attention to the dependency lines in timeline view. Those are SVG paths with hardcoded stroke colors in a few places. They might not pick up the theme tokens automatically."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Good catch. I'll audit the SVG paths specifically. If any are hardcoded I'll migrate them to use the CSS custom properties."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Sounds on track. Alice finishes today, Robert does a design review tomorrow morning, then Enzo gets it for QA. Enzo, you good with that timeline?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Works for me. I'll plan my test cases tonight. The main risk is theme application breaking existing functionality — I'll do a full regression across all three views with each theme active. That's the bulk of the testing."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Item three — Bug Reporter has two planned items remaining. I looked at them: they're both nice-to-haves. One is adding drag-to-reorder for screenshot attachments, the other is a 'recent bugs' quick-view in the widget. Neither blocks the core bug reporting flow, which is already working in production. My recommendation: defer both until after Forge v2 themes ships. We don't need to split Alice's attention right now."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Agreed. The bug reporter works. Those two items are polish, not function. Let's not context-switch Alice off the themes work."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "No objections from me. The core bug reporting flow passed QA. These are enhancements, not fixes."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Deferred. Item four — after visual themes ships, what's the next Forge v2 feature? The CEO floated command palette, keyboard shortcuts, or something else. I have opinions, but I want to hear from the builders first. What gives us the most user value for the effort?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Command palette, without question. It's the single highest-leverage UI feature we can add. Once you have a command palette, keyboard shortcuts are essentially free — every command in the palette gets a configurable shortcut. If we build shortcuts first without a palette, we're building a system with no discoverability. Users won't know the shortcuts exist."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "I agree with Alice on the sequencing. A command palette is also architecturally interesting — it forces us to build a proper action registry, which becomes the backbone for keyboard shortcuts, context menus, and eventually AI-driven actions. Build the registry once, get three features from it."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "From the backend side, command palette is mostly a frontend concern. I'd need to expose a few API endpoints for server-side actions — like creating items or switching views — but the bulk of the work is client-side. That means I'm free to work on something else in parallel. If we did keyboard shortcuts instead, it's the same story — minimal backend work."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'll push back slightly. Command palette is the right call, but let's be disciplined about v1 scope. Linear's command palette has like 200 commands. We should ship with 15-20 — the essential navigation and creation actions. View switching, item creation, search, theme toggle. We can always add more commands incrementally."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Agreed. v1 command palette, 15-20 commands, ships with keyboard shortcut bindings. Robert specs the interaction design, Alice builds it. Andrei, the action registry pattern you mentioned — is that a full architecture phase or can we keep it lightweight?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Lightweight. It's a Map of action IDs to handler functions with metadata — label, shortcut, icon, category. I can spec it in the tech approach in an afternoon. No external dependencies, no complex patterns. It's a registry, not a framework."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Perfect. Last item — any improvements to shipped products worth pursuing? Last standup we flagged QuoteVoice connection recovery and SiteSnap batch uploads. Anything new?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "On QuoteVoice — I finished my mobile QA assessment. Found three issues: the WebSocket doesn't reconnect after the app comes back from background, the microphone permission prompt can get into a stuck state if the user dismisses it twice, and there's a race condition when the network switches from WiFi to cellular mid-recording. The reconnection bug is the critical one — it's the core use case for contractors on job sites with spotty connections."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The reconnection fix is straightforward on the server side. We need exponential backoff with a session resume token. The client sends the token on reconnect, server replays any missed audio chunks. I can scope the server changes in a few hours. The client-side changes are where the complexity is — Zara or Leo would need to handle the React Native reconnection flow."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I already have the lightweight iteration scope written from last meeting's action item. It's a fast-path item — I scope briefly, relevant builder implements, Robert eyeballs it, Enzo spot-checks. The reconnection bug is the priority. Mic permission and network switching can come after."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "One thing on shipped products — the TeamHQ meetings page could use a small UX improvement. When you have 15+ meetings, there's no filtering or search. It's just a long scrollable list. Not urgent, but it'll get worse as meetings accumulate. Worth putting on the backlog."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Good flag. That's a lightweight iteration track item too — add a simple type filter and maybe a date range picker. I can sketch that in 30 minutes when we get to it."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Added to the backlog. Alright, let's wrap. Decisions are clear, action items are assigned. We reconvene after Alice finishes the themes frontend. Good meeting."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Review Gates is confirmed complete and approved for production use — 15/15 tasks done, QA passed.",
+      "rationale": "Jonah confirmed all backend endpoints tested, Enzo ran full QA plan including edge cases (concurrent approvals, network interruption, reject-then-approve flow) and gave a pass verdict. Alice confirmed frontend is solid across viewports with proper states and keyboard nav.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Enzo",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Defer Bug Reporter's 2 remaining planned items (drag-to-reorder screenshots, recent bugs quick-view) until after Forge v2 themes ships.",
+      "rationale": "Both items are polish, not function. The core bug reporting flow is working in production and passed QA. Deferring avoids context-switching Alice off the themes work, which is higher priority and nearly complete.",
+      "participants": [
+        "Thomas",
+        "Robert",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Command palette is the next Forge v2 feature after visual themes, scoped to 15-20 essential commands for v1.",
+      "rationale": "Alice argued it's the highest-leverage UI feature — keyboard shortcuts become free once a command palette exists, but shortcuts without a palette have no discoverability. Andrei noted it forces building an action registry that serves as the backbone for shortcuts, context menus, and future AI actions. Robert pushed for tight v1 scope (15-20 commands, not 200) to keep it shippable. Jonah confirmed minimal backend work needed.",
+      "participants": [
+        "Alice",
+        "Andrei",
+        "Robert",
+        "Thomas",
+        "Jonah"
+      ]
+    },
+    {
+      "description": "QuoteVoice WebSocket reconnection bug is the priority fix for shipped products, using the lightweight iteration track.",
+      "rationale": "Enzo's mobile QA assessment found three issues, but reconnection after background/foreground is the critical one — it's the core use case for contractors on spotty job site connections. Thomas already has the lightweight iteration scope written. Jonah confirmed the server-side fix (exponential backoff + session resume token) is straightforward.",
+      "participants": [
+        "Enzo",
+        "Jonah",
+        "Thomas"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Alice",
+      "description": "Fix timestamp formatting inconsistency (12h vs 24h) in Review Gates review history — trivial single-file cosmetic fix.",
+      "priority": "low"
+    },
+    {
+      "owner": "Alice",
+      "description": "Complete Forge v2 visual themes frontend (RT-37d) — finish visual regression across timeline, board, and list views, audit SVG dependency lines for hardcoded stroke colors, migrate any to CSS custom properties. Target: end of day today.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Design review of Forge v2 visual themes implementation against design spec once Alice completes — check token naming, theme cascade, visual consistency across all three views.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Prepare QA test plan for Forge v2 visual themes — full regression across all three views with each theme active, focus on theme token cascade and existing functionality preservation.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write requirements for Forge v2 command palette feature — scope to 15-20 essential commands (view switching, item creation, search, theme toggle), include keyboard shortcut bindings.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Draft lightweight tech approach for command palette action registry pattern — Map of action IDs to handlers with metadata (label, shortcut, icon, category). Keep it simple, no framework.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Kick off QuoteVoice reconnection bug fix through the lightweight iteration track — scope is already written, coordinate with Jonah for server-side changes and mobile team for client-side.",
+      "priority": "high"
+    }
+  ],
+  "mood": "Efficient and momentum-driven",
+  "nextMeetingTopics": [
+    "Alice's Forge v2 visual themes completion — did the SVG dependency line migration go cleanly?",
+    "Robert's design review findings on visual themes — any token or cascade issues?",
+    "Enzo's QA verdict on visual themes — pass or fail?",
+    "Command palette requirements and tech approach readiness — are Thomas and Andrei's docs done?",
+    "QuoteVoice reconnection bug fix progress — has the lightweight iteration track kicked off?",
+    "Meetings page filtering/search — should it be scoped for the next sprint?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Hourly standup. Agenda: (1) What shipped since last meeting? Review Gates is 15/15 tasks done — confirm completion. (2) Forge v2 visual themes: backend done (RT-37c), frontend (RT-37d) in-progress with Alice. Status? (3) Bug Reporter has 2 planned items remaining. Should we advance? (4) After visual themes ships, what Forge v2 feature should we build next — command palette, keyboard shortcuts, or something else? (5) Any new product ideas or improvements to shipped products worth pursuing? Be concrete with recommendations.",
+  "interviewConfig": null
+}

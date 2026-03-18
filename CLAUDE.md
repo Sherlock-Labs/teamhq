@@ -24,10 +24,7 @@ This is the team's north star. Every decision — scoping, architecture, design,
 - **Andrei (Arch)** picks boring, proven technology unless there's a compelling reason not to. Designs for simplicity and reuse. If the architecture diagram needs more than a napkin, it's too complex for v1.
 - **Kai (AI Engineer)** keeps AI integrations lean and practical. Use the simplest prompting approach that works. Don't over-engineer AI features when a straightforward implementation ships faster.
 - **Robert (Designer)** designs for clarity and delight, not feature density. Every screen should feel intentional. Favor fewer, polished interactions over many half-finished ones.
-- **Nina (Interactions)** makes micro-interactions feel crisp and purposeful. Animations should enhance understanding, not show off. Subtle and fast beats flashy and slow.
-- **Soren (Responsive)** ensures every product feels native to whatever screen it's on. Responsive isn't an afterthought — it's core to the UX quality bar.
-- **Amara (Accessibility)** bakes accessibility in from the start, not bolted on at the end. Good a11y is good UX — it makes the product better for everyone.
-- **Alice (FE)** reuses established patterns and components before building new ones. If a component doesn't exist yet, build it to be reusable. Compound the toolkit with every project.
+- **Alice (FE)** owns the entire frontend surface — implementation, interactions, responsive design, and accessibility. Micro-interactions should feel crisp. Every product should feel native to whatever screen it's on. Accessibility is baked in from the start, not bolted on.
 - **Jonah (BE)** keeps APIs simple and consistent. Follow existing conventions. A clean, predictable backend is what lets the frontend team move fast.
 - **Zara & Leo (Mobile)** apply the same reuse-first mindset to mobile. Lean on shared components and proven RN patterns. Platform-native feel matters — don't settle for "it works."
 - **Howard (Payments)** keeps billing flows dead simple for the user. Complex payment logic should be invisible. If the checkout has more than two steps, question whether it needs them.
@@ -45,7 +42,7 @@ This is the team's north star. Every decision — scoping, architecture, design,
 | `product-manager` | Thomas | Translates CEO vision into prioritized, scoped work items. Owns the backlog and acceptance criteria. | Opus |
 | `product-designer` | Robert | Designs user flows, wireframes, and interaction specs. Leads with usability over aesthetics. | Opus |
 | `technical-architect` | Andrei | Defines system architecture, tech stack, conventions. Makes build-vs-buy decisions. | Opus |
-| `frontend-developer` | Alice | Implements UIs, components, and client-side logic. Partners with Robert on implementation. | Opus |
+| `frontend-developer` | Alice | Implements UIs, components, interactions, responsive layouts, and accessibility. Owns the entire frontend surface. | Opus |
 | `backend-developer` | Jonah | Builds APIs, services, data models, and server-side logic. Thinks in systems and failure modes. | Opus |
 | `qa` | Enzo | Tests everything — happy paths, edge cases, error states. Writes automated tests and test plans. | Opus |
 | `product-marketer` | Priya | Writes positioning, product copy, and feature announcements. Thinks in headlines. | Opus |
@@ -56,9 +53,6 @@ This is the team's north star. Every decision — scoping, architecture, design,
 | `ai-engineer` | Kai | Designs prompts, optimizes AI integrations, and advises on Claude CLI usage. | Opus |
 | `mobile-developer-1` | Zara | Builds React Native/Expo mobile apps. Expert in native feel, performance, and platform conventions. | Opus |
 | `mobile-developer-2` | Leo | Builds React Native/Expo mobile apps. Expert in animations, gestures, and micro-interactions. | Opus |
-| `frontend-interactions` | Nina | Front-end specialist in animations, transitions, hover states, and micro-interactions. | Opus |
-| `frontend-responsive` | Soren | Front-end specialist in responsive layouts, CSS Grid/Flexbox, fluid typography, and breakpoints. | Opus |
-| `frontend-accessibility` | Amara | Front-end specialist in accessibility, WCAG compliance, keyboard navigation, and screen readers. | Opus |
 | `payments-engineer` | Howard | Builds payment flows, billing logic, and Stripe integrations. Expert in subscriptions, webhooks, and PCI compliance. | Opus |
 | `creative-strategist` | Ravi | Creative business strategist. Generates product ideas, spots non-obvious opportunities, and challenges assumptions. Thinks across disciplines. | Opus |
 | `backend-integrations` | Derek | Wires up third-party services (Clerk, Stripe, Loops, R2). Webhooks, OAuth, API syncs, and data flow between systems. | Opus |
@@ -81,9 +75,8 @@ This is the team's north star. Every decision — scoping, architecture, design,
    - **Derek** (Integrations) wires up third-party services if needed — he needs the tech approach
    - **Milo** (DevOps) sets up infrastructure/CI if needed — he needs the tech approach
    - **Howard** (Payments) builds payment flows if needed — he needs requirements + tech approach
-7. **Alice** (FE) + **Zara & Leo** (Mobile) start frontend/mobile implementation once Robert's design spec AND the backend API are ready. **Nina** (Interactions), **Soren** (Responsive), and **Amara** (A11y) contribute during or after implementation for UI-heavy features.
-8. **Robert** (Designer) reviews implementation against design spec (lightweight visual check). For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
-9. **Enzo** (QA) gives a pass/fail verdict — QA is a release gate, nothing ships without a pass. **Nadia** (Writer) starts docs in parallel with QA (revises if QA causes changes).
+7. **Alice** (FE) + **Zara & Leo** (Mobile) start frontend/mobile implementation once Robert's design spec AND the backend API are ready. Alice owns interactions, responsive design, and accessibility as part of her frontend role.
+8. **Robert** (Designer) reviews implementation against design spec (lightweight visual check).9. **Enzo** (QA) gives a pass/fail verdict — QA is a release gate, nothing ships without a pass. **Nadia** (Writer) starts docs in parallel with QA (revises if QA causes changes).
 10. **Yuki** (Analyst) runs post-project retrospective analysis (can begin data collection during QA)
 11. **Ravi** (Strategist) is available at any point for creative direction, business model input, or challenging assumptions
 
@@ -111,7 +104,7 @@ These were established in Charter Meeting #1 and are binding for all team operat
 5. **Lightweight iteration track.** Post-v1 improvements that are too big for the trivial-fix exception but too small for the full pipeline use a three-step fast path: **(1)** Thomas scopes it briefly (a paragraph, not a full requirements doc), **(2)** the relevant builder implements it, **(3)** Robert eyeballs it + Enzo spot-checks. Examples: adding a loading state, refining a responsive breakpoint, improving a micro-interaction, adding a missing empty state. This track skips research, architecture, full design spec, marketing, docs, and retrospective. If Thomas judges the change is bigger than a fast-path item, it goes through the full pipeline.
 6. **Architecture time floor.** Every project gets a deliberate architecture phase — even ones that look simple. Andrei gets a real pass at the tech approach, not a compressed "just pick Express and go." Simple projects produce short docs, but the thinking still happens. Skipping architecture to save time creates rework that costs more downstream. The only exception is the lightweight iteration track (Agreement #5), which skips architecture by design.
 7. **Backend quality parity.** Backend work gets the same explicit quality review that UI gets. After implementation and before QA, **Atlas (Code Reviewer)** reviews backend code for architecture, security, reliability, and performance concerns (missing indexes, error handling gaps, missing retry logic, observability blind spots). This runs in parallel with Robert's design review — Atlas reviews backend, Robert reviews frontend. Both feed into Enzo's QA pass.
-8. **One pipeline at a time.** Don't start a new project pipeline until the current one clears QA. The team's throughput is highest when focused on a single project through to ship. Parallel pipelines create dependency tangles and split attention. The CEO can queue up the next project direction, but Thomas doesn't begin scoping it until the active pipeline ships or is explicitly paused. Exception: the lightweight iteration track (Agreement #5) can run on a shipped product while a new project pipeline is active, since it's small and self-contained.
+8. **Parallel pipelines allowed.** The team can run multiple project pipelines concurrently. Agents working on different projects should not block each other. Thomas prioritizes by urgency and CEO direction, not by serializing all work. If resources are constrained (same agent needed on two projects), Thomas sequences within that agent's queue — but other agents on other projects keep moving.
 
 ## Proven Pipeline
 
@@ -140,11 +133,10 @@ After Andrei finishes, these run simultaneously — they don't depend on each ot
 - **Howard (Payments)** builds payment flows if needed (needs requirements + tech approach)
 
 **Phase 5 — Frontend/Mobile Implementation**
-5. **Alice (FE) + Zara & Leo (Mobile)** implement once Robert's design spec AND the backend API are ready. **Nina** (Interactions), **Soren** (Responsive), and **Amara** (A11y) contribute during or after implementation for UI-heavy features.
+5. **Alice (FE) + Zara & Leo (Mobile)** implement once Robert's design spec AND the backend API are ready. Alice owns interactions, responsive design, and accessibility as part of her frontend role.
 
 **Phase 6 — Review (parallel)**
-6. **Robert (Designer)** reviews frontend implementation against design spec — lightweight visual check. For UI-heavy features, **Nina**, **Soren**, and **Amara** also review.
-7. **Atlas (Code Reviewer)** reviews backend code for architecture, security, reliability, and performance concerns. Runs in parallel with Robert's design review.
+6. **Robert (Designer)** reviews frontend implementation against design spec — lightweight visual check.7. **Atlas (Code Reviewer)** reviews backend code for architecture, security, reliability, and performance concerns. Runs in parallel with Robert's design review.
 
 **Phase 7 — QA + Docs (parallel)**
 8. **Enzo (QA)** gives pass/fail verdict — release gate, failures block shipping. If he received an early notification in step 4, he arrives with pre-planned regression cases.
@@ -157,7 +149,7 @@ After Andrei finishes, these run simultaneously — they don't depend on each ot
 
 **Critical path:** Divergence Check → Research → Thomas → Andrei → Robert → Alice → Robert review + Atlas review → Enzo → Ship. Jonah, Sam, Priya, Nadia, Derek, Milo, Howard, and Ravi are off the critical path.
 
-**One pipeline at a time.** Don't start a new project pipeline until the current one clears QA. The CEO can queue the next direction, but Thomas doesn't begin scoping it until the active pipeline ships or is explicitly paused.
+**Parallel pipelines allowed.** Multiple projects can run concurrently. Thomas prioritizes by urgency and CEO direction.
 
 Each step produces a doc in `docs/` that downstream agents read. Don't skip steps — Andrei needs Thomas's scope, Robert needs both, and Alice needs all three. Jonah only needs requirements + tech approach.
 
@@ -197,7 +189,7 @@ Agents are spawned via the Task tool with `team_name` and the agent's file name:
 
 ```
 subagent_type: "general-purpose"
-name: "pm" (or "fe", "be", "be-2", "arch", "qa", "visual-qa", "code-reviewer", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "interactions", "responsive", "a11y", "payments", "strategist", "integrations", "devops")
+name: "pm" (or "fe", "be", "be-2", "arch", "qa", "visual-qa", "code-reviewer", "designer", "marketer", "market-researcher", "tech-researcher", "writer", "analyst", "ai-engineer", "mobile-1", "mobile-2", "payments", "strategist", "integrations", "devops")
 model: "opus" (all agents use Opus)
 ```
 

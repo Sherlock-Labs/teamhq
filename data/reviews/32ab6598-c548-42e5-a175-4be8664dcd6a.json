@@ -1,0 +1,26 @@
+{
+  "id": "32ab6598-c548-42e5-a175-4be8664dcd6a",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterArchitecture",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:10:42.263Z",
+  "updatedAt": "2026-03-18T13:15:01.217Z",
+  "resolvedAt": "2026-03-18T13:15:01.217Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-requirements.md",
+      "title": "Visual Themes Requirements"
+    },
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-tech-approach.md",
+      "title": "Visual Themes Tech Approach"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Team standup completed. Forge v2 themes pipeline advancing: RT-37a (tech approach) complete, now running RT-37b (Robert — design spec) and RT-37c (Jonah — backend schema + API) in parallel. Also fixing RG-15 (Zod validation duplicate messages). Next: Alice implements frontend (RT-37d) once Robert and Jonah finish. Meeting also decided: QuoteVoice connection recovery goes on lightweight iteration track, Enzo to conduct mobile QA assessment on QuoteVoice.",
+  "feedback": null
+}

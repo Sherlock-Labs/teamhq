@@ -1,0 +1,205 @@
+{
+  "projectId": "roadmap-tool",
+  "slug": "forge-visual-themes",
+  "name": "Forge Visual Themes & Styling Options",
+  "tasks": [
+    {
+      "agent": "Thomas",
+      "role": "PM",
+      "taskId": "RT-37",
+      "status": "completed",
+      "subtasks": [
+        "Defined 4 user stories with acceptance criteria",
+        "Scoped 6 pre-built themes, custom accent colors, and dark mode",
+        "Established scope boundary: no custom CSS, no per-item styling, no custom fonts",
+        "Specified export and shared URL requirements",
+        "Created pipeline subtasks RT-37a through RT-37f"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-requirements.md",
+        "data/work-items/roadmap-tool.json"
+      ],
+      "decisions": []
+    },
+    {
+      "agent": "Andrei",
+      "role": "Architect",
+      "taskId": "RT-37a",
+      "status": "completed",
+      "subtasks": [
+        "Defined CSS custom property architecture with --forge-* namespace",
+        "Designed ThemeDefinition and ThemeTokens type interfaces",
+        "Specified 3-column schema extension (theme_name, accent_color, dark_mode)",
+        "Chose explicit dark palette definition over auto-generation",
+        "Defined theme application via data-theme/data-mode attributes on .roadmap-container",
+        "Established coexistence boundary: themes style chrome, palettes style data",
+        "Confirmed html-to-image export captures CSS variables automatically",
+        "Classified all files as New/Extend/Modify/Restructure with QA impact notes"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-tech-approach.md"
+      ],
+      "decisions": [
+        "Flat columns over JSONB for theme settings — enables CHECK constraints and self-documenting schema",
+        "dark_mode as string enum (light/dark/system) over boolean — three states needed",
+        "Theme registry in shared/ package for client and server import",
+        "Explicit dark palettes per theme over auto-generation — better quality, bounded work (6 themes x 2 modes)",
+        "No new npm dependencies — CSS custom properties + native inputs handle everything"
+      ]
+    },
+    {
+      "agent": "Robert",
+      "role": "Designer",
+      "taskId": "RT-37b",
+      "status": "completed",
+      "subtasks": [
+        "Designed theme picker as 2x3 card grid with abstract timeline preview thumbnails",
+        "Defined all 6 theme palettes in full: Default, Clean, Bold, Minimal, Corporate, Startup — both light and dark variants (12 complete token sets)",
+        "Designed accent color picker with 8 preset swatches + hex input + native color well",
+        "Designed dark mode as 3-state segmented control (Light/System/Dark) in settings + 2-state quick toggle in top bar",
+        "Specified view-specific token mapping for Table (AG Grid overrides), Timeline (grid lines, today marker), and Swimlane (card elevation)",
+        "Defined all interaction states: hover, selected, focus-visible, disabled, error for every control",
+        "Specified accessibility: ARIA radiogroup patterns, contrast verification table, prefers-reduced-motion support",
+        "Chose WYSIWYG export (no theme override in export dialog) and documented shared URL rendering behavior",
+        "Wrote implementation priority checklist for Alice"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-design-spec.md"
+      ],
+      "decisions": [
+        "No separate preview panel — miniature card previews + instant application replaces preview-before-apply pattern. Simpler, faster.",
+        "Minimal theme uses monochrome accent (near-black/near-white) as signature character — custom accent overrides this intentionally",
+        "Corporate dark mode shifts accent from navy to light blue — navy is invisible on dark backgrounds",
+        "Top bar dark mode toggle is 2-state (quick flip) while settings has full 3-state — different contexts need different controls",
+        "No theme override in export dialog — WYSIWYG keeps the mental model simple"
+      ]
+    },
+    {
+      "agent": "Jonah",
+      "role": "BE",
+      "taskId": "RT-37c",
+      "status": "completed",
+      "subtasks": [
+        "Documented Drizzle migration for 3 new columns (theme_name, accent_color, dark_mode)",
+        "Documented schema.ts extension with 3 column definitions",
+        "Documented shared types.ts extension for Roadmap interface",
+        "Documented Zod validation schema for theme fields",
+        "Documented PATCH route handler changes for theme fields",
+        "Verified Socket.IO broadcast includes new fields automatically"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-backend-notes.md"
+      ],
+      "decisions": []
+    },
+    {
+      "agent": "Alice",
+      "role": "FE",
+      "taskId": "RT-37d",
+      "status": "completed",
+      "subtasks": [
+        "Built complete theme registry (shared/src/themes.ts) with ThemeDefinition types and all 6 themes x 2 modes = 12 palette definitions",
+        "Created color utility functions: darken(), withAlpha(), hexToRgb() for accent color derivation",
+        "Designed useResolvedMode hook to resolve 'system' dark mode via matchMedia listener",
+        "Built getThemeStyles() to compute CSS custom property objects from theme + accent + mode",
+        "Specified RoadmapPage and SharedViewPage integration with data-theme/data-mode/style attributes",
+        "Documented complete CSS refactor strategy — mapping all hardcoded colors to --forge-* variables",
+        "Created AG Grid variable mapping to override --ag-* vars with forge tokens within .roadmap-container scope",
+        "Built ThemePicker component with 2x3 card grid, abstract timeline previews, roving tabindex keyboard navigation, and ARIA radiogroup pattern",
+        "Built AccentColorPicker with 8 preset swatches, native color well, hex input with validation, and theme-default reset",
+        "Built DarkModeToggle as 3-state segmented control (Light/System/Dark) with Lucide icons",
+        "Specified TopBar dark mode quick toggle (2-state Moon/Sun button)",
+        "Documented Socket.IO handler for real-time theme sync with echo prevention",
+        "Confirmed html-to-image export captures themed styles automatically — no export pipeline changes",
+        "Specified responsive behavior: theme grid 2-col → 1-col at 400px, accent picker stacks at 640px",
+        "Full accessibility implementation: radiogroup patterns, aria-labels, aria-checked, aria-live announcements, prefers-reduced-motion support"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-frontend-notes.md"
+      ],
+      "decisions": [
+        "Theme preview cards are pure CSS divs, not screenshots — faster rendering, smaller bundle, updates live when accent changes",
+        "Optimistic updates for all theme changes — instant feel, revert on failure with toast",
+        "Top bar toggle skips 'system' — quick flip between light/dark only; full 3-state in settings",
+        "color-mix() for AG Grid alternating rows — avoids hardcoded per-theme bg for odd rows",
+        "Hex input filters non-hex chars on keystroke to prevent invalid intermediate states",
+        "Single aria-live region for theme announcements to avoid announcement spam",
+        "No debounce on color well — fires on change (release); add 200ms debounce if browser fires too often"
+      ]
+    },
+    {
+      "agent": "Atlas",
+      "role": "Code Reviewer",
+      "taskId": "RT-37c-review",
+      "status": "completed",
+      "subtasks": [
+        "Reviewed database migration: CHECK constraints, default values, column types",
+        "Reviewed PATCH endpoint validation: Zod schema merge, injection risk, partial update semantics",
+        "Reviewed hex color regex: anchoring, case sensitivity, null/optional handling",
+        "Reviewed Socket.IO broadcast: validated-before-broadcast safety, delta vs full payload",
+        "Reviewed RG-15 fix in server/src/schemas/review.ts: duplicate Zod message elimination"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-code-review.md"
+      ],
+      "decisions": [
+        "APPROVED WITH NOTES — no blocking issues, backend is ready for frontend integration",
+        "Nit: recommend adding CHECK constraint on theme_name column for defense-in-depth (non-blocking)",
+        "Nit: recommend verifying Socket.IO broadcast fires for all PATCH mutations, not just name changes (non-blocking)",
+        "RG-15 fix is clean — .min(1) removed, .refine() is now sole validator for feedback requirement",
+        "Minor: empty-string feedback on approval clears previous feedback due to ?? vs || — cosmetic, not blocking"
+      ]
+    },
+    {
+      "agent": "Robert",
+      "role": "Designer",
+      "taskId": "RT-37e",
+      "status": "completed",
+      "subtasks": [
+        "Verified all 6 theme token sets (default, clean, bold, minimal, corporate, startup) match design spec in both light and dark modes",
+        "Confirmed theme picker grid layout: 2 columns, 12px gap, 16:10 aspect ratio previews with abstract timeline bars",
+        "Verified all card interaction states: hover (50% accent border, -1px translate), selected (2px border, glow ring, accent label), focus-visible",
+        "Confirmed accent color picker: 8 swatches at 24px, hex input with monospace font, native color well, validation states",
+        "Verified dark mode toggle: 3-state segmented control in settings, 2-state Moon/Sun button in top bar",
+        "Confirmed 200ms transition on container with prefers-reduced-motion support",
+        "Confirmed responsive breakpoints: 400px (1-col grid), 640px (accent picker stacks)",
+        "Identified two minor a11y gaps: aria-live region not populated on theme change, aria-pressed missing on top bar toggle",
+        "Noted one implementation win: dynamic first accent swatch shows current theme's default instead of hardcoded indigo"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-design-review.md"
+      ],
+      "decisions": [
+        "APPROVED WITH NOTES — implementation is faithful to spec, two minor a11y gaps flagged for QA",
+        "Dynamic first accent swatch is an improvement over spec — shows actual theme default, not hardcoded #6366F1",
+        "a11y gaps are non-blocking: aria-live announcement and aria-pressed can be addressed during QA cycle"
+      ]
+    },
+    {
+      "agent": "Enzo",
+      "role": "QA",
+      "taskId": "RT-37f",
+      "status": "completed",
+      "subtasks": [
+        "Verified all 4 user stories' acceptance criteria (US-1 through US-4) — all pass",
+        "Verified theme persistence across sessions (3 DB columns with safe defaults)",
+        "Verified dark mode system preference detection via useResolvedMode hook + matchMedia listener",
+        "Verified accent color hex validation: anchored regex, null/optional handling, 3-char shorthand rejection, injection prevention",
+        "Verified real-time sync via Socket.IO roadmap-updated event with echo prevention",
+        "Verified PNG export captures themed styles via html-to-image computed CSS variables",
+        "Assessed Robert's design review flagged issues: aria-live and aria-pressed gaps — both non-blocking",
+        "Assessed Atlas's code review flagged issues: CHECK constraint, broadcast verification, empty-string feedback — all non-blocking",
+        "Verified RG-15 fix: duplicate Zod validation message eliminated, .refine() is now sole validator",
+        "Checked regression risk from CSS restructure — default theme designed for pixel-identity, item palettes independent"
+      ],
+      "filesChanged": [
+        "docs/roadmap-tool-v2-themes-qa.md"
+      ],
+      "decisions": [
+        "PASS — all acceptance criteria met, no blocking issues found",
+        "5 non-blocking issues documented for fast-path follow-up: aria-live population, aria-pressed on toggle, DB CHECK constraint, broadcast verification, empty-string feedback behavior",
+        "RG-15 fix verified clean — single error message on changes-requested with empty feedback"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,287 @@
+{
+  "id": "212b55ef-3947-4d58-a217-e04f1e2ac2ae",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 41,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T15:46:54.992Z",
+  "completedAt": "2026-03-18T15:49:18.392Z",
+  "durationMs": 143400,
+  "error": null,
+  "summary": "Standup #42 addressed five agenda items: stale tasks (RT-38c command palette stuck 24h+ due to Alice's focus trap fix requiring a broader modal manager refactor; TPI-2 pipeline dashboard blocked because Thomas hasn't created work items yet), next TeamHQ improvements (team agreed TPI-6 meetings page cards is highest priority, ready for Alice once RT-38c clears QA), review gate consolidation (8 pending gates to be batch-approved with Robert flagging 2 that need actual design review), bug reporter deprioritized behind stale work, and a new improvement idea around meeting search/filter from Jonah.",
+  "keyTakeaways": [
+    "RT-38c is the team's biggest bottleneck — Alice's focus trap fix expanded into a modal manager refactor that needs 4-6 more hours, then Enzo QA immediately after",
+    "TPI-2 pipeline dashboard is blocked on Thomas creating work items — he committed to shipping them within the hour, unblocking Jonah and Alice downstream",
+    "Review gate backlog grew to 8 — Thomas will consolidate into a batch-approve doc today, with Robert flagging 2 gates that have open design questions",
+    "TPI-6 (meetings page cards) is the next TeamHQ improvement after RT-38c clears — Alice can pick it up same day since it's frontend-only with no backend dependency",
+    "Bug reporter items BR-4 and BR-5 are deprioritized behind the stale work — team agreed clearing the backlog is more important than new features"
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup 42. We've got five items on the board and the CEO flagged two stale tasks specifically, so let's start there. Alice — RT-38c, the command palette. It's been in-progress with no movement for over 24 hours. What's the status?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Yeah, I owe everyone an update on this. The focus trap fix I mentioned yesterday turned out to be bigger than a targeted patch. The bug reporter and the command palette both register global keyboard listeners independently, and they conflict. I started writing a suppress-when-modal-is-active check, but it became clear we need a lightweight modal manager — a single place that tracks which modal is active and gates keyboard events. Without it, we'll hit this same class of bug every time we add a new modal."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "How lightweight are we talking? Because 'modal manager' can mean a lot of things."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Very lightweight. A single module that maintains a stack — push when a modal opens, pop when it closes, and a helper function that keyboard handlers check before acting. Maybe 40 lines of code. Not a framework, not a state machine. Just a shared source of truth for 'is a modal open right now?'"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That's fine. A stack is the right primitive — it handles nested modals cleanly. Just make sure it's a module-level singleton, not a class instance. Keep it dead simple."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "How much longer, Alice? The CEO is watching this one."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Four to six hours. The modal manager module is already half-written. Then I need to wire the command palette and bug reporter into it, test the interactions, and hand off to Enzo. I can have it ready for QA by end of day today."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "My test plan for RT-38c is about 80% done from yesterday. I've got the focus trap cases, the Escape key behavior, modal stacking scenarios. I'll finish the remaining 20% this morning so I'm ready the moment Alice hands off. One question — Alice, does the modal manager affect any modals besides the command palette and bug reporter?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Not in this PR. The command palette and bug reporter are the only two that register global keyboard shortcuts. Other modals use click triggers, so they're not affected. But the stack is available for anything that needs it later."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Good. I'll regression test the bug reporter modal as part of this — if we're changing how it registers keyboard events, I want to make sure Cmd+Shift+B still works everywhere."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Okay. RT-38c: Alice delivers to Enzo by EOD, Enzo starts QA immediately. No more slippage — this was due two days ago. Moving on. TPI-2 — pipeline dashboard. This one's on me. I was supposed to create work items in data/work-items and I haven't done it yet. That's blocking Jonah's endpoint integration work and Alice's frontend cards."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The endpoint is already shipped, Thomas. GET /api/pipeline-status is live — reads the pipeline-log index, returns active projects, recent completions, and pending review count. I built it two standups ago. The health endpoint smoke test is done too. What I need is the work items so Alice knows what the three cards should display and I can verify my endpoint returns everything the frontend needs."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Right, and that's entirely my fault. I'll have the TPI-2 work items created within the hour. Three tasks: the three frontend cards scoped individually, plus an integration task to wire Alice's cards to Jonah's endpoint. Jonah, once I publish them, can you do a quick cross-check that your endpoint response shape matches what I spec for each card?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Yeah, that takes five minutes. Just tag me when they're up."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Next agenda item — TPI-6, 7, and 8. Meetings page cards, pipeline-log audit, and QA badge. All planned, none started. Which do we pick up next?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "TPI-6, meetings page cards. No question. We said this two standups ago — the meetings page is the CEO's most-used page and the cards show almost no information. Type badge, one-line summary, participant count, status indicator. The backend already returns all the data. This is a pure frontend task with zero dependencies."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Agreed. Once RT-38c clears QA, I can pick up TPI-6 the same day. It's CSS and template changes — no new endpoints, no new state. Robert, do I need a design spec for this or is the description from standup 41 enough?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'll write a quick spec — not a full design doc, just the card layout with token values. Badge colors for each meeting type, where the summary truncates, how the participant count displays. Lightweight iteration track, so a paragraph and some CSS values. I'll have it to you before you finish RT-38c."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "TPI-7, the pipeline-log audit — I can do that in parallel. I was supposed to audit the last 5 shipped projects and flag which ones need data backfilling. I'll get that done today. It's a read-only task, no code changes, doesn't block anyone."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "TPI-8, the QA badge — that one depends on TPI-7, right? We can't show QA badges on project cards until Andrei tells us which projects actually went through QA. I'd hold off on that until after the audit."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Correct. Priority order: TPI-6 first because it's independent and high-impact, TPI-7 in parallel because Andrei can do it without blocking anyone, TPI-8 after TPI-7 completes. Good. Next — review gate backlog. We've got 8 pending review gates now, mostly Forge visual themes. Last standup I was supposed to consolidate them into a single CEO summary. I haven't done that either."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Thomas, you committed to that summary yesterday. This is the second standup where it's carried over. The Forge pipeline is idle because Andrei, Enzo, and I can't move forward on v2 features until these gates clear. Can we get this done today? Not tomorrow, today."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair criticism. I'll deliver the consolidated review gate doc by end of day. One document, two sections: bulk-approvable items that are just shipped Forge visual themes work, and items that need actual CEO attention. Robert — you said last time that some gates have open design questions. Which ones?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Two of the eight. The theme color contrast ratios for dark mode variants, and the card shadow depth tokens. Those need a real look, not a rubber stamp. The other six are straightforward — shipped work, nothing controversial."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Got it. Six for batch approve, two flagged for design review. I'll structure the doc that way. Agenda item four — bug reporter. BR-4 and BR-5 are still planned. Honestly, I think these wait. We have two stale tasks and a review gate backlog. Clearing existing commitments before starting new work."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Agree. The bug reporter works. BR-4 and BR-5 are nice-to-haves. Let's not add new work when we're behind on current work."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Same. I'd rather clear the RT-38c QA and get to TPI-6 QA than context-switch to bug reporter improvements."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Unanimous. BR-4 and BR-5 stay planned, deprioritized behind current backlog. Last item — any new TeamHQ improvement ideas?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "One thing I've noticed — the meetings page has no search or filter. The CEO runs 5+ meetings a day, and the list is getting long. A simple text filter on the title and a type dropdown filter would save real time. No new endpoint needed — the frontend already has all the data, it just needs client-side filtering."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "That's a good one. Pairs naturally with TPI-6 — if we're already improving the meetings cards, adding a filter bar above them is minimal incremental work. I could spec both in the same lightweight design note."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "I like it. Let's call it TPI-9 — meetings page filter. Robert, include it in your TPI-6 spec as an optional add-on. If Alice has bandwidth after TPI-6, she picks it up. If not, it queues. Alright, let me summarize action items and we're done."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "RT-38c fix will use a lightweight modal manager (module-level stack) instead of ad-hoc keyboard event suppression",
+      "rationale": "Alice discovered that patching individual keyboard conflicts is a whack-a-mole problem. A 40-line modal stack module provides a single source of truth for 'is a modal open?' and prevents the same class of bug from recurring with future modals. Andrei approved the approach as appropriately simple.",
+      "participants": [
+        "Alice",
+        "Andrei",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "TPI-6 (meetings page cards) is the next TeamHQ improvement, starting immediately after RT-38c clears QA",
+      "rationale": "Highest-impact improvement with zero dependencies — the backend already returns all needed data, it's purely a frontend display change on the CEO's most-used page. Robert will provide a lightweight spec with CSS token values before Alice finishes RT-38c.",
+      "participants": [
+        "Thomas",
+        "Robert",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Priority order for TPI items: TPI-6 first, TPI-7 in parallel (Andrei's audit), TPI-8 after TPI-7 completes",
+      "rationale": "TPI-6 is independent and high-impact. TPI-7 is a read-only audit that doesn't block anyone. TPI-8 (QA badges) depends on TPI-7's findings to know which projects went through QA. Sequential dependency chain for 7→8, parallel for 6 and 7.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Review gate consolidation: 6 gates batch-approvable, 2 flagged for design review (dark mode contrast ratios, card shadow depth tokens)",
+      "rationale": "Robert identified that 6 of 8 pending gates are straightforward shipped work. The remaining 2 have genuine open design questions about theme color contrast and shadow tokens that need CEO/design review rather than rubber-stamping.",
+      "participants": [
+        "Thomas",
+        "Robert"
+      ]
+    },
+    {
+      "description": "BR-4 and BR-5 (bug reporter improvements) deprioritized behind clearing the current stale task backlog",
+      "rationale": "Team unanimously agreed that clearing existing commitments (RT-38c, TPI-2, review gates) takes priority over new feature work. The bug reporter works as-is; improvements are nice-to-haves.",
+      "participants": [
+        "Thomas",
+        "Jonah",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "New item TPI-9 created for meetings page search/filter, scoped as optional add-on to TPI-6",
+      "rationale": "Jonah identified that the growing meetings list (5+/day) has no search or filter capability. Since it's client-side filtering on data already loaded, it pairs naturally with the TPI-6 card improvements Robert is already speccing.",
+      "participants": [
+        "Jonah",
+        "Robert",
+        "Thomas"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Alice",
+      "description": "Complete RT-38c modal manager module, wire command palette and bug reporter into it, and hand off to Enzo for QA by end of day today (March 18)",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Create TPI-2 pipeline dashboard work items in data/work-items/ within the hour — three frontend card tasks plus integration task. Tag Jonah for endpoint shape cross-check.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write consolidated review gate document — 6 items for batch approval, 2 flagged for design review (dark mode contrast, shadow depth tokens). Deliver to CEO by end of day today.",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Finish remaining 20% of RT-38c test plan (modal stacking, bug reporter regression for Cmd+Shift+B). Be ready for immediate QA when Alice hands off.",
+      "priority": "high"
+    },
+    {
+      "owner": "Robert",
+      "description": "Write lightweight design spec for TPI-6 meetings page cards — badge colors per meeting type, summary truncation rules, participant count display, CSS token values. Include TPI-9 filter bar as optional section. Deliver before Alice finishes RT-38c.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Complete TPI-7 pipeline-log audit — review last 5 shipped projects, flag which ones need data backfilling (missing subtasks, decisions, or filesChanged). Deliver findings today.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Cross-check GET /api/pipeline-status response shape against Thomas's TPI-2 work items once published. Confirm endpoint returns everything the frontend cards need.",
+      "priority": "medium"
+    }
+  ],
+  "mood": "Accountable and focused",
+  "nextMeetingTopics": [
+    "RT-38c — QA verdict from Enzo. Pass or fail? If pass, Alice moves to TPI-6.",
+    "TPI-2 pipeline dashboard — work items created? Jonah cross-checked endpoint? Alice ready to start frontend cards?",
+    "Review gate consolidation — CEO reviewed the batch document? Pipeline unblocked for Forge v2?",
+    "TPI-6 meetings page cards — Robert's spec delivered? Alice started implementation?",
+    "TPI-7 pipeline-log audit — Andrei's findings. Which projects need backfilling? How much effort?",
+    "TPI-9 meetings page filter — included in Robert's spec? Scoped for Alice's bandwidth?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Standup #42. Agenda: (1) Status check on stale tasks — RT-38c (command palette, Alice) has been in-progress with no activity for 24h+. TPI-2 (pipeline dashboard) also stale. What is blocking these? (2) TeamHQ Platform Improvements — TPI-6 (meetings page cards), TPI-7 (pipeline-log audit), TPI-8 (QA badge) are all planned. Which should we start next? (3) Review gate backlog — 8 pending review gates, mostly Forge visual themes. Should we consolidate into batch-approve recommendation? (4) Bug reporter — BR-4 and BR-5 are still planned. Prioritize? (5) Any new TeamHQ improvement ideas? Each person gives concrete action items.",
+  "interviewConfig": null
+}

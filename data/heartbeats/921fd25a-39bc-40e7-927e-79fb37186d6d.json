@@ -1,0 +1,34 @@
+{
+  "id": "921fd25a-39bc-40e7-927e-79fb37186d6d",
+  "startedAt": "2026-03-18T12:17:39.603Z",
+  "completedAt": "2026-03-18T12:35:00.000Z",
+  "status": "failed",
+  "trigger": "cron",
+  "stateSnapshot": {
+    "activeProjects": 4,
+    "totalTasks": 105,
+    "inProgressTasks": 1,
+    "blockedTasks": 1,
+    "staleTasks": 1,
+    "recentEvents": 50,
+    "agentsActive": 1
+  },
+  "assessment": null,
+  "decisions": [],
+  "actionsLog": [
+    "State gathered, spawning Thomas as full agent session",
+    "Thomas working... (1198 chars output so far)",
+    "[tool: Bash]",
+    "[tool: Read]",
+    "The sprint-next doc is from v1.0 polish \u2014 old. RT-37 (Visual themes & styling) is stale and assigned to me. Since I'm th",
+    "Let me also kick off the RG-15 minor bug fix in parallel.",
+    "[tool: Read]",
+    "Good, I have context on the sprint history. Now let me write requirements for RT-37 (Visual themes & styling) and scope ",
+    "[tool: Write]",
+    "Requirements written for RT-37. Now let me update the work item status and create a review for the CEO, then handle RG-1",
+    "[tool: Bash]",
+    "[tool: Bash]"
+  ],
+  "error": "Killed: stuck heartbeat (Opus overloaded)",
+  "durationMs": null
+}

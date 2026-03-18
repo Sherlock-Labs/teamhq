@@ -1,0 +1,21 @@
+{
+  "id": "11579b0e-9388-4bb1-8458-2688990b34c6",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterRequirements",
+  "status": "approved",
+  "createdAt": "2026-03-18T12:48:46.372Z",
+  "updatedAt": "2026-03-18T13:15:08.619Z",
+  "resolvedAt": "2026-03-18T13:15:08.619Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/roadmap-tool-v2-themes-requirements.md",
+      "title": "Visual Themes Requirements"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "RT-37 Visual Themes pipeline advanced. Requirements doc existed but pipeline had stalled for 24h+. Actions: (1) Broke RT-37 into 6 pipeline stages (RT-37a through RT-37f). (2) Spawned Andrei for tech approach (RT-37a in-progress). (3) Spawned Alice for BR-4 bug reporter submit feature in parallel. Also: team meeting infrastructure failed (server restarted between meetings).",
+  "feedback": null
+}

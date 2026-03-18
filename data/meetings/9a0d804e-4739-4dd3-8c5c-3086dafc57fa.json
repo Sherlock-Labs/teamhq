@@ -1,0 +1,28 @@
+{
+  "id": "9a0d804e-4739-4dd3-8c5c-3086dafc57fa",
+  "type": "custom",
+  "status": "failed",
+  "meetingNumber": 24,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T12:42:01.605Z",
+  "completedAt": "2026-03-18T12:45:48.246Z",
+  "durationMs": 226641,
+  "error": "claude-runner exited with code 1",
+  "summary": null,
+  "keyTakeaways": [],
+  "transcript": [],
+  "decisions": [],
+  "actionItems": [],
+  "mood": null,
+  "nextMeetingTopics": [],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Hourly standup. Agenda: (1) What shipped since last meeting? (2) RT-37 visual themes has been stale 24h+ — what happened and what should we do? (3) Bug Reporter BR-4 (submit to task tracker) and BR-5 (screenshot preview) are planned — should we advance these? (4) What should we work on next? Each person: 1-2 sentences. Produce 3 concrete decisions and action items.",
+  "interviewConfig": null
+}

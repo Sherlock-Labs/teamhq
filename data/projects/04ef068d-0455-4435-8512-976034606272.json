@@ -3,10 +3,10 @@
   "slug": "conduct-a-half-day-technical-spike-on-gemini-2-5-flash-au",
   "name": "Conduct a half-day technical spike on Gemini 2.5 Flash au...",
   "description": "",
-  "status": "in-progress",
+  "status": "completed",
   "createdAt": "2026-02-10T01:20:51.373Z",
-  "updatedAt": "2026-02-12T17:44:09.277Z",
-  "completedAt": null,
+  "updatedAt": "2026-03-18T14:17:36.237Z",
+  "completedAt": "2026-03-18T14:17:36.237Z",
   "goals": "",
   "constraints": "",
   "brief": "Conduct a half-day technical spike on Gemini 2.5 Flash audio API — test segment detection accuracy on 3-4 real podcast episodes with sponsor reads. Document timestamp precision and edge cases.\n\nOwner: Marco\nPriority: high\nSource: Custom Meeting #3",
@@ -15,5 +15,14 @@
   "activeSessionId": "7d824b9c-520a-46ca-b3e4-6080572b883b",
   "pipeline": {
     "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
   }
 }

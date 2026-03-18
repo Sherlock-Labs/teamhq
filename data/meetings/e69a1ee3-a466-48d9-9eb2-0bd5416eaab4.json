@@ -1,0 +1,282 @@
+{
+  "id": "e69a1ee3-a466-48d9-9eb2-0bd5416eaab4",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 31,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T14:21:49.311Z",
+  "completedAt": "2026-03-18T14:24:12.365Z",
+  "durationMs": 143054,
+  "error": null,
+  "summary": "Hourly standup #32 focused on four agenda items: pre-staging work while 6 CEO review gates remain pending, proposing user-facing improvements for shipped products, identifying TeamHQ quick wins from completed autonomy research, and each participant pitching one concrete project idea they'd champion. The team identified several actionable pre-staging tasks and debated which shipped products have the highest improvement leverage.",
+  "keyTakeaways": [
+    "Six CEO review gates are still blocking — the team is at risk of idle time if they don't find productive pre-staging work and independent improvements to pursue.",
+    "Shipped product improvements have been neglected: QuoteVoice reconnection fix merged but OST Tool, SherlockPDF, SiteSnap, and VoiceNote Pro haven't been touched since launch.",
+    "TeamHQ's heartbeat/status endpoint and event log are quick autonomy wins that don't require CEO review of the full research — they're infrastructure, not features.",
+    "Each team member pitched a concrete project idea: Enzo's Forge end-to-end test harness, Andrei's shared component library, Alice's Forge offline mode, Jonah's webhook notification system, Robert's Forge onboarding flow, and Thomas's cross-product analytics dashboard.",
+    "The team agreed to timebox shipped-product improvement proposals to avoid scope creep — one paragraph each, CEO decides which to pursue."
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, standup 32. Four items today — Forge gates, shipped product improvements, TeamHQ quick wins, and one project pitch each. Let's move fast. First up: we still have six CEO review gates pending. Visual themes, command palette tech approach, command palette design spec, and three autonomy deliverables. That's a lot of blocked work. What can we pre-stage so we're not sitting idle?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'm fully blocked on command palette until both Andrei's tech approach and Robert's design spec clear review. I've read both docs — they're solid — but I can't start implementation until the CEO signs off. I could use the time to finish that Forge accessibility audit I started. Board view keyboard navigation has gaps I flagged but never fixed."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "The CSS token hierarchy doc I owe is blocked on visual themes merging, which is blocked on the review gate. But I can pre-write it against the worktree code and just validate once it merges. That's maybe two hours of work. Beyond that — Alice, if you're doing the a11y audit, I can pair on defining the keyboard shortcut registry types more precisely. We said shortcuts ship with command palette, and the type definitions don't need gate approval."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I've been building the regression suite against the stable main branch. Board view drag-and-drop coverage is done. Timeline view is about 70% covered. I don't need the gates to clear for this work — I'm testing what's already shipped. I should have all three Forge views covered by end of day tomorrow."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. That's genuinely useful work. Jonah, what about you? QuoteVoice reconnection spike is merged. You're off the critical path for command palette."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I'm available. I could prep the backend scaffolding for command palette — the action registry lives server-side for the search index. But honestly, Andrei's tech approach says it's all client-side. There's no backend work for command palette. So I'm genuinely idle on Forge until embeddable views or status updates gets picked."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Which brings us to agenda item two. Shipped products. We have five products in production that we haven't touched since launch: OST Tool, SherlockPDF, SiteSnap, QuoteVoice, VoiceNote Pro. Any user-facing improvements we should propose?"
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "SherlockPDF's upload flow is clunky. There's no drag-and-drop — users have to click a file picker every time. That's a quick win that would noticeably improve the experience. I'd also look at the mobile responsiveness. Last time I checked, the split/combine tools barely worked on phone screens."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "QuoteVoice has the reconnection fix now, but the session history API is bare. Contractors can't go back and find old estimates. If we added a simple list view of past sessions with search, that's maybe a day of backend work plus whatever Alice needs on the frontend."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I'd push back on starting new frontend work on shipped products while I'm queued for command palette. The moment that gate clears, I need to be heads-down on Forge for two to three days. If I'm mid-way through a QuoteVoice improvement, that creates a context switch problem."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair point. Let's not start builds — let's propose them. One paragraph each, CEO picks which to greenlight. Same approach I was going to use for embeddable views vs. status updates. Jonah, you're the exception since you're genuinely idle. If the CEO approves a small QuoteVoice improvement, you could ship it without blocking Forge."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "One thing worth flagging — SiteSnap and VoiceNote Pro both shipped with minimal error handling on the mobile side. VoiceNote Pro's RevenueCat integration has no retry logic if the receipt validation fails. That's not a feature proposal, that's a reliability fix. Could be a good use of Jonah's time if the CEO agrees."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I never QA'd VoiceNote Pro's payment error paths thoroughly. If Jonah touches that code, I'd want to regression test the purchase flow. Don't ship payment fixes without QA — that's the one area where a bug means real money lost."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Agreed, payment paths go through full QA. No exceptions. Okay, item three — TeamHQ autonomy. The research is done: north star doc, workflow state patterns, architectural sketch, dashboard concept, competitive scan, improvement roadmap. All sitting behind review gates. But are there quick wins we can implement without waiting?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "The heartbeat endpoint and event log store are already built — they're in the codebase right now. The routes exist, the schemas exist. What we don't have is anything consuming them in the UI. But the infrastructure is there. That's not a research-dependent feature, it's just wiring."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I'd be cautious. The whole point of the review gates is that the CEO validates direction before we build. If we start wiring up autonomy features — even 'just infrastructure' — and the CEO comes back saying he wants a completely different approach, we've wasted effort and created code to remove."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Robert's right on the spirit. But there's a distinction between building autonomy features and improving TeamHQ's operational plumbing. A health-check endpoint isn't an autonomy feature — it's basic infrastructure that any web app should have. Same with structured event logging."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "The event log store writes to a JSON file right now. If we're going to use it for anything real, it should at least have rotation or size limits. That's a ten-minute fix that prevents a disk-fill issue down the road. Not an autonomy feature — just good hygiene."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "I agree with the infrastructure distinction. But let's not creep into building a dashboard or morning briefing UI. Those are clearly autonomy features that need CEO sign-off. Stick to backend plumbing."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Okay, consensus: backend infrastructure improvements like event log rotation and health checks are fair game. No autonomy UI work until the CEO reviews the research. Jonah, event log rotation is yours if you have spare cycles. Last item — one project pitch each. Something you'd personally champion. Keep it to two sentences. Enzo, you start."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Forge end-to-end test harness. Automated browser tests that run against every PR — board view CRUD, drag-and-drop, theme switching, dependency lines. Right now I'm testing manually every time. A Playwright suite would catch regressions before they reach me and free me up for exploratory testing."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Shared component library extracted from our shipped products. We keep rebuilding the same patterns — file upload zones, modal dialogs, status badges, responsive nav. One npm package that all our products import from. Saves time on every future build."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Forge offline mode. Cache the current board state in IndexedDB so users can view and edit their roadmap without connectivity. Sync when they're back online. It's a meaningful capability for people on planes or bad WiFi."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Cross-product webhook notification system. One service that listens to events from all our products — Forge item changes, QuoteVoice new estimates, VoiceNote Pro transcriptions — and pushes notifications to Slack, email, or webhooks. Lightweight event bus, not a full message queue."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "Forge onboarding flow. First-time users land on an empty board with no guidance. A three-step guided setup — pick a template, name your roadmap, add your first item — would dramatically reduce the time to first value. Templates are already built, we just don't surface them well."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Mine is a cross-product analytics dashboard. We ship products but we don't know how they're performing. PostHog is configured but nobody looks at it systematically. A simple page in TeamHQ that shows active users, feature adoption, and error rates across all five products. We can't make good prioritization decisions without usage data."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Thomas, yours and Jonah's are basically the same infrastructure play — observability across products. Worth combining into one project rather than two."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good call. We can frame it that way for the CEO. Alright — I'll write up all six pitches as one-paragraph proposals. CEO picks which ones to greenlight. Let's wrap. Decisions and action items."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Pre-staging work proceeds independently of review gates: Alice does Forge accessibility audit, Andrei pre-writes CSS token hierarchy doc and refines keyboard shortcut type definitions, Enzo finishes regression suite across all three Forge views.",
+      "rationale": "Six review gates are blocking primary Forge work. Rather than idle, the team identified productive work that doesn't require gate clearance and advances future pipeline steps.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Andrei",
+        "Enzo"
+      ]
+    },
+    {
+      "description": "Shipped product improvements will be proposed as one-paragraph write-ups for CEO prioritization — no builds start without CEO approval, except Jonah who is genuinely idle on Forge.",
+      "rationale": "Alice flagged context-switch risk if she starts product improvements mid-queue for command palette. Proposals let the CEO decide priority without committing engineering time prematurely.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Jonah",
+        "Robert"
+      ]
+    },
+    {
+      "description": "Backend infrastructure improvements (event log rotation, health checks) are fair game without waiting for CEO autonomy review. No autonomy UI features until the CEO reviews the research.",
+      "rationale": "The team distinguished between basic operational plumbing (any web app needs this) and autonomy-specific features (dashboard, morning briefing) that depend on CEO direction. Robert's caution about wasted effort on wrong-direction features was acknowledged.",
+      "participants": [
+        "Thomas",
+        "Robert",
+        "Andrei",
+        "Jonah",
+        "Alice"
+      ]
+    },
+    {
+      "description": "Payment-path fixes on any shipped product require full QA — no exceptions, even for reliability fixes.",
+      "rationale": "Enzo pointed out that VoiceNote Pro's payment error paths were never thoroughly QA'd. Payment bugs mean real money lost. This aligns with the existing operating agreement that QA is a release gate.",
+      "participants": [
+        "Enzo",
+        "Thomas",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Each team member submitted a one-project pitch for CEO consideration: Enzo (Forge Playwright test harness), Andrei (shared component library), Alice (Forge offline mode), Jonah (cross-product webhook notification system), Robert (Forge onboarding flow), Thomas (cross-product analytics dashboard). Andrei noted Thomas's and Jonah's pitches could be combined as one observability project.",
+      "rationale": "The CEO asked each person to propose a project they'd champion. This gives the CEO a menu of team-driven ideas with built-in ownership.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Robert",
+        "Alice",
+        "Jonah",
+        "Enzo"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Thomas",
+      "description": "Write one-paragraph proposals for all six project pitches (Forge test harness, shared component library, Forge offline mode, webhook notification system, Forge onboarding flow, cross-product analytics dashboard) and send to CEO for prioritization. Note Andrei's suggestion to combine the analytics dashboard and webhook system into one observability project.",
+      "priority": "high"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write one-paragraph improvement proposals for shipped products: SherlockPDF drag-and-drop upload + mobile responsiveness, QuoteVoice session history, VoiceNote Pro payment retry logic. Frame for CEO prioritization.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Alice",
+      "description": "Continue Forge accessibility audit — focus on board view keyboard navigation gaps and drag-and-drop alternatives. Document findings for Robert to update design spec.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Pre-write CSS token hierarchy and cascade order doc against the visual themes worktree code. Validate and publish once visual themes merges to main.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Refine keyboard shortcut registry type definitions with Alice — get the type shapes right for command palette shortcuts ahead of gate clearance.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Finish automated regression suite — complete timeline view coverage and start list view. Target all three Forge views covered by end of day tomorrow.",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Add event log rotation (size limits and/or file rotation) to prevent unbounded disk growth. Quick infrastructure fix, not an autonomy feature.",
+      "priority": "low"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Stand by for CEO direction on shipped-product improvements — QuoteVoice session history and VoiceNote Pro payment retry are candidates if CEO approves.",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Escalate to CEO: 6 review gates are blocking primary Forge pipeline work. Team is productive on secondary tasks but command palette implementation cannot start until gates clear.",
+      "priority": "high"
+    }
+  ],
+  "mood": "Productive but restless",
+  "nextMeetingTopics": [
+    "CEO review gate status — have any of the 6 pending gates cleared? If not, escalation plan.",
+    "Alice's Forge accessibility audit findings — critical keyboard navigation gaps identified?",
+    "Enzo's regression suite — all three Forge views covered?",
+    "Thomas's project pitch proposals and shipped-product improvement proposals — written and sent to CEO?",
+    "Jonah's event log rotation fix — shipped?",
+    "Andrei's CSS token hierarchy doc and keyboard shortcut type definitions — ready?",
+    "Command palette implementation — gate cleared and Alice started, or still waiting?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Hourly standup #32. Agenda: (1) Forge pipeline — 6 CEO review gates still pending. What can we pre-stage to move fastest once gates clear? (2) Shipped products — any user-facing improvements we should propose? Consider OST Tool, SherlockPDF, SiteSnap, QuoteVoice, VoiceNote Pro. (3) TeamHQ itself — the autonomy research is done, any quick wins we can implement without waiting for CEO review? (4) Propose one concrete project idea each person would champion. Keep it tight.",
+  "interviewConfig": null
+}

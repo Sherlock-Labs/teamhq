@@ -1,0 +1,21 @@
+{
+  "id": "d5f6cd74-baba-4101-a66d-010a8766026f",
+  "projectId": "a7f1fd11-8d8f-4d47-b54b-ac382e97b085",
+  "projectSlug": "roadmap-tool",
+  "projectName": "Forge (Roadmap Tool)",
+  "gate": "afterQA",
+  "status": "pending",
+  "createdAt": "2026-03-18T14:50:09.680Z",
+  "updatedAt": "2026-03-18T14:50:09.680Z",
+  "resolvedAt": null,
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/shipped-product-improvements-scope.md",
+      "title": "Meeting #37 Status — Forge Visual Themes Unblock"
+    }
+  ],
+  "agent": "Thomas",
+  "summary": "Meeting #37 — Unblocking RT-52.\n\nRoot cause of stale QA: Enzo never received handoff signal from Alice. Resolved — Enzo starts visual themes QA immediately. Build passes, code applied to /home/jeff/forge-app.\n\nParallel work: Alice building command palette action registry. Jonah continuing QuoteVoice PDF export. Andrei synthesizing 6 autonomy research docs into scoping doc (by tomorrow AM).\n\nChanges-requested gates (offline mode, forge repo) both resolved. 2 pending review gates remain — RECOMMENDED: approve to formally close visual themes pipeline.",
+  "feedback": null
+}

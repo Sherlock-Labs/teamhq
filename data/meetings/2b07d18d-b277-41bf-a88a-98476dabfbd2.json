@@ -1,0 +1,26 @@
+{
+  "id": "2b07d18d-b277-41bf-a88a-98476dabfbd2",
+  "type": "interview",
+  "status": "failed",
+  "meetingNumber": 17,
+  "scheduledAt": null,
+  "startedAt": "2026-03-16T23:27:00.670Z",
+  "completedAt": "2026-03-16T23:28:17.090Z",
+  "durationMs": null,
+  "error": "Stuck from failed session",
+  "summary": null,
+  "keyTakeaways": [],
+  "transcript": [],
+  "decisions": [],
+  "actionItems": [],
+  "mood": null,
+  "nextMeetingTopics": [],
+  "participants": [
+    "ceo",
+    "ai-interviewer"
+  ],
+  "instructions": null,
+  "interviewConfig": {
+    "topic": "test"
+  }
+}

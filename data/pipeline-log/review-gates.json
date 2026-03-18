@@ -1,0 +1,183 @@
+{
+  "projectId": "056f09cc-e77e-487c-9f16-849d16cb82ff",
+  "slug": "review-gates",
+  "name": "Pipeline Review Gates",
+  "tasks": [
+    {
+      "id": "RG-1",
+      "title": "Write requirements doc",
+      "agent": "Thomas",
+      "status": "completed",
+      "completedAt": "2026-03-17T16:20:00.000Z",
+      "filesChanged": ["docs/pipeline-review-gates-requirements.md"],
+      "decisions": [
+        "Scoped MVP to approve/request-changes flow; deferred agent chat to v2",
+        "7 configurable gate points matching existing pipeline phases",
+        "Reviews stored as JSON files per project, not in a database",
+        "Reuses existing doc viewer pattern for deliverable rendering"
+      ]
+    },
+    {
+      "id": "RG-2",
+      "title": "Technical architecture — data model, API design, pipeline integration approach",
+      "agent": "Andrei",
+      "status": "completed",
+      "completedAt": "2026-03-17T17:00:00.000Z",
+      "filesChanged": ["docs/pipeline-review-gates-tech-approach.md"],
+      "decisions": [
+        "JSON files in flat data/reviews/ directory — consistent with heartbeats, meetings, work items patterns",
+        "reviewGates as flat boolean object on project schema — fixed set of 7 gates, not an arbitrary array",
+        "Gate checking integrated into heartbeatRunner findNextTask and task completion flow — minimal touch points",
+        "Per-task gate checking (not per-phase-level) so parallel phases like design+backend don't block each other",
+        "Changes-requested feedback loop: heartbeat re-runs agent with feedback appended, then resets to pending for re-review",
+        "No WebSocket push for v1 — dashboard polls on load, CEO checks reviews page on their schedule"
+      ]
+    },
+    {
+      "id": "RG-3",
+      "title": "Design spec — reviews page, gate config UI, deliverable viewer, approve/reject flow",
+      "agent": "Robert",
+      "status": "completed",
+      "completedAt": "2026-03-17T17:45:00.000Z",
+      "subtasks": [
+        "Designed two-column reviews page layout mirroring docs.html pattern (list left, detail right)",
+        "Defined review row component with status pills: pending (amber), approved (green), changes-requested (red)",
+        "Specified inline deliverable viewer reusing doc-content markdown rendering from docs.html",
+        "Designed approve/request-changes action bar with feedback textarea expand/collapse",
+        "Defined gate configuration section for projects.html: 7 compact toggle switches with phase-colored indicator dots",
+        "Specified dashboard metric card with pending count and red attention border when > 0",
+        "Added sidebar nav link with red badge counter for pending reviews",
+        "Defined keyboard shortcuts: A to approve, R to request changes, arrow keys for list navigation",
+        "Specified all responsive breakpoints: desktop two-column, mobile single-column with back navigation",
+        "Documented all interaction states, animations, accessibility requirements, and error states"
+      ],
+      "filesChanged": ["docs/pipeline-review-gates-design-spec.md"],
+      "decisions": [
+        "Two-column layout (2/5 + 3/5 grid) matching docs.html — familiar pattern, no new layout concepts",
+        "Reuse doc-content markdown rendering for deliverable viewer — no new rendering infrastructure",
+        "Gate toggles save immediately on click (no save button) — atomic, non-destructive action",
+        "Submit Feedback button uses amber palette to signal 'this pauses the pipeline' — distinct from approve (green) and cancel (ghost)",
+        "Keyboard approve requires double-press (A then A again within 2s) to prevent accidental approvals",
+        "Mobile: review list and detail are separate screens with back-navigation, not side-by-side"
+      ]
+    },
+    {
+      "id": "RG-4",
+      "title": "Backend — review data model, CRUD API endpoints, project schema extension",
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "status": "completed",
+      "completedAt": "2026-03-17T19:30:00.000Z",
+      "subtasks": [
+        "Created Zod schema for reviews with full validation (ReviewSchema, CreateReviewSchema, UpdateReviewSchema)",
+        "Defined VALID_GATES constant and GateName type for the 7 pipeline checkpoints",
+        "Built reviews store (CRUD) following heartbeats.ts flat-file pattern: create, get, update, list, getPendingReviewsForProject",
+        "Created reviews router with GET /api/reviews (filterable by status and projectSlug), GET /api/reviews/:id, POST /api/reviews, PATCH /api/reviews/:id",
+        "Extended ProjectSchema with ReviewGatesSchema (7 boolean flags, all default false) for backward compatibility",
+        "Extended UpdateProjectSchema to accept partial reviewGates for individual gate toggling",
+        "Updated updateProject store function to merge partial reviewGates (toggle individual gates without overwriting others)",
+        "Added pendingReviews count to dashboard metrics response",
+        "Registered reviews router in server index.ts",
+        "Validated all inputs: gate names, status values, required feedback on changes-requested, 409 on terminal states"
+      ],
+      "filesChanged": [
+        "server/src/schemas/review.ts",
+        "server/src/store/reviews.ts",
+        "server/src/routes/reviews.ts",
+        "server/src/schemas/project.ts",
+        "server/src/store/projects.ts",
+        "server/src/routes/dashboard.ts",
+        "server/src/index.ts",
+        "server/src/migrate.ts"
+      ],
+      "decisions": [
+        "Flat data/reviews/ directory (not nested by project) — volume is too low to need subdirectories, simpler aggregation",
+        "Partial reviewGates merge in updateProject — CEO can toggle one gate without sending all 7 values",
+        "409 Conflict on PATCH to already-approved/not-applicable reviews — prevents double-approval edge case",
+        "Feedback preserved on approval after changes-requested — CEO can see what they previously asked for",
+        "resolvedAt set automatically on approval or not-applicable — no separate timestamp management needed"
+      ]
+    },
+    {
+      "id": "RG-8",
+      "title": "Code review — backend architecture, security, reliability, performance",
+      "agent": "Atlas",
+      "role": "Code Reviewer",
+      "status": "completed",
+      "completedAt": "2026-03-17T20:00:00.000Z",
+      "subtasks": [
+        "Reviewed server/src/schemas/review.ts — schema design, validation rules, type exports",
+        "Reviewed server/src/store/reviews.ts — CRUD operations, file I/O, error handling",
+        "Reviewed server/src/routes/reviews.ts — API endpoints, input validation, state machine guards",
+        "Reviewed server/src/schemas/project.ts — reviewGates field addition, partial update support",
+        "Cross-referenced with store/projects.ts for reviewGates merge logic correctness"
+      ],
+      "filesChanged": [],
+      "decisions": [
+        "PASS verdict — backend is ready for QA with no blocking issues",
+        "Flagged path traversal risk in reviewPath() (pre-existing codebase pattern, not new) — recommend UUID validation on route params",
+        "Noted resolvedAt not cleared on changes-requested transition — defensive improvement, not a bug today",
+        "Noted getPendingReviewsForProject duplicates listReviews file-reading logic — maintainability concern at current scale",
+        "Approved feedback preservation on approve-after-changes-requested as deliberate design choice",
+        "Approved partial reviewGates merge in updateProject as correct implementation of tech approach"
+      ]
+    },
+    {
+      "id": "RG-9",
+      "title": "QA pass — API testing, edge cases, known issue verification, acceptance criteria validation",
+      "agent": "Enzo",
+      "role": "QA",
+      "status": "completed",
+      "completedAt": "2026-03-17T22:30:00.000Z",
+      "subtasks": [
+        "Tested POST /api/reviews happy path — correct 201 response with all fields populated, UUID id, pending status, null resolvedAt and feedback",
+        "Tested POST validation: empty body (all required fields flagged), invalid gate name (rejected with list of valid gates), empty deliverables array (caught), invalid deliverable type (caught)",
+        "Tested GET /api/reviews with filters: status=pending, projectSlug, non-existent slug (empty array), invalid status (400 error)",
+        "Tested GET /api/reviews/:id: valid ID, non-existent UUID (404), path traversal attempts (blocked by Express routing), malformed ID (404)",
+        "Tested PATCH request-changes: happy path works, missing feedback rejected, empty feedback rejected (found minor duplicate validation message bug)",
+        "Tested PATCH approve: from pending, from changes-requested, double-approve (409), request-changes on approved (409), non-existent ID (404)",
+        "Tested gate configuration: partial toggles preserve other gates, individual gate toggle works correctly",
+        "Verified dashboard pendingReviews metric in API response (present and accurate)",
+        "Verified data integrity: all JSON review files valid after test operations",
+        "Verified known issues from design review and code review: confirmed deliverable URL bug, approve double-press bug, missing dashboard metric card"
+      ],
+      "filesChanged": [],
+      "decisions": [
+        "FAIL verdict — 2 major bugs must be fixed before shipping: (1) deliverable doc viewer uses wrong URL pattern (/docs/ + full path instead of /api/docs/ + filename), (2) approve button double-press confirmation fires on button click (should only apply to keyboard shortcut A)",
+        "Dashboard pending reviews metric card missing from dashboard.html — major gap in AC6 (dashboard visibility)",
+        "Minor: duplicate Zod validation messages when empty feedback is sent with changes-requested — cosmetic, not blocking",
+        "Atlas concerns validated: path traversal is mitigated by Express routing; resolvedAt behavior is correct for the existing state machine (approved is terminal, so resolvedAt never needs clearing)",
+        "Robert issue #1 (sidebar links missing) was resolved by Alice — all pages have the Reviews nav link",
+        "Backend API is solid — all CRUD operations, validation, state machine guards, and filters work correctly"
+      ]
+    },
+    {
+      "id": "RG-10",
+      "title": "Documentation — user guide for Pipeline Review Gates",
+      "agent": "Nadia",
+      "role": "Technical Writer",
+      "status": "completed",
+      "completedAt": "2026-03-17T21:00:00.000Z",
+      "subtasks": [
+        "Read requirements, tech approach, and design spec docs to understand the full feature",
+        "Read the implemented reviews.html to verify actual keyboard shortcuts and UI behavior against spec",
+        "Wrote user guide covering: feature overview, gate configuration, reviewing deliverables, approve/reject flows, keyboard shortcuts, pipeline interaction, and API reference",
+        "Documented all 7 gate types with what gets reviewed and which agent produces each deliverable",
+        "Documented the double-press approve confirmation (A then A) to prevent accidental approvals",
+        "Explained parallel phase behavior (design gate does not block backend work)",
+        "Included API reference table with all review endpoints, query filters, and status codes",
+        "Documented known v1 limitations: no agent chat, no push notifications, no diff view",
+        "Matched tone and structure of existing bug-reporter-user-guide.md for consistency"
+      ],
+      "filesChanged": [
+        "docs/pipeline-review-gates-user-guide.md"
+      ],
+      "decisions": [
+        "Documented actual keyboard shortcuts from implementation (A, R, Arrow keys, Escape) rather than task brief (which listed J/K and X) — implementation is the source of truth",
+        "Kept API reference concise (table format) rather than full request/response examples — CEO is primary reader, not an API consumer",
+        "Included a 'Tip' for recommended gate configuration (After Architecture + After Design) as the highest-leverage review points",
+        "Structured guide as Quick Start then progressive detail — matches bug reporter guide pattern"
+      ]
+    }
+  ]
+}

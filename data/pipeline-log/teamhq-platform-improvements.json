@@ -1,0 +1,79 @@
+{
+  "id": "teamhq-platform-improvements",
+  "name": "TeamHQ Platform Improvements",
+  "description": "Incremental improvements to TeamHQ UI, agent workflows, and internal tooling. Pipeline dashboard, health checks, keyboard nav.",
+  "status": "in-progress",
+  "tasks": [
+    {
+      "agent": "Thomas",
+      "role": "Product Manager",
+      "task": "Scope improvements and create work items",
+      "status": "completed",
+      "subtasks": [
+        "Created project and work items (TPI-1 through TPI-4)",
+        "Wrote pipeline dashboard scope doc (TPI-2)",
+        "Prioritized based on meeting #39 team input",
+        "Meeting #41: Scoped TPI-5 through TPI-8 (health smoke test, meetings cards, pipeline-log audit, QA badge)",
+        "Meeting #42: Marked TPI-2 scoping complete, added TPI-9 (meetings search/filter), set Alice priority queue"
+      ],
+      "filesChanged": [
+        "docs/teamhq-pipeline-dashboard-scope.md"
+      ],
+      "decisions": [
+        "Pipeline dashboard is first priority — highest value-to-effort, reads existing data",
+        "Health endpoint goes first as quick win (TPI-1) — Jonah building now",
+        "Keyboard shortcuts deferred until after RT-38c ships (reuses same infrastructure)",
+        "Using lightweight iteration track — no full pipeline needed"
+      ]
+    },
+    {
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "task": "Build GET /api/health endpoint (TPI-1)",
+      "status": "completed",
+      "subtasks": [
+        "Created server/src/routes/health.ts with 4 fs checks",
+        "Registered healthRoutes in server/src/index.ts",
+        "Verified endpoint returns healthy status with all checks passing"
+      ],
+      "filesChanged": [
+        "server/src/routes/health.ts",
+        "server/src/index.ts"
+      ],
+      "decisions": [
+        "Used import.meta.dirname + relative path to reach project root, matching existing codebase pattern",
+        "Returns healthy/degraded/unhealthy based on fs check results"
+      ]
+    },
+    {
+      "agent": "Jonah",
+      "role": "Backend Developer",
+      "task": "Build GET /api/pipeline-status endpoint (TPI-2a)",
+      "status": "completed",
+      "subtasks": [
+        "Created server/src/routes/pipelineStatus.ts with pipeline-log aggregation",
+        "Reads pipeline-log index.json and each project file for agent-level task detail",
+        "Returns active projects, recent completions, pending review count",
+        "Registered in server/src/index.ts"
+      ],
+      "filesChanged": [
+        "server/src/routes/pipelineStatus.ts",
+        "server/src/index.ts"
+      ],
+      "decisions": [
+        "Dedicated endpoint rather than frontend parsing raw JSON (Andrei's recommendation from standup #40)",
+        "Counts pending reviews by scanning reviews directory for status=pending",
+        "Returns agent list per project for frontend to show who is working on what"
+      ]
+    },
+    {
+      "agent": "Alice",
+      "role": "Frontend Developer",
+      "task": "Enhance pipeline dashboard with agent-level detail (TPI-2b)",
+      "status": "planned",
+      "subtasks": [],
+      "filesChanged": [],
+      "decisions": []
+    }
+  ]
+}

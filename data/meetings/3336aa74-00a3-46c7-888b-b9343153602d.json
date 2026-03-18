@@ -1,0 +1,259 @@
+{
+  "id": "3336aa74-00a3-46c7-888b-b9343153602d",
+  "type": "custom",
+  "status": "completed",
+  "meetingNumber": 25,
+  "scheduledAt": null,
+  "startedAt": "2026-03-18T13:05:25.582Z",
+  "completedAt": "2026-03-18T13:09:02.966Z",
+  "durationMs": 217384,
+  "error": null,
+  "summary": "Hourly standup covering recent shipments (SiteSnap repo migration, QuoteVoice pipeline addition, operating agreements), in-progress work (Pipeline Review Gates docs complete awaiting implementation, Roadmap Tool v2 themes active build), and a forward-looking discussion on product improvements and next priorities. The team debated whether to prioritize Review Gates implementation or push Forge v2 themes to completion first, ultimately deciding to run both in parallel.",
+  "keyTakeaways": [
+    "Pipeline Review Gates has all docs complete (requirements, tech approach, design spec, user guide) — ready for implementation but needs Jonah and Alice to start building",
+    "Roadmap Tool v2 themes/styling is the active build in Forge — Alice is mid-implementation and wants to finish before context-switching",
+    "SiteSnap and QuoteVoice are shipped to their own repos — the team's product portfolio is growing and needs a lightweight way to track post-launch user feedback",
+    "The team identified three user-facing improvements across shipped products: QuoteVoice needs better error recovery on flaky mobile connections, SiteSnap could use batch photo upload, and the OST tool's recommendation page redesign feedback has been positive",
+    "Enzo raised that QA coverage on mobile products (SiteSnap, QuoteVoice) is thinner than web products — the team agreed mobile QA needs a dedicated pass before any v1.1 work ships"
+  ],
+  "transcript": [
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, let's keep this tight. Four items: what shipped, what's in progress or blocked, product improvements users would want, and what's next. I'll go first on what shipped. Since last meeting, SiteSnap got moved to its own repo under Sherlock-Labs — that's clean separation done. QuoteVoice is in the pipeline log. And we codified the seven operating agreements from the team 360 review. That last one isn't a product but it matters — those are now binding for how we run."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "On the architecture side, Pipeline Review Gates is fully documented. Requirements, tech approach, design spec, and user guide are all in docs/. I classified the change impact — most files are Extend, but the meeting runner and the pipeline orchestration in the server are Modify-level changes. Nothing flagged as Restructure, so Enzo shouldn't need early regression planning on this one."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "I finished the Review Gates design spec. The core interaction is a pause-and-review modal that appears at configurable pipeline checkpoints. CEO sees the deliverable, can leave feedback or chat with the agent, then approves to continue. I kept the surface area small — it's a modal with a document viewer and a chat thread, not a whole new page. Fits the existing meetings section patterns."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "So I'm mid-build on Roadmap Tool v2 themes right now. The visual styling system for Forge — custom colors, typography presets, that kind of thing. I've got the token system wired up and the theme picker component is working. I'd estimate I'm about 60% through. I'd really prefer to finish this before picking up Review Gates frontend work, otherwise I'll lose all the context."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "I haven't started Review Gates backend yet. I've read Andrei's tech approach — the API surface is straightforward. New endpoints for creating review checkpoints, fetching pending reviews, and submitting approvals. The tricky part is the integration with the meeting runner — pausing a pipeline mid-execution and resuming it cleanly. That's the part I want to think through before writing code."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Quick flag — I haven't done a full QA pass on either SiteSnap or QuoteVoice in the mobile context. The web-side testing was solid but those are mobile-first products. Zara and Leo built them, and I tested the core flows, but I didn't get deep on flaky connection handling, background app states, or camera permission edge cases. If we're going to do v1.1 work on either, I want a dedicated mobile QA pass first."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Noted on the mobile QA gap, Enzo. Let's come back to that. Alice, I hear you on context-switching — how many days to finish the Forge themes work?"
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Two days if nothing else lands on my plate. The remaining work is the theme preview panel, persistence to the backend, and making sure the existing views respect the new tokens without visual regressions. That last part is the careful bit."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fine. Jonah, can you start the Review Gates backend while Alice finishes themes? You don't need the design spec for the API layer — you need the tech approach, which is done."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Yeah, that works. The backend doesn't depend on Robert's design at all. I can build the checkpoint model, the review endpoints, and the pipeline pause/resume logic. Alice can pick up the frontend once she's done with themes and has the API to build against."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "That's the right sequencing. The API contract for Review Gates is already defined in the tech approach — Alice and Jonah don't need a separate alignment session. Jonah builds to spec, Alice consumes it. One thing to watch: the pipeline pause mechanism needs to be idempotent. If the server restarts mid-pause, the review state should survive. I noted this in the tech approach but it's worth calling out."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Already thinking about that. I'll persist the review state to a JSON file in data/reviews/, same pattern as meetings. If the server restarts, it reads pending reviews on boot and resumes. No database needed for v1."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Good. Let's move to item three — product improvements. We've shipped SiteSnap, QuoteVoice, VoiceNote Pro, the OST tool, SherlockPDF, and the PDF utilities. What would users actually want improved?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "QuoteVoice has a real problem with flaky mobile connections. During my testing, if you lose signal mid-recording and it comes back, the app doesn't always recover gracefully. Sometimes the transcript just stops. For a contractor on a job site with spotty cell service, that's a deal-breaker. That's the highest-priority fix across all our products, in my opinion."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "The OST tool redesign feedback has been good — the expandable debater reasoning was the right call. But I've heard the tree visualization gets unwieldy past about 15-20 nodes. Users with complex opportunity trees are struggling with navigation. A collapse-all or focus-on-subtree feature would help."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "SiteSnap could use batch photo upload. Right now it's one photo at a time from the camera roll. Contractors take 30-40 photos on a site visit — they want to select a batch and have the AI auto-organize all of them. The current one-at-a-time flow is a friction point."
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "On the backend side, SherlockPDF's processing queue can get backed up if multiple users hit it at once. We don't have any queuing or rate limiting — it's just sequential Express request handling. Not a crisis yet but it'll bite us as traffic grows."
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "The SherlockPDF queuing issue is real but it's a scale problem we don't have yet. I'd rather we focus on the user-facing issues Enzo and Robert mentioned. The QuoteVoice connection recovery is a reliability bug — that should be fixed regardless of what else we prioritize. The SiteSnap batch upload is a feature that meaningfully changes the user experience."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Agreed. QuoteVoice connection recovery is a bug fix — that goes through the lightweight iteration track. SiteSnap batch upload is a feature — that needs proper scoping. Let me rank what I'm hearing: (1) QuoteVoice connection recovery, (2) SiteSnap batch upload, (3) OST tree navigation at scale. The SherlockPDF queue is deferred until we see actual user impact."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I'd also add — before we ship any v1.1 for the mobile products, I want that dedicated mobile QA pass I mentioned. We should know what we're working with before we start layering improvements on top."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Fair. But I don't want mobile QA to block Review Gates, which is the CEO's priority. Can you do a focused mobile QA pass on QuoteVoice in parallel with Jonah building Review Gates backend?"
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "I can do a focused assessment — not a full pass, but enough to catalog the known issues and prioritize them. That'd take half a day. Then when Review Gates implementation is ready for QA, I'm free to do the full pass on that."
+    },
+    {
+      "speaker": "Robert",
+      "role": "Product Designer",
+      "text": "One more thing on the shipped products — the Forge roadmap tool is our most complex product and it's actively being built. Before we pile on more features for other products, we should make sure v2 themes ships clean. The visual theming is user-facing customization — if it feels janky or inconsistent, it undermines the whole product."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Agreed. The themes work touches every view in Forge. I'm being careful with it precisely because a regression in the timeline or board view would be worse than shipping a day late."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Alright, here's what I'm proposing for next steps. Parallel tracks: Alice finishes Forge v2 themes — two days. Jonah starts Review Gates backend — can work from the tech approach today. Enzo does a half-day QuoteVoice mobile assessment. Once Alice is done with themes, she picks up Review Gates frontend. Robert, you're on standby for Review Gates design review once implementation is ready. Andrei, anything you need to do?"
+    },
+    {
+      "speaker": "Andrei",
+      "role": "Technical Architect",
+      "text": "Nothing blocking. My docs are done for Review Gates. I'll be available if Jonah hits architectural questions on the pause/resume mechanism. I'd also like to review the Forge theme token system before Alice ships it — just a quick check that the token naming and cascade won't cause problems when we add more themes later."
+    },
+    {
+      "speaker": "Thomas",
+      "role": "Product Manager",
+      "text": "Do that today if you can — Alice is two days out so there's time. Okay, decisions: we run Forge themes and Review Gates backend in parallel. QuoteVoice connection recovery goes on the backlog as a lightweight iteration item. Enzo does a mobile assessment this afternoon. Everyone clear?"
+    },
+    {
+      "speaker": "Jonah",
+      "role": "Back-End Developer",
+      "text": "Clear. I'll start with the review checkpoint data model and the CRUD endpoints. Should have something testable by end of day tomorrow."
+    },
+    {
+      "speaker": "Alice",
+      "role": "Front-End Developer",
+      "text": "Clear. Finishing themes, then Review Gates frontend. I'll coordinate with Jonah on the API once he has endpoints up."
+    },
+    {
+      "speaker": "Enzo",
+      "role": "QA Engineer",
+      "text": "Clear. QuoteVoice mobile assessment this afternoon, then I'm queued up for Review Gates QA."
+    }
+  ],
+  "decisions": [
+    {
+      "description": "Run Forge v2 themes and Review Gates backend implementation in parallel — Alice finishes themes (2 days) while Jonah starts Review Gates backend immediately",
+      "rationale": "Alice is 60% through themes and context-switching would waste progress. Jonah can build the backend from the tech approach without waiting for Alice. This maximizes throughput without blocking either project.",
+      "participants": [
+        "Thomas",
+        "Alice",
+        "Jonah",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "QuoteVoice connection recovery bug goes on the backlog as a lightweight iteration track item, not a full pipeline project",
+      "rationale": "It's a reliability bug affecting a shipped product in a core use case (flaky mobile connections for contractors), but it's scoped enough for the fast-path: Thomas scopes briefly, relevant builder fixes it, Robert eyeballs + Enzo spot-checks.",
+      "participants": [
+        "Thomas",
+        "Enzo",
+        "Andrei"
+      ]
+    },
+    {
+      "description": "Enzo conducts a half-day focused mobile QA assessment on QuoteVoice before any v1.1 improvements ship",
+      "rationale": "Mobile QA coverage is thinner than web products. The team needs to catalog known issues before layering improvements on top. A focused assessment (not full pass) won't block Review Gates work.",
+      "participants": [
+        "Enzo",
+        "Thomas"
+      ]
+    },
+    {
+      "description": "Defer SherlockPDF queuing improvements until actual user impact is observed",
+      "rationale": "The sequential processing limitation is real but theoretical at current traffic levels. User-facing issues (QuoteVoice reliability, SiteSnap batch upload) take priority over infrastructure scaling.",
+      "participants": [
+        "Thomas",
+        "Andrei",
+        "Jonah"
+      ]
+    }
+  ],
+  "actionItems": [
+    {
+      "owner": "Alice",
+      "description": "Complete Forge v2 themes implementation (theme preview panel, backend persistence, visual regression check across existing views) — target 2 days",
+      "priority": "high"
+    },
+    {
+      "owner": "Jonah",
+      "description": "Start Review Gates backend implementation — checkpoint data model, CRUD endpoints for creating/fetching/approving reviews, pipeline pause/resume mechanism with idempotent state persistence",
+      "priority": "high"
+    },
+    {
+      "owner": "Enzo",
+      "description": "Conduct half-day focused mobile QA assessment on QuoteVoice — catalog connection recovery issues, background app state handling, camera permission edge cases",
+      "priority": "high"
+    },
+    {
+      "owner": "Andrei",
+      "description": "Review Alice's Forge theme token system (naming conventions, cascade behavior) before themes ship — ensure extensibility for future themes",
+      "priority": "medium"
+    },
+    {
+      "owner": "Thomas",
+      "description": "Write lightweight iteration scope for QuoteVoice connection recovery bug — one paragraph, not a full requirements doc, per operating agreement #5",
+      "priority": "medium"
+    },
+    {
+      "owner": "Robert",
+      "description": "Standby for Review Gates design review once Alice completes frontend implementation — lightweight visual check against design spec",
+      "priority": "low"
+    }
+  ],
+  "mood": "Focused and productive",
+  "nextMeetingTopics": [
+    "Jonah's Review Gates backend progress — are endpoints testable?",
+    "Alice's Forge v2 themes completion status",
+    "Enzo's QuoteVoice mobile QA assessment findings",
+    "Andrei's review of theme token system — any concerns?",
+    "SiteSnap batch upload — should it be scoped for the next sprint?"
+  ],
+  "participants": [
+    "product-manager",
+    "technical-architect",
+    "product-designer",
+    "frontend-developer",
+    "backend-developer",
+    "qa"
+  ],
+  "instructions": "Hourly standup. Agenda: (1) What shipped since last meeting? (2) What is in progress or blocked? (3) Review our shipped products — what improvements would users want? (4) What should we work on next? Each person gives their perspective. Produce concrete decisions and action items.",
+  "interviewConfig": null
+}

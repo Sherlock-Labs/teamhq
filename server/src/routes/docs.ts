@@ -285,4 +285,53 @@ router.get("/docs/{*docPath}", async (req, res) => {
   }
 });
 
+// GET /api/agents/:name/profile — serve the agent's .md definition file
+const AGENTS_DIR = path.resolve(import.meta.dirname, "../../../.claude/agents");
+
+const AGENT_FILE_MAP: Record<string, string> = {
+  thomas: "product-manager.md",
+  robert: "product-designer.md",
+  andrei: "technical-architect.md",
+  alice: "frontend-developer.md",
+  jonah: "backend-developer.md",
+  sam: "backend-developer-2.md",
+  enzo: "qa.md",
+  priya: "product-marketer.md",
+  suki: "product-researcher.md",
+  marco: "technical-researcher.md",
+  nadia: "technical-writer.md",
+  yuki: "data-analyst.md",
+  kai: "ai-engineer.md",
+  zara: "mobile-developer-1.md",
+  leo: "mobile-developer-2.md",
+  nina: "frontend-interactions.md",
+  soren: "frontend-responsive.md",
+  amara: "frontend-accessibility.md",
+  howard: "payments-engineer.md",
+  ravi: "creative-strategist.md",
+  derek: "backend-integrations.md",
+  milo: "backend-devops.md",
+  morgan: "visual-qa.md",
+  atlas: "code-reviewer.md",
+};
+
+router.get("/agents/:name/profile", async (req, res) => {
+  try {
+    const name = req.params.name.toLowerCase();
+    const filename = AGENT_FILE_MAP[name];
+    if (!filename) {
+      res.status(404).json({ error: "Agent not found" });
+      return;
+    }
+    const content = await fs.readFile(path.join(AGENTS_DIR, filename), "utf-8");
+    res.type("text/plain; charset=utf-8").send(content);
+  } catch (err) {
+    if (err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT") {
+      res.status(404).json({ error: "Agent profile not found" });
+      return;
+    }
+    res.status(500).json({ error: "Failed to read agent profile" });
+  }
+});
+
 export default router;

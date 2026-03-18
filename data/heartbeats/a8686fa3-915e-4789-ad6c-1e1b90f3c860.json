@@ -1,0 +1,23 @@
+{
+  "id": "a8686fa3-915e-4789-ad6c-1e1b90f3c860",
+  "startedAt": "2026-03-18T12:20:35.153Z",
+  "completedAt": "2026-03-18T12:35:00.000Z",
+  "status": "failed",
+  "trigger": "manual",
+  "stateSnapshot": {
+    "activeProjects": 4,
+    "totalTasks": 105,
+    "inProgressTasks": 1,
+    "blockedTasks": 1,
+    "staleTasks": 1,
+    "recentEvents": 50,
+    "agentsActive": 1
+  },
+  "assessment": null,
+  "decisions": [],
+  "actionsLog": [
+    "State gathered, spawning Thomas as full agent session"
+  ],
+  "error": "Killed: stuck heartbeat (Opus overloaded)",
+  "durationMs": null
+}

@@ -3,80 +3,412 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Docs — TeamHQ</title>
-  <meta name="description" content="Browse project documentation, tech approaches, design specs, and architecture decision records.">
+  <title>Sherlock Labs | Docs</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css">
-  <!-- AG Grid Community — CSS (structural + Quartz theme) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-grid.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@34/styles/ag-theme-quartz.css">
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="css/docs.css">
-  <link rel="stylesheet" href="css/spreadsheet.css">
-  <link rel="stylesheet" href="css/bug-reporter.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent-green: #10B981;
+      --accent-blue: #3B82F6;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --accent-violet: #8B5CF6;
+      --surface-low: #F9FAFB;
+      --text-main: #374151;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #FAFAFA;
+      color: var(--text-main);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .premium-shadow {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .subtle-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-pill {
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid white;
+      background: #F3F4F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6px;
+      font-weight: 700;
+      color: #6B7280;
+    }
+
+    .doc-row {
+      transition: background-color 100ms ease;
+    }
+
+    .doc-row:hover {
+      background-color: #F9FAFB;
+    }
+
+    .doc-group-header {
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 100ms ease;
+    }
+
+    .doc-group-header:hover {
+      background-color: #F3F4F6;
+    }
+
+    .chevron {
+      transition: transform 150ms ease;
+    }
+
+    .chevron.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .doc-content {
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .doc-content h1 { font-size: 16px; font-weight: 700; margin: 20px 0 8px; color: #111827; }
+    .doc-content h2 { font-size: 14px; font-weight: 700; margin: 16px 0 6px; color: #111827; }
+    .doc-content h3 { font-size: 13px; font-weight: 600; margin: 14px 0 4px; color: #374151; }
+    .doc-content p { margin: 6px 0; color: #4B5563; }
+    .doc-content ul, .doc-content ol { margin: 6px 0; padding-left: 20px; color: #4B5563; }
+    .doc-content li { margin: 2px 0; }
+    .doc-content code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: #F3F4F6; padding: 1px 4px; border-radius: 2px; }
+    .doc-content pre { background: #F9FAFB; border: 1px solid #F3F4F6; border-radius: 4px; padding: 12px; margin: 8px 0; overflow-x: auto; }
+    .doc-content pre code { background: none; padding: 0; }
+    .doc-content blockquote { border-left: 2px solid #E5E7EB; padding-left: 12px; margin: 8px 0; color: #6B7280; }
+    .doc-content table { border-collapse: collapse; margin: 8px 0; font-size: 11px; }
+    .doc-content th, .doc-content td { border: 1px solid #F3F4F6; padding: 4px 8px; text-align: left; }
+    .doc-content th { background: #F9FAFB; font-weight: 600; }
+    .doc-content a { color: #3B82F6; text-decoration: none; }
+    .doc-content a:hover { text-decoration: underline; }
+    .doc-content hr { border: none; border-top: 1px solid #F3F4F6; margin: 16px 0; }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .skeleton {
+      background: #E5E7EB;
+      border-radius: 2px;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+  </style>
 </head>
-<body>
+<body class="w-full min-h-screen">
 
-  <!-- Navigation -->
-  <nav class="nav" aria-label="Main navigation">
-    <div class="container nav__inner">
-      <div class="nav__brand">
-        <a href="index.html" class="nav__logo-link">
-          <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="nav__logo" width="180" height="36">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-52 bg-white border-r border-gray-100 p-5 flex flex-col fixed left-0 top-0 h-full z-10">
+      <div class="mb-8">
+        <a href="/" class="text-sm font-bold tracking-tighter text-black">SHERLOCK</a>
+        <span class="block text-[11px] font-light text-gray-400 tracking-widest mt-0.5">LABS // TEAMHQ</span>
+      </div>
+
+      <nav class="flex flex-col gap-0.5 flex-1">
+        <a href="index.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
         </a>
-      </div>
-      <div class="nav__links">
-        <a href="tools.html" class="nav__link">Tools</a>
-        <a href="projects.html" class="nav__link">Projects</a>
-        <a href="tasks.html" class="nav__link">Tasks</a>
-        <a href="meetings.html" class="nav__link">Meetings</a>
-        <a href="interviews.html" class="nav__link">Interviews</a>
-        <a href="docs.html" class="nav__link nav__link--active" aria-current="page">Docs</a>
-        <a href="spreadsheets.html" class="nav__link">Spreadsheets</a>
-        <a href="team.html" class="nav__link">Team</a>
-      </div>
-    </div>
-  </nav>
+        <a href="projects.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Projects
+        </a>
+        <a href="tasks.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Tasks
+        </a>
+        <a href="team.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Team
+        </a>
+        <a href="tools.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Tools
+        </a>
+        <a href="autonomy.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Autonomy
+        </a>
+        <a href="workflow.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Workflow
+        </a>
+        <a href="reviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Reviews
+          <span id="nav-review-badge" style="display:none;background:#EF4444;color:white;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;align-items:center;justify-content:center;padding:0 4px;margin-left:auto"></span>
+        </a>
+        <a href="meetings.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Meetings
+        </a>
+        <a href="interviews.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:text-black rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Interviews
+        </a>
+        <a href="docs.html" class="flex items-center gap-2.5 px-2 py-1.5 text-[12px] font-medium text-black bg-gray-50 rounded-md">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Docs
+        </a>
+      </nav>
 
-  <main class="docs-page">
-    <div class="container">
-      <!-- Page Header -->
-      <div class="docs-header">
-        <h1 class="docs-header__title">Docs</h1>
-        <p class="docs-header__stats" id="docs-stats"></p>
-      </div>
-
-      <!-- List View (shown by default) -->
-      <div id="docs-list-view">
-        <div id="docs-list">
-          <noscript>
-            <p class="docs__loading">Enable JavaScript to browse docs.</p>
-          </noscript>
+      <div class="mt-auto pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2 px-1">
+          <div class="w-5 h-5 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-bold">CEO</div>
+          <div>
+            <div class="text-[11px] font-medium text-black">Jeff</div>
+            <div class="text-[10px] text-gray-400">sherlock-labs</div>
+          </div>
         </div>
       </div>
+    </aside>
 
-      <!-- Reading View (hidden by default) -->
-      <div id="docs-reader-view" style="display: none;">
-      </div>
-    </div>
-  </main>
+    <!-- Main Content -->
+    <div class="flex-1 ml-52 p-5">
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <img src="img/sherlock-labs-logo.svg" alt="Sherlock Labs" class="footer__logo" width="140" height="28">
-      <p class="footer__attribution">Built with Claude Code</p>
+      <!-- Top Status Bar -->
+      <header class="mb-5 flex items-center justify-between py-2 px-4 bg-white border border-gray-100 rounded-lg premium-shadow">
+        <div class="flex gap-8 items-center">
+          <div class="flex flex-col">
+            <span class="subtle-label">Section</span>
+            <span class="text-[12px] font-bold flex items-center gap-1.5">
+              <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              DOCS
+            </span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Total Docs</span>
+            <span class="text-[12px] font-bold" id="header-total">---</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="subtle-label">Projects</span>
+            <span class="text-[12px] font-bold" id="header-projects">---</span>
+          </div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <input type="text" id="search-input" placeholder="Search docs..."
+            class="text-[11px] px-2 py-1 border border-gray-100 rounded bg-white focus:outline-none focus:border-gray-300 w-40">
+        </div>
+      </header>
+
+      <!-- Two-column layout: file list + reader -->
+      <main class="grid grid-cols-5 gap-3" style="min-height: calc(100vh - 180px);">
+
+        <!-- Left: Doc List -->
+        <div class="col-span-2 bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden flex flex-col">
+          <div class="px-4 py-2.5 border-b border-gray-50">
+            <span class="text-[12px] font-bold text-black">Documents</span>
+          </div>
+          <div id="doc-list" class="divide-y divide-gray-50 overflow-y-auto flex-1" style="max-height: calc(100vh - 220px);">
+            <!-- Skeleton loading -->
+            <div class="px-4 py-3"><span class="skeleton w-32 h-3 block mb-1"></span><span class="skeleton w-20 h-2 block"></span></div>
+            <div class="px-4 py-3"><span class="skeleton w-40 h-3 block mb-1"></span><span class="skeleton w-16 h-2 block"></span></div>
+            <div class="px-4 py-3"><span class="skeleton w-28 h-3 block mb-1"></span><span class="skeleton w-24 h-2 block"></span></div>
+          </div>
+        </div>
+
+        <!-- Right: Doc Reader -->
+        <div class="col-span-3 bg-white border border-gray-100 rounded-lg premium-shadow overflow-hidden flex flex-col">
+          <div class="px-4 py-2.5 border-b border-gray-50 flex items-center justify-between">
+            <span class="text-[12px] font-bold text-black" id="reader-title">Select a document</span>
+            <span class="text-[11px] text-gray-400" id="reader-meta"></span>
+          </div>
+          <div id="doc-reader" class="p-4 overflow-y-auto flex-1 doc-content" style="max-height: calc(100vh - 220px);">
+            <div class="flex items-center justify-center h-full">
+              <span class="text-[11px] text-gray-400">Select a document from the list to view its contents</span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-10 pt-3 border-t border-gray-50 flex justify-between items-center text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+        <span>SHERLOCK_LABS // 2026</span>
+        <span>TEAMHQ_V2.0</span>
+      </footer>
     </div>
-  </footer>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked@15/lib/marked.umd.min.js"></script>
-  <!-- AG Grid Community — JS (UMD bundle) -->
-  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@34/dist/ag-grid-community.min.js"></script>
-  <script src="js/spreadsheet.js" defer></script>
-  <script src="js/docs.js" defer></script>
-  <div id="bug-reporter-root"></div>
-  <script src="js/bug-reporter.js" defer></script>
+  <script>
+    const API_BASE = '/api';
+
+    const TYPE_COLORS = {
+      'requirements': { color: '#3B82F6', bg: '#3B82F611' },
+      'tech-approach': { color: '#8B5CF6', bg: '#8B5CF611' },
+      'design-spec': { color: '#EC4899', bg: '#EC489911' },
+      'research': { color: '#14B8A6', bg: '#14B8A611' },
+      'messaging': { color: '#F59E0B', bg: '#F59E0B11' },
+      'retrospective': { color: '#6366F1', bg: '#6366F111' },
+      'other': { color: '#9CA3AF', bg: '#9CA3AF11' },
+    };
+
+    function timeAgo(ts) {
+      if (!ts) return '';
+      const diff = Date.now() - new Date(ts).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      const days = Math.floor(hrs / 24);
+      return days + 'd ago';
+    }
+
+    function agentInitials(name) {
+      if (!name) return '??';
+      return name.slice(0, 2).toUpperCase();
+    }
+
+    let allGroups = [];
+    let searchQuery = '';
+    let collapsedGroups = new Set();
+
+    async function loadDocs() {
+      try {
+        const res = await fetch(API_BASE + '/docs');
+        const data = await res.json();
+
+        document.getElementById('header-total').textContent = data.summary?.totalDocs || 0;
+        document.getElementById('header-projects').textContent = data.summary?.totalProjects || 0;
+
+        allGroups = data.groups || [];
+        renderDocList();
+      } catch (err) {
+        console.error('Failed to load docs:', err);
+        document.getElementById('doc-list').innerHTML =
+          '<div class="px-4 py-8 text-center text-[11px] text-gray-400">Failed to load docs</div>';
+      }
+    }
+
+    function renderDocList() {
+      const el = document.getElementById('doc-list');
+      let groups = allGroups;
+
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        groups = groups.map(g => ({
+          ...g,
+          docs: g.docs.filter(d =>
+            d.title.toLowerCase().includes(q) ||
+            d.path.toLowerCase().includes(q) ||
+            (d.typeLabel || '').toLowerCase().includes(q)
+          ),
+        })).filter(g => g.docs.length > 0);
+      }
+
+      if (groups.length === 0) {
+        el.innerHTML = '<div class="px-4 py-8 text-center text-[11px] text-gray-400">No documents found</div>';
+        return;
+      }
+
+      el.innerHTML = groups.map(g => {
+        const isCollapsed = collapsedGroups.has(g.project);
+        return `
+          <div>
+            <div class="doc-group-header flex items-center justify-between px-4 py-2 bg-gray-50/50"
+                 onclick="toggleDocGroup('${g.project.replace(/'/g, "\\'")}')">
+              <div class="flex items-center gap-2">
+                <svg class="w-2.5 h-2.5 text-gray-400 chevron ${isCollapsed ? 'collapsed' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+                <span class="text-[11px] font-bold text-gray-600">${g.label}</span>
+              </div>
+              <span class="text-[10px] text-gray-400">${g.docCount}</span>
+            </div>
+            ${isCollapsed ? '' : g.docs.map(d => {
+              const tc = TYPE_COLORS[d.type] || TYPE_COLORS['other'];
+              return `
+                <div class="doc-row px-4 py-2 cursor-pointer flex items-center gap-3"
+                     onclick="loadDoc('${d.path.replace(/'/g, "\\'")}', '${d.title.replace(/'/g, "\\'")}', '${d.typeLabel || 'Doc'}', ${d.readingTime || 0})">
+                  <div class="min-w-0 flex-1">
+                    <div class="text-[11px] text-black truncate">${d.title}</div>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="tag-pill" style="color:${tc.color};background:${tc.bg}">${d.typeLabel || 'DOC'}</span>
+                      ${d.author ? `<div class="avatar flex-shrink-0" title="${d.author.name}">${agentInitials(d.author.name)}</div>` : ''}
+                      <span class="text-[10px] text-gray-400">${d.readingTime || '?'}m read</span>
+                    </div>
+                  </div>
+                  <span class="text-[10px] text-gray-400 flex-shrink-0">${timeAgo(d.modifiedAt)}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleDocGroup(project) {
+      if (collapsedGroups.has(project)) {
+        collapsedGroups.delete(project);
+      } else {
+        collapsedGroups.add(project);
+      }
+      renderDocList();
+    }
+
+    async function loadDoc(path, title, typeLabel, readingTime) {
+      const reader = document.getElementById('doc-reader');
+      const titleEl = document.getElementById('reader-title');
+      const metaEl = document.getElementById('reader-meta');
+
+      titleEl.textContent = title;
+      metaEl.textContent = typeLabel + ' // ' + (readingTime || '?') + 'M READ';
+      reader.innerHTML = '<div class="flex items-center justify-center h-32"><span class="text-[11px] text-gray-400">Loading...</span></div>';
+
+      try {
+        const res = await fetch('/docs/' + path);
+        if (!res.ok) throw new Error('Not found');
+        const text = await res.text();
+
+        if (typeof marked !== 'undefined') {
+          reader.innerHTML = marked.parse(text);
+        } else {
+          reader.innerHTML = '<pre style="white-space:pre-wrap;font-size:11px;color:#4B5563;">' + text.replace(/</g, '&lt;') + '</pre>';
+        }
+      } catch (err) {
+        reader.innerHTML = '<div class="flex items-center justify-center h-32"><span class="text-[11px] text-red-400">Failed to load document</span></div>';
+      }
+    }
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderDocList();
+    });
+
+    loadDocs();
+  </script>
 </body>
 </html>

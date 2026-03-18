@@ -1,0 +1,28 @@
+{
+  "id": "9183521f-ca26-4013-a240-f044a3e1ea41",
+  "slug": "draft-an-architectural-sketch-for-persistent-workflow-sta",
+  "name": "Draft an architectural sketch for persistent workflow sta...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-03-18T13:22:31.277Z",
+  "updatedAt": "2026-03-18T13:31:21.811Z",
+  "completedAt": "2026-03-18T13:31:21.811Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Draft an architectural sketch for persistent workflow state across heartbeats — what changes in heartbeatRunner.ts, how the state cursor is stored, and what the migration path looks like from the current stateless model.\n\nOwner: Andrei\nPriority: high\nSource: Custom Meeting #26",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "f52d058b-0eba-40d5-a818-0fc4733e01c3",
+  "projectId": "3bc4cb0a-ce21-4966-a19b-186be2045ec4",
+  "projectSlug": "competitive-scan",
+  "projectName": "Competitive Scan - Agent Transparency",
+  "gate": "afterResearch",
+  "status": "approved",
+  "createdAt": "2026-03-18T13:32:42.752Z",
+  "updatedAt": "2026-03-18T13:36:50.250Z",
+  "resolvedAt": "2026-03-18T13:36:50.250Z",
+  "deliverables": [
+    {
+      "type": "doc",
+      "path": "docs/teamhq-autonomous-agent-transparency-scan.md",
+      "title": "Competitive Scan"
+    }
+  ],
+  "agent": "Suki",
+  "summary": "Suki scanned 5 products (Devin, Cursor, GitHub Actions, CrewAI, Linear). Key pattern: session timeline + summary + drill-down. Decision traceability is what builds trust. Recommends: morning briefing with expandable decision cards.",
+  "feedback": null
+}

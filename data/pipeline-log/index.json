@@ -41,5 +41,9 @@
   "sitesnap",
   "voicenote-scribe-migration",
   "voicenote-revenuecat",
-  "people-intel"
+  "people-intel",
+  "paperclip-migration",
+  "review-gates",
+  "agent-transparency-scan",
+  "teamhq-platform-improvements"
 ]

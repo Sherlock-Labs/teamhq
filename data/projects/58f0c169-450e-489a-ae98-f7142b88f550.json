@@ -1,0 +1,28 @@
+{
+  "id": "58f0c169-450e-489a-ae98-f7142b88f550",
+  "slug": "evaluate-lightweight-workflow-state-patterns-json-state",
+  "name": "Evaluate lightweight workflow state patterns (JSON state ...",
+  "description": "",
+  "status": "completed",
+  "createdAt": "2026-03-18T13:22:40.675Z",
+  "updatedAt": "2026-03-18T13:30:08.945Z",
+  "completedAt": "2026-03-18T13:30:08.945Z",
+  "goals": "",
+  "constraints": "",
+  "brief": "Evaluate lightweight workflow state patterns (JSON state machines, saga pattern, simple FSM libraries) that could replace the current stateless heartbeat model without adding infrastructure dependencies.\n\nOwner: Marco\nPriority: medium\nSource: Custom Meeting #26",
+  "notes": [],
+  "kickoffPrompt": null,
+  "activeSessionId": null,
+  "pipeline": {
+    "tasks": []
+  },
+  "reviewGates": {
+    "afterResearch": false,
+    "afterRequirements": false,
+    "afterArchitecture": false,
+    "afterDesign": false,
+    "afterBackend": false,
+    "afterFrontend": false,
+    "afterQA": false
+  }
+}
