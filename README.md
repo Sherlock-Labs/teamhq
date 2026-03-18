@@ -4,6 +4,26 @@ TeamHQ is the central headquarters for **Sherlock Labs' AI agent product team** 
 
 The CEO sets the direction. The team does the rest — from research and scoping through architecture, design, implementation, QA, and launch.
 
+## Screenshots
+
+![Dashboard](img/screenshots/home.png)
+*Dashboard — pipeline status, active projects, agent utilization, and recent activity*
+
+![Projects](img/screenshots/projects.png)
+*Projects — track every initiative with work items, pipeline phase, and acceptance criteria*
+
+![Reviews](img/screenshots/reviews.png)
+*Reviews — CEO inbox for approving pipeline gates before work proceeds*
+
+![Meetings](img/screenshots/meetings.png)
+*Meetings — autonomous team standups with decisions and action items*
+
+![Autonomy](img/screenshots/autonomy.png)
+*Autonomy — heartbeat runner logs showing Thomas operating independently*
+
+![Tasks](img/screenshots/tasks.png)
+*Tasks — work items across all active projects*
+
 ## The Team
 
 | Name | Role | Focus |
